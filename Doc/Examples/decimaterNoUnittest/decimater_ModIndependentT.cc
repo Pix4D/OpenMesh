@@ -2,13 +2,14 @@ using namespace OpenMesh;
 
 typedef TriMesh_ArrayKernelT<>               		Mesh;
 typedef Decimater::DecimaterT<Mesh>          		Decimater;
-typedef Decimater::ModIndependentT<Mesh>::Handle 	HModIndependent;
+typedef Decimater::ModIndependentSetsT<Mesh>::Handle 	HModIndependent;
 typedef Decimater::ModNormalDeviationT<Mesh>::Handle 	HModNormalDeviation;
 
 Mesh        mesh;             // a mesh object
 Decimater   decimater(mesh);  // a decimater object, connected to a mesh
 
 HModIndependent hModIndependent;  				// use a independence module
+decimater.add(hModIndependent);                            	// register the module at the decimater
 
 //note that ModIndependent only supports binary mode and has to be used in combination with a non-binary module
 HModNormalDeviation hModNormalDeviation;			// use a non-binary module primarily
