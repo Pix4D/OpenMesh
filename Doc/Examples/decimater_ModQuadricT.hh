@@ -14,15 +14,14 @@ void decimateQuadric(ExampleMesh& mesh ){
 
     HModQuadric hModQuadric;      // use a quadric module
     decimater.add(hModQuadric); // register module at the decimater
-    std::cout << decimater.module(hModQuadric).name() << std::endl; // module access
 
     /*
      * since we need exactly one priority module (non-binary)
      * we have to call set_binary(false) for our priority module
      * in the case of HModQuadric, unset_max_err() calls set_binary(false) internally
+     * or sprcify binary mode calling set_max_err()
      */
-    decimater.module(hModQuadric).unset_max_err();
-
+    decimater.module(hModQuadric).set_max_err(2.0, false); // sets maximum quadratic error to 2 and binary mode to false
     decimater.initialize();
     decimater.decimate();
 

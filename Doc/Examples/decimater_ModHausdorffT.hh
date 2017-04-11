@@ -16,7 +16,7 @@ void decimateHausdorff(ExampleMesh& mesh ){
 
     HModHausdorff hModHausdorff;  						// use a hausdorff distance module
     decimater.add(hModHausdorff); 						// register the hausdorff distance module
-    decimater.module(hModHausdorff).set_tolerance(10.0);			// set max Hausdorff distance tollerance
+    decimater.module(hModHausdorff).set_tolerance(5.0);			// set max Hausdorff distance tollerance
 
     //note that ModHausdorff only supports binary mode and has to be used in combination with a non-binary module
     HModNormalDeviation hModNormalDeviation;				// use a non-binary module primarily
