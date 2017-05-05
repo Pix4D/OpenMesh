@@ -19,12 +19,9 @@ void decimateRoundness(ExampleMesh& mesh ){
     decimater.module(hModRoundness).set_min_roundness(0.7, true);		// choose a minimal roundness value between 0 and 1.0 and set binary mode to true
     decimater.module(hModRoundness).set_min_angle(15.0, true);		// or choose a minimal angle in degrees. second argument gets ignored
 
-    //in non-binary mode set OR unset minimal roundness
+    //in non-binary mode unset OR set minimal roundness
     decimater.module(hModRoundness).unset_min_roundness();			// unset minimal roundness
     decimater.module(hModRoundness).set_min_roundness(0.7, false);		// or choose a minimal roundness value between 0 and 1.0 and set binary mode to false
-
-
-    
 
     decimater.initialize();
     decimater.decimate();

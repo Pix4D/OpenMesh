@@ -141,7 +141,6 @@ TEST_F(OpenMeshDocDecimater, DecimateEdgeLength) {
       face_vhandles2.push_back(vhandle[2]);
       mesh_.add_face(face_vhandles2);
 
-
       decimateEdgeLength(mesh_);
       EXPECT_EQ(1,mesh_.n_faces()) << "Faces did not get decimated to face with shorter edges";
     }
@@ -500,59 +499,55 @@ TEST_F(OpenMeshDocDecimater, DecimateRoundness) {
       mesh_.clear();
 
       // Add some vertices
-      TriMeshVec3f::VertexHandle vhandle[4];
+      TriMeshVec3f::VertexHandle vhandle[6];
 
       vhandle[0] = mesh_.add_vertex(TriMeshVec3f::Point(0.0, 0.0, 0.0));
-      vhandle[1] = mesh_.add_vertex(TriMeshVec3f::Point(0.0, 1.0, 0.0));
-      vhandle[2] = mesh_.add_vertex(TriMeshVec3f::Point(2.0, 1.0, 0.0));
-      vhandle[3] = mesh_.add_vertex(TriMeshVec3f::Point(1.0, 0.0, 0.0));
+      vhandle[1] = mesh_.add_vertex(TriMeshVec3f::Point(0.0, 2.0, 0.0));
+      vhandle[2] = mesh_.add_vertex(TriMeshVec3f::Point(1.0, 1.0, 0.0));
+      vhandle[3] = mesh_.add_vertex(TriMeshVec3f::Point(3.0, 0.0, 0.0));
+      vhandle[4] = mesh_.add_vertex(TriMeshVec3f::Point(2.0, 1.0, 0.0));
+      vhandle[5] = mesh_.add_vertex(TriMeshVec3f::Point(3.0, 2.0, 0.0));
 
       // Add faces
       std::vector<TriMeshVec3f::VertexHandle> face_vhandles1;
       std::vector<TriMeshVec3f::VertexHandle> face_vhandles2;
+      std::vector<TriMeshVec3f::VertexHandle> face_vhandles3;
+      std::vector<TriMeshVec3f::VertexHandle> face_vhandles4;
+      std::vector<TriMeshVec3f::VertexHandle> face_vhandles5;
+      std::vector<TriMeshVec3f::VertexHandle> face_vhandles6;
 
       face_vhandles1.push_back(vhandle[0]);
       face_vhandles1.push_back(vhandle[1]);
-      face_vhandles1.push_back(vhandle[3]);
+      face_vhandles1.push_back(vhandle[2]);
       mesh_.add_face(face_vhandles1);
 
       face_vhandles2.push_back(vhandle[3]);
-      face_vhandles2.push_back(vhandle[1]);
-      face_vhandles2.push_back(vhandle[2]);
+      face_vhandles2.push_back(vhandle[4]);
+      face_vhandles2.push_back(vhandle[5]);
       mesh_.add_face(face_vhandles2);
 
+      face_vhandles3.push_back(vhandle[1]);
+      face_vhandles3.push_back(vhandle[4]);
+      face_vhandles3.push_back(vhandle[2]);
+      mesh_.add_face(face_vhandles3);
+
+      face_vhandles4.push_back(vhandle[0]);
+      face_vhandles4.push_back(vhandle[2]);
+      face_vhandles4.push_back(vhandle[3]);
+      mesh_.add_face(face_vhandles4);
+
+      face_vhandles5.push_back(vhandle[1]);
+      face_vhandles5.push_back(vhandle[5]);
+      face_vhandles5.push_back(vhandle[4]);
+      mesh_.add_face(face_vhandles5);
+
+      face_vhandles6.push_back(vhandle[0]);
+      face_vhandles6.push_back(vhandle[4]);
+      face_vhandles6.push_back(vhandle[3]);
+      mesh_.add_face(face_vhandles6);
 
       decimateRoundness(mesh_);
-      EXPECT_EQ(1,mesh_.n_faces()) << "Faces did not get decimated but the roundness would be greater 0.5.";
-    }
-    {
-      mesh_.clear();
-
-      // Add some vertices
-      TriMeshVec3f::VertexHandle vhandle[4];
-
-      vhandle[0] = mesh_.add_vertex(TriMeshVec3f::Point(0.0, 0.0, 0.0));
-      vhandle[1] = mesh_.add_vertex(TriMeshVec3f::Point(0.0, 1.0, 0.0));
-      vhandle[2] = mesh_.add_vertex(TriMeshVec3f::Point(10.0, 10.0, 100.0));
-      vhandle[3] = mesh_.add_vertex(TriMeshVec3f::Point(10.0, 0.0, 0.0));
-
-      // Add faces
-      std::vector<TriMeshVec3f::VertexHandle> face_vhandles1;
-      std::vector<TriMeshVec3f::VertexHandle> face_vhandles2;
-
-      face_vhandles1.push_back(vhandle[0]);
-      face_vhandles1.push_back(vhandle[1]);
-      face_vhandles1.push_back(vhandle[3]);
-      mesh_.add_face(face_vhandles1);
-
-      face_vhandles2.push_back(vhandle[3]);
-      face_vhandles2.push_back(vhandle[1]);
-      face_vhandles2.push_back(vhandle[2]);
-      mesh_.add_face(face_vhandles2);
-
-
-      decimateRoundness(mesh_);
-      EXPECT_EQ(2,mesh_.n_faces()) << "Faces got decimated but roundness is to high";
+      EXPECT_EQ(4,mesh_.n_faces()) << "Faces did not get decimated but the roundness would be greater 0.5.";
     }
 }
 
@@ -617,7 +612,7 @@ TEST_F(OpenMeshDocDecimater, Decimate) {
 
 
       decimate(mesh_);
-      EXPECT_EQ(2,mesh_.n_faces()) << "Faces got decimated illigally";
+      EXPECT_EQ(2,mesh_.n_faces()) << "Faces got decimated illegally";
     }
 }
 
@@ -627,7 +622,5 @@ TEST_F(OpenMeshDocDecimater, Decimate) {
       fh = f;
       break;
   }*/
-
-/*  decimateAspectRatio(mesh_);
 
 }
