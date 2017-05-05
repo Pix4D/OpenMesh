@@ -269,7 +269,7 @@ TEST_F(OpenMeshDocDecimater, DecimateIndependent) {
 
       face_vhandles1.push_back(vhandle[0]);
       face_vhandles1.push_back(vhandle[1]);
-      face_vhandles1.push_back(vhandle[3]);
+      face_vhandles1.push_back(vhandle[4]);
       mesh_.add_face(face_vhandles1);
 
       face_vhandles2.push_back(vhandle[0]);
@@ -284,12 +284,56 @@ TEST_F(OpenMeshDocDecimater, DecimateIndependent) {
 
       face_vhandles4.push_back(vhandle[4]);
       face_vhandles4.push_back(vhandle[3]);
-      face_vhandles4.push_back(vhandle[1]);
+      face_vhandles4.push_back(vhandle[0]);
       mesh_.add_face(face_vhandles4);
 
 
       decimateIndependent(mesh_);
-      EXPECT_EQ(3,mesh_.n_faces()) << "Faces dit not get decimated or dependent faces got decimated";
+      EXPECT_EQ(2,mesh_.n_faces()) << "Faces dit not get decimated or dependent faces got decimated";
+    }
+
+    {
+      mesh_.clear();
+
+      // Add some vertices
+      TriMeshVec3f::VertexHandle vhandle[5];
+
+      vhandle[0] = mesh_.add_vertex(TriMeshVec3f::Point(0.0, 0.0, 0.0));
+      vhandle[1] = mesh_.add_vertex(TriMeshVec3f::Point(0.0, 1.0, 0.0));
+      vhandle[2] = mesh_.add_vertex(TriMeshVec3f::Point(-1.0, -1.0, 0.0));
+      vhandle[3] = mesh_.add_vertex(TriMeshVec3f::Point(1.0, -1.0, 0.0));
+      vhandle[4] = mesh_.add_vertex(TriMeshVec3f::Point(1.0, -0.9, 0.0));
+
+      // Add faces
+      std::vector<TriMeshVec3f::VertexHandle> face_vhandles1;
+      std::vector<TriMeshVec3f::VertexHandle> face_vhandles2;
+      std::vector<TriMeshVec3f::VertexHandle> face_vhandles3;
+      std::vector<TriMeshVec3f::VertexHandle> face_vhandles4;
+
+      face_vhandles1.push_back(vhandle[0]);
+      face_vhandles1.push_back(vhandle[1]);
+      face_vhandles1.push_back(vhandle[4]);
+      mesh_.add_face(face_vhandles1);
+
+      face_vhandles2.push_back(vhandle[0]);
+      face_vhandles2.push_back(vhandle[3]);
+      face_vhandles2.push_back(vhandle[2]);
+      mesh_.add_face(face_vhandles2);
+
+      face_vhandles3.push_back(vhandle[0]);
+      face_vhandles3.push_back(vhandle[2]);
+      face_vhandles3.push_back(vhandle[1]);
+      mesh_.add_face(face_vhandles3);
+
+      face_vhandles4.push_back(vhandle[4]);
+      face_vhandles4.push_back(vhandle[3]);
+      face_vhandles4.push_back(vhandle[0]);
+      mesh_.add_face(face_vhandles4);
+
+
+      decimateIndependent(mesh_);
+      decimateIndependent(mesh_);
+      EXPECT_EQ(1,mesh_.n_faces()) << "Faces dit not get decimated";
     }
 }
 
