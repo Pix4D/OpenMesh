@@ -48,6 +48,7 @@ namespace {
 /*
  * Checking decimater_ModAspectRatioT.hh
  */
+
 TEST_F(OpenMeshDocDecimater, DecimateAspectRatio) {
     {
       mesh_.clear();
