@@ -259,7 +259,7 @@ TEST_F(OpenMeshDocDecimater, DecimateIndependent) {
       vhandle[1] = mesh_.add_vertex(TriMeshVec3f::Point(0.0, 1.0, 0.0));
       vhandle[2] = mesh_.add_vertex(TriMeshVec3f::Point(-1.0, -1.0, 0.0));
       vhandle[3] = mesh_.add_vertex(TriMeshVec3f::Point(1.0, -1.0, 0.0));
-      vhandle[3] = mesh_.add_vertex(TriMeshVec3f::Point(1.0, -0.9, 0.0));
+      vhandle[4] = mesh_.add_vertex(TriMeshVec3f::Point(1.0, -0.9, 0.0));
 
       // Add faces
       std::vector<TriMeshVec3f::VertexHandle> face_vhandles1;
