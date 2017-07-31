@@ -104,7 +104,7 @@ public:
   /// Determine whether this is a PolyMeshT or TriMeshT (This function does not check the per face vertex count! It only checks if the datatype is PolyMeshT or TriMeshT)
   static constexpr bool is_polymesh() { return true;  }
   static constexpr bool is_trimesh()  { return false; }
-  using ConnectivityTag = TriConnectivityTag;
+  using ConnectivityTag = PolyConnectivityTag;
   enum { IsPolyMesh = 1 };
   enum { IsTriMesh  = 0 };
   //@}
