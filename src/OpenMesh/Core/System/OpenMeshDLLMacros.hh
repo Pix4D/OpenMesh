@@ -66,7 +66,7 @@
 			#define OPENMESHDLLEXPORTONLY
 		#endif
 	#else
-		#define OPENMESHDLLEXPORT
-		#define OPENMESHDLLEXPORTONLY
+        #define OPENMESHDLLEXPORT __attribute__((visibility("default")))
+        #define OPENMESHDLLEXPORTONLY OPENMESHDLLEXPORT
 	#endif
 #endif
