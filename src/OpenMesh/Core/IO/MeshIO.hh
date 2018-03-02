@@ -55,11 +55,7 @@
 
 // -------------------- system settings
 #include <OpenMesh/Core/System/config.h>
-// -------------------- check include order
-#if defined (OPENMESH_TRIMESH_ARRAY_KERNEL_HH) || \
-    defined (OPENMESH_POLYMESH_ARRAY_KERNEL_HH)
-#  error "Include MeshIO.hh before including a mesh type!"
-#endif
+
 // -------------------- OpenMesh
 #include <OpenMesh/Core/IO/SR_store.hh>
 #include <OpenMesh/Core/IO/IOManager.hh>
