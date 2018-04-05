@@ -62,6 +62,7 @@
 
 
 // STL
+#include <string>
 #include <vector>
 
 // OpenMesh
@@ -127,6 +128,7 @@ public:
   virtual Vec4ui colorAi(FaceHandle _fh)   const = 0;
   virtual Vec3f colorf(FaceHandle _fh)    const = 0;
   virtual Vec4f colorAf(FaceHandle _fh)   const = 0;
+  virtual int face_texindex(FaceHandle _fh) const = 0;
 
   // get edge data
   virtual Vec3uc color(EdgeHandle _eh)    const = 0;
@@ -135,6 +137,9 @@ public:
   virtual Vec4ui colorAi(EdgeHandle _eh)   const = 0;
   virtual Vec3f colorf(EdgeHandle _eh)    const = 0;
   virtual Vec4f colorAf(EdgeHandle _eh)   const = 0;
+
+  // material attributes
+  virtual std::string texture_name(int _index) const = 0;
 
   // get reference to base kernel
   virtual const BaseKernel* kernel() { return 0; }
@@ -147,13 +152,15 @@ public:
 
 
   // property information
-  virtual bool is_triangle_mesh()     const { return false; }
-  virtual bool has_vertex_normals()   const { return false; }
-  virtual bool has_vertex_colors()    const { return false; }
-  virtual bool has_vertex_texcoords() const { return false; }
-  virtual bool has_edge_colors()      const { return false; }
-  virtual bool has_face_normals()     const { return false; }
-  virtual bool has_face_colors()      const { return false; }
+  virtual bool is_triangle_mesh()       const { return false; }
+  virtual bool has_vertex_normals()     const { return false; }
+  virtual bool has_vertex_colors()      const { return false; }
+  virtual bool has_vertex_texcoords()   const { return false; }
+  virtual bool has_edge_colors()        const { return false; }
+  virtual bool has_face_normals()       const { return false; }
+  virtual bool has_face_colors()        const { return false; }
+  virtual bool has_face_texture_index() const { return false; }
+
 };
 
 

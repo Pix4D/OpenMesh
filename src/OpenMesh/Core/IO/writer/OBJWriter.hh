@@ -107,12 +107,36 @@ private:
   mutable std::string path_;
   mutable std::string objName_;
 
-  mutable std::vector< OpenMesh::Vec3f > material_;
-  mutable std::vector< OpenMesh::Vec4f > materialA_;
+  struct Material {
+    Material()
+    {
+      hasColor        = false;
+      hasTextureIndex = false;
+    }
+    bool operator ==(const Material& other) const
+    {
+      if (hasColor != other.hasColor) return false;
+      if (hasColor && color != other.color) return false;
+      if (hasTextureIndex != other.hasTextureIndex) return false;
+      if (hasTextureIndex && textureIndex != other.textureIndex) return false;
+      return true;
+    }
 
-  size_t getMaterial(OpenMesh::Vec3f _color) const;
+    bool is_valid() const
+    {
+      return hasColor || hasTextureIndex;
+    }
 
-  size_t getMaterial(OpenMesh::Vec4f _color) const;
+    OpenMesh::Vec4f color;
+    bool            hasColor;
+    int             textureIndex;
+    bool            hasTextureIndex;
+  };
+
+  mutable std::vector< Material > material_;
+
+  size_t getCachedMaterial(const Material&) const;
+  Material getMaterialDescription(FaceHandle _f, BaseExporter& _be, Options _opt) const;
 
   bool writeMaterial(std::ostream& _out, BaseExporter&, Options) const;
 

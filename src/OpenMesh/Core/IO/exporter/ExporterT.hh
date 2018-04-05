@@ -61,6 +61,7 @@
 //=== INCLUDES ================================================================
 
 // C++
+#include <string>
 #include <vector>
 
 // OpenMesh
@@ -237,8 +238,12 @@ public:
     for(typename Mesh::CHIter he_it=mesh_.halfedges_begin();
         he_it != mesh_.halfedges_end(); ++he_it)
     {
-      _hehandles.push_back(vector_cast<Vec2f>(mesh_.texcoord2D( *he_it)));
-      ++count;
+      // Only store texture coordinates for faces which have a texture assigned
+      if (!mesh_.has_face_texture_index() || (mesh_.face_handle(*he_it).is_valid() && (mesh_.texture_index(mesh_.face_handle(*he_it))) > 0))
+      {
+        _hehandles.push_back(vector_cast<Vec2f>(mesh_.texcoord2D( *he_it)));
+        ++count;
+      }
     }
 
     return count;
@@ -304,6 +309,28 @@ public:
       : Vec4f(0, 0, 0, 0));
   }
 
+  int face_texindex(FaceHandle _fh) const
+  {
+    return mesh_.has_face_texture_index() ? mesh_.texture_index(_fh) : -1;
+  }
+
+  // Material attributes
+  std::string texture_name(int _index) const
+  {
+    OpenMesh::MPropHandleT< std::map< int, std::string > > property;
+
+    if ( !mesh_.get_property_handle(property,"TextureMapping") ) {
+      return std::string();
+    }
+    const auto it = mesh_.property(property).find( _index );
+    if ( it != mesh_.property(property).end() ) {
+        return it->second;
+    }
+    return std::string();
+  }
+
+
+
   virtual const BaseKernel* kernel() { return &mesh_; }
 
 
@@ -317,12 +344,13 @@ public:
   bool is_triangle_mesh() const
   { return Mesh::is_triangles(); }
 
-  bool has_vertex_normals()   const { return mesh_.has_vertex_normals();   }
-  bool has_vertex_colors()    const { return mesh_.has_vertex_colors();    }
-  bool has_vertex_texcoords() const { return mesh_.has_vertex_texcoords2D(); }
-  bool has_edge_colors()      const { return mesh_.has_edge_colors();      }
-  bool has_face_normals()     const { return mesh_.has_face_normals();     }
-  bool has_face_colors()      const { return mesh_.has_face_colors();      }
+  bool has_vertex_normals()     const { return mesh_.has_vertex_normals();   }
+  bool has_vertex_colors()      const { return mesh_.has_vertex_colors();    }
+  bool has_vertex_texcoords()   const { return mesh_.has_vertex_texcoords2D(); }
+  bool has_edge_colors()        const { return mesh_.has_edge_colors();      }
+  bool has_face_normals()       const { return mesh_.has_face_normals();     }
+  bool has_face_colors()        const { return mesh_.has_face_colors();      }
+  bool has_face_texture_index() const { return mesh_.has_face_texture_index(); }
 
 private:
 

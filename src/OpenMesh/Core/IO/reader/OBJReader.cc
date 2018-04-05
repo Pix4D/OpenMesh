@@ -193,17 +193,14 @@ read_material(std::fstream& _in)
 
     stream >> keyWrd;
 
-    if( ( isspace(line[0]) && line[0] != '\t' ) || line[0] == '#' )
+    if ( !keyWrd.empty() && keyWrd[0] == '#' ) // skip comments
     {
-      if (indef && !key.empty() && mat.is_valid())
-      {
-        materials_[key] = mat;
-        mat.cleanup();
-      }
+      continue;
     }
 
     else if (keyWrd == "newmtl") // begin new material definition
     {
+      mat.cleanup();
       stream >> key;
       indef = true;
     }

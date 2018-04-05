@@ -129,72 +129,72 @@ write(const std::string& _filename, BaseExporter& _be, Options _opt, std::stream
 
 //-----------------------------------------------------------------------------
 
-size_t _OBJWriter_::getMaterial(OpenMesh::Vec3f _color) const
+size_t _OBJWriter_::getCachedMaterial(const Material& _material) const
 {
   for (size_t i=0; i < material_.size(); i++)
-    if(material_[i] == _color)
+    if(material_[i] == _material)
       return i;
 
   //not found add new material
-  material_.push_back( _color );
+  material_.push_back( _material );
   return material_.size()-1;
 }
 
 //-----------------------------------------------------------------------------
 
-size_t _OBJWriter_::getMaterial(OpenMesh::Vec4f _color) const
+_OBJWriter_::Material _OBJWriter_::getMaterialDescription(FaceHandle _f, BaseExporter& _be, Options _opt) const
 {
-  for (size_t i=0; i < materialA_.size(); i++)
-    if(materialA_[i] == _color)
-      return i;
+  Material mat;
+  mat.hasColor = _opt.face_has_color();
+  if (mat.hasColor) {
+    //color with alpha
+    if ( _opt.color_has_alpha() ){
+      mat.color = color_cast<OpenMesh::Vec4f>(_be.colorA(_f));
+    }else{
+      //and without alpha
+      mat.color = color_cast<OpenMesh::Vec4f>(_be.color(_f));
+    }
+  }
 
-  //not found add new material
-  materialA_.push_back( _color );
-  return materialA_.size()-1;
+  mat.hasTextureIndex = _opt.face_has_texture_index() && (_be.face_texindex(_f) > 0);
+  if (mat.hasTextureIndex) {
+    mat.textureIndex = _be.face_texindex(_f);
+  }
+  return mat;
 }
 
 //-----------------------------------------------------------------------------
 
-bool
-_OBJWriter_::
-writeMaterial(std::ostream& _out, BaseExporter& _be, Options _opt) const
+bool _OBJWriter_::writeMaterial(std::ostream& _out, BaseExporter& _be, Options _opt) const
 {
-  OpenMesh::Vec3f c;
-  OpenMesh::Vec4f cA;
-
   material_.clear();
-  materialA_.clear();
 
   //iterate over faces
   for (size_t i=0, nF=_be.n_faces(); i<nF; ++i)
   {
-    //color with alpha
-    if ( _opt.color_has_alpha() ){
-      cA  = color_cast<OpenMesh::Vec4f> (_be.colorA( FaceHandle(int(i)) ));
-      getMaterial(cA);
-    }else{
-    //and without alpha
-      c  = color_cast<OpenMesh::Vec3f> (_be.color( FaceHandle(int(i)) ));
-      getMaterial(c);
+    Material mat = getMaterialDescription(FaceHandle(int(i)), _be, _opt);
+    if (mat.is_valid()) {
+      // Create material
+      getCachedMaterial(mat);
     }
   }
 
   //write the materials
-  if ( _opt.color_has_alpha() )
-    for (size_t i=0; i < materialA_.size(); i++){
-      _out << "newmtl " << "mat" << i << '\n';
+  for (size_t i=0; i < material_.size(); i++) {
+    const Material& m = material_[i];
+    _out << "newmtl " << "mat" << i << '\n';
+    if (m.hasColor) {
       _out << "Ka 0.5000 0.5000 0.5000" << '\n';
-      _out << "Kd " << materialA_[i][0] << ' ' << materialA_[i][1] << ' ' << materialA_[i][2] << '\n';
-      _out << "Tr " << materialA_[i][3] << '\n';
+      _out << "Kd " << m.color[0] << ' ' << m.color[1] << ' ' << m.color[2] << '\n';
+       if (m.color[3] < 1.0)
+         _out << "Tr " << m.color[3] << '\n';
       _out << "illum 1" << '\n';
     }
-  else
-    for (size_t i=0; i < material_.size(); i++){
-      _out << "newmtl " << "mat" << i << '\n';
-      _out << "Ka 0.5000 0.5000 0.5000" << '\n';
-      _out << "Kd " << material_[i][0] << ' ' << material_[i][1] << ' ' << material_[i][2] << '\n';
-      _out << "illum 1" << '\n';
+    if (m.hasTextureIndex) {
+       _out << "map_Kd "<<_be.texture_name(m.textureIndex)<< std::endl;
     }
+    _out  << std::endl;
+  }
 
   return true;
 }
@@ -242,7 +242,7 @@ write(std::ostream& _out, BaseExporter& _be, Options _opt, std::streamsize _prec
   }
 
   //create material file if needed
-  if ( _opt.check(Options::FaceColor) ){
+  if ( _opt.check(Options::FaceColor) || _opt.check(Options::FaceTextureIndex) ){
 
     std::string matFile = path_ + objName_ + ".mat";
 
@@ -264,7 +264,7 @@ write(std::ostream& _out, BaseExporter& _be, Options _opt, std::streamsize _prec
   _out << _be.n_faces() << " faces" << '\n';
 
   // material file
-  if (useMatrial &&  _opt.check(Options::FaceColor) )
+  if (useMatrial)
     _out << "mtllib " << objName_ << ".mat" << '\n';
 
   std::map<Vec2f,int> texMap;
@@ -317,7 +317,7 @@ write(std::ostream& _out, BaseExporter& _be, Options _opt, std::streamsize _prec
       _out << "vn " << n[0] <<" "<< n[1] <<" "<< n[2] << '\n';    
   }
 
-  size_t lastMat = std::numeric_limits<std::size_t>::max();
+  size_t lastMaterialIndex = std::numeric_limits<std::size_t>::max();
 
   // we do not want to write seperators if we only write vertex indices
   bool onlyVertices =    !_opt.check(Options::VertexTexCoord)
@@ -327,24 +327,17 @@ write(std::ostream& _out, BaseExporter& _be, Options _opt, std::streamsize _prec
   // faces (indices starting at 1 not 0)
   for (i=0, nF=_be.n_faces(); i<nF; ++i)
   {
+    if (useMatrial) {
+      size_t materialIndex = std::numeric_limits<std::size_t>::max();
 
-    if (useMatrial &&  _opt.check(Options::FaceColor) ){
-      size_t material = std::numeric_limits<std::size_t>::max();
-
-      //color with alpha
-      if ( _opt.color_has_alpha() ){
-        cA  = color_cast<OpenMesh::Vec4f> (_be.colorA( FaceHandle(int(i)) ));
-        material = getMaterial(cA);
-      } else{
-      //and without alpha
-        c  = color_cast<OpenMesh::Vec3f> (_be.color( FaceHandle(int(i)) ));
-        material = getMaterial(c);
-      }
-
-      // if we are ina a new material block, specify in the file which material to use
-      if(lastMat != material) {
-        _out << "usemtl mat" << material << '\n';
-        lastMat = material;
+      Material material = getMaterialDescription(FaceHandle(int(i)), _be, _opt);
+      if (material.is_valid()) {
+        materialIndex = getCachedMaterial(material);
+        // if we are ina a new material block, specify in the file which material to use
+        if(lastMaterialIndex != materialIndex) {
+          _out << "usemtl mat" << materialIndex << '\n';
+          lastMaterialIndex = materialIndex;
+        }
       }
     }
 
@@ -364,9 +357,13 @@ write(std::ostream& _out, BaseExporter& _be, Options _opt, std::streamsize _prec
         _out << "/" ;
 
         //write texCoords index from halfedge
-        if(_opt.check(Options::FaceTexCoord))
+        if(_opt.check(Options::FaceTexCoord) )
         {
-          _out << texMap[_be.texcoord(_be.getHeh(FaceHandle(int(i)),vhandles[j]))];
+          bool supplyCoord = (!_opt.face_has_texture_index()) || (_be.face_texindex(FaceHandle(int(i))) > 0);
+          if (supplyCoord)
+          {
+            _out << texMap[_be.texcoord(_be.getHeh(FaceHandle(int(i)),vhandles[j]))];
+          }
         }
 
         else
@@ -389,7 +386,6 @@ write(std::ostream& _out, BaseExporter& _be, Options _opt, std::streamsize _prec
   }
 
   material_.clear();
-  materialA_.clear();
 
   return true;
 }
