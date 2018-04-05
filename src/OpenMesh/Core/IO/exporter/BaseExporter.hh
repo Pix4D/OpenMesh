@@ -104,8 +104,6 @@ public:
   virtual Vec3f colorf(VertexHandle _vh)    const = 0;
   virtual Vec4f colorAf(VertexHandle _vh)   const = 0;
   virtual Vec2f  texcoord(VertexHandle _vh) const = 0;
-  virtual Vec2f  texcoord(HalfedgeHandle _heh) const = 0;
-
 
   // get face data
   virtual unsigned int
@@ -138,6 +136,10 @@ public:
   virtual Vec3f colorf(EdgeHandle _eh)    const = 0;
   virtual Vec4f colorAf(EdgeHandle _eh)   const = 0;
 
+  // get halfedge data
+  virtual Vec3f normal(HalfedgeHandle _heh)   const = 0;
+  virtual Vec2f texcoord(HalfedgeHandle _heh) const = 0;
+
   // material attributes
   virtual std::string texture_name(int _index) const = 0;
 
@@ -160,7 +162,7 @@ public:
   virtual bool has_face_normals()       const { return false; }
   virtual bool has_face_colors()        const { return false; }
   virtual bool has_face_texture_index() const { return false; }
-
+  virtual bool has_halfedge_normals()   const { return false; }
 };
 
 

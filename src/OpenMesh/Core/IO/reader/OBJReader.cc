@@ -388,9 +388,10 @@ read_vertices(std::istream& _in, BaseImporter& _bi, Options& _opt,
           stream >> x; stream >> y; stream >> z;
 
           if ( !stream.fail() ) {
-            if (userOptions.vertex_has_normal() ){
+            if (userOptions.vertex_has_normal() || userOptions.halfedge_has_normal()) {
               normals.push_back(OpenMesh::Vec3f(x,y,z));
               fileOptions += Options::VertexNormal;
+              fileOptions += Options::HalfedgeNormal;
             }
           }
         }
@@ -417,6 +418,7 @@ read(std::istream& _in, BaseImporter& _bi, Options& _opt)
   BaseImporter::VHandles    vhandles;
   std::vector<Vec3f>        face_texcoords3d;
   std::vector<Vec2f>        face_texcoords;
+  std::vector<Vec3f>        halfedge_normals;
 
   std::string               matname;
 
@@ -537,6 +539,7 @@ read(std::istream& _in, BaseImporter& _bi, Options& _opt)
 
       vhandles.clear();
       face_texcoords.clear();
+      halfedge_normals.clear();
 
       // read full line after detecting a face
       std::string faceLine;
@@ -671,13 +674,22 @@ read(std::istream& _in, BaseImporter& _bi, Options& _opt)
               // Obj counts from 1 and not zero .. array counts from zero therefore -1
               if (fileOptions.vertex_has_normal() ) {
                 assert(!vhandles.empty());                
-                if ((unsigned int)(value - 1) < normals.size()) {
+                if (value > 0 && std::size_t(value) <= normals.size()) {
                     _bi.set_normal(vhandles.back(), normals[value - 1]);
                 }
                 else {
                     omerr() << "Error setting vertex normal" << std::endl;
                 }                
               }
+
+              if (fileOptions.halfedge_has_normal() && userOptions.halfedge_has_normal() ) {
+                  if (!normals.empty() && value > 0 && std::size_t(value) <= normals.size()) {
+                    halfedge_normals.push_back( normals[value-1] );
+                  } else {
+                    omerr() << "Error setting per-halfedge normal" << std::endl;
+                  }
+              }
+
               break;
           }
 

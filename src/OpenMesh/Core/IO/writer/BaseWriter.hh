@@ -138,11 +138,12 @@ protected:
 
   bool check(BaseExporter& _be, Options _opt) const
   {
-    return (_opt.check(Options::VertexNormal ) <= _be.has_vertex_normals())
-       &&  (_opt.check(Options::VertexTexCoord)<= _be.has_vertex_texcoords())
-       &&  (_opt.check(Options::VertexColor)   <= _be.has_vertex_colors())
-       &&  (_opt.check(Options::FaceNormal)    <= _be.has_face_normals())
-       &&  (_opt.check(Options::FaceColor)     <= _be.has_face_colors());
+    return (_opt.check(Options::VertexNormal)   <= _be.has_vertex_normals())
+       &&  (_opt.check(Options::HalfedgeNormal) <= _be.has_halfedge_normals())
+       &&  (_opt.check(Options::VertexTexCoord) <= _be.has_vertex_texcoords())
+       &&  (_opt.check(Options::VertexColor)    <= _be.has_vertex_colors())
+       &&  (_opt.check(Options::FaceNormal)     <= _be.has_face_normals())
+       &&  (_opt.check(Options::FaceColor)      <= _be.has_face_colors());
   }
 };
 

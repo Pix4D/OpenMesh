@@ -165,13 +165,6 @@ public:
 #endif
   }
 
-  Vec2f  texcoord(HalfedgeHandle _heh) const
-  {
-    return (mesh_.has_halfedge_texcoords2D()
-        ? vector_cast<Vec2f>(mesh_.texcoord2D(_heh))
-        : Vec2f(0.0f, 0.0f));
-  }
-
   // get edge data
 
   Vec3uc color(EdgeHandle _eh)    const
@@ -215,6 +208,23 @@ public:
       ? color_cast<Vec4f>(mesh_.color(_eh))
       : Vec4f(0, 0, 0, 0));
   }
+
+  // Halfedge data
+
+  Vec3f normal(HalfedgeHandle _heh) const
+  {
+        return (mesh_.has_halfedge_normals()
+            ? vector_cast<Vec3f>(mesh_.normal(_heh))
+            : Vec3f(0.0f, 0.0f, 0.0f));
+  }
+
+  Vec2f  texcoord(HalfedgeHandle _heh) const
+  {
+    return (mesh_.has_halfedge_texcoords2D()
+        ? vector_cast<Vec2f>(mesh_.texcoord2D(_heh))
+        : Vec2f(0.0f, 0.0f));
+  }
+
 
   // get face data
 
@@ -329,8 +339,6 @@ public:
     return std::string();
   }
 
-
-
   virtual const BaseKernel* kernel() { return &mesh_; }
 
 
@@ -351,7 +359,7 @@ public:
   bool has_face_normals()       const { return mesh_.has_face_normals();     }
   bool has_face_colors()        const { return mesh_.has_face_colors();      }
   bool has_face_texture_index() const { return mesh_.has_face_texture_index(); }
-
+  bool has_halfedge_normals()   const { return mesh_.has_halfedge_normals(); }
 private:
 
    const Mesh& mesh_;

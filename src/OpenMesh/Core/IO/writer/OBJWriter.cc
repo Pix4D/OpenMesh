@@ -206,15 +206,7 @@ bool
 _OBJWriter_::
 write(std::ostream& _out, BaseExporter& _be, Options _opt, std::streamsize _precision) const
 {
-  unsigned int idx;
-  size_t i, j,nV, nF;
-  Vec3f v, n;
-  Vec2f t;
-  VertexHandle vh;
-  std::vector<VertexHandle> vhandles;
   bool useMatrial = false;
-  OpenMesh::Vec3f c;
-  OpenMesh::Vec4f cA;
 
   omlog() << "[OBJWriter] : write file\n";
 
@@ -285,11 +277,41 @@ write(std::ostream& _out, BaseExporter& _be, Options _opt, std::streamsize _prec
   {
     for (size_t i=0, nV=_be.n_vertices(); i<nV; ++i)
     {
-      vh = VertexHandle(static_cast<int>(i));
-      t  = _be.texcoord(vh);
+      VertexHandle vh(static_cast<int>(i));
+      Vec2f t = _be.texcoord(vh);
       texMap[t] = static_cast<int>(i);
     }
   }
+
+  std::vector<VertexHandle> vhandles;
+
+  std::map<Vec3f,int> normalMap;
+  //collect halfedge normals
+  if(_opt.check(Options::HalfedgeNormal))
+  {
+    std::vector<Vec3f> normals;
+    for (std::size_t f = 0; f < _be.n_faces(); ++f)
+    {
+      FaceHandle fh(f);
+      _be.get_vhandles(fh, vhandles);
+      for (std::size_t j=0; j< vhandles.size(); ++j)
+      {
+        const OpenMesh::Vec3f& n = _be.normal(_be.getHeh(fh, vhandles[j]));
+        normalMap[n] = -1;
+      }
+    }
+  }
+  //collect vertex normals
+  else if(_opt.check(Options::VertexNormal))
+  {
+    for (size_t i=0, nV = _be.n_vertices(); i<nV; ++i)
+    {
+      VertexHandle vh(static_cast<int>(i));
+      Vec3f n = _be.normal(vh);
+      normalMap[n] = static_cast<int>(i);
+    }
+  }
+
 
   // assign each texcoord in the map its id
   // and write the vt entries
@@ -303,29 +325,37 @@ write(std::ostream& _out, BaseExporter& _be, Options _opt, std::streamsize _prec
     }
   }
 
-  // vertex data (point, normals, texcoords)
-  for (i=0, nV=_be.n_vertices(); i<nV; ++i)
+  // assign each normal in the map its id
+  // and write the vn entries
+  if(_opt.check(Options::VertexNormal) || _opt.check(Options::HalfedgeNormal))
   {
-    vh = VertexHandle(int(i));
-    v  = _be.point(vh);
-    n  = _be.normal(vh);
-    t  = _be.texcoord(vh);
+    int normalId = 0;
+    for(std::map<Vec3f,int>::iterator it = normalMap.begin(); it != normalMap.end() ; ++it)
+    {
+      _out << "vn " << it->first[0] << " " << it->first[1] << " " << it->first[2] << '\n';
+      it->second = ++normalId;
+    }
+  }
 
+
+  // vertex data (point, normals, texcoords)
+  for (std::size_t i=0, nV=_be.n_vertices(); i<nV; ++i)
+  {
+    VertexHandle vh(static_cast<int>(i));
+    Vec3f v  = _be.point(vh);
     _out << "v " << v[0] <<" "<< v[1] <<" "<< v[2] << '\n';
-
-    if (_opt.check(Options::VertexNormal))
-      _out << "vn " << n[0] <<" "<< n[1] <<" "<< n[2] << '\n';    
   }
 
   size_t lastMaterialIndex = std::numeric_limits<std::size_t>::max();
 
   // we do not want to write seperators if we only write vertex indices
   bool onlyVertices =    !_opt.check(Options::VertexTexCoord)
-                      && !_opt.check(Options::VertexNormal)
+                      && !(_opt.check(Options::VertexNormal) || _opt.check(Options::HalfedgeNormal))
                       && !_opt.check(Options::FaceTexCoord);
 
+
   // faces (indices starting at 1 not 0)
-  for (i=0, nF=_be.n_faces(); i<nF; ++i)
+  for (std::size_t i=0, nF=_be.n_faces(); i<nF; ++i)
   {
     if (useMatrial) {
       size_t materialIndex = std::numeric_limits<std::size_t>::max();
@@ -345,11 +375,11 @@ write(std::ostream& _out, BaseExporter& _be, Options _opt, std::streamsize _prec
 
     _be.get_vhandles(FaceHandle(int(i)), vhandles);
 
-    for (j=0; j< vhandles.size(); ++j)
+    for (std::size_t j=0; j< vhandles.size(); ++j)
     {
 
       // Write vertex index
-      idx = vhandles[j].idx() + 1;
+      unsigned int idx = vhandles[j].idx() + 1;
       _out << " " << idx;
 
       if (!onlyVertices) {
@@ -373,11 +403,17 @@ write(std::ostream& _out, BaseExporter& _be, Options _opt, std::streamsize _prec
             _out  << texMap[_be.texcoord(vhandles[j])];
         }
 
+        if (_opt.check(Options::HalfedgeNormal))
+        {
+            // write separator
+            _out << "/" ;
+        	_out << normalMap[_be.normal(_be.getHeh(FaceHandle(int(i)), vhandles[j]))];
+        }
         // write vertex normal index
-        if ( _opt.check(Options::VertexNormal) ) {
+        else if ( _opt.check(Options::VertexNormal) ) {
           // write separator
           _out << "/" ;
-          _out << idx;
+          _out << normalMap[_be.normal(vhandles[j])];
         }
       }
     }
