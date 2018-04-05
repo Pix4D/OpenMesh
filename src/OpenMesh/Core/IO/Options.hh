@@ -109,15 +109,17 @@ public:
       VertexNormal      = 0x0010, ///< Has (r) / store (w) vertex normals
       VertexColor       = 0x0020, ///< Has (r) / store (w) vertex colors
       VertexTexCoord    = 0x0040, ///< Has (r) / store (w) texture coordinates
-      HalfedgeNormal    = 0x0080, ///< Has (r) / store (w) half-edge (per-wedge) normals
-      EdgeColor         = 0x0100, ///< Has (r) / store (w) edge colors
-      FaceNormal        = 0x0200, ///< Has (r) / store (w) face normals
-      FaceColor         = 0x0400, ///< Has (r) / store (w) face colors
-      FaceTexCoord      = 0x0800, ///< Has (r) / store (w) face texture coordinates
+      HalfedgeTexCoord  = 0x0080, ///< Has (r) / store (w) face texture coordinates
+      HalfedgeNormal    = 0x0100, ///< Has (r) / store (w) half-edge (per-wedge) normals
+      EdgeColor         = 0x0200, ///< Has (r) / store (w) edge colors
+      FaceNormal        = 0x0400, ///< Has (r) / store (w) face normals
+      FaceColor         = 0x0800, ///< Has (r) / store (w) face colors
       FaceTextureIndex  = 0x1000, ///< Has (r) / store (w) face texture index
       ColorAlpha        = 0x2000, ///< Has (r) / store (w) alpha values for colors
       ColorFloat        = 0x4000, ///< Has (r) / store (w) float values for colors (currently only implemented for PLY and OFF files)
-      Custom            = 0x8000  ///< Has (r)             custom properties (currently only implemented in PLY Reader ASCII version)
+      Custom            = 0x8000, ///< Has (r)             custom properties (currently only implemented in PLY Reader ASCII version)
+      // deprecated:
+      FaceTexCoord      = HalfedgeTexCoord  ///< legacy alias for "HalfedgeTexCoord"
   };
 
 public:
@@ -209,11 +211,12 @@ public:
   bool vertex_has_color()       const { return check(VertexColor); }
   bool vertex_has_texcoord()    const { return check(VertexTexCoord); }
   bool halfedge_has_normal()    const { return check(HalfedgeNormal); }
+  bool halfedge_has_texcoord()  const { return check(HalfedgeTexCoord); }
+  bool face_has_texcoord()      const { return check(HalfedgeTexCoord); } // deprecated
   bool edge_has_color()         const { return check(EdgeColor); }
   bool face_has_normal()        const { return check(FaceNormal); }
   bool face_has_color()         const { return check(FaceColor); }
   bool face_has_texture_index() const { return check(FaceTextureIndex); }
-  bool face_has_texcoord()      const { return check(FaceTexCoord); }
   bool color_has_alpha()        const { return check(ColorAlpha); }
   bool color_is_float()         const { return check(ColorFloat); }
 

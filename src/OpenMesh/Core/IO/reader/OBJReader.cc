@@ -353,7 +353,7 @@ read_vertices(std::istream& _in, BaseImporter& _bi, Options& _opt,
 
               // Can be used for both!
               fileOptions += Options::VertexTexCoord;
-              fileOptions += Options::FaceTexCoord;
+              fileOptions += Options::HalfedgeTexCoord;
 
               // try to read the w component as it is optional
               stream >> w;
@@ -748,7 +748,7 @@ read(std::istream& _in, BaseImporter& _bi, Options& _opt)
             for (std::vector<FaceHandle>::iterator it = newfaces.begin(); it != newfaces.end(); ++it)
               _bi.set_face_texindex(*it, mat.map_Kd_index());
 
-            fileOptions += Options::FaceTexCoord;
+            fileOptions += Options::HalfedgeTexCoord;
 
           }
 

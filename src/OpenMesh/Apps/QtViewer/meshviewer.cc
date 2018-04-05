@@ -107,7 +107,7 @@ int main(int argc, char **argv)
   opt += OpenMesh::IO::Options::VertexTexCoord;
   opt += OpenMesh::IO::Options::FaceColor;
   opt += OpenMesh::IO::Options::FaceNormal;
-  opt += OpenMesh::IO::Options::FaceTexCoord;
+  opt += OpenMesh::IO::Options::HalfedgeTexCoord;
 
   // create widget
   QMainWindow mainWin;

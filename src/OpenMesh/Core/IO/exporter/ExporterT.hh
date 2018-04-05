@@ -225,6 +225,30 @@ public:
         : Vec2f(0.0f, 0.0f));
   }
 
+  unsigned int get_halfedge_texcoords(std::vector<Vec2f>& _texcoords) const
+  {
+    unsigned int count(0);
+    _texcoords.clear();
+    if (!mesh_.has_halfedge_texcoords2D())
+    {
+    	return count;
+    }
+    for(typename Mesh::CHIter he_it=mesh_.halfedges_begin();
+        he_it != mesh_.halfedges_end(); ++he_it)
+    {
+      // Only store texture coordinates for faces which have a texture assigned
+      if (!mesh_.has_face_texture_index() || (mesh_.face_handle(*he_it).is_valid() && (mesh_.texture_index(mesh_.face_handle(*he_it))) > 0))
+      {
+        _texcoords.push_back(vector_cast<Vec2f>(mesh_.texcoord2D( *he_it)));
+        ++count;
+      }
+    }
+
+    return count;
+  }
+
+
+
 
   // get face data
 
@@ -238,24 +262,6 @@ public:
       _vhandles.push_back(*fv_it);
       ++count;
     }
-    return count;
-  }
-
-  unsigned int get_face_texcoords(std::vector<Vec2f>& _hehandles) const
-  {
-    unsigned int count(0);
-    _hehandles.clear();
-    for(typename Mesh::CHIter he_it=mesh_.halfedges_begin();
-        he_it != mesh_.halfedges_end(); ++he_it)
-    {
-      // Only store texture coordinates for faces which have a texture assigned
-      if (!mesh_.has_face_texture_index() || (mesh_.face_handle(*he_it).is_valid() && (mesh_.texture_index(mesh_.face_handle(*he_it))) > 0))
-      {
-        _hehandles.push_back(vector_cast<Vec2f>(mesh_.texcoord2D( *he_it)));
-        ++count;
-      }
-    }
-
     return count;
   }
 

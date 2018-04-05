@@ -117,8 +117,6 @@ public:
   /// \return HalfEdgeHandle or invalid HalfEdgeHandle if none is found.
   ///
   virtual HalfedgeHandle getHeh(FaceHandle _fh, VertexHandle _vh) const = 0;
-  virtual unsigned int
-  get_face_texcoords(std::vector<Vec2f>& _hehandles) const = 0;
   virtual Vec3f  normal(FaceHandle _fh)      const = 0;
   virtual Vec3uc color (FaceHandle _fh)      const = 0;
   virtual Vec4uc colorA(FaceHandle _fh)      const = 0;
@@ -139,6 +137,8 @@ public:
   // get halfedge data
   virtual Vec3f normal(HalfedgeHandle _heh)   const = 0;
   virtual Vec2f texcoord(HalfedgeHandle _heh) const = 0;
+  virtual unsigned int
+  get_halfedge_texcoords(std::vector<Vec2f>& _texcoords) const = 0;
 
   // material attributes
   virtual std::string texture_name(int _index) const = 0;
@@ -163,6 +163,7 @@ public:
   virtual bool has_face_colors()        const { return false; }
   virtual bool has_face_texture_index() const { return false; }
   virtual bool has_halfedge_normals()   const { return false; }
+  virtual bool has_halfedge_texcoords() const { return false; }
 };
 
 
