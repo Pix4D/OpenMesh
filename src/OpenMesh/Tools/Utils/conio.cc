@@ -64,7 +64,7 @@ int getche() { return ::_getche(); }
 } // AS
 
 // ----------------------------------------------------------------- Win32 ----
-#elif defined(WIN32)
+#elif defined(WIN32) || defined(__MINGW32__)
 
 #include <conio.h>
 
@@ -91,6 +91,7 @@ int getche() { return ::getche(); }
 #endif
 #include <termios.h>   /* tcsetattr()    */
 #include <sys/ioctl.h> /* ioctl()        */
+#include <sys/time.h>  /* timeval struct */ 
 
 namespace OpenMesh {
 namespace Utils {

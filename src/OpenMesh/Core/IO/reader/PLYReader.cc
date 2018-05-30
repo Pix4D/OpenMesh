@@ -1062,7 +1062,7 @@ std::string get_property_name(std::string _string1, std::string _string2) {
 
 //-----------------------------------------------------------------------------
 
-_PLYReader_::ValueType get_property_type(std::string _string1, std::string _string2) {
+_PLYReader_::ValueType get_property_type(std::string& _string1, std::string& _string2) {
 
     if (_string1 == "float32" || _string2 == "float32")
 
@@ -1270,6 +1270,8 @@ bool _PLYReader_::can_u_read(std::istream& _is) const {
 						omerr() << "Custom face Properties defined, before 'vertex_indices' property was defined. They will be skipped" << std::endl;
 						elements_.back().properties_.clear();
 					}
+                  } else {
+                      options_ += Options::Custom;
                   }
 
                 }

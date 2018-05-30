@@ -408,7 +408,7 @@ public:
   {
     Normal edge_vec;
     calc_edge_vector(_heh, edge_vec);
-    return edge_vec.sqrnorm();
+    return sqrnorm(edge_vec);
   }
 
   /** Calculates the midpoint of the halfedge _heh, defined by the positions of
@@ -446,8 +446,8 @@ public:
   {
     Normal v0, v1;
     calc_sector_vectors(_in_heh, v0, v1);
-    Scalar denom = v0.norm()*v1.norm();
-    if (is_zero(denom))
+    Scalar denom = norm(v0)*norm(v1);
+    if ( denom == Scalar(0))
     {
       return 0;
     }
@@ -472,7 +472,7 @@ public:
     Normal in_vec, out_vec;
     calc_edge_vector(_in_heh, in_vec);
     calc_edge_vector(next_halfedge_handle(_in_heh), out_vec);
-    Scalar denom = in_vec.norm()*out_vec.norm();
+    Scalar denom = norm(in_vec)*norm(out_vec);
     if (is_zero(denom))
     {
       _cos_a = 1;
@@ -481,7 +481,7 @@ public:
     else
     {
       _cos_a = dot(in_vec, out_vec)/denom;
-      _sin_a = cross(in_vec, out_vec).norm()/denom;
+      _sin_a = norm(cross(in_vec, out_vec))/denom;
     }
   }
   */
@@ -501,7 +501,7 @@ public:
   {
     Normal sector_normal;
     calc_sector_normal(_in_heh, sector_normal);
-    return sector_normal.norm()/2;
+    return norm(sector_normal)/2;
   }
 
   /** calculates the dihedral angle on the halfedge _heh
@@ -541,7 +541,7 @@ public:
     calc_sector_normal(_heh, n0);
     calc_sector_normal(this->opposite_halfedge_handle(_heh), n1);
     calc_edge_vector(_heh, he);
-    Scalar denom = n0.norm()*n1.norm();
+    Scalar denom = norm(n0)*norm(n1);
     if (denom == Scalar(0))
     {
       return 0;
