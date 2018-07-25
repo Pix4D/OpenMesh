@@ -54,8 +54,8 @@
 //=============================================================================
 
 
-#ifndef __OMWRITER_HH__
-#define __OMWRITER_HH__
+#ifndef __OM2WRITER_HH__
+#define __OM2WRITER_HH__
 
 
 //=== INCLUDES ================================================================
@@ -70,6 +70,7 @@
 #include <OpenMesh/Core/System/config.h>
 #include <OpenMesh/Core/Utils/SingletonT.hh>
 #include <OpenMesh/Core/IO/OMFormat.hh>
+#include <OpenMesh/Core/IO/OM2Format.hh>
 #include <OpenMesh/Core/IO/IOManager.hh>
 #include <OpenMesh/Core/IO/writer/BaseWriter.hh>
 
@@ -93,15 +94,15 @@ class BaseExporter;
  *  Implementation of the OM format writer. This class is singleton'ed by
  *  SingletonT to OMWriter.
  */
-class OPENMESHDLLEXPORT _OMWriter_ : public BaseWriter
+class OPENMESHDLLEXPORT _OM2Writer_ : public BaseWriter
 {
 public:
 
   /// Constructor
-  _OMWriter_();
+  _OM2Writer_();
 
   /// Destructor
-  virtual ~_OMWriter_() {};
+  virtual ~_OM2Writer_() {};
 
   std::string get_description() const
   { return "OpenMesh Format"; }
@@ -117,10 +118,6 @@ public:
 
 
 protected:
-
-  static const OMFormat::uchar magic_[3];
-  static const OMFormat::uint8 version_;
-
   bool write(const std::string&, BaseExporter&, Options, std::streamsize _precision = 6) const;
 
   bool write_binary(std::ostream&, BaseExporter&, Options) const;
@@ -135,8 +132,8 @@ protected:
 
 
 /// Declare the single entity of the OM writer.
-extern _OMWriter_  __OMWriterInstance;
-OPENMESHDLLEXPORT _OMWriter_& OMWriter();
+extern _OM2Writer_  __OM2WriterInstance;
+OPENMESHDLLEXPORT _OM2Writer_& OM2Writer();
 
 
 //=============================================================================

@@ -172,7 +172,7 @@ template <class T> struct PropertyTypeT final : public BasePropertyType {
 };
 
 namespace TypeInfo {
-    std::vector<std::unique_ptr<BasePropertyType>> sTypes;
+    extern std::vector<std::unique_ptr<BasePropertyType>> sTypes;
 
     template <class T> void registerType(std::string const &identifier) {
         sTypes.push_back({new PropertyTypeT<T>(identifier)});
@@ -186,14 +186,14 @@ namespace TypeInfo {
         return nullptr;
     }
 
-    BasePropertyType *get(OpenMesh::BaseProperty const &prop) {
+    inline BasePropertyType *get(OpenMesh::BaseProperty const &prop) {
         for (auto const &ptr : sTypes) {
             if (ptr->fits(prop)) return ptr.get();
         }
         return nullptr;
     }
 
-    BasePropertyType *get(std::string const &name) {
+    inline BasePropertyType *get(std::string const &name) {
         for (auto const &ptr : sTypes) {
             if (ptr->name == name) return ptr.get();
         }
@@ -219,6 +219,8 @@ namespace TypeInfo {
 
     OpenMesh::IO::Options readPreamble(std::istream &is,
                                        OpenMesh::BaseKernel &mesh);
+
+    bool checkMagic(char const * first4Bytes);
 }
 } // namespace OMFormat
 //=============================================================================

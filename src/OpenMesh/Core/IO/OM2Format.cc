@@ -35,6 +35,11 @@ struct PreambleHeader {
     uint32_t num_mesh_properties = 0;
 };
 
+bool checkMagic(const char *first4Bytes) {
+    return first4Bytes[0] == 'O' && first4Bytes[1] == 'M' &&
+           first4Bytes[2] == '2' && first4Bytes[3] == '\0';
+}
+
 void writePreamble(std::ostream &os, const OpenMesh::BaseKernel &mesh,
                    OpenMesh::IO::Options opts) {
     auto savable = [&](OpenMesh::BaseProperty *prop) {
@@ -140,6 +145,9 @@ OpenMesh::IO::Options readPreamble(std::istream &is,
     }
     return header.options;
 }
+
+std::vector<std::unique_ptr<BasePropertyType>> sTypes;
+
 } // namespace TypeInfo
 BasePropertyType::~BasePropertyType() {}
 } // namespace OM2Format
