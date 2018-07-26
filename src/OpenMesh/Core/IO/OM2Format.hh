@@ -106,7 +106,6 @@ namespace OM2Format
 // is not recommended because of inconsistencies
 // in case of cross writing and reading.
 
-
 struct BasePropertyType {
     BasePropertyType(std::string const &_name) : name(_name) {}
     virtual ~BasePropertyType();
@@ -175,7 +174,7 @@ namespace TypeInfo {
     extern std::vector<std::unique_ptr<BasePropertyType>> sTypes;
 
     template <class T> void registerType(std::string const &identifier) {
-        sTypes.push_back({new PropertyTypeT<T>(identifier)});
+        sTypes.push_back(std::unique_ptr<BasePropertyType>{new PropertyTypeT<T>(identifier)});
     }
 
     template <class T> BasePropertyType *get() {
@@ -210,6 +209,28 @@ namespace TypeInfo {
     void writePreamble(std::ostream &os, OpenMesh::BaseKernel const &mesh,
                        OpenMesh::IO::Options opts = 0);
 
+    struct ExtendedOptions {
+        int32_t value;
+
+        OpenMesh::IO::Options om() const { return {value & 0xffff}; }
+
+        bool has_vertex_texcoords1D() const { return om().vertex_has_texcoord() && (value & 0x10000); }
+        bool has_vertex_texcoords2D() const { return om().vertex_has_texcoord() && (value & 0x20000); }
+        bool has_vertex_texcoords3D() const { return om().vertex_has_texcoord() && (value & 0x40000); }
+
+        bool has_halfedge_texcoords1D() const { return om().face_has_texcoord() && (value & 0x100000); }
+        bool has_halfedge_texcoords2D() const { return om().face_has_texcoord() && (value & 0x200000); }
+        bool has_halfedge_texcoords3D() const { return om().face_has_texcoord() && (value & 0x400000); }
+
+        void add_vertex_texcoords1D() { value |= OpenMesh::IO::Options::VertexTexCoord | 0x10000; }
+        void add_vertex_texcoords2D() { value |= OpenMesh::IO::Options::VertexTexCoord | 0x20000; }
+        void add_vertex_texcoords3D() { value |= OpenMesh::IO::Options::VertexTexCoord | 0x40000; }
+
+        void add_halfedge_texcoords1D() { value |= OpenMesh::IO::Options::FaceTexCoord | 0x100000; }
+        void add_halfedge_texcoords2D() { value |= OpenMesh::IO::Options::FaceTexCoord | 0x200000; }
+        void add_halfedge_texcoords3D() { value |= OpenMesh::IO::Options::FaceTexCoord | 0x400000; }
+    };
+
     /// Read the preamble and request the included properties on the mesh.
     /// Use the returned OpenMesh::IO::Options for the actual mesh import
     template <class MeshItems, class Connectivity>
@@ -217,7 +238,7 @@ namespace TypeInfo {
         std::istream &is,
         OpenMesh::AttribKernelT<MeshItems, Connectivity> &mesh);
 
-    OpenMesh::IO::Options readPreamble(std::istream &is,
+    ExtendedOptions readPreamble(std::istream &is,
                                        OpenMesh::BaseKernel &mesh);
 
     bool checkMagic(char const * first4Bytes);

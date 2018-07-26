@@ -56,6 +56,7 @@
 // OpenMesh
 #include <OpenMesh/Core/IO/OM2Format.hh>
 #include <OpenMesh/Core/IO/OMFormat.hh>
+#include <OpenMesh/Core/IO/reader/OMReader.hh>
 #include <OpenMesh/Core/IO/reader/OM2Reader.hh>
 #include <OpenMesh/Core/System/config.h>
 #include <OpenMesh/Core/System/omstream.hh>
@@ -142,12 +143,27 @@ bool _OM2Reader_::read_ascii(std::istream & /* _is */, BaseImporter & /* _bi */,
 
 bool _OM2Reader_::read_binary(std::istream &_is, BaseImporter &_bi,
                               Options &_opt) const {
-    bool swap = _opt.check(Options::Swap) || (Endian::local() == Endian::MSB);
+    using Opts = OpenMesh::IO::Options;
 
-    throw std::logic_error("not implementable right now.");
+    OM2Format::TypeInfo::ExtendedOptions eopts = OM2Format::TypeInfo::readPreamble(_is, *_bi.kernel());
 
-    // File was successfully parsed.
-    return true;
+    if (eopts.has_halfedge_texcoords1D()) _bi.request_halfedge_texcoords1D();
+    if (eopts.has_halfedge_texcoords2D()) _bi.request_halfedge_texcoords2D();
+    if (eopts.has_halfedge_texcoords3D()) _bi.request_halfedge_texcoords3D();
+
+    if (eopts.has_vertex_texcoords1D()) _bi.request_vertex_texcoords1D();
+    if (eopts.has_vertex_texcoords2D()) _bi.request_vertex_texcoords2D();
+    if (eopts.has_vertex_texcoords3D()) _bi.request_vertex_texcoords3D();
+
+    _opt = eopts.om();
+
+    if (_opt.vertex_has_normal()   ) _bi.request_vertex_normals();
+    if (_opt.vertex_has_color()    ) _bi.request_vertex_colors();
+    if (_opt.edge_has_color()      ) _bi.request_edge_colors();
+    if (_opt.face_has_normal()     ) _bi.request_face_normals();
+    if (_opt.face_has_color()      ) _bi.request_face_colors();
+
+    return __OMReaderInstance.read(_is, _bi, _opt);
 }
 
 //-----------------------------------------------------------------------------
@@ -165,14 +181,12 @@ bool _OM2Reader_::can_u_read(const std::string &_filename) const {
 //-----------------------------------------------------------------------------
 
 bool _OM2Reader_::can_u_read(std::istream &_is) const {
-    std::vector<char> evt;
-    evt.reserve(20);
+    char tip[4];
+    _is.read(tip, 4);
 
-    // read first 4 characters into a buffer
-    while (evt.size() < 4)
-        evt.push_back(static_cast<char>(_is.get()));
+    for (char c : tip) _is.putback(c);
 
-    return OM2Format::TypeInfo::checkMagic(evt.data());
+    return OM2Format::TypeInfo::checkMagic(tip);
 }
 
 //-----------------------------------------------------------------------------

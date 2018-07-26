@@ -203,6 +203,9 @@ public:
   virtual void request_edge_colors() = 0;
   virtual void request_face_normals() = 0;
   virtual void request_face_colors() = 0;
+  virtual void request_halfedge_texcoords1D() = 0;
+  virtual void request_halfedge_texcoords2D() = 0;
+  virtual void request_halfedge_texcoords3D() = 0;
 };
 
 

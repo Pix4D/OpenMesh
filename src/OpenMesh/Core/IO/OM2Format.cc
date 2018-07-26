@@ -99,14 +99,14 @@ void writePreamble(std::ostream &os, const OpenMesh::BaseKernel &mesh,
     }
 }
 
-OpenMesh::IO::Options readPreamble(std::istream &is,
+ExtendedOptions readPreamble(std::istream &is,
                                    OpenMesh::BaseKernel &mesh) {
     PreambleHeader header;
     is.read(reinterpret_cast<char *>(&header), sizeof(header));
     if (header.magic[0] != 'O' || header.magic[1] != 'M' ||
         header.magic[2] != '2' || header.magic[3] != '\0') {
         std::cerr << "File is missing magic number!" << std::endl;
-        return 0;
+        return {0};
     }
 
     const auto props_total =
@@ -118,7 +118,7 @@ OpenMesh::IO::Options readPreamble(std::istream &is,
         PropertyDeclaration decl;
         if (!decl.restore(is)) {
             std::cerr << "Could not read property declaration!" << std::endl;
-            return 0;
+            return {0};
         }
         auto type = get(decl.typeName);
 
@@ -143,7 +143,7 @@ OpenMesh::IO::Options readPreamble(std::istream &is,
             continue;
         }
     }
-    return header.options;
+    return {header.options};
 }
 
 std::vector<std::unique_ptr<BasePropertyType>> sTypes;
