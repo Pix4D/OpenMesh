@@ -94,7 +94,12 @@ can_u_read(const std::string& _filename) const
 	  extension.begin(), tolower );
 
   // locate extension in extension string
-  return (get_extensions().find(extension) != std::string::npos);
+  std::stringstream ss(get_extensions());
+  std::string candidate;
+  while (ss >> candidate)
+    if (candidate == extension)
+      return true;
+  return false;
 }
 
 
