@@ -105,10 +105,10 @@ public:
   virtual ~_OM2Writer_() {};
 
   std::string get_description() const
-  { return "OpenMesh Format"; }
+  { return "OpenMesh2 Format"; }
 
   std::string get_extensions() const
-  { return "om"; }
+  { return "om2"; }
 
   bool write(std::ostream&, BaseExporter&, Options, std::streamsize _precision = 6) const;
 

@@ -66,6 +66,7 @@
 #include <OpenMesh/Core/IO/OMFormat.hh>
 #include <OpenMesh/Core/IO/exporter/BaseExporter.hh>
 #include <OpenMesh/Core/IO/writer/OM2Writer.hh>
+#include <OpenMesh/Core/IO/writer/OMWriter.hh>
 
 //=== NAMESPACES ==============================================================
 
@@ -152,7 +153,17 @@ _OM2Writer_::write(std::ostream& _os, BaseExporter& _be, Options _opt, std::stre
 bool _OM2Writer_::write_binary(std::ostream& _os, BaseExporter& _be,
                                Options _opt) const
 {
-    throw std::logic_error("Not implementable right now.");
+    using Opts = OpenMesh::IO::Options;
+    if (_be.has_vertex_normals()   ) _opt += Opts::VertexNormal;
+    if (_be.has_vertex_colors()    ) _opt += Opts::VertexColor;
+    if (_be.has_vertex_texcoords() ) _opt += Opts::VertexTexCoord;
+    if (_be.has_edge_colors()      ) _opt += Opts::EdgeColor;
+    if (_be.has_face_normals()     ) _opt += Opts::FaceNormal;
+    if (_be.has_face_colors()      ) _opt += Opts::FaceColor;
+
+    OM2Format::TypeInfo::writePreamble(_os, *_be.kernel(), _opt);
+
+    return __OMWriterInstance.write(_os, _be, _opt);
 }
 
 // ----------------------------------------------------------------------------
