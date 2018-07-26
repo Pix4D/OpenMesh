@@ -391,6 +391,14 @@ public:
 
   void finish()  { }
 
+  void request_vertex_normals() { mesh_.request_vertex_normals(); }
+  void request_vertex_colors() { mesh_.request_vertex_colors(); }
+  void request_vertex_texcoords1D() { mesh_.request_vertex_texcoords1D(); }
+  void request_vertex_texcoords2D() { mesh_.request_vertex_texcoords2D(); }
+  void request_vertex_texcoords3D() { mesh_.request_vertex_texcoords3D(); }
+  void request_edge_colors() { mesh_.request_edge_colors(); }
+  void request_face_normals() { mesh_.request_face_normals(); }
+  void request_face_colors() { mesh_.request_face_colors(); }
 
 private:
 

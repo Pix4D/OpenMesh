@@ -194,6 +194,15 @@ public:
 
   // post-processing
   virtual void finish()  {}
+
+  virtual void request_vertex_normals() = 0;
+  virtual void request_vertex_colors() = 0;
+  virtual void request_vertex_texcoords1D() = 0;
+  virtual void request_vertex_texcoords2D() = 0;
+  virtual void request_vertex_texcoords3D() = 0;
+  virtual void request_edge_colors() = 0;
+  virtual void request_face_normals() = 0;
+  virtual void request_face_colors() = 0;
 };
 
 
