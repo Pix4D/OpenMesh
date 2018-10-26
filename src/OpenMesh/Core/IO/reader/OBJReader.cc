@@ -323,6 +323,11 @@ read_vertices(std::istream& _in, BaseImporter& _bi, Options& _opt,
         // Trim Both leading and trailing spaces
         trimString(line);
 
+        // comment
+        if ( line.size() == 0 || line[0] == '#' || isspace(line[0]) ) {
+          continue;
+        }
+
         stream.str(line);
         stream.clear();
 
