@@ -112,7 +112,7 @@ void remove_duplicated_vertices(BaseImporter::VHandles& _indices)
   _indices.erase(endIter,_indices.end());
 }
 
-unsigned int hexToInt(std::string hex)
+unsigned int hexToInt(const std::string& hex)
 {
   unsigned int x;
   std::stringstream ss;
