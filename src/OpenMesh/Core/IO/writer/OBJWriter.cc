@@ -235,12 +235,6 @@ write(std::ostream& _out, BaseExporter& _be, Options _opt, std::streamsize _prec
     return false;
   }
 
-  // check for unsupported writer features
-  if (_opt.check(Options::VertexColor) ) {
-    omerr() << "[OBJWriter] : VertexColor not supported by OBJ Writer" <<  std::endl;
-    return false;
-  }
-
   //create material file if needed
   if ( _opt.check(Options::FaceColor) ){
 
@@ -311,7 +305,15 @@ write(std::ostream& _out, BaseExporter& _be, Options _opt, std::streamsize _prec
     n  = _be.normal(vh);
     t  = _be.texcoord(vh);
 
-    _out << "v " << v[0] <<" "<< v[1] <<" "<< v[2] << '\n';
+    std::stringstream colorStream;
+    colorStream.precision(_precision);
+    if (_opt.check(Options::VertexColor))
+    {
+      c = _be.colorf(vh);
+      colorStream << std::fixed << " " << c[0] << " " << c[1] << " " << c[2];
+    }
+    
+      _out << "v " << v[0] <<" "<< v[1] <<" "<< v[2] << colorStream.str() << '\n';
 
     if (_opt.check(Options::VertexNormal))
       _out << "vn " << n[0] <<" "<< n[1] <<" "<< n[2] << '\n';    

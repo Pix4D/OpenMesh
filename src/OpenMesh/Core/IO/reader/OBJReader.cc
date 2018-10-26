@@ -112,6 +112,15 @@ void remove_duplicated_vertices(BaseImporter::VHandles& _indices)
   _indices.erase(endIter,_indices.end());
 }
 
+unsigned int hexToInt(std::string hex)
+{
+  unsigned int x;
+  std::stringstream ss;
+  ss << std::hex << hex;
+  ss >> x;
+  return x;
+}
+
 //-----------------------------------------------------------------------------
 
 _OBJReader_::
@@ -314,11 +323,6 @@ read_vertices(std::istream& _in, BaseImporter& _bi, Options& _opt,
         // Trim Both leading and trailing spaces
         trimString(line);
 
-        // comment
-        if ( line.size() == 0 || line[0] == '#' || isspace(line[0]) ) {
-          continue;
-        }
-
         stream.str(line);
         stream.clear();
 
@@ -394,6 +398,40 @@ read_vertices(std::istream& _in, BaseImporter& _bi, Options& _opt,
             if (userOptions.vertex_has_normal() ){
               normals.push_back(OpenMesh::Vec3f(x,y,z));
               fileOptions += Options::VertexNormal;
+            }
+          }
+        }
+
+        // Note from ZBrush regarding colors in the MRGB block:
+        // The following MRGB block contains ZBrush Vertex Color (Polypaint) and masking output as 4 hexadecimal values per vertex. The vertex color format is MMRRGGBB with up to 64 entries per MRGB line.
+        else if (userOptions.vertex_has_color() && keyWrd == "#MRGB")
+        {
+          char hexM[2];
+          char hexR[2];
+          char hexG[2];
+          char hexB[2];
+
+          stream >> std::ws;
+          while (true)
+          {
+            stream.read(hexM, 2);
+            stream.read(hexR, 2);
+            stream.read(hexG, 2);
+            stream.read(hexB, 2);
+
+            if (!stream.fail())
+            {
+              float m = static_cast<float>(hexToInt(hexM)) / 255.0;
+              float r = static_cast<float>(hexToInt(hexR)) / 255.0;
+              float g = static_cast<float>(hexToInt(hexG)) / 255.0;
+              float b = static_cast<float>(hexToInt(hexB)) / 255.0;
+
+              colors.push_back(OpenMesh::Vec3f(r, g, b));
+              fileOptions += Options::VertexColor;
+            }
+            else
+            {
+              break;
             }
           }
         }
