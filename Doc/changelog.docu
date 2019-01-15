@@ -18,6 +18,7 @@
 <ul>
 <li>TriConnectivity: Added two functions split_edge and split_edge_copy to mask the PolyConnectivity functions of the same name (Prevents creation of valence 2 vertices on trimeshes)</li>
 <li>PolyConnectivity: Fixed PolyConnectivity is_collapse_ok, missing some configurations (Thanks to Simon Flöry for the patch)</li>
+<li>Connectivity type is now set at compile time</li>
 </ul>
 
 <b>IO</b>

@@ -39,8 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-#ifndef OPENMESH_TAGS_HH
-#define OPENMESH_TAGS_HH
+#pragma once
 
 namespace OpenMesh {
 
@@ -51,4 +50,3 @@ struct TriConnectivityTag {};
 
 } // namespace OpenMesh
 
-#endif
