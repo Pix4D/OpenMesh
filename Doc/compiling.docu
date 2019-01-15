@@ -94,7 +94,7 @@ Building OpenMesh on Windows requires cmake to generate the project files for Vi
 
 
 <ul>
-<li> Get Visual Studio ( 2013-2017 ) </li>
+<li> Get Visual Studio ( 2015-2017 ) </li>
 <li> Extract %OpenMesh source code. </li>
 <li> Get all required libraries and install them ( including headers! ).</li>
 <li> Download and install cmake:  <a href="https://cmake.org/download/">www.cmake.org</a>.<br> </li>
