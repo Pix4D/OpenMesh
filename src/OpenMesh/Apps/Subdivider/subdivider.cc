@@ -234,7 +234,7 @@ int main(int argc, char **argv)
         }
         break;
       }
-      case 'h': usage_and_exit(0);
+      case 'h': usage_and_exit(0); break;
       case '?':
       default:  usage_and_exit(1);
     }

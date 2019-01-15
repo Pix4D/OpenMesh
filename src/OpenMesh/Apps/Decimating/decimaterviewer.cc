@@ -98,6 +98,7 @@ int main(int argc, char **argv)
        case 's': opt += OpenMesh::IO::Options::Swap; break;
        case 'h':
           usage_and_exit(0);
+          break;
        default:
           usage_and_exit(1);
      }
