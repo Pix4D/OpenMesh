@@ -16,21 +16,6 @@ IF "%SHARED%" == "TRUE" (
   set STRING_DLL=
 )
 
-IF "%BUILD_PLATFORM%" == "VS2013" (
-    set LIBPATH=E:\libs\VS2013
-    set GTESTVERSION=gtest-1.6.0
-    set GENERATOR=Visual Studio 12%ARCH_VS%
-    set VS_PATH="C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\devenv.com"
-    IF "%ARCHITECTURE%" == "x64" (
-      set QT_INSTALL_PATH=E:\Qt\Qt5.7.0\5.7\msvc2013_64
-      set QT_BASE_CONFIG=-DQT5_INSTALL_PATH=E:\Qt\Qt5.7.0\5.7\msvc2013_64
-    )
-
-    IF "%ARCHITECTURE%" == "x32" (
-      set QT_INSTALL_PATH=E:\Qt\Qt5.7.0\5.7\msvc2013
-      set QT_BASE_CONFIG=-DQT5_INSTALL_PATH=E:\Qt\Qt5.7.0\5.7\msvc2013
-    )
-) 
 
 IF "%BUILD_PLATFORM%" == "VS2015" (
     set LIBPATH=E:\libs\VS2015
