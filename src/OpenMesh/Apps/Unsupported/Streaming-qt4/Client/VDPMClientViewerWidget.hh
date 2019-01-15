@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 #ifndef OPENMESH_APPS_VDPMSTREAMING_CLIENT_VDPMCLIENTVIEWERWIDGET_HH
 #define OPENMESH_APPS_VDPMSTREAMING_CLIENT_VDPMCLIENTVIEWERWIDGET_HH
