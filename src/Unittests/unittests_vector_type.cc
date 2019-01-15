@@ -397,4 +397,19 @@ TEST_F(OpenMeshVectorGCCBugTest, alignment_bug) {
 }
 
 
+TEST_F(OpenMeshVectorTest, Test_simple_0_constructor) {
+
+  // Create a test vector with zeroes from one parameter
+  OpenMesh::Vec3d testVec = OpenMesh::Vec3d(0);
+  
+  EXPECT_EQ(0.0f, testVec[0]) << "Wrong Value after construction!";
+  EXPECT_EQ(0.0f, testVec[1]) << "Wrong Value after construction!";
+  EXPECT_EQ(0.0f, testVec[2]) << "Wrong Value after construction!";
+
+
+
+}
+
+
+
 }
