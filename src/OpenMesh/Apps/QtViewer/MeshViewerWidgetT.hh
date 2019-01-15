@@ -39,16 +39,10 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
 
 
-#ifndef OPENMESHAPPS_MESHVIEWERWIDGETT_HH
-#define OPENMESHAPPS_MESHVIEWERWIDGETT_HH
+
+#pragma once
 
 
 //== INCLUDES =================================================================
@@ -75,6 +69,7 @@ class QImage;
 template <typename M>
 class MeshViewerWidgetT : public QGLViewerWidget
 {
+
 public:
 
   typedef M                             Mesh;
@@ -199,7 +194,5 @@ protected:
 #  define OPENMESH_MESHVIEWERWIDGET_TEMPLATES
 #  include "MeshViewerWidgetT.cc"
 #endif
-//=============================================================================
-#endif // OPENMESHAPPS_MESHVIEWERWIDGETT_HH defined
 //=============================================================================
 

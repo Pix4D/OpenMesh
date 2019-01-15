@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 #ifndef OPENMESH_APP_VDPMSTREAMING_SERVER_VDPMSERVERSESSION_HH
 #define OPENMESH_APP_VDPMSTREAMING_SERVER_VDPMSERVERSESSION_HH

@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 #if !defined(OM_USE_OSG)
 #  define OM_USE_OSG 0
@@ -464,7 +459,7 @@ int main(int argc, char* argv[])
       {
         case 'D': opt.decorate_name = true;   break;
         case 'd': gdebug            = true;   break;
-        case 'h': usage_and_exit(0);
+        case 'h': usage_and_exit(0); break;
         case 'i': ifname            = optarg; break;
         case 'M': opt.parse_argument( optarg ); break;
         case 'n': opt.n_collapses   = float(atof(optarg)); break;

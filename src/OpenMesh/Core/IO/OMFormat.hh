@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 
 #ifndef OPENMESH_IO_OMFORMAT_HH
@@ -468,6 +463,8 @@ namespace OMFormat {
 
 
   // ---------------------------------------- convenience functions
+
+  std::string as_string(uint8 version);
 
   const char *as_string(Chunk::Type t);
   const char *as_string(Chunk::Entity e);

@@ -285,19 +285,15 @@ TEST_F(OpenMeshConvertPolyMeshToTriangle, EdgePropertyCheckDouble) {
   // Check if it is ok.
   Mesh::EdgeIter v_it = p.edges_begin();
 
-  if(p.is_boundary( (*v_it) ))
   EXPECT_EQ( p.property(doubleHandle,*v_it) , 0.0 ) << "Invalid double value for vertex 0";
   ++v_it;
 
-  if(p.is_boundary( (*v_it) ))
   EXPECT_EQ( p.property(doubleHandle,*v_it) , 1.0 ) << "Invalid double value for vertex 1";
   ++v_it;
 
-  if(p.is_boundary( (*v_it) ))
   EXPECT_EQ( p.property(doubleHandle,*v_it) , 2.0 ) << "Invalid double value for vertex 2";
   ++v_it;
 
-  if(p.is_boundary( (*v_it) ))
   EXPECT_EQ( p.property(doubleHandle,*v_it) , 3.0 ) << "Invalid double value for vertex 3";
   ++v_it;
 

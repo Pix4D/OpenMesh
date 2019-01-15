@@ -39,13 +39,6 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
-
 #ifdef _MSC_VER
 #  pragma warning(disable: 4267 4311)
 #endif
@@ -95,6 +88,7 @@ int main(int argc, char **argv)
        case 'b': opt += OpenMesh::IO::Options::Binary; break;
        case 'h':
           usage_and_exit(0);
+          break;
        case 's': opt += OpenMesh::IO::Options::Swap; break;
        default:
           usage_and_exit(1);
