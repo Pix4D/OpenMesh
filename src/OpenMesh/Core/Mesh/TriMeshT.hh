@@ -58,6 +58,7 @@
 
 #include <OpenMesh/Core/System/config.h>
 #include <OpenMesh/Core/Mesh/PolyMeshT.hh>
+#include <OpenMesh/Core/Mesh/Tags.hh>
 #include <vector>
 
 
@@ -98,11 +99,12 @@ public:
   typedef PolyMeshT<Kernel>                     PolyMesh;
 
   //@{
-  /// Determine whether this is a PolyMeshT or TriMeshT ( This function does not check the per face vertex count! It only checks if the datatype is PolyMeshT or TriMeshT )
+  /// Determine whether this is a PolyMeshT or TriMeshT (This function does not check the per face vertex count! It only checks if the datatype is PolyMeshT or TriMeshT)
+  static constexpr bool is_polymesh() { return false; }
+  static constexpr bool is_trimesh()  { return true;  }
+  using ConnectivityTag = TriConnectivityTag;
   enum { IsPolyMesh = 0 };
   enum { IsTriMesh  = 1 };
-  static bool is_polymesh() { return false; }
-  static bool is_trimesh()  { return  true; }
   //@}
 
   //--- items ---

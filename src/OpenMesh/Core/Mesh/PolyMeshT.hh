@@ -60,6 +60,7 @@
 #include <OpenMesh/Core/Geometry/MathDefs.hh>
 #include <OpenMesh/Core/Mesh/PolyConnectivity.hh>
 #include <OpenMesh/Core/Mesh/FinalMeshItemsT.hh>
+#include <OpenMesh/Core/Mesh/Tags.hh>
 #include <vector>
 
 
@@ -95,11 +96,12 @@ public:
   //--- item types ---
 
   //@{
-  /// Determine whether this is a PolyMeshT or TriMeshT ( This function does not check the per face vertex count! It only checks if the datatype is PolyMeshT or TriMeshT )
+  /// Determine whether this is a PolyMeshT or TriMeshT (This function does not check the per face vertex count! It only checks if the datatype is PolyMeshT or TriMeshT)
+  static constexpr bool is_polymesh() { return true;  }
+  static constexpr bool is_trimesh()  { return false; }
+  using ConnectivityTag = PolyConnectivityTag;
   enum { IsPolyMesh = 1 };
   enum { IsTriMesh  = 0 };
-  static bool is_polymesh() { return true;  }
-  static bool is_trimesh()  { return false; }
   //@}
 
   /// \name Mesh Items
