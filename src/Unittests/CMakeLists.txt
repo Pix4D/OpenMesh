@@ -20,13 +20,16 @@ if ( OPENMESH_BUILD_UNIT_TESTS )
     find_package(EIGEN3)
 
     # Set correct include paths so that the compiler can find the headers
-    include_directories(${GTEST_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR})
+    include_directories(${GTEST_INCLUDE_DIRS} )
+
+
     # set additional link directories
     link_directories(${GTEST_LIBRARY_DIR} )
 
     
     if (EIGEN3_FOUND)
-      add_definitions( -DENABLE_EIGEN3_TEST )
+      add_definitions( -DENABLE_EIGEN3_TEST ) 
+      include_directories(${EIGEN3_INCLUDE_DIR})
     endif()
 
     if ( CMAKE_GENERATOR MATCHES "^Visual Studio 11.*" ) 
