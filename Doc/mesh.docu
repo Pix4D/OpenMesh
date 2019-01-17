@@ -555,6 +555,7 @@ curvature, i.e. vertex color.
 
 That's it.
 
+//-----------------------------------------------------------------------------
 
 /** \page mesh_eigen Specifying an OpenMesh using Eigen3 vectors
 
@@ -587,9 +588,6 @@ EigenTriMesh mesh;
 
 Now you can use mesh as any other OpenMesh while using Eigen vectors
 as the underlying data type.
-
-<ol>
-
 
 */
 
