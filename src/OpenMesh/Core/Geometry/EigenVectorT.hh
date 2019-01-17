@@ -97,7 +97,6 @@ namespace Eigen {
   MatrixBase<Derived> &vectorize(MatrixBase<Derived> &x,
                                  typename Derived::Scalar const &val) {
       x.fill(val);
-      std::cerr << "Vec" << std::endl;
       return x;
   }
 
