@@ -17,10 +17,20 @@ if ( OPENMESH_BUILD_UNIT_TESTS )
 
     enable_testing()
    
+    find_package(EIGEN3)
+
     # Set correct include paths so that the compiler can find the headers
-    include_directories(${GTEST_INCLUDE_DIRS})
+    include_directories(${GTEST_INCLUDE_DIRS} )
+
+
     # set additional link directories
     link_directories(${GTEST_LIBRARY_DIR} )
+
+    
+    if (EIGEN3_FOUND)
+      add_definitions( -DENABLE_EIGEN3_TEST ) 
+      include_directories(${EIGEN3_INCLUDE_DIR})
+    endif()
 
     if ( CMAKE_GENERATOR MATCHES "^Visual Studio 11.*" ) 
       add_definitions( /D _VARIADIC_MAX=10 )
@@ -28,14 +38,14 @@ if ( OPENMESH_BUILD_UNIT_TESTS )
 
     # Create new target named unittests_hexmeshing
     FILE(GLOB UNITTEST_SRC *.cc)
-          # Create unittest executable
-          acg_add_executable(unittests ${UNITTEST_SRC})
-          acg_add_executable(unittests_customvec ${UNITTEST_SRC})
-          target_compile_definitions(unittests_customvec PRIVATE TEST_CUSTOM_TRAITS)
+    # Create unittest executable
+    acg_add_executable(unittests ${UNITTEST_SRC})
+    acg_add_executable(unittests_customvec ${UNITTEST_SRC})
+    target_compile_definitions(unittests_customvec PRIVATE TEST_CUSTOM_TRAITS)
  
-          # For the unittest we don't want the install rpath as set by acg_add_executable 
-          set_target_properties ( unittests PROPERTIES  BUILD_WITH_INSTALL_RPATH 0 )          
-          set_target_properties ( unittests_customvec PROPERTIES  BUILD_WITH_INSTALL_RPATH 0 )
+    # For the unittest we don't want the install rpath as set by acg_add_executable 
+    set_target_properties ( unittests PROPERTIES  BUILD_WITH_INSTALL_RPATH 0 )          
+    set_target_properties ( unittests_customvec PROPERTIES  BUILD_WITH_INSTALL_RPATH 0 )
 
    # Set output directory to ${BINARY_DIR}/Unittests
     set (OUTPUT_DIR "${CMAKE_BINARY_DIR}/Unittests")
