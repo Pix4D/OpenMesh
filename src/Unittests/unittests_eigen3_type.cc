@@ -19,15 +19,6 @@ struct EigenTraits : OpenMesh::DefaultTraits {
 
 using EigenTriMesh = OpenMesh::TriMesh_ArrayKernelT<EigenTraits>;
 
-
-
-template <class Scalar>
-Eigen::Matrix<Scalar, 3, 1>
-transformPoint(Eigen::Matrix<Scalar, 3, 4> const &trans,
-               Eigen::Matrix<Scalar, 3, 1> const &point) {
-    return trans.leftCols(3) * point + trans.col(3);
-}
-
 namespace {
 
 
@@ -49,6 +40,20 @@ class OpenMeshEigenTest : public testing::Test {
 
         EigenTriMesh mesh_;
 };
+
+TEST_F(OpenMeshEigenTest, Test_external_vectorize) {
+
+
+  EigenTriMesh::Normal normal;
+
+  vectorize(normal,2);
+
+  EXPECT_EQ(normal[0],2.0f ) << "Wrong x value";
+  EXPECT_EQ(normal[1],2.0f ) << "Wrong y value";
+  EXPECT_EQ(normal[2],2.0f ) << "Wrong z value";
+
+
+}
 
 TEST_F(OpenMeshEigenTest, Test_external_norm) {
 
@@ -87,15 +92,15 @@ TEST_F(OpenMeshEigenTest, Test_external_normalize) {
 
   EigenTriMesh::Normal normal(2,0,0);
 
-  EigenTriMesh::Normal normalized = normalize(normal);
+  normalize(normal);
 
-  EXPECT_EQ(norm(normalized),1.0f ) << "Wrong norm after normalization";
+  EXPECT_EQ(norm(normal),1.0f ) << "Wrong norm after normalization";
 
   normal = EigenTriMesh::Normal(2,6,9);
 
-  normalized = normalize(normal);
+  normalize(normal);
 
-  EXPECT_EQ(norm(normalized),1.0f ) << "Wrong norm after normalization";
+  EXPECT_EQ(norm(normal),1.0f ) << "Wrong norm after normalization";
 
 }
 
@@ -206,6 +211,25 @@ TEST_F(OpenMeshEigenTest, test_normal_computation) {
   EXPECT_EQ(normal[1],0.0f ) << "Wrong normal y direction";
   EXPECT_EQ(normal[2],1.0f ) << "Wrong normal z direction";
 
+}
+
+/* Just load a simple mesh file in obj format and count whether
+*  the right number of entities has been loaded. Afterwards recompute
+*  normals
+*/
+TEST_F(OpenMeshEigenTest, LoadSimpleOFFFile) {
+
+   mesh_.clear();
+
+   bool ok = OpenMesh::IO::read_mesh(mesh_, "cube1.off");
+
+   EXPECT_TRUE(ok);
+
+   EXPECT_EQ(7526u , mesh_.n_vertices()) << "The number of loaded vertices is not correct!";
+   EXPECT_EQ(22572u, mesh_.n_edges()) << "The number of loaded edges is not correct!";
+   EXPECT_EQ(15048u, mesh_.n_faces()) << "The number of loaded faces is not correct!";
+
+   mesh_.update_normals();
 }
 
 }
