@@ -154,7 +154,15 @@ typename PolyMeshT<Kernel>::Normal
 PolyMeshT<Kernel>::calc_face_normal_impl(FaceHandle, PointIsNot3DTag) const
 {
   // Dummy fallback implementation
-  return Normal(typename Normal::value_type(0));
+  // Returns just an initialized all 0 normal
+  // This function is only used if we don't hate a matching implementation
+  // for normal computation with the current vector type defined in the mesh traits
+
+  assert(false);
+
+  Normal normal;
+  vectorize(normal,0);
+  return normal;
 }
 
 //-----------------------------------------------------------------------------
@@ -212,7 +220,17 @@ template <class Kernel>
 typename PolyMeshT<Kernel>::Normal
 PolyMeshT<Kernel>::calc_face_normal_impl(const Point&, const Point&, const Point&, PointIsNot3DTag) const
 {
-  return Normal(typename Normal::value_type(0));
+
+  // Dummy fallback implementation
+  // Returns just an initialized all 0 normal
+  // This function is only used if we don't hate a matching implementation
+  // for normal computation with the current vector type defined in the mesh traits
+
+  assert(false);
+
+  Normal normal;
+  vectorize(normal,0);
+  return normal;
 }
 
 //-----------------------------------------------------------------------------

@@ -89,9 +89,7 @@ namespace Eigen {
 
   template <typename Derived>
   MatrixBase<Derived> normalize(MatrixBase<Derived> &x) {
-      std::cerr << "Norm : " << x.norm() << std::endl;
       x /= x.norm();
-      std::cerr << "Norm : " << x << std::endl;
       return x;
   }
 
@@ -99,6 +97,7 @@ namespace Eigen {
   MatrixBase<Derived> &vectorize(MatrixBase<Derived> &x,
                                  typename Derived::Scalar const &val) {
       x.fill(val);
+      std::cerr << "Vec" << std::endl;
       return x;
   }
 
