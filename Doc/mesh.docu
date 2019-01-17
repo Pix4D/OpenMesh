@@ -589,6 +589,11 @@ EigenTriMesh mesh;
 Now you can use mesh as any other OpenMesh while using Eigen vectors
 as the underlying data type.
 
+\note OpenMesh uses stl vectors for storing its data. This might lead to errors
+      regarding memory alignment with sse instructions:
+      http://eigen.tuxfamily.org/dox/group__TopicStlContainers.html
+      You might need to define -DEIGEN_DONT_VECTORIZE  
+
 */
 
 
