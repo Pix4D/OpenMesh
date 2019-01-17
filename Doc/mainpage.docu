@@ -109,6 +109,7 @@ repeatedly replacing each vertex' position by the center of gravity
 \li \subpage mesh_operations
 \li \subpage mesh_hierarchy
 \li \subpage mesh_type
+\li \subpage mesh_eigen
 
 
 \page additional_information Additional Information on OpenMesh
