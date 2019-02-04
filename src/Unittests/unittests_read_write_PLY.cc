@@ -82,6 +82,23 @@ TEST_F(OpenMeshReadWritePLY, LoadSimplePLY) {
 }
 
 /*
+ * Just load a ply
+ */
+TEST_F(OpenMeshReadWritePLY, LoadSimplePLYNoEndl) {
+
+    mesh_.clear();
+
+    bool ok = OpenMesh::IO::read_mesh(mesh_, "sphere840.ply");
+
+    EXPECT_TRUE(ok) << "Unable to load sphere840.ply";
+
+    EXPECT_EQ(422u  , mesh_.n_vertices()) << "The number of loaded vertices is not correct!";
+    EXPECT_EQ(1260u , mesh_.n_edges()) << "The number of loaded edges is not correct!";
+    EXPECT_EQ(840u , mesh_.n_faces()) << "The number of loaded faces is not correct!";
+
+}
+
+/*
  * Just load a ply file and set vertex color option before loading
  */
 TEST_F(OpenMeshReadWritePLY, LoadSimplePLYForceVertexColorsAlthoughNotAvailable) {
