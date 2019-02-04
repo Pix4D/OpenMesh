@@ -82,7 +82,7 @@ TEST_F(OpenMeshReadWritePLY, LoadSimplePLY) {
 }
 
 /*
- * Just load a ply
+ * Load a ply ascii file without a newline at the end of the file
  */
 TEST_F(OpenMeshReadWritePLY, LoadSimplePLYNoEndl) {
 
