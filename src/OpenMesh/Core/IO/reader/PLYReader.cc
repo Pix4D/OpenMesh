@@ -306,6 +306,14 @@ bool _PLYReader_::read_ascii(std::istream& _in, BaseImporter& _bi, const Options
 
 	for (std::vector<ElementInfo>::iterator e_it = elements_.begin(); e_it != elements_.end(); ++e_it)
 	{
+	        if (_in.eof()) {
+			if (err_enabled)
+				omerr().enable();
+
+			omerr() << "Unexpected end of file while reading." << std::endl;
+			return false;
+		}
+
 		if (e_it->element_== VERTEX)
 		{
 			// read vertices:
@@ -473,14 +481,6 @@ bool _PLYReader_::read_ascii(std::istream& _in, BaseImporter& _bi, const Options
 					_in >> trash;
 				}
 			}
-		}
-
-		if (_in.eof()) {
-			if (err_enabled)
-				omerr().enable();
-
-			omerr() << "Unexpected end of file while reading." << std::endl;
-			return false;
 		}
 
 		if(e_it->element_== FACE)
