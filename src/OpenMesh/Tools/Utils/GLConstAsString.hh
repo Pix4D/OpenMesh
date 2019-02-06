@@ -55,7 +55,6 @@
 //== INCLUDES =================================================================
 
 #include <OpenMesh/Core/System/config.h>
-#include <GL/glut.h>
 
 
 //== FORWARDDECLARATIONS ======================================================

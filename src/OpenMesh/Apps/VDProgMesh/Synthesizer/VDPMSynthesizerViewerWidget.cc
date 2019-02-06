@@ -62,13 +62,6 @@
 #include <QFileDialog>
 #include <QDataStream>
 
-#ifdef ARCH_DARWIN
- #include <glut.h>
-#else
- #include <GL/glut.h>
-#endif
-
-
 #include <OpenMesh/Core/IO/MeshIO.hh>
 #include <OpenMesh/Core/IO/BinaryHelper.hh>
 #include <OpenMesh/Core/Utils/Endian.hh>

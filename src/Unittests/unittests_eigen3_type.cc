@@ -161,7 +161,7 @@ TEST_F(OpenMeshEigenTest, Test_Basic_setup) {
   mesh_.add_face(face_vhandles);
 
 
-  EXPECT_EQ(mesh_.n_faces(),2) << "Wrong number of faces";
+  EXPECT_EQ(mesh_.n_faces(),2u) << "Wrong number of faces";
 
 }
 

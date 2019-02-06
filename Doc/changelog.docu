@@ -42,6 +42,7 @@
 <b>Apps</b>
 <ul>
 <li>Fixed several warnings with gcc 8</li>
+<li>Removed the glut dependency</li>
 </ul>
 
 <b>Build System</b>

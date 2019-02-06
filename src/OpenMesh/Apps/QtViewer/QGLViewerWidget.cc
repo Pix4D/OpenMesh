@@ -52,11 +52,7 @@
 #include <sstream>
 #include <algorithm>
 // --------------------
-#ifdef ARCH_DARWIN
-#  include <glut.h>
-#else
-#  include <GL/glut.h>
-#endif
+
 // --------------------
 #include <QApplication>
 #include <QMenu>
@@ -266,21 +262,21 @@ QGLViewerWidget::draw_scene(const std::string& _draw_mode)
   if (_draw_mode == "Wireframe")
   {
     glDisable(GL_LIGHTING);
-    glutWireTeapot(0.5);
+   // glutWireTeapot(0.5);
   }
 
   else if (_draw_mode == "Solid Flat")
   {
     glEnable(GL_LIGHTING);
     glShadeModel(GL_FLAT);
-    glutSolidTeapot(0.5);
+    //glutSolidTeapot(0.5);
   }
 
   else if (_draw_mode == "Solid Smooth")
   {
     glEnable(GL_LIGHTING);
     glShadeModel(GL_SMOOTH);
-    glutSolidTeapot(0.5);
+    //glutSolidTeapot(0.5);
   }
 }
 
@@ -585,8 +581,19 @@ QGLViewerWidget::update_projection_matrix()
   makeCurrent();
   glMatrixMode( GL_PROJECTION );
   glLoadIdentity();
-  gluPerspective(45.0, (GLfloat) width() / (GLfloat) height(),
-		 0.01*radius_, 100.0*radius_);
+
+  const double fovY   = 45.0;
+  const double aspect = static_cast<double>(width()) /  static_cast<double>(height());
+  const double zNear  = 0.01*radius_;
+  const double zFar   = 100.0*radius_;
+
+//  Replacement for: gluPerspective(45.0, (GLfloat) width() / (GLfloat) height(), 0.01*radius_, 100.0*radius_);
+  const double pi = 3.1415926535897932384626433832795;
+  const double fH = tan( fovY / 360 * pi ) * zNear;
+  const double fW = fH * aspect;
+  glFrustum( -fW, fW, -fH, fH, zNear, zFar );
+
+
   glGetDoublev( GL_PROJECTION_MATRIX, projection_matrix_);
   glMatrixMode( GL_MODELVIEW );
 }
