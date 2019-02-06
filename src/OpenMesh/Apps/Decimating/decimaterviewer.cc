@@ -53,12 +53,6 @@
 
 #include "DecimaterViewerWidget.hh"
 
-#ifdef ARCH_DARWIN
-#include <glut.h>
-#else
-#include <GL/glut.h>
-#endif
-
 void usage_and_exit(int xcode);
 
 
@@ -72,10 +66,6 @@ int main(int argc, char **argv)
   QApplication::setColorSpec( QApplication::CustomColor );
   QApplication app(argc,argv);
   
-#if !defined(__APPLE__)
-  glutInit(&argc,argv);
-#endif
-
   if ( !QGLFormat::hasOpenGL() ) {
     QString msg = "System has no OpenGL support!";
     QMessageBox::critical( NULL, "OpenGL", msg + argv[1] );
