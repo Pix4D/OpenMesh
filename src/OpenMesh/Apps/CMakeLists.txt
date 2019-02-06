@@ -39,7 +39,6 @@ if ( BUILD_APPS )
 
     # find needed packages for gui applications
     find_package (OpenGL)
-    find_package (GLUT)
 
     # For the apps, we need qt and opengl to build them
     if (NOT QT5_FOUND)
@@ -50,8 +49,8 @@ if ( BUILD_APPS )
       message(WARNING "GUI Apps are not build with mingw. (TODO)")
     endif()
 
-    # check for OpenGL and GLUT as our required dependencies
-    if (( QT5_FOUND ) AND OPENGL_FOUND AND GLUT_FOUND AND NOT "${CMAKE_GENERATOR}" MATCHES "MinGW Makefiles" )
+    # check for OpenGL as our required dependencies
+    if (( QT5_FOUND ) AND OPENGL_FOUND AND NOT "${CMAKE_GENERATOR}" MATCHES "MinGW Makefiles" )
 
       add_subdirectory (Decimating/DecimaterGui)
       add_subdirectory (QtViewer)
@@ -97,10 +96,6 @@ if ( BUILD_APPS )
 	    message ("OpengGL not found! Skipping some apps.")
       endif ()
 
-      if (NOT GLUT_FOUND)
-	    message ("GLUT not found! Skipping some apps.")
-      endif ()
-      
     endif ()
 
   endif() # Project is OpenMesh standalone
