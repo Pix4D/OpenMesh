@@ -22,9 +22,6 @@ set (directories
 acg_append_files (headers "*.hh" ${directories})
 acg_append_files (sources "*.cc" ${directories})
 
-#Drop the template only cc files
-acg_drop_templates(sources)
-
 IF(WIN32 AND NOT MINGW)
   acg_append_files (sources "*.c" ${directories})
 ENDIF(WIN32 AND NOT MINGW)
@@ -78,15 +75,15 @@ endif()
 
 # Install Header Files (Apple)
 if ( NOT ACG_PROJECT_MACOS_BUNDLE AND APPLE )
- FILE(GLOB files_install_Decimater                       "${CMAKE_CURRENT_SOURCE_DIR}/Decimater/*.hh"  "${CMAKE_CURRENT_SOURCE_DIR}/Decimater/*T.cc" )
- FILE(GLOB files_install_Dualizer                        "${CMAKE_CURRENT_SOURCE_DIR}/Dualizer/*.hh"  "${CMAKE_CURRENT_SOURCE_DIR}/Dualizer/*T.cc" )
- FILE(GLOB files_install_KERNEL_OSG                      "${CMAKE_CURRENT_SOURCE_DIR}/Kernel_OSG/*.hh"  "${CMAKE_CURRENT_SOURCE_DIR}/Kernel_OSG/*T.cc" )
- FILE(GLOB files_install_Smoother                        "${CMAKE_CURRENT_SOURCE_DIR}/Smoother/*.hh"  "${CMAKE_CURRENT_SOURCE_DIR}/Smoother/*T.cc" )
- FILE(GLOB files_install_Subdivider_Adaptive             "${CMAKE_CURRENT_SOURCE_DIR}/Subdivider/Adaptive/Composite/*.hh"  "${CMAKE_CURRENT_SOURCE_DIR}/Subdivider/Adaptive/Composite/*T.cc" )
- FILE(GLOB files_install_Subdivider_Uniform              "${CMAKE_CURRENT_SOURCE_DIR}/Subdivider/Uniform/*.hh"  "${CMAKE_CURRENT_SOURCE_DIR}/Subdivider/Uniform/*T.cc" )
- FILE(GLOB files_install_Subdivider_Uniform_Composite    "${CMAKE_CURRENT_SOURCE_DIR}/Subdivider/Uniform/Composite/*.hh"  "${CMAKE_CURRENT_SOURCE_DIR}/Subdivider/Uniform/Composite/*T.cc" )
- FILE(GLOB files_install_Utils                           "${CMAKE_CURRENT_SOURCE_DIR}/Utils/*.hh"  "${CMAKE_CURRENT_SOURCE_DIR}/Utils/*T.cc"  "${CMAKE_CURRENT_SOURCE_DIR}/Utils/getopt.h" )
- FILE(GLOB files_install_VDPM                            "${CMAKE_CURRENT_SOURCE_DIR}/VDPM/*.hh"  "${CMAKE_CURRENT_SOURCE_DIR}/VDPM/*T.cc" )
+ FILE(GLOB files_install_Decimater                       "${CMAKE_CURRENT_SOURCE_DIR}/Decimater/*.hh" )
+ FILE(GLOB files_install_Dualizer                        "${CMAKE_CURRENT_SOURCE_DIR}/Dualizer/*.hh" )
+ FILE(GLOB files_install_KERNEL_OSG                      "${CMAKE_CURRENT_SOURCE_DIR}/Kernel_OSG/*.hh" )
+ FILE(GLOB files_install_Smoother                        "${CMAKE_CURRENT_SOURCE_DIR}/Smoother/*.hh" )
+ FILE(GLOB files_install_Subdivider_Adaptive             "${CMAKE_CURRENT_SOURCE_DIR}/Subdivider/Adaptive/Composite/*.hh" )
+ FILE(GLOB files_install_Subdivider_Uniform              "${CMAKE_CURRENT_SOURCE_DIR}/Subdivider/Uniform/*.hh" )
+ FILE(GLOB files_install_Subdivider_Uniform_Composite    "${CMAKE_CURRENT_SOURCE_DIR}/Subdivider/Uniform/Composite/*.hh" )
+ FILE(GLOB files_install_Utils                           "${CMAKE_CURRENT_SOURCE_DIR}/Utils/*.hh" "${CMAKE_CURRENT_SOURCE_DIR}/Utils/getopt.h" )
+ FILE(GLOB files_install_VDPM                            "${CMAKE_CURRENT_SOURCE_DIR}/VDPM/*.hh" )
  INSTALL(FILES ${files_install_Decimater}                       DESTINATION include/OpenMesh/Tools/Decimater )
  INSTALL(FILES ${files_install_Dualizer}                        DESTINATION include/OpenMesh/Tools/Dualizer )
  INSTALL(FILES ${files_install_KERNEL_OSG}                      DESTINATION include/OpenMesh/Tools/Kernel_OSG )
@@ -107,17 +104,6 @@ install(DIRECTORY .
         DESTINATION include/OpenMesh/Tools
         FILES_MATCHING
         PATTERN "*.hh"
-        PATTERN "CVS" EXCLUDE
-        PATTERN ".svn" EXCLUDE
-        PATTERN "tmp" EXCLUDE
-        PATTERN "Templates" EXCLUDE
-        PATTERN "Debian*" EXCLUDE)
-
-#install Template cc files (required by headers)
-install(DIRECTORY .
-        DESTINATION include/OpenMesh/Tools
-        FILES_MATCHING
-        PATTERN "*T.cc"
         PATTERN "CVS" EXCLUDE
         PATTERN ".svn" EXCLUDE
         PATTERN "tmp" EXCLUDE

@@ -40,147 +40,133 @@
  * ========================================================================= */
 
 
-
-/** \file ModProgMeshT.cc
- */
-
+/** \file MixedDecimaterT_impl.hh
+*/
 
 //=============================================================================
 //
-//  CLASS ModProgMeshT - IMPLEMENTATION
+//  CLASS MixedDecimaterT - IMPLEMENTATION
 //
 //=============================================================================
-
-#define OPENMESH_DECIMATER_MODPROGMESH_CC
-
+#define OPENMESH_MIXED_DECIMATER_DECIMATERT_CC
 
 //== INCLUDES =================================================================
 
+#include <OpenMesh/Tools/Decimater/MixedDecimaterT.hh>
+
 #include <vector>
-#include <fstream>
-// --------------------
-#include <OpenMesh/Core/Utils/vector_cast.hh>
-#include <OpenMesh/Core/IO/BinaryHelper.hh>
-#include <OpenMesh/Core/Utils/Endian.hh>
-// --------------------
-#include <OpenMesh/Tools/Decimater/ModProgMeshT.hh>
+#if defined(OM_CC_MIPS)
+#  include <float.h>
+#else
+#  include <cfloat>
+#endif
 
-
-//== NAMESPACE =============================================================== 
-
-namespace OpenMesh  {
+//== NAMESPACE ===============================================================
+namespace OpenMesh {
 namespace Decimater {
 
-   
+//== IMPLEMENTATION ==========================================================
 
-//== IMPLEMENTATION ========================================================== 
+template<class Mesh>
+MixedDecimaterT<Mesh>::MixedDecimaterT(Mesh& _mesh) :
+  BaseDecimaterT<Mesh>(_mesh),McDecimaterT<Mesh>(_mesh), DecimaterT<Mesh>(_mesh) {
 
-
-template <class MeshT>
-bool 
-ModProgMeshT<MeshT>::
-write( const std::string& _ofname )
-{
-  // sort vertices
-  size_t i=0, N=Base::mesh().n_vertices(), n_base_vertices(0), n_base_faces(0);
-  std::vector<typename Mesh::VertexHandle>  vhandles(N);
-
-
-  // base vertices
-  typename Mesh::VertexIter 
-    v_it=Base::mesh().vertices_begin(), 
-    v_end=Base::mesh().vertices_end();
-
-  for (; v_it != v_end; ++v_it)  
-    if (!Base::mesh().status(*v_it).deleted())
-    {
-      vhandles[i] = *v_it;
-      Base::mesh().property( idx_, *v_it ) = i;
-      ++i;
-    }
-  n_base_vertices = i;
-
-
-  // deleted vertices
-  typename InfoList::reverse_iterator
-    r_it=pmi_.rbegin(), r_end=pmi_.rend();
-
-  for (; r_it!=r_end; ++r_it)  
-  { 
-    vhandles[i] = r_it->v0;  
-    Base::mesh().property( idx_, r_it->v0) = i;  
-    ++i; 
-  }
-
-
-  // base faces
-  typename Mesh::ConstFaceIter f_it  = Base::mesh().faces_begin(), 
-                               f_end = Base::mesh().faces_end();
-  for (; f_it != f_end; ++f_it) 
-    if (!Base::mesh().status(*f_it).deleted())
-      ++n_base_faces;
-
-  // ---------------------------------------- write progressive mesh
-
-  std::ofstream out( _ofname.c_str(), std::ios::binary );
-    
-  if (!out)
-    return false;   
-
-  // always use little endian byte ordering
-  bool swap = Endian::local() != Endian::LSB;
-
-  // write header
-  out << "ProgMesh";
-  IO::store( out, static_cast<unsigned int>(n_base_vertices), swap );//store in 32-bit
-  IO::store( out, static_cast<unsigned int>(n_base_faces)   , swap );
-  IO::store( out, static_cast<unsigned int>(pmi_.size())    , swap );
-
-  Vec3f p;
-
-  // write base vertices
-  for (i=0; i<n_base_vertices; ++i)
-  {
-    assert (!Base::mesh().status(vhandles[i]).deleted());
-    p  = vector_cast< Vec3f >( Base::mesh().point(vhandles[i]) );
-    
-    IO::store( out, p, swap );
-  }
-    
-
-  // write base faces
-  for (f_it=Base::mesh().faces_begin(); f_it != f_end; ++f_it)  
-  {
-    if (!Base::mesh().status(*f_it).deleted())
-    {
-      typename Mesh::ConstFaceVertexIter fv_it(Base::mesh(), *f_it);
-      
-      IO::store( out, static_cast<unsigned int>(Base::mesh().property( idx_,   *fv_it )) );
-      IO::store( out, static_cast<unsigned int>(Base::mesh().property( idx_, *(++fv_it ))) );
-      IO::store( out, static_cast<unsigned int>(Base::mesh().property( idx_, *(++fv_it ))) );
-    }
-  }
-  
-  
-  // write detail info
-  for (r_it=pmi_.rbegin(); r_it!=r_end; ++r_it)  
-  { 
-    // store v0.pos, v1.idx, vl.idx, vr.idx
-    IO::store( out, vector_cast<Vec3f>(Base::mesh().point(r_it->v0)));
-    IO::store(out, static_cast<unsigned int>(Base::mesh().property(idx_, r_it->v1)));
-    IO::store( out, 
-        r_it->vl.is_valid() ? static_cast<unsigned int>(Base::mesh().property(idx_, r_it->vl)) : -1);
-    IO::store( out, 
-        r_it->vr.is_valid() ? static_cast<unsigned int>(Base::mesh().property(idx_, r_it->vr)) : -1);
-  }
-
-  return true;
 }
 
+//-----------------------------------------------------------------------------
 
+template<class Mesh>
+MixedDecimaterT<Mesh>::~MixedDecimaterT() {
+
+}
+
+//-----------------------------------------------------------------------------
+template<class Mesh>
+size_t MixedDecimaterT<Mesh>::decimate(const size_t _n_collapses, const float _mc_factor) {
+
+  if (_mc_factor > 1.0)
+    return 0;
+
+  size_t n_collapses_mc = static_cast<size_t>(_mc_factor*_n_collapses);
+  size_t n_collapses_inc = static_cast<size_t>(_n_collapses - n_collapses_mc);
+
+  size_t r_collapses = 0;
+  if (_mc_factor > 0.0)
+    r_collapses = McDecimaterT<Mesh>::decimate(n_collapses_mc);
+
+  // returns, if the previous steps were aborted by the observer
+  if (this->observer() && this->observer()->abort())
+      return r_collapses;
+
+  if (_mc_factor < 1.0)
+    r_collapses += DecimaterT<Mesh>::decimate(n_collapses_inc);
+
+  return r_collapses;
+
+}
+
+template<class Mesh>
+size_t MixedDecimaterT<Mesh>::decimate_to_faces(const size_t  _n_vertices,const size_t _n_faces, const float _mc_factor ){
+
+  if (_mc_factor > 1.0)
+    return 0;
+
+  std::size_t r_collapses = 0;
+  if (_mc_factor > 0.0)
+  {
+    bool constraintsOnly = (_n_vertices == 0) && (_n_faces == 1);
+    if (!constraintsOnly) {
+      size_t mesh_faces = this->mesh().n_faces();
+      size_t mesh_vertices = this->mesh().n_vertices();
+      //reduce the mesh only for _mc_factor
+      size_t n_vertices_mc = static_cast<size_t>(mesh_vertices - _mc_factor * (mesh_vertices - _n_vertices));
+      size_t n_faces_mc = static_cast<size_t>(mesh_faces - _mc_factor * (mesh_faces - _n_faces));
+
+      r_collapses = McDecimaterT<Mesh>::decimate_to_faces(n_vertices_mc, n_faces_mc);
+    } else {
+
+      const size_t samples = this->samples();
+
+      // MinimalSample count for the McDecimater
+      const size_t min = 2;
+
+      // Maximal number of samples for the McDecimater
+      const size_t max = samples;
+
+      // Number of incremental steps
+      const size_t steps = 7;
+
+      for ( size_t i = 0; i < steps; ++i ) {
+
+        // Compute number of samples to be used
+        size_t samples = int (double( min) + double(i)/(double(steps)-1.0) * (max-2) ) ;
+
+        // We won't allow 1 here, as this is the last step in the incremental part
+        float decimaterLevel = (float(i + 1)) * _mc_factor / (float(steps) );
+
+        this->set_samples(samples);
+        r_collapses += McDecimaterT<Mesh>::decimate_constraints_only(decimaterLevel);
+      }
+    }
+  }
+
+  //Update the mesh::n_vertices function, otherwise the next Decimater function will delete too much
+  this->mesh().garbage_collection();
+
+  // returns, if the previous steps were aborted by the observer
+  if (this->observer() && this->observer()->abort())
+      return r_collapses;
+
+  //reduce the rest of the mesh
+  if (_mc_factor < 1.0) {
+    r_collapses += DecimaterT<Mesh>::decimate_to_faces(_n_vertices,_n_faces);
+  }
+
+
+  return r_collapses;
+}
 
 //=============================================================================
-} // END_NS_DECIMATER
+}// END_NS_MC_DECIMATER
 } // END_NS_OPENMESH
 //=============================================================================
-

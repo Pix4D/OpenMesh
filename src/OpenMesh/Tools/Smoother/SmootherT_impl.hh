@@ -41,7 +41,7 @@
 
 
 
-/** \file SmootherT.cc
+/** \file SmootherT_impl.hh
 
  */
 

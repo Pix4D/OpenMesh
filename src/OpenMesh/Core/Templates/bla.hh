@@ -40,58 +40,71 @@
  * ========================================================================= */
 
 
-/** \file ModEdgeLengthT.cc
- */
 
 //=============================================================================
 //
-//  CLASS ModEdgeLengthT - IMPLEMENTATION
+//  CLASS bla
 //
 //=============================================================================
-#define OPENMESH_DECIMATER_MODEDGELENGTHT_C
+#ifndef DOXY_IGNORE_THIS
+#ifndef OPENMESH_NEWCLASST_HH
+#define OPENMESH_NEWCLASST_HH
+
 
 //== INCLUDES =================================================================
 
-#include "ModEdgeLengthT.hh"
+
+//== FORWARDDECLARATIONS ======================================================
+
 
 //== NAMESPACES ===============================================================
 
 namespace OpenMesh {
-namespace Decimater {
 
-//== IMPLEMENTATION ==========================================================
 
-template<class MeshT>
-ModEdgeLengthT<MeshT>::ModEdgeLengthT(MeshT &_mesh, float _edge_length,
-    bool _is_binary) :
-    Base(_mesh, _is_binary), mesh_(Base::mesh()) {
-  set_edge_length(_edge_length);
-}
+//== CLASS DEFINITION =========================================================
 
-//-----------------------------------------------------------------------------
 
-template<class MeshT>
-float ModEdgeLengthT<MeshT>::collapse_priority(const CollapseInfo& _ci) {
-  typename Mesh::Scalar sqr_length = (_ci.p0 - _ci.p1).sqrnorm();
 
-  return ( (sqr_length <= sqr_edge_length_) ? sqr_length : float(Base::ILLEGAL_COLLAPSE));
-}
+	      
+/** \class blaT blaT.hh <OpenMesh/.../blaT.hh>
 
-//-----------------------------------------------------------------------------
+    Brief Description.
+  
+    A more elaborate description follows.
+*/
 
-template<class MeshT>
-void ModEdgeLengthT<MeshT>::set_error_tolerance_factor(double _factor) {
-  if (_factor >= 0.0 && _factor <= 1.0) {
-    // the smaller the factor, the smaller edge_length_ gets
-    // thus creating a stricter constraint
-    // division by error_tolerance_factor_ is for normalization
-    typename Mesh::Scalar edge_length = edge_length_ * static_cast<typename Mesh::Scalar>(_factor / this->error_tolerance_factor_);
-    set_edge_length(edge_length);
-    this->error_tolerance_factor_ = _factor;
-  }
-}
+template <>
+class blaT
+{
+public:
+   
+  /// Default constructor
+  blaT() {}
+ 
+  /// Destructor
+  ~blaT() {}
+
+  
+private:
+
+  /// Copy constructor (not used)
+  blaT(const blaT& _rhs);
+
+  /// Assignment operator (not used)
+  blaT& operator=(const blaT& _rhs);
+  
+};
+
 
 //=============================================================================
-}
-}
+} // namespace OpenMesh
+//=============================================================================
+#if defined(OM_INCLUDE_TEMPLATES) && !defined(OPENMESH_BLA_C)
+#define OPENMESH_BLA_TEMPLATES
+#include "blaT_impl.hh"
+#endif
+//=============================================================================
+#endif // OPENMESH_NEWCLASST_HH defined
+#endif // DOXY_IGNORE_THIS
 //=============================================================================

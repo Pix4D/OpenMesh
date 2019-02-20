@@ -142,7 +142,7 @@ private:
 //=============================================================================
 #if defined(OM_INCLUDE_TEMPLATES) && !defined(OPENMESH_SINGLETON_C)
 #  define OPENMESH_SINGLETON_TEMPLATES
-#  include "SingletonT.cc"
+#  include "SingletonT_impl.hh"
 #endif
 //=============================================================================
 #endif // __SINGLETON_HH__

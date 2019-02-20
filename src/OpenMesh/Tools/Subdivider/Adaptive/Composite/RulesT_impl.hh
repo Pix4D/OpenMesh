@@ -41,7 +41,7 @@
 
 
 
-/** \file RulesT.cc
+/** \file RulesT_impl.hh
     
  */
 

@@ -628,7 +628,7 @@ const LHS mesh_cast(const PolyMeshT<KERNEL> *rhs) {
 //=============================================================================
 #if defined(OM_INCLUDE_TEMPLATES) && !defined(OPENMESH_POLYMESH_C)
 #  define OPENMESH_POLYMESH_TEMPLATES
-#  include "PolyMeshT.cc"
+#  include "PolyMeshT_impl.hh"
 #endif
 //=============================================================================
 #endif // OPENMESH_POLYMESHT_HH defined

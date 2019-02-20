@@ -12,6 +12,7 @@
 <b>Breaking changes:</b>
 <ul>
 <li>Don't run and test on VS2013 anymore. As VS2013 still lacks some C++11 features, we remove it from our list of supported platforms</li>
+<li>(Only internally breaking change:)Get rid of the T.cc naming for template implementations. New names end with T_impl.hh. This avoids all the missing files in the IDE GUIs due to the filtered T.cc files. Also the install targets could be simplified due to this change. For OpenMesh users, this change should be transparent.</li>
 </ul>
 
 <b>Core</b>

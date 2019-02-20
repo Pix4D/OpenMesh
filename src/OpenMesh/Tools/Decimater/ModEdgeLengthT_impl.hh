@@ -40,133 +40,58 @@
  * ========================================================================= */
 
 
-/** \file MixedDecimaterT.cc
-*/
+/** \file ModEdgeLengthT_impl.hh
+ */
 
 //=============================================================================
 //
-//  CLASS MixedDecimaterT - IMPLEMENTATION
+//  CLASS ModEdgeLengthT - IMPLEMENTATION
 //
 //=============================================================================
-#define OPENMESH_MIXED_DECIMATER_DECIMATERT_CC
+#define OPENMESH_DECIMATER_MODEDGELENGTHT_C
 
 //== INCLUDES =================================================================
 
-#include <OpenMesh/Tools/Decimater/MixedDecimaterT.hh>
+#include "ModEdgeLengthT.hh"
 
-#include <vector>
-#if defined(OM_CC_MIPS)
-#  include <float.h>
-#else
-#  include <cfloat>
-#endif
+//== NAMESPACES ===============================================================
 
-//== NAMESPACE ===============================================================
 namespace OpenMesh {
 namespace Decimater {
 
 //== IMPLEMENTATION ==========================================================
 
-template<class Mesh>
-MixedDecimaterT<Mesh>::MixedDecimaterT(Mesh& _mesh) :
-  BaseDecimaterT<Mesh>(_mesh),McDecimaterT<Mesh>(_mesh), DecimaterT<Mesh>(_mesh) {
-
+template<class MeshT>
+ModEdgeLengthT<MeshT>::ModEdgeLengthT(MeshT &_mesh, float _edge_length,
+    bool _is_binary) :
+    Base(_mesh, _is_binary), mesh_(Base::mesh()) {
+  set_edge_length(_edge_length);
 }
 
 //-----------------------------------------------------------------------------
 
-template<class Mesh>
-MixedDecimaterT<Mesh>::~MixedDecimaterT() {
+template<class MeshT>
+float ModEdgeLengthT<MeshT>::collapse_priority(const CollapseInfo& _ci) {
+  typename Mesh::Scalar sqr_length = (_ci.p0 - _ci.p1).sqrnorm();
 
+  return ( (sqr_length <= sqr_edge_length_) ? sqr_length : float(Base::ILLEGAL_COLLAPSE));
 }
 
 //-----------------------------------------------------------------------------
-template<class Mesh>
-size_t MixedDecimaterT<Mesh>::decimate(const size_t _n_collapses, const float _mc_factor) {
 
-  if (_mc_factor > 1.0)
-    return 0;
-
-  size_t n_collapses_mc = static_cast<size_t>(_mc_factor*_n_collapses);
-  size_t n_collapses_inc = static_cast<size_t>(_n_collapses - n_collapses_mc);
-
-  size_t r_collapses = 0;
-  if (_mc_factor > 0.0)
-    r_collapses = McDecimaterT<Mesh>::decimate(n_collapses_mc);
-
-  // returns, if the previous steps were aborted by the observer
-  if (this->observer() && this->observer()->abort())
-      return r_collapses;
-
-  if (_mc_factor < 1.0)
-    r_collapses += DecimaterT<Mesh>::decimate(n_collapses_inc);
-
-  return r_collapses;
-
-}
-
-template<class Mesh>
-size_t MixedDecimaterT<Mesh>::decimate_to_faces(const size_t  _n_vertices,const size_t _n_faces, const float _mc_factor ){
-
-  if (_mc_factor > 1.0)
-    return 0;
-
-  std::size_t r_collapses = 0;
-  if (_mc_factor > 0.0)
-  {
-    bool constraintsOnly = (_n_vertices == 0) && (_n_faces == 1);
-    if (!constraintsOnly) {
-      size_t mesh_faces = this->mesh().n_faces();
-      size_t mesh_vertices = this->mesh().n_vertices();
-      //reduce the mesh only for _mc_factor
-      size_t n_vertices_mc = static_cast<size_t>(mesh_vertices - _mc_factor * (mesh_vertices - _n_vertices));
-      size_t n_faces_mc = static_cast<size_t>(mesh_faces - _mc_factor * (mesh_faces - _n_faces));
-
-      r_collapses = McDecimaterT<Mesh>::decimate_to_faces(n_vertices_mc, n_faces_mc);
-    } else {
-
-      const size_t samples = this->samples();
-
-      // MinimalSample count for the McDecimater
-      const size_t min = 2;
-
-      // Maximal number of samples for the McDecimater
-      const size_t max = samples;
-
-      // Number of incremental steps
-      const size_t steps = 7;
-
-      for ( size_t i = 0; i < steps; ++i ) {
-
-        // Compute number of samples to be used
-        size_t samples = int (double( min) + double(i)/(double(steps)-1.0) * (max-2) ) ;
-
-        // We won't allow 1 here, as this is the last step in the incremental part
-        float decimaterLevel = (float(i + 1)) * _mc_factor / (float(steps) );
-
-        this->set_samples(samples);
-        r_collapses += McDecimaterT<Mesh>::decimate_constraints_only(decimaterLevel);
-      }
-    }
+template<class MeshT>
+void ModEdgeLengthT<MeshT>::set_error_tolerance_factor(double _factor) {
+  if (_factor >= 0.0 && _factor <= 1.0) {
+    // the smaller the factor, the smaller edge_length_ gets
+    // thus creating a stricter constraint
+    // division by error_tolerance_factor_ is for normalization
+    typename Mesh::Scalar edge_length = edge_length_ * static_cast<typename Mesh::Scalar>(_factor / this->error_tolerance_factor_);
+    set_edge_length(edge_length);
+    this->error_tolerance_factor_ = _factor;
   }
-
-  //Update the mesh::n_vertices function, otherwise the next Decimater function will delete too much
-  this->mesh().garbage_collection();
-
-  // returns, if the previous steps were aborted by the observer
-  if (this->observer() && this->observer()->abort())
-      return r_collapses;
-
-  //reduce the rest of the mesh
-  if (_mc_factor < 1.0) {
-    r_collapses += DecimaterT<Mesh>::decimate_to_faces(_n_vertices,_n_faces);
-  }
-
-
-  return r_collapses;
 }
 
 //=============================================================================
-}// END_NS_MC_DECIMATER
-} // END_NS_OPENMESH
+}
+}
 //=============================================================================

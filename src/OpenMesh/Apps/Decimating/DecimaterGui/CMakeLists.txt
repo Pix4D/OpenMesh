@@ -13,16 +13,14 @@ set (directories
 
 # collect all header and source files
 acg_append_files (headers "*.hh" ${directories})
+list (APPEND headers "../../QtViewer/MeshViewerWidgetT_impl.hh")
+
 
 set (sources
   ../../QtViewer/QGLViewerWidget.cc
-  ../../QtViewer/MeshViewerWidgetT.cc
   ../DecimaterViewerWidget.cc
   ../decimaterviewer.cc
 )
-
-# remove template cc files from source file list
-acg_drop_templates (sources)
 
 if (WIN32)
   acg_add_executable (DecimaterGui WIN32 ${sources} ${headers})

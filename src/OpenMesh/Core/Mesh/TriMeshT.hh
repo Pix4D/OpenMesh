@@ -428,7 +428,7 @@ public:
 //=============================================================================
 #if defined(OM_INCLUDE_TEMPLATES) && !defined(OPENMESH_TRIMESH_C)
 #define OPENMESH_TRIMESH_TEMPLATES
-#include "TriMeshT.cc"
+#include "TriMeshT_impl.hh"
 #endif
 //=============================================================================
 #endif // OPENMESH_TRIMESH_HH defined

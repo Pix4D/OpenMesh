@@ -104,7 +104,7 @@ private:
 //=============================================================================
 #if defined(OM_INCLUDE_TEMPLATES) && !defined(OPENMESH_JACOBI_LAPLACE_SMOOTHERT_C)
 #define OPENMESH_JACOBI_LAPLACE_SMOOTHERT_TEMPLATES
-#include "JacobiLaplaceSmootherT.cc"
+#include "JacobiLaplaceSmootherT_impl.hh"
 #endif
 //=============================================================================
 #endif // OPENMESH_JACOBI_LAPLACE_SMOOTHERT_HH defined

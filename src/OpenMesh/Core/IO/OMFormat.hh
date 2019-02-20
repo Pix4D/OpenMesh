@@ -741,7 +741,7 @@ namespace OMFormat {
 //=============================================================================
 #if defined(OM_INCLUDE_TEMPLATES) && !defined(OPENMESH_IO_OMFORMAT_CC)
 #  define OPENMESH_IO_OMFORMAT_TEMPLATES
-#  include "OMFormatT.cc"
+#  include "OMFormatT_impl.hh"
 #endif
 //=============================================================================
 #endif

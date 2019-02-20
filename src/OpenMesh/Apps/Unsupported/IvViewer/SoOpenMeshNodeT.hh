@@ -123,7 +123,7 @@ private:
 //=============================================================================
 #if defined(INCLUDE_TEMPLATES) && !defined(OPENMESH_SOOPENMESHNODE_CC)
 #  define OPENMESH_SOOPENMESHMODE_TEMPLATES
-#  include "SoOpenMeshNodeT.cc"
+#  include "SoOpenMeshNodeT_impl.hh"
 #endif
 //=============================================================================
 #endif // OPENMESH_SOOPENMESHNODE_HH

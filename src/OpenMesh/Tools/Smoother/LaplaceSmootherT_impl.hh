@@ -41,7 +41,7 @@
 
 
 
-/** \file LaplaceSmootherT.cc
+/** \file LaplaceSmootherT_impl.hh
     
  */
 
