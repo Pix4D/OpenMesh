@@ -236,6 +236,6 @@ public:
 //=============================================================================
 #if defined(OM_INCLUDE_TEMPLATES) && !defined(OPENMESH_SMARTTAGGERT_C)
 #define OPENMESH_SMARTTAGGERT_TEMPLATES
-#include "SmartTaggerT.cc"
+#include "SmartTaggerT_impl.hh"
 #endif
 

@@ -167,7 +167,7 @@ private:
 //=============================================================================
 #if defined(OM_INCLUDE_TEMPLATES) && !defined(OPENMESH_SUBDIVIDER_UNIFORM_CATMULLCLARK_CC)
 #  define OPENMESH_SUBDIVIDER_TEMPLATES
-#  include "CatmullClarkT.cc"
+#  include "CatmullClarkT_impl.hh"
 #endif
 //=============================================================================
 #endif // OPENMESH_SUBDIVIDER_UNIFORM_CATMULLCLARKT_HH defined

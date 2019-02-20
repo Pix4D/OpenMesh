@@ -903,7 +903,7 @@ private:
 //=============================================================================
 #if defined(OM_INCLUDE_TEMPLATES) && !defined(OPENMESH_ARRAY_KERNEL_C)
 #  define OPENMESH_ARRAY_KERNEL_TEMPLATES
-#  include "ArrayKernelT.cc"
+#  include "ArrayKernelT_impl.hh"
 #endif
 //=============================================================================
 #endif // OPENMESH_ARRAY_KERNEL_HH defined

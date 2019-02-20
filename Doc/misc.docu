@@ -7,6 +7,7 @@ The following naming conventions are used for the %OpenMesh code:
 
 <b>Files:</b>
   \li \c MyClass.cc for C++-Implementation of class \c MyClass
+  \li \c MyClassT_impl.hh for Header only C++-Implementation of template class \c MyClass
   \li \c MyClass.hh for C++-Header of class \c MyClass
 
 <b>Classes:</b>

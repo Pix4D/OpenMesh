@@ -41,7 +41,7 @@
 
 
 
-/** \file ModProgMeshT.cc
+/** \file ModProgMeshT_impl.hh
  */
 
 

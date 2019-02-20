@@ -530,7 +530,7 @@ public:
 //=============================================================================
 #if defined(OM_INCLUDE_TEMPLATES) && !defined(OPENMESH_SUBDIVIDER_ADAPTIVE_RULEST_CC)
 #  define OPENMESH_SUBDIVIDER_TEMPLATES
-#  include "RulesT.cc"
+#  include "RulesT_impl.hh"
 #endif
 //=============================================================================
 #endif // OPENMESH_SUBDIVIDER_ADAPTIVE_RULEST_HH defined

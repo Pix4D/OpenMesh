@@ -183,7 +183,7 @@ private:
 //=============================================================================
 #if defined(OM_INCLUDE_TEMPLATES) && !defined(OPENMESH_DECIMATER_MODQUADRIC_CC)
 #define OSG_MODQUADRIC_TEMPLATES
-#include "ModQuadricT.cc"
+#include "ModQuadricT_impl.hh"
 #endif
 //=============================================================================
 #endif // OSG_MODQUADRIC_HH defined

@@ -39,7 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/** \file Adaptive/Composite/CompositeT.cc
+/** \file Adaptive/Composite/CompositeT_impl.hh
 
  */
 

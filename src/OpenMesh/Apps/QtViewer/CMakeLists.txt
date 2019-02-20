@@ -14,9 +14,6 @@ set (directories
 acg_append_files (headers "*.hh" ${directories})
 acg_append_files (sources "*.cc" ${directories})
 
-# remove template cc files from source file list
-acg_drop_templates (sources)
-
 if (WIN32)
   acg_add_executable (QtViewer WIN32 ${sources} ${headers})
 else ()

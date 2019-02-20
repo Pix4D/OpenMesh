@@ -41,7 +41,7 @@
 
 
 
-/** \file Uniform/Composite/CompositeT.cc
+/** \file Uniform/Composite/CompositeT_impl.hh
 
  */
 

@@ -41,7 +41,7 @@
 
 
 
-/** \file ModQuadricT.cc
+/** \file ModQuadricT_impl.hh
     Bodies of template member function.
  */
 

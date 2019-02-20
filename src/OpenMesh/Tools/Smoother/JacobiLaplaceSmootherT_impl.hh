@@ -41,7 +41,7 @@
 
 
 
-/** \file JacobiLaplaceSmootherT.cc
+/** \file JacobiLaplaceSmootherT_impl.hh
     
  */
 
