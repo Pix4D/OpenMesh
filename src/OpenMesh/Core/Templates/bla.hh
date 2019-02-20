@@ -43,15 +43,18 @@
 
 //=============================================================================
 //
-//  CLASS newClass - IMPLEMENTATION
+//  CLASS bla
 //
 //=============================================================================
+#ifndef DOXY_IGNORE_THIS
+#ifndef OPENMESH_NEWCLASST_HH
+#define OPENMESH_NEWCLASST_HH
 
-#define OPENMESH_NEWCLASS_C
 
 //== INCLUDES =================================================================
 
-#include <OpenMesh/.../newClass.hh>
+
+//== FORWARDDECLARATIONS ======================================================
 
 
 //== NAMESPACES ===============================================================
@@ -59,14 +62,49 @@
 namespace OpenMesh {
 
 
-//== IMPLEMENTATION ==========================================================
+//== CLASS DEFINITION =========================================================
 
 
 
-//-----------------------------------------------------------------------------
+	      
+/** \class blaT blaT.hh <OpenMesh/.../blaT.hh>
 
+    Brief Description.
+  
+    A more elaborate description follows.
+*/
+
+template <>
+class blaT
+{
+public:
+   
+  /// Default constructor
+  blaT() {}
+ 
+  /// Destructor
+  ~blaT() {}
+
+  
+private:
+
+  /// Copy constructor (not used)
+  blaT(const blaT& _rhs);
+
+  /// Assignment operator (not used)
+  blaT& operator=(const blaT& _rhs);
+  
+};
 
 
 //=============================================================================
 } // namespace OpenMesh
+//=============================================================================
+#if defined(OM_INCLUDE_TEMPLATES) && !defined(OPENMESH_BLA_C)
+#define OPENMESH_BLA_TEMPLATES
+#include "blaT_impl.hh"
+#endif
+//=============================================================================
+#endif // OPENMESH_NEWCLASST_HH defined
+#endif // DOXY_IGNORE_THIS
 //=============================================================================
