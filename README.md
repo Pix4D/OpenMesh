@@ -1,4 +1,4 @@
-# OpenMesh, 8.0
+# OpenMesh, 8.1
 
 [![](https://www.graphics.rwth-aachen.de:9000/OpenMesh/OpenMesh/badges/master/pipeline.svg)](https://www.graphics.rwth-aachen.de:9000/OpenMesh/OpenMesh/commits/master)
 
@@ -16,6 +16,8 @@ The python bindings can be found here:
 https://www.graphics.rwth-aachen.de:9000/OpenMesh/openmesh-python
 
 ## Download Binaries
+
+The following binaries are created from the latest master. They are automatically tested and deployed.
 
 ### Windows
 
