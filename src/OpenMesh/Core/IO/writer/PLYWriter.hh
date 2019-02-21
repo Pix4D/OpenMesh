@@ -82,6 +82,7 @@ namespace IO {
 
     currently supported options:
     - VertexColors
+    - FaceColors
     - Binary
     - Binary -> MSB
 */

@@ -55,7 +55,7 @@ ASCII is not a real option and will be selected, if binary was not defined.
 <TR><TH>Format/Option<TD>ASCII<TD>Binary<TD>MSB<TD>LSB<TD>Swap<TD>VertexNormal<TD>VertexColor<TD>VertexTexCoord<TD>EdgeColor<TD>FaceNormal<TD>FaceColor<TD>FaceTexCoord<TD>ColorAlpha<TD>ColorFloat<TD>Custom
 <TR><TH>OBJ<TD>x<TD> <TD> <TD> <TD> <TD>x<TD>x *)<TD>x<TD> <TD>x<TD>x<TD>x<TD><TD><TD> 
 <TR><TH>OFF<TD>x<TD>x<TD> <TD>x<TD> <TD>x<TD>x<TD>x<TD> <TD> <TD>x<TD> <TD>x<TD>x<TD> 
-<TR><TH>PLY<TD>x<TD>x<TD>x<TD>x<TD> <TD>x<TD>x<TD>x<TD> <TD> <TD> <TD> <TD>x<TD>x<TD>x **)
+<TR><TH>PLY<TD>x<TD>x<TD>x<TD>x<TD> <TD>x<TD>x<TD>x<TD> <TD> <TD>x<TD> <TD>x<TD>x<TD>x **)
 <TR><TH>OM<TD> <TD>x<TD>x<TD>x<TD>x<TD>x<TD>x<TD>x<TD><TD>x<TD>x<TD><TD><TD><TD>x (\ref tutorial_09 )
 <TR><TH>STL<TD>x<TD>x<TD><TD>x<TD><TD><TD><TD><TD><TD>x<TD><TD><TD><TD><TD>
 <TR><TH>VTK ***)<TD>x<TD><TD><TD><TD><TD><TD><TD><TD><TD><TD><TD><TD><TD><TD>
