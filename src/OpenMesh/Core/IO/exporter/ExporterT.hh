@@ -335,14 +335,14 @@ public:
 
   Vec3f colorf(FaceHandle _fh)    const override
   {
-    return (mesh_.has_vertex_colors()
+    return (mesh_.has_face_colors()
 	    ? color_cast<Vec3f>(mesh_.color(_fh))
 	    : Vec3f(0, 0, 0));
   }
 
   Vec4f colorAf(FaceHandle _fh)   const override
   {
-    return (mesh_.has_vertex_colors()
+    return (mesh_.has_face_colors()
       ? color_cast<Vec4f>(mesh_.color(_fh))
       : Vec4f(0, 0, 0, 0));
   }
