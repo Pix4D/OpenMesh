@@ -411,6 +411,16 @@ public:
    */
   inline void split_copy(FaceHandle _fh, VertexHandle _vh)
   { PolyMesh::split_copy(_fh, _vh); }
+
+  /** \brief Calculates the area of a face
+   *
+   * @param _fh Handle of the face to calculate the area of
+   */
+  Scalar calc_face_area(FaceHandle _fh) const
+  {
+    const HalfedgeHandle heh = this->halfedge_handle(_fh);
+    return this->calc_sector_area(heh);
+  }
   
   /** \name Normal vector computation
   */
