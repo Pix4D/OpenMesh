@@ -325,17 +325,35 @@ class PropertyManager {
         }
 
         /**
-         * Access the encapsulated property.
+         * Access the value of the encapsulated mesh property.
+         *
+         * Example:
+         * @code
+         * PolyMesh m;
+         * auto description = getOrMakeProperty<void, std::string>(m, "description");
+         * *description = "This is a very nice mesh.";
+         * @endcode
+         *
+         * @note This method is only used for mesh properties.
          */
-        inline PROPTYPE &operator* () {
-            return prop_;
+        typename PROPTYPE::reference& operator*() {
+            return mesh_->mproperty(prop_)[0];
         }
 
         /**
-         * Access the encapsulated property.
+         * Access the value of the encapsulated mesh property.
+         *
+         * Example:
+         * @code
+         * PolyMesh m;
+         * auto description = getProperty<void, std::string>(m, "description");
+         * std::cout << *description << std::endl;
+         * @endcode
+         *
+         * @note This method is only used for mesh properties.
          */
-        inline const PROPTYPE &operator* () const {
-            return prop_;
+        typename PROPTYPE::const_reference& operator*() const {
+            return mesh_->mproperty(prop_)[0];
         }
 
         /**
