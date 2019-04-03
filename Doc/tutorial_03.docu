@@ -17,10 +17,34 @@ Custom properties can be conveniently created and attached to meshes with the fo
 - getProperty() is used for accessing an existing permanent named property on a mesh.
 
 All three functions take two template arguments:
-- First, the type of the mesh element that the property is attached to (i.e. OpenMesh::VertexHandle, OpenMesh::HalfedgeHandle, OpenMesh::EdgeHandle, or OpenMesh::FaceHandle).
+- First, the type of the mesh element that the property is attached to (i.e. OpenMesh::VertexHandle, OpenMesh::HalfedgeHandle, OpenMesh::EdgeHandle, or OpenMesh::FaceHandle). <em>Mesh properties</em> (i.e. singleton properties that are attached to an entire mesh instead of individual elements) are accessed by passing \c void instead of a handle type.
 - Second, the type of the property value that is attached to each element (e.g., \p int, \p double, etc.).
 
 All three functions return a handle object (of type OpenMesh::PropertyManager) that manages the lifetime of the property and provides read / write access to its values.
+
+Here are a few examples of how to create and access mesh properties:
+
+\code
+// Add a temporary mesh property that stores a double value for every vertex
+auto temperature = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, double>(mesh, "temperature");
+OpenMesh::VertexHandle vh = ...;
+temperature[vh] = 1.0;
+// The temperature property will be removed from the mesh when the handle reaches the end of the scope.
+
+// Obtain an existing mesh property that stores a 2D vector for every halfedge
+// (Beware: the next line might throw if the expected property doesn't exist.)
+auto uv = OpenMesh::getProperty<OpenMesh::HalfedgeHandle, OpenMesh::Vec2d>(mesh, "uv");
+OpenMesh::VertexHandle heh = ...;
+std::cout << temperature[heh][0] << " " << temperature[heh][1] << std::endl;
+
+// Add a permanent mesh property containing a description string
+auto desc = OpenMesh::getOrMakeProperty<void, std::string>(mesh, "desc");
+*desc = "This is a very nice mesh.";
+\endcode
+
+---
+
+## Code Example
 
 In this example, we will store the \c cog value (see previous example) in a vertex property instead of keeping it in a separate array.
 To do so, we first add a (temporary) property of the desired element type (OpenMesh::VertexHandle) and value type (\c %MyMesh::Point) to the mesh:
@@ -43,20 +67,26 @@ Finally, we set the new position for each vertex:
 \until mesh.point
 \until }
 
+Below is the complete source code:
+
+\include 03-properties/smooth.cc
+
 ---
 
-Since we chose to use makeTemporaryProperty(), the created property is automatically removed from the mesh as soon as we leave the scope of the associated handle variable \c cog.
+## Property Lifetime
+
+In the above example, we chose to use makeTemporaryProperty(). This causes the created property to automatically be removed from the mesh as soon as we leave the scope of the associated handle variable \c cog.
 
 If, instead, a property is desired to survive its local scope, it should be created with using getOrMakeProperty(). In that case, the property must be given a name that can later be used to retrieve the property. For example:
 
 \code
-    auto face_area = OpenMesh::makeTemporaryProperty<OpenMesh::FaceHandle, double>(mesh, 'face_area');
+    auto face_area = OpenMesh::makeTemporaryProperty<OpenMesh::FaceHandle, double>(mesh, "face_area");
 \endcode
 
 At a later time, we can use the getProperty() function to obtain a handle to a property that was previously created by refering to its name:
 \code
     try {
-        auto face_area = OpenMesh::getProperty<OpenMesh::FaceHandle, double>(mesh, 'face_area');
+        auto face_area = OpenMesh::getProperty<OpenMesh::FaceHandle, double>(mesh, "face_area");
         // Use the face_area property.
     }
     catch (const std::runtime_error& e) {
@@ -64,7 +94,20 @@ At a later time, we can use the getProperty() function to obtain a handle to a p
     }
 \endcode
 
+Using hasProperty(), we can test whether a mesh has a certain property:
+\code
+    if (OpenMesh::hasProperty<OpenMesh::EdgeHandle, bool>(mesh, "is_valley")) {
+        // Property exists. Do something with it.
+        auto valley = OpenMesh::getProperty<OpenMesh::EdgeHandle, bool>(mesh, "is_valley");
+    }
+    else {
+        // Property does not exist. Do something else.
+    }
+\endcode
+
 ---
+
+## Low-Level Property API
 
 The functions makeTemporaryProperty(), getOrMakeProperty(), and getProperty() are the convenient high-level interface for creating and accessing mesh properties.
 
@@ -72,8 +115,6 @@ Beneath these convenience functions, there is also a low-level property interfac
 
 ---
 
-Below is the complete source code:
 
-\include 03-properties/smooth.cc
 
 */
