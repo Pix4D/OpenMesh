@@ -641,6 +641,7 @@ PropertyManager<PROPTYPE, MeshT> makePropertyManagerFromExistingOrNew(MeshT &mes
  */
 template<typename PROPTYPE, typename MeshT,
     typename ITERATOR_TYPE, typename PROP_VALUE>
+OM_DEPRECATED("Use getOrMakeProperty instead.")
 PropertyManager<PROPTYPE, MeshT> makePropertyManagerFromExistingOrNew(
         MeshT &mesh, const char *propname,
         const ITERATOR_TYPE &begin, const ITERATOR_TYPE &end,
@@ -662,6 +663,7 @@ PropertyManager<PROPTYPE, MeshT> makePropertyManagerFromExistingOrNew(
  */
 template<typename PROPTYPE, typename MeshT,
     typename ITERATOR_RANGE, typename PROP_VALUE>
+OM_DEPRECATED("Use getOrMakeProperty instead.")
 PropertyManager<PROPTYPE, MeshT> makePropertyManagerFromExistingOrNew(
         MeshT &mesh, const char *propname,
         const ITERATOR_RANGE &range,
