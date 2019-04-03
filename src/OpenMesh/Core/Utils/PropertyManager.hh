@@ -597,6 +597,34 @@ getOrMakeProperty(MeshT &mesh, const char *propname) {
 }
 
 /** @relates PropertyManager
+ *
+ * Tests whether a property with the given element type, value type, and name is
+ * present on the given mesh.
+ *
+ * * Example:
+ * @code
+ * PolyMesh m;
+ * if (hasProperty<FaceHandle, bool>(m, "is_quad")) {
+ *     // We now know the property exists: getProperty won't throw.
+ *     auto is_quad = getProperty<FaceHandle, bool>(m, "is_quad");
+ *     // Use is_quad here.
+ * }
+ * @endcode
+ *
+ * @param mesh The mesh in question
+ * @param propname The property name of the expected property
+ * @tparam ElementT Element type of the expected property, e.g. VertexHandle, HalfedgeHandle, etc.
+ * @tparam T Value type of the expected property, e.g., \p double, \p int, etc.
+ * @tparam MeshT Type of the mesh. Can often be inferred from \p mesh
+ */
+template<typename ElementT, typename T, typename MeshT>
+bool
+hasProperty(const MeshT &mesh, const char *propname) {
+    typename HandleToPropHandle<ElementT, T>::type ph;
+    return mesh.get_property_handle(ph, propname);
+}
+
+/** @relates PropertyManager
  * @deprecated Use makeTemporaryProperty() instead.
  *
  * Creates a new property whose lifecycle is managed by the returned
