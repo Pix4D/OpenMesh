@@ -325,17 +325,35 @@ class PropertyManager {
         }
 
         /**
-         * Access the encapsulated property.
+         * Access the value of the encapsulated mesh property.
+         *
+         * Example:
+         * @code
+         * PolyMesh m;
+         * auto description = getOrMakeProperty<void, std::string>(m, "description");
+         * *description = "This is a very nice mesh.";
+         * @endcode
+         *
+         * @note This method is only used for mesh properties.
          */
-        inline PROPTYPE &operator* () {
-            return prop_;
+        typename PROPTYPE::reference& operator*() {
+            return mesh_->mproperty(prop_)[0];
         }
 
         /**
-         * Access the encapsulated property.
+         * Access the value of the encapsulated mesh property.
+         *
+         * Example:
+         * @code
+         * PolyMesh m;
+         * auto description = getProperty<void, std::string>(m, "description");
+         * std::cout << *description << std::endl;
+         * @endcode
+         *
+         * @note This method is only used for mesh properties.
          */
-        inline const PROPTYPE &operator* () const {
-            return prop_;
+        typename PROPTYPE::const_reference& operator*() const {
+            return mesh_->mproperty(prop_)[0];
         }
 
         /**
@@ -579,6 +597,34 @@ getOrMakeProperty(MeshT &mesh, const char *propname) {
 }
 
 /** @relates PropertyManager
+ *
+ * Tests whether a property with the given element type, value type, and name is
+ * present on the given mesh.
+ *
+ * * Example:
+ * @code
+ * PolyMesh m;
+ * if (hasProperty<FaceHandle, bool>(m, "is_quad")) {
+ *     // We now know the property exists: getProperty won't throw.
+ *     auto is_quad = getProperty<FaceHandle, bool>(m, "is_quad");
+ *     // Use is_quad here.
+ * }
+ * @endcode
+ *
+ * @param mesh The mesh in question
+ * @param propname The property name of the expected property
+ * @tparam ElementT Element type of the expected property, e.g. VertexHandle, HalfedgeHandle, etc.
+ * @tparam T Value type of the expected property, e.g., \p double, \p int, etc.
+ * @tparam MeshT Type of the mesh. Can often be inferred from \p mesh
+ */
+template<typename ElementT, typename T, typename MeshT>
+bool
+hasProperty(const MeshT &mesh, const char *propname) {
+    typename HandleToPropHandle<ElementT, T>::type ph;
+    return mesh.get_property_handle(ph, propname);
+}
+
+/** @relates PropertyManager
  * @deprecated Use makeTemporaryProperty() instead.
  *
  * Creates a new property whose lifecycle is managed by the returned
@@ -641,6 +687,7 @@ PropertyManager<PROPTYPE, MeshT> makePropertyManagerFromExistingOrNew(MeshT &mes
  */
 template<typename PROPTYPE, typename MeshT,
     typename ITERATOR_TYPE, typename PROP_VALUE>
+OM_DEPRECATED("Use getOrMakeProperty instead.")
 PropertyManager<PROPTYPE, MeshT> makePropertyManagerFromExistingOrNew(
         MeshT &mesh, const char *propname,
         const ITERATOR_TYPE &begin, const ITERATOR_TYPE &end,
@@ -662,6 +709,7 @@ PropertyManager<PROPTYPE, MeshT> makePropertyManagerFromExistingOrNew(
  */
 template<typename PROPTYPE, typename MeshT,
     typename ITERATOR_RANGE, typename PROP_VALUE>
+OM_DEPRECATED("Use getOrMakeProperty instead.")
 PropertyManager<PROPTYPE, MeshT> makePropertyManagerFromExistingOrNew(
         MeshT &mesh, const char *propname,
         const ITERATOR_RANGE &range,
