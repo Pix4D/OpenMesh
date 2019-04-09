@@ -8,6 +8,12 @@
 
 <tr valign=top><td><b>8.1</b> (?/?/?)</td><td>
 
+<b>Utils</b>
+<ul>
+<li>Change PropertyManager::operator* to access the property value for mesh properties</li>
+<li>PropertyManager: add hasProperty function</li>
+</ul>
+
 <b>Build System</b>
 <ul>
 <li>Generate OpenMeshConfig.cmake (Thanks to Thibault Payet for the patch)</li>
