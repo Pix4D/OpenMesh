@@ -8,6 +8,13 @@
 
 <tr valign=top><td><b>8.1</b> (?/?/?)</td><td>
 
+<b>Tools</b>
+<ul>
+<li>Subdivider: Fixed crash in Loop subdivider</li>
+<li>Subdivider: Fixed crash in ModifiedButterfly subdivider</li>
+</ul>
+
+
 <b>Utils</b>
 <ul>
 <li>Change PropertyManager::operator* to access the property value for mesh properties</li>

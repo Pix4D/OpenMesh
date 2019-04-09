@@ -321,7 +321,7 @@ private: // topological modifiers
     typename mesh_t::VertexHandle   vh1(_m.to_vertex_handle(heh));
     typename mesh_t::Point          midP(_m.point(_m.to_vertex_handle(heh)));
     midP += _m.point(_m.to_vertex_handle(opp_heh));
-    midP *= static_cast<typename mesh_t::Point::value_type>(0.5);
+    midP *= static_cast<RealType>(0.5);
 
     // new vertex
     vh                = _m.new_vertex( midP );
@@ -363,7 +363,11 @@ private: // topological modifiers
 
     _m.set_face_handle( new_heh, _m.face_handle(heh) );
     _m.set_halfedge_handle( vh, new_heh);
-    _m.set_halfedge_handle( _m.face_handle(heh), heh );
+
+    // We cant reconnect a non existing face, so we skip this here if necessary
+    if ( !_m.is_boundary(heh) )
+      _m.set_halfedge_handle( _m.face_handle(heh), heh );
+
     _m.set_halfedge_handle( vh1, opp_new_heh );
 
     // Never forget this, when playing with the topology
@@ -389,7 +393,7 @@ private: // geometry helper
     // boundary edge: just average vertex positions
     if (_m.is_boundary(_eh) )
     {
-      pos *= static_cast<typename MeshType::Point::value_type>(0.5);
+      pos *= static_cast<RealType>(0.5);
     }
     else // inner edge: add neighbouring Vertices to sum
     {
