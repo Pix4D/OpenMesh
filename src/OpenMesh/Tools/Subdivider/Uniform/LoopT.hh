@@ -363,7 +363,8 @@ private: // topological modifiers
 
     _m.set_face_handle( new_heh, _m.face_handle(heh) );
     _m.set_halfedge_handle( vh, new_heh);
-    _m.set_halfedge_handle( _m.face_handle(heh), heh );
+    if ( !_m.is_boundary(heh) )
+      _m.set_halfedge_handle( _m.face_handle(heh), heh );
     _m.set_halfedge_handle( vh1, opp_new_heh );
 
     // Never forget this, when playing with the topology
