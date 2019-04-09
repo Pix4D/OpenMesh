@@ -197,7 +197,7 @@ TEST_F(OpenMeshEigenTest, test_normal_computation) {
   mesh_.update_face_normals();
 
 
-  EXPECT_EQ(mesh_.n_faces(),2) << "Wrong number of faces";
+  EXPECT_EQ(mesh_.n_faces(),2u) << "Wrong number of faces";
 
   EigenTriMesh::Normal normal = mesh_.normal(face1);
 
