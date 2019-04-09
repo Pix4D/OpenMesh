@@ -132,4 +132,12 @@ install(DIRECTORY IO/
         PATTERN "Debian*" EXCLUDE )    
 endif ()
 
+target_include_directories(OpenMeshCore PUBLIC
+  $<BUILD_INTERFACE:${OpenMesh_RootDir}/src>
+  $<INSTALL_INTERFACE:include>)
+
+install(TARGETS OpenMeshCore EXPORT OpenMeshConfig
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 

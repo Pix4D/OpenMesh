@@ -5,6 +5,8 @@ cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
 set( CMAKE_CXX_STANDARD_REQUIRED TRUE )
 set( CMAKE_CXX_STANDARD 11 )
 
+set(OpenMesh_RootDir ${CMAKE_CURRENT_LIST_DIR})
+
 enable_testing()
 
 # Only set project name if OpenMesh is built as stand-alone library
@@ -133,7 +135,13 @@ else()
 	set (OPENMESH_LIBRARY_DIR "${_OPENMESH_LIBRARY_DIR}" CACHE PATH "The directory where the OpenMesh libraries can be found.")
 endif()
 
-add_subdirectory (Doc)
+if ( NOT DEFINED OPENMESH_DOCS )
+  set( OPENMESH_DOCS false CACHE BOOL "Enable or disable building of documentation" )
+endif()
+
+if (OPENMESH_DOCS)
+  add_subdirectory (Doc)
+endif()
 
 # ========================================================================
 # Bundle generation (Targets exist, now configure them)
@@ -175,6 +183,20 @@ endif()
 
 # ========================================================================
 
+# Generate openmesh.pc file
+
+set(DEST_DIR "${CMAKE_INSTALL_PREFIX}")
+set(PRIVATE_LIBS "-lOpenMeshCore -lOpenMeshTools")
+
+configure_file("openmesh.pc.in" "${CMAKE_CURRENT_BINARY_DIR}/openmesh.pc" @ONLY)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/openmesh.pc DESTINATION ${CMAKE_INSTALL_PREFIX}/libdata/pkgconfig)
+
+# generate target file
+
+install(EXPORT OpenMeshConfig DESTINATION share/OpenMesh/cmake)
+
+export(TARGETS OpenMeshCore OpenMeshTools FILE OpenMeshConfig.cmake)
 
 # display results
 acg_print_configure_header (OPENMESH "OpenMesh")

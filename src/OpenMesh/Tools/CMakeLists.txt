@@ -115,4 +115,12 @@ install(FILES Utils/getopt.h DESTINATION include/OpenMesh/Tools/Utils)
 
 endif ()
 
+target_include_directories(OpenMeshTools PUBLIC
+  $<BUILD_INTERFACE:${OpenMesh_RootDir}/src>
+  $<INSTALL_INTERFACE:include>)
+
+install(TARGETS OpenMeshTools EXPORT OpenMeshConfig
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
