@@ -134,7 +134,7 @@ else()
 endif()
 
 if ( NOT DEFINED OPENMESH_DOCS )
-  set( OPENMESH_DOCS false CACHE BOOL "Enable or disable building of documentation" )
+  set( OPENMESH_DOCS true CACHE BOOL "Enable or disable building of documentation" )
 endif()
 
 if (OPENMESH_DOCS)
