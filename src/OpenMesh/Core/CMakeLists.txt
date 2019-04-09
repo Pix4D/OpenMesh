@@ -133,7 +133,7 @@ install(DIRECTORY IO/
 endif ()
 
 target_include_directories(OpenMeshCore PUBLIC
-  $<BUILD_INTERFACE:${OpenMesh_RootDir}/src>
+  $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/src>
   $<INSTALL_INTERFACE:include>)
 
 install(TARGETS OpenMeshCore EXPORT OpenMeshConfig
