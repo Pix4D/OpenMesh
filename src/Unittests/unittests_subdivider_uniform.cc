@@ -1,6 +1,7 @@
 
 #include <gtest/gtest.h>
 #include <Unittests/unittests_common.hh>
+#include <OpenMesh/Tools/Subdivider/Uniform/ModifiedButterFlyT.hh>
 #include <OpenMesh/Tools/Subdivider/Uniform/CatmullClarkT.hh>
 #include <OpenMesh/Tools/Subdivider/Uniform/LoopT.hh>
 #include <OpenMesh/Tools/Subdivider/Uniform/Sqrt3T.hh>
@@ -549,5 +550,227 @@ TEST_F(OpenMeshSubdividerUniform_Poly, Midpoint) {
     EXPECT_EQ(24u, mesh_.n_vertices())  << "Wrong number of vertices";
     EXPECT_EQ(26u, mesh_.n_faces())     << "Wrong number of faces";
 }
+
+
+
+TEST_F(OpenMeshSubdividerUniform_Triangle, Modified_Butterfly) {
+    mesh_.clear();
+
+    // Add some vertices
+    Mesh::VertexHandle vhandle[9];
+
+    vhandle[0] = mesh_.add_vertex(Mesh::Point(0, 0, 0));
+    vhandle[1] = mesh_.add_vertex(Mesh::Point(0, 1, 0));
+    vhandle[2] = mesh_.add_vertex(Mesh::Point(0, 2, 0));
+    vhandle[3] = mesh_.add_vertex(Mesh::Point(1, 0, 0));
+    vhandle[4] = mesh_.add_vertex(Mesh::Point(1, 1, 0));
+    vhandle[5] = mesh_.add_vertex(Mesh::Point(1, 2, 0));
+    vhandle[6] = mesh_.add_vertex(Mesh::Point(2, 0, 0));
+    vhandle[7] = mesh_.add_vertex(Mesh::Point(2, 1, 0));
+    vhandle[8] = mesh_.add_vertex(Mesh::Point(2, 2, 0));
+
+    // Add eight faces
+    std::vector<Mesh::VertexHandle> face_vhandles;
+
+    face_vhandles.push_back(vhandle[0]);
+    face_vhandles.push_back(vhandle[4]);
+    face_vhandles.push_back(vhandle[3]);
+
+    mesh_.add_face(face_vhandles);
+    face_vhandles.clear();
+
+    face_vhandles.push_back(vhandle[0]);
+    face_vhandles.push_back(vhandle[1]);
+    face_vhandles.push_back(vhandle[4]);
+
+    mesh_.add_face(face_vhandles);
+    face_vhandles.clear();
+
+    face_vhandles.push_back(vhandle[1]);
+    face_vhandles.push_back(vhandle[2]);
+    face_vhandles.push_back(vhandle[4]);
+
+    mesh_.add_face(face_vhandles);
+    face_vhandles.clear();
+
+    face_vhandles.push_back(vhandle[2]);
+    face_vhandles.push_back(vhandle[5]);
+    face_vhandles.push_back(vhandle[4]);
+
+    mesh_.add_face(face_vhandles);
+    face_vhandles.clear();
+
+    face_vhandles.push_back(vhandle[3]);
+    face_vhandles.push_back(vhandle[7]);
+    face_vhandles.push_back(vhandle[6]);
+
+    mesh_.add_face(face_vhandles);
+    face_vhandles.clear();
+
+    face_vhandles.push_back(vhandle[3]);
+    face_vhandles.push_back(vhandle[4]);
+    face_vhandles.push_back(vhandle[7]);
+
+    mesh_.add_face(face_vhandles);
+    face_vhandles.clear();
+
+    face_vhandles.push_back(vhandle[4]);
+    face_vhandles.push_back(vhandle[8]);
+    face_vhandles.push_back(vhandle[7]);
+
+    mesh_.add_face(face_vhandles);
+    face_vhandles.clear();
+
+    face_vhandles.push_back(vhandle[4]);
+    face_vhandles.push_back(vhandle[5]);
+    face_vhandles.push_back(vhandle[8]);
+
+    mesh_.add_face(face_vhandles);
+
+    // Test setup:
+    //  6 === 7 === 8
+    //  |   / |   / |
+    //  |  /  |  /  |
+    //  | /   | /   |
+    //  3 === 4 === 5
+    //  |   / | \   |
+    //  |  /  |  \  |
+    //  | /   |   \ |
+    //  0 === 1 === 2
+
+    // Initialize subdivider
+    OpenMesh::Subdivider::Uniform::ModifiedButterflyT<Mesh> butter;
+
+    // Check setup
+    EXPECT_EQ(9u, mesh_.n_vertices() ) << "Wrong number of vertices";
+    EXPECT_EQ(8u, mesh_.n_faces() )    << "Wrong number of faces";
+
+    // Execute 3 subdivision steps
+    butter.attach(mesh_);
+    butter( 3 );
+    butter.detach();
+
+    // Check setup
+    EXPECT_EQ(289u, mesh_.n_vertices() ) << "Wrong number of vertices after subdivision with loop";
+    EXPECT_EQ(512u, mesh_.n_faces() )    << "Wrong number of faces after subdivision with loop";
+}
+
+
+
+TEST_F(OpenMeshSubdividerUniform_Triangle, Modified_Butterfly_delete_vertex) {
+    mesh_.clear();
+
+    // Request status flags to use delete and garbage collection
+    mesh_.request_vertex_status();
+    mesh_.request_halfedge_status();
+    mesh_.request_edge_status();
+    mesh_.request_face_status();
+
+    // Add some vertices
+    Mesh::VertexHandle vhandle[9];
+
+    vhandle[0] = mesh_.add_vertex(Mesh::Point(0, 0, 0));
+    vhandle[1] = mesh_.add_vertex(Mesh::Point(0, 1, 0));
+    vhandle[2] = mesh_.add_vertex(Mesh::Point(0, 2, 0));
+    vhandle[3] = mesh_.add_vertex(Mesh::Point(1, 0, 0));
+    vhandle[4] = mesh_.add_vertex(Mesh::Point(1, 1, 0));
+    vhandle[5] = mesh_.add_vertex(Mesh::Point(1, 2, 0));
+    vhandle[6] = mesh_.add_vertex(Mesh::Point(2, 0, 0));
+    vhandle[7] = mesh_.add_vertex(Mesh::Point(2, 1, 0));
+    vhandle[8] = mesh_.add_vertex(Mesh::Point(2, 2, 0));
+
+    // Add eight faces
+    std::vector<Mesh::VertexHandle> face_vhandles;
+
+    face_vhandles.push_back(vhandle[0]);
+    face_vhandles.push_back(vhandle[4]);
+    face_vhandles.push_back(vhandle[3]);
+
+    mesh_.add_face(face_vhandles);
+    face_vhandles.clear();
+
+    face_vhandles.push_back(vhandle[0]);
+    face_vhandles.push_back(vhandle[1]);
+    face_vhandles.push_back(vhandle[4]);
+
+    mesh_.add_face(face_vhandles);
+    face_vhandles.clear();
+
+    face_vhandles.push_back(vhandle[1]);
+    face_vhandles.push_back(vhandle[2]);
+    face_vhandles.push_back(vhandle[4]);
+
+    mesh_.add_face(face_vhandles);
+    face_vhandles.clear();
+
+    face_vhandles.push_back(vhandle[2]);
+    face_vhandles.push_back(vhandle[5]);
+    face_vhandles.push_back(vhandle[4]);
+
+    mesh_.add_face(face_vhandles);
+    face_vhandles.clear();
+
+    face_vhandles.push_back(vhandle[3]);
+    face_vhandles.push_back(vhandle[7]);
+    face_vhandles.push_back(vhandle[6]);
+
+    mesh_.add_face(face_vhandles);
+    face_vhandles.clear();
+
+    face_vhandles.push_back(vhandle[3]);
+    face_vhandles.push_back(vhandle[4]);
+    face_vhandles.push_back(vhandle[7]);
+
+    mesh_.add_face(face_vhandles);
+    face_vhandles.clear();
+
+    face_vhandles.push_back(vhandle[4]);
+    face_vhandles.push_back(vhandle[8]);
+    face_vhandles.push_back(vhandle[7]);
+
+    mesh_.add_face(face_vhandles);
+    face_vhandles.clear();
+
+    face_vhandles.push_back(vhandle[4]);
+    face_vhandles.push_back(vhandle[5]);
+    face_vhandles.push_back(vhandle[8]);
+
+    mesh_.add_face(face_vhandles);
+
+    // Test setup:
+    //  6 === 7 === 8
+    //  |   / |   / |
+    //  |  /  |  /  |
+    //  | /   | /   |
+    //  3 === 4 === 5
+    //  |   / | \   |
+    //  |  /  |  \  |
+    //  | /   |   \ |
+    //  0 === 1 === 2
+
+
+    // Delete one vertex
+    mesh_.delete_vertex(vhandle[1]);
+    mesh_.garbage_collection();
+
+    // Initialize subdivider
+    OpenMesh::Subdivider::Uniform::ModifiedButterflyT<Mesh> butter;
+
+    // Check setup
+    EXPECT_EQ(8u, mesh_.n_vertices() ) << "Wrong number of vertices";
+    EXPECT_EQ(6u, mesh_.n_faces() )    << "Wrong number of faces";
+
+    // Execute 3 subdivision steps
+    butter.attach(mesh_);
+    butter( 3 );
+    butter.detach();
+
+    // Check setup
+    EXPECT_EQ(225u, mesh_.n_vertices() ) << "Wrong number of vertices after subdivision with butter";
+    EXPECT_EQ(384u, mesh_.n_faces() )    << "Wrong number of faces after subdivision with butter";
+}
+
+
+
 
 }
