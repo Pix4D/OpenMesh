@@ -353,8 +353,8 @@ TEST_F(OpenMeshSubdividerUniform_Triangle, Subdivider_Loop_delete_vertex) {
     OpenMesh::Subdivider::Uniform::LoopT<Mesh> loop;
 
     // Check setup
-    EXPECT_EQ(9u, mesh_.n_vertices() ) << "Wrong number of vertices";
-    EXPECT_EQ(8u, mesh_.n_faces() )    << "Wrong number of faces";
+    EXPECT_EQ(8u, mesh_.n_vertices() ) << "Wrong number of vertices";
+    EXPECT_EQ(6u, mesh_.n_faces() )    << "Wrong number of faces";
 
     // Execute 3 subdivision steps
     loop.attach(mesh_);
@@ -362,8 +362,8 @@ TEST_F(OpenMeshSubdividerUniform_Triangle, Subdivider_Loop_delete_vertex) {
     loop.detach();
 
     // Check setup
-    EXPECT_EQ(121u, mesh_.n_vertices() ) << "Wrong number of vertices after subdivision with loop";
-    EXPECT_EQ(216u, mesh_.n_faces() )    << "Wrong number of faces after subdivision with loop";
+    EXPECT_EQ(225u, mesh_.n_vertices() ) << "Wrong number of vertices after subdivision with loop";
+    EXPECT_EQ(384u, mesh_.n_faces() )    << "Wrong number of faces after subdivision with loop";
 }
 
 
