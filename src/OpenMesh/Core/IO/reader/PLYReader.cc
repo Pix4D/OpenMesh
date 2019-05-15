@@ -804,6 +804,12 @@ void _PLYReader_::readValue(ValueType _type, std::istream& _in, float& _value) c
         restore(_in, tmp, options_.check(Options::MSB));
         _value = tmp;
         break;
+    case ValueTypeDOUBLE:
+    case ValueTypeFLOAT64:
+	double dtmp;
+	readValue(_type, _in, dtmp);
+	_value = static_cast<float>(dtmp);
+	break;
     default:
         _value = 0.0;
         std::cerr << "unsupported conversion type to float: " << _type << std::endl;
