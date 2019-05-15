@@ -21,6 +21,12 @@
 <li>PropertyManager: add hasProperty function</li>
 </ul>
 
+<b>IO</b>
+<ul>
+<li>PLY Reader: Fix reading doubles from PLY, missing cast (Thanks to Leo Walsh for the patch)</li>
+</ul>
+
+
 <b>Build System</b>
 <ul>
 <li>Generate OpenMeshConfig.cmake (Thanks to Thibault Payet for the patch)</li>
