@@ -106,7 +106,7 @@ public:
   { init_weights(); }
 
 
-  LoopT( mesh_t& _m ) : parent_t(_m), _1over8( 1.0/8.0 ), _3over8( 3.0/8.0 )
+  explicit LoopT( mesh_t& _m ) : parent_t(_m), _1over8( 1.0/8.0 ), _3over8( 3.0/8.0 )
   { init_weights(); }
 
 

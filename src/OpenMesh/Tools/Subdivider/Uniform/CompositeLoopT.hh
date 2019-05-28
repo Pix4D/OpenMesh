@@ -82,7 +82,7 @@ public:
 public:
 
   CompositeLoopT() : Inherited() {};
-  CompositeLoopT(MeshType& _mesh) : Inherited(_mesh) {};
+  explicit CompositeLoopT(MeshType& _mesh) : Inherited(_mesh) {};
   ~CompositeLoopT() {}
 
 public:

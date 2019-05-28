@@ -107,7 +107,7 @@ public:
   { init_weights(); }
 
 
-  ModifiedButterflyT( mesh_t& _m) : parent_t(_m)
+  explicit ModifiedButterflyT( mesh_t& _m) : parent_t(_m)
   { init_weights(); }
 
 

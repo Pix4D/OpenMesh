@@ -206,7 +206,7 @@ _OBJWriter_::
 write(std::ostream& _out, BaseExporter& _be, Options _opt, std::streamsize _precision) const
 {
   unsigned int idx;
-  size_t i, j,nV, nF;
+  size_t nV, nF;
   Vec3f v, n;
   Vec2f t;
   VertexHandle vh;
@@ -273,7 +273,7 @@ write(std::ostream& _out, BaseExporter& _be, Options _opt, std::streamsize _prec
     std::vector<Vec2f> texCoords;
     //add all texCoords to map
     unsigned int num = _be.get_face_texcoords(texCoords);
-    for(unsigned int i = 0; i < num ; ++i)
+    for(size_t i = 0; i < num ; ++i)
     {
       texMap[texCoords[i]] = i;
     }
@@ -303,7 +303,7 @@ write(std::ostream& _out, BaseExporter& _be, Options _opt, std::streamsize _prec
   }
 
   // vertex data (point, normals, texcoords)
-  for (i=0, nV=_be.n_vertices(); i<nV; ++i)
+  for (size_t i=0, nV=_be.n_vertices(); i<nV; ++i)
   {
     vh = VertexHandle(int(i));
     v  = _be.point(vh);
@@ -324,7 +324,7 @@ write(std::ostream& _out, BaseExporter& _be, Options _opt, std::streamsize _prec
                       && !_opt.check(Options::FaceTexCoord);
 
   // faces (indices starting at 1 not 0)
-  for (i=0, nF=_be.n_faces(); i<nF; ++i)
+  for (size_t i=0, nF=_be.n_faces(); i<nF; ++i)
   {
 
     if (useMatrial &&  _opt.check(Options::FaceColor) ){
@@ -351,7 +351,7 @@ write(std::ostream& _out, BaseExporter& _be, Options _opt, std::streamsize _prec
 
     _be.get_vhandles(FaceHandle(int(i)), vhandles);
 
-    for (j=0; j< vhandles.size(); ++j)
+    for (size_t j=0; j< vhandles.size(); ++j)
     {
 
       // Write vertex index

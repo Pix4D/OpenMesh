@@ -112,7 +112,7 @@ public:
   Sqrt3T(void) : parent_t(), _1over3( real_t(1.0/3.0) ), _1over27( real_t(1.0/27.0) )
   { init_weights(); }
 
-  Sqrt3T(MeshType &_m) : parent_t(_m), _1over3( real_t(1.0/3.0) ), _1over27( real_t(1.0/27.0) )
+  explicit Sqrt3T(MeshType &_m) : parent_t(_m), _1over3( real_t(1.0/3.0) ), _1over27( real_t(1.0/27.0) )
   { init_weights(); }
 
   virtual ~Sqrt3T() {}
