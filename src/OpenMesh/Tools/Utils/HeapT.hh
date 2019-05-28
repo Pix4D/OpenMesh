@@ -152,7 +152,7 @@ public:
   {}
 #else
   /// Construct with a given \c HeapIterface.
-  HeapT(const HeapInterface &_interface)
+  explicit HeapT(const HeapInterface &_interface)
   : HeapVector(),  interface_(_interface)
   {}
 #endif

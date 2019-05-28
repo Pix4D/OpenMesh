@@ -340,10 +340,10 @@ public:
   void clean_keep_reservation();
 
   // --- number of items ---
-  size_t n_vertices()  const { return vertices_.size(); }
-  size_t n_halfedges() const { return 2*edges_.size(); }
-  size_t n_edges()     const { return edges_.size(); }
-  size_t n_faces()     const { return faces_.size(); }
+  size_t n_vertices()  const override  { return vertices_.size(); }
+  size_t n_halfedges() const override { return 2*edges_.size(); }
+  size_t n_edges()     const override { return edges_.size(); }
+  size_t n_faces()     const override { return faces_.size(); }
 
   bool vertices_empty()  const { return vertices_.empty(); }
   bool halfedges_empty() const { return edges_.empty(); }
@@ -697,7 +697,7 @@ public:
     typedef StatusSetT<Handle> Base;
 
   public:
-    AutoStatusSetT(ArrayKernel& _kernel)
+    explicit AutoStatusSetT(ArrayKernel& _kernel)
     : StatusSetT<Handle>(_kernel, _kernel.pop_bit_mask(Handle()))
     { /*assert(size() == 0);*/ } //the set should be empty on creation
 

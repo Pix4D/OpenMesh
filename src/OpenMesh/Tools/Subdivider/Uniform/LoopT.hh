@@ -116,7 +116,7 @@ public:
 public:
 
 
-  const char *name() const { return "Uniform Loop"; }
+  const char *name() const override { return "Uniform Loop"; }
 
 
   /// Pre-compute weights
@@ -130,7 +130,7 @@ public:
 protected:
 
 
-  bool prepare( mesh_t& _m )
+  bool prepare( mesh_t& _m ) override
   {
     _m.add_property( vp_pos_ );
     _m.add_property( ep_pos_ );
@@ -138,7 +138,7 @@ protected:
   }
 
 
-  bool cleanup( mesh_t& _m )
+  bool cleanup( mesh_t& _m ) override
   {
     _m.remove_property( vp_pos_ );
     _m.remove_property( ep_pos_ );
@@ -146,7 +146,7 @@ protected:
   }
 
 
-  bool subdivide( mesh_t& _m, size_t _n, const bool _update_points = true)
+  bool subdivide( mesh_t& _m, size_t _n, const bool _update_points = true) override
   {
 
     ///TODO:Implement fixed positions

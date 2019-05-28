@@ -96,7 +96,7 @@ struct RuleHandleT : public BaseHandle
   protected:\
     friend class CompositeT<mesh_type>; \
   public: \
-    const char *type() const { return #classname; } \
+    const char *type() const override { return #classname; } \
     typedef classname<mesh_type>     Self;          \
     typedef RuleHandleT< Self >      Handle
 

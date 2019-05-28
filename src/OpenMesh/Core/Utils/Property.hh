@@ -230,7 +230,7 @@ public:
 
 public:
 
-  PropertyT(const std::string& _name = "<unknown>")
+  explicit PropertyT(const std::string& _name = "<unknown>")
     : BaseProperty(_name)
   { }
 
@@ -394,7 +394,7 @@ public:
 
 public:
 
-  PropertyT(const std::string& _name = "<unknown>")
+  explicit PropertyT(const std::string& _name = "<unknown>")
     : BaseProperty(_name)
   { }
 

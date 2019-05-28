@@ -322,21 +322,21 @@ private:
 #ifndef DOXY_IGNORE_THIS
   struct Reserve
   {
-    Reserve(size_t _n) : n_(_n) {}
+    explicit Reserve(size_t _n) : n_(_n) {}
     void operator()(BaseProperty* _p) const { if (_p) _p->reserve(n_); }
     size_t n_;
   };
 
   struct Resize
   {
-    Resize(size_t _n) : n_(_n) {}
+    explicit Resize(size_t _n) : n_(_n) {}
     void operator()(BaseProperty* _p) const { if (_p) _p->resize(n_); }
     size_t n_;
   };
 
   struct ResizeIfSmaller
   {
-    ResizeIfSmaller(size_t _n) : n_(_n) {}
+    explicit ResizeIfSmaller(size_t _n) : n_(_n) {}
     void operator()(BaseProperty* _p) const { if (_p && _p->n_elements() < n_) _p->resize(n_); }
     size_t n_;
   };

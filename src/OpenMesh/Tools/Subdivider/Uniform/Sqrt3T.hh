@@ -121,7 +121,7 @@ public:
 public:
 
 
-  const char *name() const { return "Uniform Sqrt3"; }
+  const char *name() const override { return "Uniform Sqrt3"; }
 
   
   /// Pre-compute weights
@@ -135,7 +135,7 @@ public:
 protected:
 
 
-  bool prepare( MeshType& _m )
+  bool prepare( MeshType& _m ) override
   {
     _m.request_edge_status();
     _m.add_property( vp_pos_ );
@@ -148,7 +148,7 @@ protected:
   }
 
 
-  bool cleanup( MeshType& _m )
+  bool cleanup( MeshType& _m ) override
   {
     _m.release_edge_status();
     _m.remove_property( vp_pos_ );
@@ -157,7 +157,7 @@ protected:
     return true;
   }
 
-  bool subdivide( MeshType& _m, size_t _n , const bool _update_points = true)
+  bool subdivide( MeshType& _m, size_t _n , const bool _update_points = true) override
   {
 
     ///TODO:Implement fixed positions

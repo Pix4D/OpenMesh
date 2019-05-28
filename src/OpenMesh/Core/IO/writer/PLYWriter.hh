@@ -120,7 +120,7 @@ private:
   {
     ValueType type;
     const BaseProperty*  property;
-    CustomProperty(const BaseProperty* const _p):type(Unsupported),property(_p){}
+    explicit CustomProperty(const BaseProperty* const _p):type(Unsupported),property(_p){}
   };
 
   const char* nameOfType_[12];

@@ -1121,7 +1121,7 @@ public:
           typedef ITER_TYPE iterator;
           typedef ITER_TYPE const_iterator;
 
-          EntityRange(CONTAINER_TYPE &container) : container_(container) {}
+          explicit EntityRange(CONTAINER_TYPE &container) : container_(container) {}
           ITER_TYPE begin() const { return (container_.*begin_fn)(); }
           ITER_TYPE end() const { return (container_.*end_fn)(); }
 

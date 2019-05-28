@@ -242,7 +242,7 @@ public:
 
   explicit FVc(M& _mesh) : Inherited(_mesh) { init_coeffs(50); }
 
-  void raise(typename M::VertexHandle& _vh, state_t _target_state);
+  void raise(typename M::VertexHandle& _vh, state_t _target_state) override;
   MIPS_WARN_WA(Face) // avoid warning
   MIPS_WARN_WA(Edge) // avoid warning
 
@@ -412,7 +412,7 @@ public:
 
   explicit EVc(M& _mesh) : Inherited(_mesh) { init_coeffs(50); }
 
-  void raise(typename M::VertexHandle& _vh, state_t _target_state);
+  void raise(typename M::VertexHandle& _vh, state_t _target_state) override;
   MIPS_WARN_WA(Face) // avoid warning
   MIPS_WARN_WA(Edge) // avoid warning
 
