@@ -13,22 +13,14 @@ WARNING='\033[0;93m'
 echo -e "${OUTPUT}"
 echo "=============================================================================="
 echo "Running cppcheck"
+echo -n "Version: "
+cppcheck --version
 echo "=============================================================================="
 echo -e "${NC}"
 echo "Please Wait ..."
 
 # Run cppcheck and output into file
-cppcheck --enable=all . --force --suppress=unusedFunction --suppress=missingIncludeSystem --quiet -Umin -Umax -UCTIME -UBMPOSTFIX -DOPENMESHDLLEXPORT="" -UPRIVATE_NODE_TYPESYSTEM_SOURCE -USO_NODE_ABSTRACT_SOURCE -USO_NODE_SOURCE -UCLOCK_REALTIME_HR -i src/OpenMesh/Apps/Unsupported/ -i Doc/  &> cppcheck.log
-
-echo -e "${OUTPUT}"
-echo "=============================================================================="
-echo "CPPCHECK Messages"
-echo "=============================================================================="
-echo -e "${NC}"
-
-
-# Echo output to command line for simple analysis via gitlab
-cat cppcheck.log
+cppcheck --enable=all . -I src -i Doc/ --force --suppress=unusedFunction -UCTIME --suppress=missingIncludeSystem --inline-suppr --quiet -Umin -Umax -DOPENMESHDLLEXPORT="" -UPRIVATE_NODE_TYPESYSTEM_SOURCE -USO_NODE_ABSTRACT_SOURCE -USO_NODE_SOURCE -UCLOCK_REALTIME_HR -i src/OpenMesh/Apps/Unsupported/  2>&1 | tee cppcheck.log
 
 COUNT=$(wc -l < cppcheck.log )
 
