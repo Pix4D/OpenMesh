@@ -30,7 +30,7 @@ clang-c++14:
     - Linux
     - stretch    
 
-macos-c++11:
+macos-cpp11:
   stage: build
   script: "CI/ci-mac.sh C++11"
   tags:
@@ -40,7 +40,7 @@ macos-c++11:
       - build-release-cpp11/*.dmg
       - build-release-cpp11/*.tar.gz
 
-macos-c++98:
+macos-cpp14:
   stage: build
   script: "CI/ci-mac.sh C++14"
   tags:
