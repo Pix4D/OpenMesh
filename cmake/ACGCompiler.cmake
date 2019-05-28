@@ -110,15 +110,15 @@ if (UNIX)
 
   if ("${CMAKE_CXX_COMPILER}" MATCHES ".*clang.*")
       list(APPEND ADDITIONAL_CXX_FLAGS "-Weverything")
-#      list(APPEND ADDITIONAL_CXX_FLAGS "-Wno-c++98-compat")
-#      list(APPEND ADDITIONAL_CXX_FLAGS "-Wno-padded")
-#      list(APPEND ADDITIONAL_CXX_FLAGS "-Wno-old-style-cast")
-#      list(APPEND ADDITIONAL_CXX_FLAGS "-Wno-documentation-unknown-command")
-#      list(APPEND ADDITIONAL_CXX_FLAGS "-Wno-unreachable-code-return")
+      list(APPEND ADDITIONAL_CXX_FLAGS "-Wno-c++98-compat")
+      list(APPEND ADDITIONAL_CXX_FLAGS "-Wno-padded")
+      list(APPEND ADDITIONAL_CXX_FLAGS "-Wno-old-style-cast")
+      list(APPEND ADDITIONAL_CXX_FLAGS "-Wno-documentation-unknown-command")
+      list(APPEND ADDITIONAL_CXX_FLAGS "-Wno-unreachable-code-return")
       # enable later:
-#      list(APPEND ADDITIONAL_CXX_FLAGS "-Wno-sign-conversion")
-#      list(APPEND ADDITIONAL_CXX_FLAGS "-Wno-deprecated")
-#      list(APPEND ADDITIONAL_CXX_FLAGS "-Wno-weak-vtables")
+      list(APPEND ADDITIONAL_CXX_FLAGS "-Wno-sign-conversion")
+      list(APPEND ADDITIONAL_CXX_FLAGS "-Wno-deprecated")
+      list(APPEND ADDITIONAL_CXX_FLAGS "-Wno-weak-vtables")
   endif()
 
   ################################################################################
