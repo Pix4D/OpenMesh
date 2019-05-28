@@ -83,7 +83,7 @@ public:
   typedef typename SmootherT<Mesh>::EdgeHandle    EdgeHandle;
   
 
-  LaplaceSmootherT( Mesh& _mesh );
+  explicit LaplaceSmootherT( Mesh& _mesh );
   virtual ~LaplaceSmootherT();
 
 

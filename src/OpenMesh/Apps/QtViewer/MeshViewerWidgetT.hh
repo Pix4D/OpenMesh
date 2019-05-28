@@ -117,7 +117,7 @@ public:
 protected:
   
   /// inherited drawing method
-  virtual void draw_scene(const std::string& _draw_mode);
+  virtual void draw_scene(const std::string& _draw_mode) override;
   
 protected:
   
@@ -171,7 +171,7 @@ protected: // Strip support
 
 protected: // inherited
    
-  virtual void keyPressEvent( QKeyEvent* _event);
+  virtual void keyPressEvent( QKeyEvent* _event) override;
 
 protected:
    

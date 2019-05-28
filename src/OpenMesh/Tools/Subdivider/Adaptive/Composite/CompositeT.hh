@@ -146,7 +146,7 @@ public:
 public:
 
   /// Constructor
-  CompositeT(Mesh& _mesh) 
+  explicit CompositeT(Mesh& _mesh)
     : subdiv_type_(0), 
       subdiv_rule_(NULL), /*first_rule_(NULL), last_rule_(NULL),*/ mesh_(_mesh)
   { }

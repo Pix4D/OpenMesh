@@ -118,7 +118,7 @@ public:
 protected:
 
   /// Default constructor
-  RuleInterfaceT(Mesh& _mesh) : mesh_(_mesh) {};
+  RuleInterfaceT(Mesh& _mesh) : mesh_(_mesh),prev_rule_(nullptr),subdiv_rule_(nullptr),subdiv_type_(0),number_(0),n_rules_(0) {};
 
 public:
 
