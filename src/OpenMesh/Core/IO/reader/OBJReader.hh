@@ -87,16 +87,16 @@ public:
 
   virtual ~_OBJReader_() { }
 
-  std::string get_description() const { return "Alias/Wavefront"; }
-  std::string get_extensions()  const { return "obj"; }
+  std::string get_description() const override { return "Alias/Wavefront"; }
+  std::string get_extensions()  const override { return "obj"; }
 
   bool read(const std::string& _filename,
 	    BaseImporter& _bi,
-	    Options& _opt);
+	    Options& _opt) override;
 
   bool read(std::istream& _in,
           BaseImporter& _bi,
-          Options& _opt);
+          Options& _opt) override;
 
 private:
 
