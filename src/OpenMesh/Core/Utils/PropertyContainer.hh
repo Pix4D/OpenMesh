@@ -357,7 +357,7 @@ private:
   struct Delete
   {
     Delete() {}
-    void operator()(BaseProperty* _p) const { if (_p) delete _p; _p=NULL; }
+    void operator()(BaseProperty* _p) const { if (_p) delete _p; }
   };
 #endif
 
