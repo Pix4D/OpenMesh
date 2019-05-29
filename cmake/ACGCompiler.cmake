@@ -62,7 +62,7 @@ if (UNIX)
   # add our standard flags for Template inclusion
   list(APPEND ADDITIONAL_CXX_FLAGS          "-DINCLUDE_TEMPLATES" )
   list(APPEND ADDITIONAL_C_FLAGS            "-DINCLUDE_TEMPLATES" )
-
+  
   ################################################################################
   # OS Defines
   ################################################################################  
@@ -108,9 +108,10 @@ if (UNIX)
   list(APPEND ADDITIONAL_C_FLAGS            ${COMPILER_WARNINGS} )
 
 
-  if ("${CMAKE_CXX_COMPILER}" MATCHES ".*clang.*")
+  if ("${CMAKE_CXX_COMPILER}" MATCHES "Clang")
       list(APPEND ADDITIONAL_CXX_FLAGS "-Weverything")
       list(APPEND ADDITIONAL_CXX_FLAGS "-Wno-c++98-compat")
+      list(APPEND ADDITIONAL_CXX_FLAGS "-Wno-c++98-compat-pedantic")
       list(APPEND ADDITIONAL_CXX_FLAGS "-Wno-padded")
       list(APPEND ADDITIONAL_CXX_FLAGS "-Wno-old-style-cast")
       list(APPEND ADDITIONAL_CXX_FLAGS "-Wno-documentation-unknown-command")
@@ -120,7 +121,7 @@ if (UNIX)
       list(APPEND ADDITIONAL_CXX_FLAGS "-Wno-deprecated")
       list(APPEND ADDITIONAL_CXX_FLAGS "-Wno-weak-vtables")
   endif()
-
+  
   ################################################################################
   # STL Vector checks
   ################################################################################
