@@ -128,7 +128,7 @@ private:
 /// Macro that sets up the name() function
 /// \internal
 #define DECIMATER_MODNAME(_mod_name) \
- virtual const std::string& name() const { \
+ virtual const std::string& name() const override { \
   static std::string _s_modname_(#_mod_name); return _s_modname_; \
 }
 
@@ -212,8 +212,8 @@ public:
   /// Virtual desctructor
   virtual ~ModBaseT() { }
 
-  /// Set module's name (using DECIMATER_MODNAME macro)
-  DECIMATER_MODNAME(ModBase);
+  /// Set module's name
+  virtual const std::string& name() const { static std::string _s_modname_("ModBase"); return _s_modname_; }
 
 
   /// Returns true if criteria returns a binary value.

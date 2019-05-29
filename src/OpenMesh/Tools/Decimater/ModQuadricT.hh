@@ -110,7 +110,7 @@ public: // inherited
    *  \see ModBaseT::collapse_priority() for return values
    *  \see set_max_err()
    */
-  virtual float collapse_priority(const CollapseInfo& _ci)
+  virtual float collapse_priority(const CollapseInfo& _ci) override
   {
     using namespace OpenMesh;
 
