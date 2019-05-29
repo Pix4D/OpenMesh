@@ -98,10 +98,10 @@ class ModEdgeLengthT: public ModBaseT<MeshT> {
      Cont. mode:  Collapse smallest edge first, but
      don't collapse edges longer as edge_length_
      */
-    float collapse_priority(const CollapseInfo& _ci);
+    float collapse_priority(const CollapseInfo& _ci) override;
 
     /// set the percentage of edge length
-    void set_error_tolerance_factor(double _factor);
+    void set_error_tolerance_factor(double _factor) override;
 
   private:
 

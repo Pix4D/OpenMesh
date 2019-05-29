@@ -71,7 +71,7 @@ get_vdpm(const char _vdpm_name[256])
     }
   }
 
-  return  NULL;
+  return  nullptr;
 }
 
 void

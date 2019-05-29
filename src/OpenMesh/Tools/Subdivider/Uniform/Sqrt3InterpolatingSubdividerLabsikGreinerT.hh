@@ -409,7 +409,7 @@ private:
 
     typename MeshType::HalfedgeHandle heh;
     typename MeshType::VertexHandle   vh1, vh2, vh3, vh4, vhl, vhr;
-    typename MeshType::Point          zero(0,0,0), P1, P2, P3, P4;
+    typename MeshType::Point          P1, P2, P3, P4;
 
     /*
     //       *---------*---------*

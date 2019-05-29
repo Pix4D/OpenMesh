@@ -122,7 +122,7 @@ public:
    *
    *  \see set_max_normal_deviation()
    */
-  float collapse_priority(const CollapseInfo& _ci)
+  float collapse_priority(const CollapseInfo& _ci) override
   {
     // simulate collapse
     Base::mesh().set_point(_ci.v0, _ci.p1);
@@ -154,7 +154,7 @@ public:
   }
 
   /// set the percentage of maximum normal deviation
-  void set_error_tolerance_factor(double _factor) {
+  void set_error_tolerance_factor(double _factor) override {
     if (_factor >= 0.0 && _factor <= 1.0) {
       // the smaller the factor, the smaller max_deviation_ gets
       // thus creating a stricter constraint

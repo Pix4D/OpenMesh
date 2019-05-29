@@ -48,10 +48,7 @@
 //
 //=============================================================================
 
-
-#ifndef __BASEREADER_HH__
-#define __BASEREADER_HH__
-
+#pragma once
 
 //=== INCLUDES ================================================================
 
@@ -91,7 +88,7 @@ class OPENMESHDLLEXPORT BaseReader
 public:
 
   /// Destructor
-  virtual ~BaseReader() {};
+  virtual ~BaseReader() {}
 
   /// Returns a brief description of the file type that can be parsed.
   virtual std::string get_description() const = 0;
@@ -203,6 +200,4 @@ static inline std::string &trim(std::string &_string) {
 //=============================================================================
 } // namespace IO
 } // namespace OpenMesh
-//=============================================================================
-#endif
 //=============================================================================

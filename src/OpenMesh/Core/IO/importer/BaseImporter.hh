@@ -196,7 +196,7 @@ public:
   virtual void add_texture_information( int _id , std::string _name ) = 0;
 
   // get reference to base kernel
-  virtual BaseKernel* kernel() { return 0; }
+  virtual BaseKernel* kernel() { return nullptr; }
 
   virtual bool is_triangle_mesh()     const { return false; }
 

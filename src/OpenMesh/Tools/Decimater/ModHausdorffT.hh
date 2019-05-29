@@ -108,7 +108,7 @@ class ModHausdorffT: public ModBaseT<MeshT> {
     }
 
     /// reset per-face point lists
-    virtual void initialize();
+    virtual void initialize() override;
 
     /** \brief compute Hausdorff error for one-ring
      *
@@ -120,13 +120,13 @@ class ModHausdorffT: public ModBaseT<MeshT> {
      * @return Binary return, if collapse is legal or illegal
      */
 
-    virtual float collapse_priority(const CollapseInfo& _ci);
+    virtual float collapse_priority(const CollapseInfo& _ci) override;
 
     /// re-distribute points
-    virtual void postprocess_collapse(const CollapseInfo& _ci);
+    virtual void postprocess_collapse(const CollapseInfo& _ci) override;
 
     /// set the percentage of tolerance
-    void set_error_tolerance_factor(double _factor);
+    void set_error_tolerance_factor(double _factor) override;
 
   private:
 

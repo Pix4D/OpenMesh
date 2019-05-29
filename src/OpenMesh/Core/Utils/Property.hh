@@ -363,7 +363,7 @@ public:
   }
 
   /// Make a copy of self.
-  PropertyT<bool>* clone() const
+  PropertyT<bool>* clone() const override
   {
     PropertyT<bool>* p = new PropertyT<bool>( *this );
     return p;
@@ -434,7 +434,7 @@ public:
 
   const value_type* data() const {
       if( data_.empty() )
-	  return 0;
+	  return nullptr;
 
       return (value_type*) &data_[0];
   }
@@ -451,7 +451,7 @@ public:
     return ((value_type*) &data_[0])[_idx];
   }
 
-  PropertyT<value_type>* clone() const {
+  PropertyT<value_type>* clone() const override {
     PropertyT<value_type>* p = new PropertyT<value_type>( *this );
     return p;
   }

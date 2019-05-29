@@ -67,7 +67,7 @@ namespace Decimater {
 
 template<class Mesh>
 BaseDecimaterT<Mesh>::BaseDecimaterT(Mesh& _mesh) :
-    mesh_(_mesh), cmodule_(NULL), initialized_(false), observer_(NULL) {
+    mesh_(_mesh), cmodule_(nullptr), initialized_(false), observer_(nullptr) {
   // default properties
   mesh_.request_vertex_status();
   mesh_.request_edge_status();
@@ -249,8 +249,8 @@ bool BaseDecimaterT<Mesh>::initialize() {
   // priority module explicitly.
 
   // find the priority module: either the only non-binary module in the list, or "Quadric"
-  Module *quadric = NULL;
-  Module *pmodule = NULL;
+  Module *quadric = nullptr;
+  Module *pmodule = nullptr;
   for (ModuleListIterator m_it = all_modules_.begin(), m_end =
       all_modules_.end(); m_it != m_end; ++m_it) {
     if ((*m_it)->name() == "Quadric")

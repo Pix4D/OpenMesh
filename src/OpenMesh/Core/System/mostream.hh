@@ -285,7 +285,7 @@ class mostream : public std::ostream
 public:
 
   /// Explicit constructor
-  explicit mostream() : std::ostream(NULL) { init(&streambuffer_); }
+  explicit mostream() : std::ostream(nullptr) { init(&streambuffer_); }
 
 
   /// Connect target to multiplexer

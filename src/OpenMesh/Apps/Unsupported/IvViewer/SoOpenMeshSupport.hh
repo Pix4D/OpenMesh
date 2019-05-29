@@ -78,9 +78,9 @@ PRIVATE_NODE_TYPESYSTEM_SOURCE(_class_); \
 SO_NODE_SOURCE_TEMPLATE \
 unsigned int _class_::classinstances = 0; \
 SO_NODE_SOURCE_TEMPLATE \
-const SoFieldData ** _class_::parentFieldData = NULL; \
+const SoFieldData ** _class_::parentFieldData = nullptr; \
 SO_NODE_SOURCE_TEMPLATE \
-SoFieldData * _class_::fieldData = NULL; \
+SoFieldData * _class_::fieldData = nullptr; \
  \
 SO_NODE_SOURCE_TEMPLATE \
 const SoFieldData ** \

@@ -325,7 +325,7 @@ void mouse(int button, int state, int x, int y)
   {
     g.mgr->mouseButtonRelease(button, x, y);
 //     if ( g.mode & FLYMODE )
-//       glutIdleFunc(NULL); 
+//       glutIdleFunc(nullptr); 
   }
   else
   {

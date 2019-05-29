@@ -148,7 +148,7 @@ public:
   /// Constructor
   explicit CompositeT(Mesh& _mesh)
     : subdiv_type_(0), 
-      subdiv_rule_(NULL), /*first_rule_(NULL), last_rule_(NULL),*/ mesh_(_mesh)
+      subdiv_rule_(nullptr), /*first_rule_(nullptr), last_rule_(nullptr),*/ mesh_(_mesh)
   { }
 
   ///
@@ -161,7 +161,7 @@ public:
   void cleanup(void)
   {
     subdiv_type_ = 0;
-    subdiv_rule_ = NULL;
+    subdiv_rule_ = nullptr;
 
     std::for_each(rule_sequence_.begin(), 
                   rule_sequence_.end(), DeleteRule() );

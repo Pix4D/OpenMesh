@@ -75,7 +75,7 @@ DecimaterT<Mesh>::DecimaterT(Mesh& _mesh) :
 #if (defined(_MSC_VER) && (_MSC_VER >= 1800)) || __cplusplus > 199711L || defined( __GXX_EXPERIMENTAL_CXX0X__ )
   heap_(nullptr)
 #else
-  heap_(NULL)
+  heap_(nullptr)
 #endif
 
 {

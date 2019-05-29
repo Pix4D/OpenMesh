@@ -63,7 +63,7 @@ MeshViewerWidget::MeshViewerWidget(QWidget* parent)  : MeshViewerWidgetT<MyMesh>
         QString msg = "Cannot read mesh from file:\n '";
         msg += fname;
         msg += "'";
-        QMessageBox::critical( NULL, windowTitle(), msg);
+        QMessageBox::critical( nullptr, windowTitle(), msg);
     }
     t.stop();
     std::cout << "Loaded mesh in ~" << t.as_string() << std::endl;
@@ -80,7 +80,7 @@ void MeshViewerWidget::open_texture_gui(QString fname)
         msg += "- Mesh file didn't provide texture coordinates\n";
         msg += "- Texture file does not exist\n";
         msg += "- Texture file is not accessible.\n";
-        QMessageBox::warning( NULL, windowTitle(), msg );
+        QMessageBox::warning( nullptr, windowTitle(), msg );
     }
 }
 
