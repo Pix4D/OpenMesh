@@ -351,12 +351,11 @@ HeapT<HeapEntry, HeapInterface>::
 downheap(size_t _idx)
 {
   const HeapEntry     h = entry(_idx);
-  size_t        childIdx;
   const size_t        s = size();
   
   while(_idx < s)
   {
-    childIdx = left(_idx);
+    size_t childIdx = left(_idx);
     if (childIdx >= s) break;
     
     if ((childIdx + 1 < s) && (interface_.less(entry(childIdx + 1), entry(childIdx))))

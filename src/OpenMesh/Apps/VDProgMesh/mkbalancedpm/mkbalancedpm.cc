@@ -107,7 +107,7 @@ public:
 
 public: // inherited
 
-  void initialize(void)
+  void initialize(void) override
   {
     BaseModQ::initialize();
     n_vertices_ = BaseModQ::mesh().n_vertices();

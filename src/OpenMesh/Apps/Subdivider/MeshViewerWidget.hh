@@ -72,7 +72,7 @@ public:
    typedef MeshViewerWidgetT<Mesh> Base;
    
   /// default constructor
-  MeshViewerWidget(QWidget* _parent=0)
+  explicit MeshViewerWidget(QWidget* _parent=0)
     : Base(_parent)
   {}
 
