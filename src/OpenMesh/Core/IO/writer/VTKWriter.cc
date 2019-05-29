@@ -40,7 +40,7 @@ bool _VTKWriter_::write(const std::string& _filename, BaseExporter& _be, Options
 
 bool _VTKWriter_::write(std::ostream& _out, BaseExporter& _be, Options _opt, std::streamsize _precision) const
 {
-    Vec3f v, n;
+    Vec3f n;
     Vec2f t;
     VertexHandle vh;
     OpenMesh::Vec3f c;
@@ -78,7 +78,7 @@ bool _VTKWriter_::write(std::ostream& _out, BaseExporter& _be, Options _opt, std
     _out << "POINTS " << _be.n_vertices() << " float\n";
     size_t nv = _be.n_vertices();
     for (size_t i = 0; i < nv; ++i) {
-        Vec3f v = _be.point(VertexHandle(int(i)));
+        const Vec3f v = _be.point(VertexHandle(int(i)));
         _out << v[0] << ' ' << v[1] << ' ' << v[2] << '\n';
     }
 

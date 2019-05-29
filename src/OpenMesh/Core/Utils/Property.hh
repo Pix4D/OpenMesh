@@ -99,7 +99,7 @@ public:
 public:
 
   /// Default constructor
-  PropertyT(const std::string& _name = "<unknown>")
+  explicit PropertyT(const std::string& _name = "<unknown>")
   : BaseProperty(_name)
   {}
 

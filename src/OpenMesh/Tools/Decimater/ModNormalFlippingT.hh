@@ -86,7 +86,7 @@ public:
 public:
 
   /// Constructor
-  ModNormalFlippingT( MeshT &_mesh) : Base(_mesh, true)
+  explicit ModNormalFlippingT( MeshT &_mesh) : Base(_mesh, true)
   {
     set_max_normal_deviation( 90.0f );
     const bool mesh_has_normals = _mesh.has_face_normals();
@@ -159,8 +159,8 @@ public:
       // the smaller the factor, the smaller max_deviation_ gets
       // thus creating a stricter constraint
       // division by error_tolerance_factor_ is for normalization
-      double max_normal_deviation = (max_deviation_ * 180.0/M_PI) * _factor / this->error_tolerance_factor_;
-      set_max_normal_deviation(max_normal_deviation);
+      double max_normal_deviation_value = (max_deviation_ * 180.0/M_PI) * _factor / this->error_tolerance_factor_;
+      set_max_normal_deviation(max_normal_deviation_value);
       this->error_tolerance_factor_ = _factor;
     }
   }

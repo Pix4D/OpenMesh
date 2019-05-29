@@ -100,24 +100,24 @@ write(const std::string& _filename, BaseExporter& _be, Options _opt, std::stream
 
   {
 #if defined(WIN32)
-    std::string::size_type dot = _filename.find_last_of("\\/");
+    std::string::size_type dotposition = _filename.find_last_of("\\/");
 #else
-    std::string::size_type dot = _filename.rfind("/");
+    std::string::size_type dotposition = _filename.rfind("/");
 #endif
 
-    if (dot == std::string::npos){
+    if (dotposition == std::string::npos){
       path_ = "./";
       objName_ = _filename;
     }else{
-      path_ = _filename.substr(0,dot+1);
-      objName_ = _filename.substr(dot+1);
+      path_ = _filename.substr(0,dotposition+1);
+      objName_ = _filename.substr(dotposition+1);
     }
 
     //remove the file extension
-    dot = objName_.find_last_of(".");
+    dotposition = objName_.find_last_of(".");
 
-    if(dot != std::string::npos)
-      objName_ = objName_.substr(0,dot);
+    if(dotposition != std::string::npos)
+      objName_ = objName_.substr(0,dotposition);
   }
 
   bool result = write(out, _be, _opt, _precision);

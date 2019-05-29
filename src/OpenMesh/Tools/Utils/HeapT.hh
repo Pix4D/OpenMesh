@@ -258,9 +258,9 @@ public:
   bool check()
   {
     bool ok(true);
-    unsigned int i, j;
-    for (i=0; i<size(); ++i)
+    for (unsigned int i=0; i<size(); ++i)
     {
+      unsigned int j;
       if (((j=left(i))<size()) && interface_.greater(entry(i), entry(j))) 
       {
         omerr() << "Heap condition violated\n";

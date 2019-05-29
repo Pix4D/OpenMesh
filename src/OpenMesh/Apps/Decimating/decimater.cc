@@ -216,7 +216,7 @@ decimate(const std::string &_ifname,
    using namespace std;
 
    Mesh                   mesh;   
-   OpenMesh::IO::Options  opt;
+   OpenMesh::IO::Options  readopt;
    OpenMesh::Utils::Timer timer;
 
    // ---------------------------------------- read source mesh
@@ -227,7 +227,7 @@ decimate(const std::string &_ifname,
 
      if (gverbose)
        clog << _ifname << endl;
-     if ( !(rc = OpenMesh::IO::read_mesh(mesh, _ifname, opt)) )
+     if ( !(rc = OpenMesh::IO::read_mesh(mesh, _ifname, readopt)) )
      {
        cerr << "  ERROR: read failed!" << endl;
        return rc;
@@ -238,7 +238,7 @@ decimate(const std::string &_ifname,
    {
      // ---- 0 - For module NormalFlipping one needs face normals
 
-     if ( !opt.check( OpenMesh::IO::Options::FaceNormal ) )
+     if ( !readopt.check( OpenMesh::IO::Options::FaceNormal ) )
      {
        if ( !mesh.has_face_normals() )
          mesh.request_face_normals();
@@ -420,11 +420,11 @@ decimate(const std::string &_ifname,
        ofname.insert(++pos, n  );
      }
 
-     OpenMesh::IO::Options opt;
+     OpenMesh::IO::Options writeopt;
 
      //opt += OpenMesh::IO::Options::Binary;
 
-     if ( !OpenMesh::IO::write_mesh(mesh, ofname, opt ) )
+     if ( !OpenMesh::IO::write_mesh(mesh, ofname, writeopt ) )
      {
        std::cerr << "  Cannot write decimated mesh to file '" 
            << ofname << "'\n";

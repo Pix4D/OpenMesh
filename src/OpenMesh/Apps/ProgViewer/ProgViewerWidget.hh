@@ -137,7 +137,7 @@ private:
   /// coarsen mesh down to _n vertices
   void coarsen(unsigned int _n);
 
-  virtual void keyPressEvent(QKeyEvent* _event);
+  virtual void keyPressEvent(QKeyEvent* _event) override;
 
   // mesh data
   bool              animateRefinement_;

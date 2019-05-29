@@ -97,7 +97,7 @@ class ModRoundnessT : public ModBaseT<MeshT>
   public:
 
   /// Constructor
-  ModRoundnessT( MeshT &_dec ) :
+  explicit ModRoundnessT( MeshT &_dec ) :
     Base(_dec, false),
     min_r_(-1.0)
   { }

@@ -72,7 +72,7 @@ class ModIndependentSetsT: public ModBaseT<MeshT> {
     ;
 
     /// Constructor
-    ModIndependentSetsT(MeshT &_mesh) :
+    explicit ModIndependentSetsT(MeshT &_mesh) :
         Base(_mesh, true) {
     }
 
