@@ -131,7 +131,7 @@ public: // inherited
 
 
   /// Post-process halfedge collapse (accumulate quadrics)
-  virtual void postprocess_collapse(const CollapseInfo& _ci)
+  virtual void postprocess_collapse(const CollapseInfo& _ci) override
   {
     Base::mesh().property(quadrics_, _ci.v1) +=
       Base::mesh().property(quadrics_, _ci.v0);

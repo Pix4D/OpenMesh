@@ -216,7 +216,7 @@ public:
   }
 
 
-  void  postprocess_collapse(const CollapseInfo& _ci) {
+  void  postprocess_collapse(const CollapseInfo& _ci) override {
     // account for changed normals
     typename Mesh::VertexFaceIter vf_it(mesh_, _ci.v1);
     for (; vf_it.is_valid(); ++vf_it)

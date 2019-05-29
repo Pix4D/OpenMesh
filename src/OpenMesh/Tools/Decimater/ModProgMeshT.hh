@@ -130,7 +130,7 @@ public: // inherited
 
   /// Stores collapse information in a queue.
   /// \see infolist()
-  void postprocess_collapse(const CollapseInfo& _ci)
+  void postprocess_collapse(const CollapseInfo& _ci) override
   {
     pmi_.push_back( Info( _ci ) );
   }

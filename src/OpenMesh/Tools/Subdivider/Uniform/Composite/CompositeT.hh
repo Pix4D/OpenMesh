@@ -122,7 +122,7 @@ protected: // inherited interface
   }
 
 #ifdef NDEBUG
-  bool cleanup( MeshType& ) 
+  bool cleanup( MeshType& ) override
 #else
   bool cleanup( MeshType& _m ) override
 #endif
