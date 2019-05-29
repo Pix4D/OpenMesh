@@ -114,7 +114,7 @@ public: // inherited
     n_roots_    = calc_bits_for_roots(n_vertices_);
   }
 
-  virtual float collapse_priority(const CollapseInfo& _ci)
+  virtual float collapse_priority(const CollapseInfo& _ci) override
   {
     level_t newlevel = std::max( BaseModQ::mesh().property( level_, _ci.v0 ),
                                  BaseModQ::mesh().property( level_, _ci.v1 ) )+1;
@@ -135,7 +135,7 @@ public: // inherited
   }
 
   /// post-process halfedge collapse (accumulate quadrics)
-  void postprocess_collapse(const CollapseInfo& _ci)
+  void postprocess_collapse(const CollapseInfo& _ci) override
   {
     BaseModQ::postprocess_collapse( _ci );
 

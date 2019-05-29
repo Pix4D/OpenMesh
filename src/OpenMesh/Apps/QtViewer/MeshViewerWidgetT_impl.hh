@@ -131,7 +131,6 @@ MeshViewerWidgetT<M>::open_mesh(const char* _filename, IO::Options _opt)
     typename Mesh::ConstVertexIter vIt(mesh_.vertices_begin());
     typename Mesh::ConstVertexIter vEnd(mesh_.vertices_end());      
     
-    typedef typename Mesh::Point Point;
     using OpenMesh::Vec3f;
     
     Vec3f bbMin, bbMax;

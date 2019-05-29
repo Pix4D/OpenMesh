@@ -140,7 +140,7 @@ public:
 
 
   /// Allocate and init normal cones
-  void  initialize() {
+  void  initialize() override {
     if (!normal_cones_.is_valid())
       mesh_.add_property(normal_cones_);
 
@@ -165,7 +165,7 @@ public:
    * @param _ci Collapse info data
    * @return Half of the normal cones size (radius in radians)
    */
-  float collapse_priority(const CollapseInfo& _ci) {
+  float collapse_priority(const CollapseInfo& _ci) override {
     // simulate collapse
     mesh_.set_point(_ci.v0, _ci.p1);
 
@@ -203,7 +203,7 @@ public:
   }
 
   /// set the percentage of normal deviation
-  void set_error_tolerance_factor(double _factor) {
+  void set_error_tolerance_factor(double _factor) override {
     if (_factor >= 0.0 && _factor <= 1.0) {
       // the smaller the factor, the smaller normal_deviation_ gets
       // thus creating a stricter constraint
