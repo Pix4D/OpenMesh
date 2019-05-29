@@ -161,7 +161,7 @@ PolyMeshT<Kernel>::calc_face_normal_impl(FaceHandle, PointIsNot3DTag) const
   assert(false);
 
   Normal normal;
-  vectorize(normal,0);
+  vectorize(normal,Scalar(0.0));
   return normal;
 }
 
@@ -229,7 +229,7 @@ PolyMeshT<Kernel>::calc_face_normal_impl(const Point&, const Point&, const Point
   assert(false);
 
   Normal normal;
-  vectorize(normal,0);
+  vectorize(normal,Scalar(0.0));
   return normal;
 }
 
@@ -241,7 +241,7 @@ PolyMeshT<Kernel>::
 calc_face_centroid(FaceHandle _fh) const
 {
   Point _pt;
-  vectorize(_pt, 0);
+  vectorize(_pt, Scalar(0.0));
   Scalar valence = 0.0;
   for (ConstFaceVertexIter cfv_it = this->cfv_iter(_fh); cfv_it.is_valid(); ++cfv_it, valence += 1.0)
   {
@@ -404,7 +404,7 @@ template <class Kernel>
 void PolyMeshT<Kernel>::
 calc_vertex_normal_fast(VertexHandle _vh, Normal& _n) const
 {
-  vectorize(_n, 0.0);
+  vectorize(_n,Scalar(0.0));
   for (ConstVertexFaceIter vf_it = this->cvf_iter(_vh); vf_it.is_valid(); ++vf_it)
     _n += this->normal(*vf_it);
 }
@@ -414,7 +414,7 @@ template <class Kernel>
 void PolyMeshT<Kernel>::
 calc_vertex_normal_correct(VertexHandle _vh, Normal& _n) const
 {
-  vectorize(_n, 0.0);
+  vectorize(_n, Scalar(0.0));
   ConstVertexIHalfedgeIter cvih_it = this->cvih_iter(_vh);
   if (! cvih_it.is_valid() )
   {//don't crash on isolated vertices
