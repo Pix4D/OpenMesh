@@ -387,10 +387,12 @@ bool _OMReader_::read_binary_vertex_chunk(std::istream &_is, BaseImporter &_bi, 
     default: // skip unknown chunks
     {
       omerr() << "Unknown chunk type ignored!\n";
-      size_t size_of = header_.n_vertices_ * OMFormat::vector_size(chunk_header_);
-      _is.ignore(size_of);
-      bytes_ += size_of;
+      size_t chunk_size = header_.n_vertices_ * OMFormat::vector_size(chunk_header_);
+      _is.ignore(chunk_size);
+      bytes_ += chunk_size;
+      break;
     }
+
   }
 
   // all chunk data has been read..?!
@@ -505,9 +507,9 @@ bool _OMReader_::read_binary_face_chunk(std::istream &_is, BaseImporter &_bi, Op
     default: // skip unknown chunks
     {
       omerr() << "Unknown chunk type ignore!\n";
-      size_t size_of = OMFormat::chunk_data_size(header_, chunk_header_);
-      _is.ignore(size_of);
-      bytes_ += size_of;
+      size_t chunk_size = OMFormat::chunk_data_size(header_, chunk_header_);
+      _is.ignore(chunk_size);
+      bytes_ += chunk_size;
     }
   }
   return fidx == header_.n_faces_;
@@ -549,9 +551,9 @@ bool _OMReader_::read_binary_edge_chunk(std::istream &_is, BaseImporter &_bi, Op
 
     default:
       // skip unknown type
-      size_t size_of = OMFormat::chunk_data_size(header_, chunk_header_);
-      _is.ignore(size_of);
-      bytes_ += size_of;
+      size_t chunk_size = OMFormat::chunk_data_size(header_, chunk_header_);
+      _is.ignore(chunk_size);
+      bytes_ += chunk_size;
   }
 
   return b < bytes_;
@@ -627,9 +629,9 @@ bool _OMReader_::read_binary_halfedge_chunk(std::istream &_is, BaseImporter &_bi
     default:
       // skip unknown chunk
       omerr() << "Unknown chunk type ignored!\n";
-      size_t size_of = OMFormat::chunk_data_size(header_, chunk_header_);
-      _is.ignore(size_of);
-      bytes_ += size_of;
+      size_t chunk_size = OMFormat::chunk_data_size(header_, chunk_header_);
+      _is.ignore(chunk_size);
+      bytes_ += chunk_size;
   }
 
   return b < bytes_;
@@ -655,9 +657,9 @@ bool _OMReader_::read_binary_mesh_chunk(std::istream &_is, BaseImporter &_bi, Op
 
     default:
       // skip unknown chunk
-      size_t size_of = OMFormat::chunk_data_size(header_, chunk_header_);
-      _is.ignore(size_of);
-      bytes_ += size_of;
+      size_t chunk_size = OMFormat::chunk_data_size(header_, chunk_header_);
+      _is.ignore(chunk_size);
+      bytes_ += chunk_size;
   }
 
   return b < bytes_;

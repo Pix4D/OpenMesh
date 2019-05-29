@@ -135,13 +135,13 @@ read(const std::string& _filename, BaseImporter& _bi, Options& _opt)
 
   {
 #if defined(WIN32)
-    std::string::size_type dot = _filename.find_last_of("\\/");
+    std::string::size_type dot_pos = _filename.find_last_of("\\/");
 #else
-    std::string::size_type dot = _filename.rfind("/");
+    std::string::size_type dot_pos = _filename.rfind("/");
 #endif
-    path_ = (dot == std::string::npos)
+    path_ = (dot_pos == std::string::npos)
       ? "./"
-      : std::string(_filename.substr(0,dot+1));
+      : std::string(_filename.substr(0,dot_pos+1));
   }
 
   bool result = read(in, _bi, _opt);

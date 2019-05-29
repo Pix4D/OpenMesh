@@ -85,7 +85,7 @@ public:
   /** Constructor
    *  \internal
    */
-  ModQuadricT( MeshT &_mesh )
+  explicit ModQuadricT( MeshT &_mesh )
     : Base(_mesh, false)
   {
     unset_max_err();
@@ -103,7 +103,7 @@ public:
 public: // inherited
 
   /// Initalize the module and prepare the mesh for decimation.
-  virtual void initialize(void);
+  virtual void initialize(void) override;
 
   /** Compute collapse priority based on error quadrics.
    *
@@ -138,7 +138,7 @@ public: // inherited
   }
 
   /// set the percentage of maximum quadric error
-  void set_error_tolerance_factor(double _factor);
+  void set_error_tolerance_factor(double _factor) override;
 
 
 

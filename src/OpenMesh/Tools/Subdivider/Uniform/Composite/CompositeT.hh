@@ -102,13 +102,13 @@ public:
 
 public: // inherited interface
 
-  virtual const char *name( void ) const = 0;
+  virtual const char *name( void ) const override = 0;
 
 protected: // inherited interface
 
-  bool prepare( MeshType& _m );
+  bool prepare( MeshType& _m ) override;
 
-  bool subdivide( MeshType& _m, size_t _n, const bool _update_points = true  )
+  bool subdivide( MeshType& _m, size_t _n, const bool _update_points = true  ) override
   {
     assert( p_mesh_ == &_m );
 
@@ -124,7 +124,7 @@ protected: // inherited interface
 #ifdef NDEBUG
   bool cleanup( MeshType& ) 
 #else
-  bool cleanup( MeshType& _m ) 
+  bool cleanup( MeshType& _m ) override
 #endif
   { 
     assert( p_mesh_ == &_m );

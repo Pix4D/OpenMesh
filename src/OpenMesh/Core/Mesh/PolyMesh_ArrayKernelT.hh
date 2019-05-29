@@ -97,7 +97,7 @@ class PolyMesh_ArrayKernelT
 public:
   PolyMesh_ArrayKernelT() {}
   template<class OtherTraits>
-   PolyMesh_ArrayKernelT( const TriMesh_ArrayKernelT<OtherTraits> & t)
+  explicit PolyMesh_ArrayKernelT( const TriMesh_ArrayKernelT<OtherTraits> & t)
   {
      //assign the connectivity and standard properties
      this->assign(t, true);

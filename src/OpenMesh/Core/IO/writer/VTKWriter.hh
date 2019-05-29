@@ -29,13 +29,13 @@ class OPENMESHDLLEXPORT _VTKWriter_ : public BaseWriter
 public:
     _VTKWriter_();
 
-    std::string get_description() const { return "VTK"; }
-    std::string get_extensions()  const { return "vtk"; }
+    std::string get_description() const override { return "VTK"; }
+    std::string get_extensions()  const override { return "vtk"; }
 
-    bool write(const std::string&, BaseExporter&, Options, std::streamsize _precision = 6) const;
-    bool write(std::ostream&, BaseExporter&, Options, std::streamsize _precision = 6) const;
+    bool write(const std::string&, BaseExporter&, Options, std::streamsize _precision = 6) const override;
+    bool write(std::ostream&, BaseExporter&, Options, std::streamsize _precision = 6) const override;
 
-    size_t binary_size(BaseExporter&, Options) const { return 0; }
+    size_t binary_size(BaseExporter&, Options) const override { return 0; }
 };
 
 //== TYPE DEFINITION ==========================================================

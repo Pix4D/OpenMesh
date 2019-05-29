@@ -144,7 +144,7 @@ public:
 
 public: // inherited
 
-  bool open_mesh(const char* _filename, OpenMesh::IO::Options _opt)
+  bool open_mesh(const char* _filename, OpenMesh::IO::Options _opt) override
   {
     bool rc;
 
@@ -170,7 +170,7 @@ protected slots:
 
 protected:   
 
-  virtual void keyPressEvent(QKeyEvent* _event);  
+  virtual void keyPressEvent(QKeyEvent* _event) override;
 
 
 private:

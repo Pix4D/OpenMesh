@@ -84,7 +84,7 @@ class ExporterT : public BaseExporter
 public:
 
   // Constructor
-  ExporterT(const Mesh& _mesh) : mesh_(_mesh) {}
+  explicit ExporterT(const Mesh& _mesh) : mesh_(_mesh) {}
 
 
   // get vertex data

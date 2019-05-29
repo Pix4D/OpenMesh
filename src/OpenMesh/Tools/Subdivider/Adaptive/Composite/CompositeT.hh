@@ -146,7 +146,7 @@ public:
 public:
 
   /// Constructor
-  CompositeT(Mesh& _mesh) 
+  explicit CompositeT(Mesh& _mesh)
     : subdiv_type_(0), 
       subdiv_rule_(NULL), /*first_rule_(NULL), last_rule_(NULL),*/ mesh_(_mesh)
   { }
@@ -256,15 +256,15 @@ protected:
 protected: // helper
 
   // get current generation from state
-  state_t generation(state_t _s) { return _s-(_s % n_rules()); }
-  state_t generation( VH _vh ) { return generation(mesh_.data(_vh).state()); }
-  state_t generation( EH _eh ) { return generation(mesh_.data(_eh).state()); }
-  state_t generation( FH _fh ) { return generation(mesh_.data(_fh).state()); }
+  state_t generation(state_t _s) const { return _s-(_s % n_rules()); }
+  state_t generation( VH _vh ) const  { return generation(mesh_.data(_vh).state()); }
+  state_t generation( EH _eh ) const { return generation(mesh_.data(_eh).state()); }
+  state_t generation( FH _fh ) const { return generation(mesh_.data(_fh).state()); }
 
 private:
 
   // short cuts
-  Rule* t_rule() { return subdiv_rule_;           }
+  Rule* t_rule() const { return subdiv_rule_;           }
   Rule* f_rule() { return rule_sequence_.front(); }
   Rule* l_rule() { return rule_sequence_.back();  }
 

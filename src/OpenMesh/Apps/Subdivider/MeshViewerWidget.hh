@@ -72,7 +72,7 @@ public:
    typedef MeshViewerWidgetT<Mesh> Base;
    
   /// default constructor
-  MeshViewerWidget(QWidget* _parent=0)
+  explicit MeshViewerWidget(QWidget* _parent=0)
     : Base(_parent)
   {}
 
@@ -80,7 +80,7 @@ public:
   ~MeshViewerWidget() {}
 
   /// open mesh
-  inline bool open_mesh(const char* _filename, OpenMesh::IO::Options _opt)
+  inline bool open_mesh(const char* _filename, OpenMesh::IO::Options _opt) override
   {
     if ( Base::open_mesh( _filename, _opt ) )
     {

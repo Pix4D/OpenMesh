@@ -134,7 +134,6 @@ compute_weights(LaplaceWeighting _weighting)
   typename Mesh::EdgeIter          e_it, e_end(Base::mesh_.edges_end());
   typename Mesh::HalfedgeHandle    heh0, heh1, heh2;
   typename Mesh::VertexHandle      v0, v1;
-  const typename Mesh::Point       *p0, *p1, *p2;
   typename Mesh::Normal            d0, d1;
   typename Mesh::Scalar            weight, lb(-1.0), ub(1.0);
 
@@ -172,6 +171,8 @@ compute_weights(LaplaceWeighting _weighting)
     {
       for (e_it=Base::mesh_.edges_begin(); e_it!=e_end; ++e_it)
       {
+        const typename Mesh::Point       *p0, *p1, *p2;
+
         weight = 0.0;
 
         heh0   = Base::mesh_.halfedge_handle(*e_it, 0);

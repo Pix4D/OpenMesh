@@ -252,7 +252,7 @@ namespace OMFormat {
 
       PropertyName( ) { }
 
-      PropertyName( const std::string& _name ) { *this = _name; }
+      explicit PropertyName( const std::string& _name ) { *this = _name; }
 
       bool is_valid() const { return is_valid( size() ); }
 

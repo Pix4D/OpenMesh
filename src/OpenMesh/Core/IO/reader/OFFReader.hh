@@ -118,17 +118,17 @@ public:
   /// Destructor
   virtual ~_OFFReader_() {};
 
-  std::string get_description() const { return "Object File Format"; }
-  std::string get_extensions()  const { return "off"; }
-  std::string get_magic()       const { return "OFF"; }
+  std::string get_description() const override { return "Object File Format"; }
+  std::string get_extensions()  const override { return "off"; }
+  std::string get_magic()       const override { return "OFF"; }
 
   bool read(const std::string& _filename,
 	    BaseImporter& _bi,
-	    Options& _opt);
+	    Options& _opt) override;
 
-  bool can_u_read(const std::string& _filename) const;
+  bool can_u_read(const std::string& _filename) const override;
 
-  bool read(std::istream& _in, BaseImporter& _bi, Options& _opt );
+  bool read(std::istream& _in, BaseImporter& _bi, Options& _opt ) override;
 
 private:
 

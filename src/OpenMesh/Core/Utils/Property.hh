@@ -99,7 +99,7 @@ public:
 public:
 
   /// Default constructor
-  PropertyT(const std::string& _name = "<unknown>")
+  explicit PropertyT(const std::string& _name = "<unknown>")
   : BaseProperty(_name)
   {}
 
@@ -109,22 +109,22 @@ public:
 
 public: // inherited from BaseProperty
 
-  virtual void reserve(size_t _n) { data_.reserve(_n);    }
-  virtual void resize(size_t _n)  { data_.resize(_n);     }
-  virtual void clear()  { data_.clear(); vector_type().swap(data_);    }
-  virtual void push_back()        { data_.push_back(T()); }
-  virtual void swap(size_t _i0, size_t _i1)
+  virtual void reserve(size_t _n) override { data_.reserve(_n);    }
+  virtual void resize(size_t _n) override  { data_.resize(_n);     }
+  virtual void clear() override  { data_.clear(); vector_type().swap(data_);    }
+  virtual void push_back() override        { data_.push_back(T()); }
+  virtual void swap(size_t _i0, size_t _i1) override
   { std::swap(data_[_i0], data_[_i1]); }
-  virtual void copy(size_t _i0, size_t _i1)
+  virtual void copy(size_t _i0, size_t _i1) override
   { data_[_i1] = data_[_i0]; }
 
 public:
 
-  virtual void set_persistent( bool _yn )
+  virtual void set_persistent( bool _yn ) override
   { check_and_set_persistent<T>( _yn ); }
 
-  virtual size_t       n_elements()   const { return data_.size(); }
-  virtual size_t       element_size() const { return IO::size_of<T>(); }
+  virtual size_t       n_elements()   const override { return data_.size(); }
+  virtual size_t       element_size() const override { return IO::size_of<T>(); }
 
 #ifndef DOXY_IGNORE_THIS
   struct plus {
@@ -133,17 +133,17 @@ public:
   };
 #endif
 
-  virtual size_t size_of(void) const
+  virtual size_t size_of(void) const override
   {
     if (element_size() != IO::UnknownSize)
       return this->BaseProperty::size_of(n_elements());
     return std::accumulate(data_.begin(), data_.end(), size_t(0), plus());
   }
 
-  virtual size_t size_of(size_t _n_elem) const
+  virtual size_t size_of(size_t _n_elem) const override
   { return this->BaseProperty::size_of(_n_elem); }
 
-  virtual size_t store( std::ostream& _ostr, bool _swap ) const
+  virtual size_t store( std::ostream& _ostr, bool _swap ) const override
   {
     if ( IO::is_streamable<vector_type>() )
       return IO::store(_ostr, data_, _swap );
@@ -153,7 +153,7 @@ public:
     return bytes;
   }
 
-  virtual size_t restore( std::istream& _istr, bool _swap )
+  virtual size_t restore( std::istream& _istr, bool _swap ) override
   {
     if ( IO::is_streamable<vector_type>() )
       return IO::restore(_istr, data_, _swap );
@@ -199,7 +199,7 @@ public: // data access interface
   }
 
   /// Make a copy of self.
-  PropertyT<T>* clone() const
+  PropertyT<T>* clone() const override
   {
     PropertyT<T>* p = new PropertyT<T>( *this );
     return p;
@@ -230,37 +230,37 @@ public:
 
 public:
 
-  PropertyT(const std::string& _name = "<unknown>")
+  explicit PropertyT(const std::string& _name = "<unknown>")
     : BaseProperty(_name)
   { }
 
 public: // inherited from BaseProperty
 
-  virtual void reserve(size_t _n) { data_.reserve(_n);    }
-  virtual void resize(size_t _n)  { data_.resize(_n);     }
-  virtual void clear()  { data_.clear(); vector_type().swap(data_);    }
-  virtual void push_back()        { data_.push_back(bool()); }
-  virtual void swap(size_t _i0, size_t _i1)
+  virtual void reserve(size_t _n) override { data_.reserve(_n);    }
+  virtual void resize(size_t _n) override  { data_.resize(_n);     }
+  virtual void clear() override  { data_.clear(); vector_type().swap(data_);    }
+  virtual void push_back() override        { data_.push_back(bool()); }
+  virtual void swap(size_t _i0, size_t _i1) override
   { bool t(data_[_i0]); data_[_i0]=data_[_i1]; data_[_i1]=t; }
-  virtual void copy(size_t _i0, size_t _i1)
+  virtual void copy(size_t _i0, size_t _i1) override
   { data_[_i1] = data_[_i0]; }
 
 public:
 
-  virtual void set_persistent( bool _yn )
+  virtual void set_persistent( bool _yn ) override
   {
     check_and_set_persistent<bool>( _yn );
   }
 
-  virtual size_t       n_elements()   const { return data_.size();  }
-  virtual size_t       element_size() const { return UnknownSize;    }
-  virtual size_t       size_of() const      { return size_of( n_elements() ); }
-  virtual size_t       size_of(size_t _n_elem) const
+  virtual size_t       n_elements()   const override { return data_.size();  }
+  virtual size_t       element_size() const override { return UnknownSize;    }
+  virtual size_t       size_of() const override      { return size_of( n_elements() ); }
+  virtual size_t       size_of(size_t _n_elem) const override
   {
     return _n_elem / 8 + ((_n_elem % 8)!=0);
   }
 
-  size_t store( std::ostream& _ostr, bool /* _swap */ ) const
+  size_t store( std::ostream& _ostr, bool /* _swap */ ) const override
   {
     size_t bytes = 0;
 
@@ -299,7 +299,7 @@ public:
     return bytes;
   }
 
-  size_t restore( std::istream& _istr, bool /* _swap */ )
+  size_t restore( std::istream& _istr, bool /* _swap */ ) override
   {
     size_t bytes = 0;
 
@@ -394,40 +394,40 @@ public:
 
 public:
 
-  PropertyT(const std::string& _name = "<unknown>")
+  explicit PropertyT(const std::string& _name = "<unknown>")
     : BaseProperty(_name)
   { }
 
 public: // inherited from BaseProperty
 
-  virtual void reserve(size_t _n) { data_.reserve(_n);    }
-  virtual void resize(size_t _n)  { data_.resize(_n);     }
-  virtual void clear()  { data_.clear(); vector_type().swap(data_);    }
-  virtual void push_back()        { data_.push_back(std::string()); }
-  virtual void swap(size_t _i0, size_t _i1) {
+  virtual void reserve(size_t _n) override { data_.reserve(_n);    }
+  virtual void resize(size_t _n) override  { data_.resize(_n);     }
+  virtual void clear() override  { data_.clear(); vector_type().swap(data_);    }
+  virtual void push_back() override        { data_.push_back(std::string()); }
+  virtual void swap(size_t _i0, size_t _i1) override {
     std::swap(data_[_i0], data_[_i1]);
   }
-  virtual void copy(size_t _i0, size_t _i1)
+  virtual void copy(size_t _i0, size_t _i1) override
   { data_[_i1] = data_[_i0]; }
 
 public:
 
-  virtual void set_persistent( bool _yn )
+  virtual void set_persistent( bool _yn ) override
   { check_and_set_persistent<std::string>( _yn ); }
 
-  virtual size_t       n_elements()   const { return data_.size();  }
-  virtual size_t       element_size() const { return UnknownSize;    }
-  virtual size_t       size_of() const
+  virtual size_t       n_elements()   const override { return data_.size();  }
+  virtual size_t       element_size() const override { return UnknownSize;    }
+  virtual size_t       size_of() const override
   { return IO::size_of( data_ ); }
 
-  virtual size_t       size_of(size_t /* _n_elem */) const
+  virtual size_t       size_of(size_t /* _n_elem */) const override
   { return UnknownSize; }
 
   /// Store self as one binary block. Max. length of a string is 65535 bytes.
-  size_t store( std::ostream& _ostr, bool _swap ) const
+  size_t store( std::ostream& _ostr, bool _swap ) const override
   { return IO::store( _ostr, data_, _swap ); }
 
-  size_t restore( std::istream& _istr, bool _swap )
+  size_t restore( std::istream& _istr, bool _swap ) override
   { return IO::restore( _istr, data_, _swap ); }
 
 public:
