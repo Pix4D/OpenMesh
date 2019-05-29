@@ -60,7 +60,7 @@ int main(int argc, char **argv)
 
   if ( !QGLFormat::hasOpenGL() ) {
     QString msg = "System has no OpenGL support!";
-    QMessageBox::critical( NULL, "OpenGL", msg + argv[1], QMessageBox::Ok );
+    QMessageBox::critical( nullptr, "OpenGL", msg + argv[1], QMessageBox::Ok );
     return -1;
   }
 
@@ -77,7 +77,7 @@ int main(int argc, char **argv)
      if ( ! w->open_mesh(argv[1]) )
      {
         QString msg = "Cannot read mesh from file ";
-        QMessageBox::critical( NULL, argv[1], msg + argv[1], QMessageBox::Ok );
+        QMessageBox::critical( nullptr, argv[1], msg + argv[1], QMessageBox::Ok );
         return -1;
      }
   }

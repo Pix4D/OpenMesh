@@ -144,7 +144,7 @@ public:
   virtual OpenMesh::Attributes::StatusInfo  status(HalfedgeHandle _heh) const = 0;
 
   // get reference to base kernel
-  virtual const BaseKernel* kernel() { return 0; }
+  virtual const BaseKernel* kernel() { return nullptr; }
 
 
   // query number of faces, vertices, normals, texcoords

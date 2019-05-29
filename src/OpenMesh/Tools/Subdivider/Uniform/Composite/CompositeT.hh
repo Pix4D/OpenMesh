@@ -96,8 +96,8 @@ public:
 
 public:
 
-  CompositeT(void) : parent_t(), p_mesh_(NULL) {}
-  explicit CompositeT(MeshType& _mesh) : parent_t(_mesh), p_mesh_(NULL) {};
+  CompositeT(void) : parent_t(), p_mesh_(nullptr) {}
+  explicit CompositeT(MeshType& _mesh) : parent_t(_mesh), p_mesh_(nullptr) {};
   virtual ~CompositeT() { }
 
 public: // inherited interface
@@ -128,7 +128,7 @@ protected: // inherited interface
 #endif
   { 
     assert( p_mesh_ == &_m );
-    p_mesh_=NULL; 
+    p_mesh_=nullptr; 
     return true; 
   }
 

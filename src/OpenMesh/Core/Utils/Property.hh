@@ -434,7 +434,7 @@ public:
 
   const value_type* data() const {
       if( data_.empty() )
-	  return 0;
+	  return nullptr;
 
       return (value_type*) &data_[0];
   }

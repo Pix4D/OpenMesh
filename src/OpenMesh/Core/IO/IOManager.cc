@@ -258,7 +258,7 @@ find_writer(const std::string& _format)
     if ((*it)->can_u_write(filename))
       return *it;
 
-  return NULL;
+  return nullptr;
 }
 
 

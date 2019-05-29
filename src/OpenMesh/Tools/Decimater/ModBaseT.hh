@@ -90,14 +90,14 @@ public:
 public:
 
   /// Default constructor
-  ModHandleT() : mod_(NULL) {}
+  ModHandleT() : mod_(nullptr) {}
 
   /// Destructor
   ~ModHandleT() { /* don't delete mod_, since handle is not owner! */ }
 
   /// Check handle status
   /// \return \c true, if handle is valid, else \c false.
-  bool is_valid() const { return mod_ != NULL; }
+  bool is_valid() const { return mod_ != nullptr; }
 
 private:
 
@@ -107,7 +107,7 @@ private:
   template <typename Mesh> friend class BaseDecimaterT;
 #endif
 
-  void     clear()           { mod_ = NULL; }
+  void     clear()           { mod_ = nullptr; }
   void     init(Module* _m)  { mod_ = _m;   }
   Module*  module()          { return mod_; }
 

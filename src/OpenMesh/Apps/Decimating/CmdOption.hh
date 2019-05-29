@@ -74,7 +74,7 @@ public:
   operator T  () const { return val_; }
   //  operator const T& () const { return val_; }
 
-  operator T* () const  { return is_valid() ? &val_ : NULL; }
+  operator T* () const  { return is_valid() ? &val_ : nullptr; }
 
 private:
 

@@ -120,7 +120,7 @@ int kbhit(void)
     error += tcsetattr(0, TCSANOW, &Otty);
     tv.tv_sec = 0;
     tv.tv_usec = 100; /* insert at least a minimal delay */
-    select(1, NULL, NULL, NULL, &tv);
+    select(1, nullptr, nullptr, nullptr, &tv);
   }
   return (error == 0 ? cnt : -1 );
 }
