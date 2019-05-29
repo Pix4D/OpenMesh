@@ -358,12 +358,12 @@ protected:
   Self* prev_rule() { return prev_rule_; }
 
   void  set_subdiv_rule(Self*& _n) { subdiv_rule_ = _n; }
-  Self* subdiv_rule() { return subdiv_rule_; }
+  Self* subdiv_rule() const { return subdiv_rule_; }
 
   void set_number(int _n) { number_ = _n; }
 
   void set_n_rules(int _n) { n_rules_ = _n; }
-  int  n_rules() { return n_rules_; }
+  int  n_rules() const { return n_rules_; }
 
   void set_subdiv_type(int _n) 
   { assert(_n == 3 || _n == 4); subdiv_type_ = _n; }
