@@ -50,6 +50,7 @@
 #endif
 
 #include <OpenMesh/Core/Utils/Property.hh>
+#include <OpenMesh/Core/Utils/TypeName.hh>
 
 //-----------------------------------------------------------------------------
 namespace OpenMesh
@@ -104,7 +105,7 @@ public:
     int idx=0;
     for ( ; p_it!=p_end && *p_it!=nullptr; ++p_it, ++idx ) {};
     if (p_it==p_end) properties_.push_back(nullptr);
-    properties_[idx] = new PropertyT<T>(_name);
+    properties_[idx] = new PropertyT<T>(_name, get_type_name<T>() );        // create a new property with requested name and given (system dependent) internal typename
     return BasePropHandleT<T>(idx);
   }
 
