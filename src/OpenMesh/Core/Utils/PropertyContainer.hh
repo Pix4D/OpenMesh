@@ -44,11 +44,6 @@
 #ifndef OPENMESH_PROPERTYCONTAINER
 #define OPENMESH_PROPERTYCONTAINER
 
-// Use static casts when not debugging
-#ifdef NDEBUG
-#define OM_FORCE_STATIC_CAST
-#endif
-
 #include <OpenMesh/Core/Utils/Property.hh>
 #include <OpenMesh/Core/Utils/TypeName.hh>
 
@@ -118,10 +113,7 @@ public:
     {
       if (*p_it != nullptr &&
          (*p_it)->name() == _name  //skip deleted properties
-// Skip type check
-#ifndef OM_FORCE_STATIC_CAST
-          && dynamic_cast<PropertyT<T>*>(properties_[idx]) != nullptr //check type
-#endif
+         && (*p_it)->internal_type_name() == get_type_name<T>()     // new check type
          )
       {
         return BasePropHandleT<T>(idx);
@@ -147,13 +139,10 @@ public:
   {
     assert(_h.idx() >= 0 && _h.idx() < (int)properties_.size());
     assert(properties_[_h.idx()] != nullptr);
-#ifdef OM_FORCE_STATIC_CAST
-    return *static_cast  <PropertyT<T>*> (properties_[_h.idx()]);
-#else
-    PropertyT<T>* p = dynamic_cast<PropertyT<T>*>(properties_[_h.idx()]);
+    assert( properties_[_h.idx()]->internal_type_name() == get_type_name<T>() );
+    PropertyT<T> *p = static_cast< PropertyT<T>* > (properties_[_h.idx()]);
     assert(p != nullptr);
     return *p;
-#endif
   }
 
 
@@ -161,13 +150,10 @@ public:
   {
     assert(_h.idx() >= 0 && _h.idx() < (int)properties_.size());
     assert(properties_[_h.idx()] != nullptr);
-#ifdef OM_FORCE_STATIC_CAST
-    return *static_cast<PropertyT<T>*>(properties_[_h.idx()]);
-#else
-    PropertyT<T>* p = dynamic_cast<PropertyT<T>*>(properties_[_h.idx()]);
+    assert( properties_[_h.idx()]->internal_type_name() == get_type_name<T>() );
+    PropertyT<T> *p = static_cast< PropertyT<T>* > (properties_[_h.idx()]);
     assert(p != nullptr);
     return *p;
-#endif
   }
 
 
