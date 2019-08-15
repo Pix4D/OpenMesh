@@ -45,7 +45,7 @@
 #define OPENMESH_PROPERTYCONTAINER
 
 #include <OpenMesh/Core/Utils/Property.hh>
-#include <OpenMesh/Core/Utils/TypeName.hh>
+#include <OpenMesh/Core/Utils/typename.hh>
 
 //-----------------------------------------------------------------------------
 namespace OpenMesh

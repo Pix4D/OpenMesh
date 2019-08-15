@@ -1,5 +1,4 @@
-#ifndef TYPENAME_HH
-#define TYPENAME_HH
+#pragma once
 
 /// Get an internal name for a type
 /// Important, this is depends on compilers and versions, do NOT se in file formats!
@@ -25,5 +24,3 @@ std::string get_type_name()
 }
 
 }
-
-#endif // TYPENAME_HH
