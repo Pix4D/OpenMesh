@@ -1,8 +1,8 @@
 #pragma once
 
 /// Get an internal name for a type
-/// Important, this is depends on compilers and versions, do NOT se in file formats!
-/// This provides property type safty when only limited RTTI is available
+/// Important, this is depends on compilers and versions, do NOT use in file formats!
+/// This provides property type safety when only limited RTTI is available
 /// Solution adapted from OpenVolumeMesh
 
 #include <string>
