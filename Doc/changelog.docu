@@ -8,6 +8,12 @@
 
 <tr valign=top><td><b>8.1</b> (?/?/?)</td><td>
 
+<b>Core</b>
+<ul>
+<li>Property System: Get rid of the OM_FORCE_STATIC_CAST defines. We use the type ids to check if the cast is valid or not. This will add more type safety. </li>
+</ul>
+
+
 <b>Tools</b>
 <ul>
 <li>Subdivider: Fixed crash in Loop subdivider</li>
