@@ -99,8 +99,10 @@ public:
 public:
 
   /// Default constructor
-  explicit PropertyT(const std::string& _name = "<unknown>")
-  : BaseProperty(_name)
+  explicit PropertyT(
+            const std::string& _name = "<unknown>",
+            const std::string& _internal_type_name = "<unknown>")
+  : BaseProperty(_name, _internal_type_name)
   {}
 
   /// Copy constructor
@@ -230,8 +232,8 @@ public:
 
 public:
 
-  explicit PropertyT(const std::string& _name = "<unknown>")
-    : BaseProperty(_name)
+  explicit PropertyT(const std::string& _name = "<unknown>", const std::string& _internal_type_name="" )
+    : BaseProperty(_name, _internal_type_name)
   { }
 
 public: // inherited from BaseProperty
@@ -394,8 +396,8 @@ public:
 
 public:
 
-  explicit PropertyT(const std::string& _name = "<unknown>")
-    : BaseProperty(_name)
+  explicit PropertyT(const std::string& _name = "<unknown>", const std::string& _internal_type_name="" )
+    : BaseProperty(_name, _internal_type_name)
   { }
 
 public: // inherited from BaseProperty
