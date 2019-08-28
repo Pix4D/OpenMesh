@@ -256,7 +256,7 @@ collapse_priority(const CollapseInfo& _ci)
   // undo simulation changes
   mesh_.set_point(_ci.v0, _ci.p0);
 
-  return ( ok ? Base::LEGAL_COLLAPSE : Base::ILLEGAL_COLLAPSE );
+  return ( ok ? static_cast<float>(Base::LEGAL_COLLAPSE) :  static_cast<float>(Base::ILLEGAL_COLLAPSE) );
 }
 
 //-----------------------------------------------------------------------------

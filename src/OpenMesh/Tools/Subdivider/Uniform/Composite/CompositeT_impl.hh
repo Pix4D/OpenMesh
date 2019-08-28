@@ -576,7 +576,7 @@ void CompositeT<MeshType,RealType>::FVc(Coeff& _coeff)
       ++valence;
     }
 
-    c = static_cast<real_t>(_coeff(valence));
+    c = static_cast<scalar_t>(_coeff(valence));
 
     for (voh_it = mesh_.voh_iter(*v_it); voh_it.is_valid(); ++voh_it) {
 
