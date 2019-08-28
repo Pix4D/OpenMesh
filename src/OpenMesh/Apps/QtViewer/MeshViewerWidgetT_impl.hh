@@ -145,7 +145,7 @@ MeshViewerWidgetT<M>::open_mesh(const char* _filename, IO::Options _opt)
     
     
     // set center and radius
-    set_scene_pos( (bbMin+bbMax)*0.5, (bbMin-bbMax).norm()*0.5 );
+    set_scene_pos( (bbMin+bbMax)*0.5f, (bbMin-bbMax).norm()*0.5f );
     
     // for normal display
     normal_scale_ = (bbMax-bbMin).min()*0.05f;
