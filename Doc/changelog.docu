@@ -30,6 +30,8 @@
 <b>IO</b>
 <ul>
 <li>PLY Reader: Fix reading doubles from PLY, missing cast (Thanks to Leo Walsh for the patch)</li>
+<li>PLY Reader: Some cleanup (Thanks to Morgan Leborgne for the patch)</li>
+<li>PLY Reader: Support for ushort (Thanks to Morgan Leborgne for the patch)</li>
 </ul>
 
 
