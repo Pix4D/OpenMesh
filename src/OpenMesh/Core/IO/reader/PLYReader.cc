@@ -221,14 +221,11 @@ void _PLYReader_::readCreateCustomProperty(std::istream& _in, BaseImporter& _bi,
     //init vector
     int numberOfValues;
     read(_listType, _in, numberOfValues, OpenMesh::GenProg::Bool2Type<binary>());
-    std::vector<T> vec;
-    vec.reserve(numberOfValues);
+    std::vector<T> vec(numberOfValues);
     //read and assign
     for (int i = 0; i < numberOfValues; ++i)
     {
-      T in;
-      read(_valueType, _in, in, OpenMesh::GenProg::Bool2Type<binary>());
-      vec.push_back(in);
+      read(_valueType, _in, vec[i], OpenMesh::GenProg::Bool2Type<binary>());
     }
     _bi.kernel()->property(prop,_h) = vec;
   }
