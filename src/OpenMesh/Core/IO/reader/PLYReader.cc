@@ -976,12 +976,30 @@ void _PLYReader_::readInteger(ValueType _type, std::istream& _in, T& _value) con
 
     static_assert(std::is_integral<T>::value, "Integral required.");
 
+    int16_t tmp_int16_t;
+    uint16_t tmp_uint16_t;
     int32_t tmp_int32_t;
     uint32_t tmp_uint32_t;
     int8_t tmp_char;
     uint8_t tmp_uchar;
 
     switch (_type) {
+
+        case ValueTypeINT16:
+
+        case ValueTypeSHORT:
+            restore(_in, tmp_int16_t, options_.check(Options::MSB));
+            _value = tmp_int16_t;
+
+            break;
+
+        case ValueTypeUINT16:
+
+        case ValueTypeUSHORT:
+           restore(_in, tmp_uint16_t, options_.check(Options::MSB));
+            _value = tmp_uint16_t;
+
+            break;
 
         case ValueTypeINT:
 
