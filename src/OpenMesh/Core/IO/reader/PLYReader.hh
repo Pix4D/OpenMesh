@@ -212,6 +212,18 @@ private:
     _in >> _value;
   }
 
+  template<typename T>
+  inline void readInteger(_PLYReader_::ValueType _type, std::istream& _in, T& _value, OpenMesh::GenProg::TrueType /*_binary*/) const
+  {
+    readInteger(_type, _in, _value);
+  }
+
+  template<typename T>
+  inline void readInteger(_PLYReader_::ValueType _type, std::istream& _in, T& _value, OpenMesh::GenProg::FalseType /*_binary*/) const
+  {
+    _in >> _value;
+  }
+  
   //read and assign custom properties with the given type. Also creates property, if not exist
   template<bool binary, typename T, typename Handle>
   void readCreateCustomProperty(std::istream& _in, BaseImporter& _bi, Handle _h, const std::string& _propName, const ValueType _valueType, const ValueType _listType) const;
