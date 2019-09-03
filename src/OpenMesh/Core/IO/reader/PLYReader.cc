@@ -219,16 +219,13 @@ void _PLYReader_::readCreateCustomProperty(std::istream& _in, BaseImporter& _bi,
     }
 
     //init vector
-    int numberOfValues;
-    read(_listType, _in, numberOfValues, OpenMesh::GenProg::Bool2Type<binary>());
-    std::vector<T> vec;
-    vec.reserve(numberOfValues);
+    unsigned int numberOfValues;
+    readInteger(_listType, _in, numberOfValues, OpenMesh::GenProg::Bool2Type<binary>());
+    std::vector<T> vec(numberOfValues);
     //read and assign
-    for (int i = 0; i < numberOfValues; ++i)
+    for (unsigned int i = 0; i < numberOfValues; ++i)
     {
-      T in;
-      read(_valueType, _in, in, OpenMesh::GenProg::Bool2Type<binary>());
-      vec.push_back(in);
+      read(_valueType, _in, vec[i], OpenMesh::GenProg::Bool2Type<binary>());
     }
     _bi.kernel()->property(prop,_h) = vec;
   }
@@ -974,15 +971,35 @@ void _PLYReader_::readValue(ValueType _type, std::istream& _in, int& _value) con
 
 //-----------------------------------------------------------------------------
 
+template<typename T>
+void _PLYReader_::readInteger(ValueType _type, std::istream& _in, T& _value) const {
 
-void _PLYReader_::readInteger(ValueType _type, std::istream& _in, int& _value) const {
+    static_assert(std::is_integral<T>::value, "Integral required.");
 
+    int16_t tmp_int16_t;
+    uint16_t tmp_uint16_t;
     int32_t tmp_int32_t;
     uint32_t tmp_uint32_t;
     int8_t tmp_char;
     uint8_t tmp_uchar;
 
     switch (_type) {
+
+        case ValueTypeINT16:
+
+        case ValueTypeSHORT:
+            restore(_in, tmp_int16_t, options_.check(Options::MSB));
+            _value = tmp_int16_t;
+
+            break;
+
+        case ValueTypeUINT16:
+
+        case ValueTypeUSHORT:
+           restore(_in, tmp_uint16_t, options_.check(Options::MSB));
+            _value = tmp_uint16_t;
+
+            break;
 
         case ValueTypeINT:
 
@@ -1023,70 +1040,11 @@ void _PLYReader_::readInteger(ValueType _type, std::istream& _in, int& _value) c
         default:
 
             _value = 0;
-            std::cerr << "unsupported conversion type to int: " << _type << std::endl;
+            std::cerr << "unsupported conversion type to integral: " << _type << std::endl;
 
             break;
     }
 }
-
-
-//-----------------------------------------------------------------------------
-
-
-void _PLYReader_::readInteger(ValueType _type, std::istream& _in, unsigned int& _value) const {
-
-    int32_t tmp_int32_t;
-    uint32_t tmp_uint32_t;
-    int8_t tmp_char;
-    uint8_t tmp_uchar;
-
-    switch (_type) {
-
-        case ValueTypeUINT:
-
-        case ValueTypeUINT32:
-
-            restore(_in, tmp_uint32_t, options_.check(Options::MSB));
-            _value = tmp_uint32_t;
-
-            break;
-
-        case ValueTypeINT:
-
-        case ValueTypeINT32:
-
-            restore(_in, tmp_int32_t, options_.check(Options::MSB));
-            _value = tmp_int32_t;
-
-            break;
-
-        case ValueTypeUCHAR:
-
-        case ValueTypeUINT8:
-
-            restore(_in, tmp_uchar, options_.check(Options::MSB));
-            _value = tmp_uchar;
-
-            break;
-
-        case ValueTypeCHAR:
-
-        case ValueTypeINT8:
-
-            restore(_in, tmp_char, options_.check(Options::MSB));
-            _value = tmp_char;
-
-            break;
-
-        default:
-
-            _value = 0;
-            std::cerr << "unsupported conversion type to unsigned int: " << _type << std::endl;
-
-            break;
-    }
-}
-
 
 //------------------------------------------------------------------------------
 

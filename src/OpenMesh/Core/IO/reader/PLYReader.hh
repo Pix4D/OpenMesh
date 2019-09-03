@@ -130,8 +130,6 @@ private:
   bool read_ascii(std::istream& _in, BaseImporter& _bi, const Options& _opt) const;
   bool read_binary(std::istream& _in, BaseImporter& _bi, bool swap, const Options& _opt) const;
 
-  float readToFloatValue(ValueType _type , std::fstream& _in) const;
-
   void readValue(ValueType _type , std::istream& _in, float& _value) const;
   void readValue(ValueType _type , std::istream& _in, double& _value) const;
   void readValue(ValueType _type , std::istream& _in, unsigned int& _value) const;
@@ -141,8 +139,8 @@ private:
   void readValue(ValueType _type , std::istream& _in, short& _value) const;
   void readValue(ValueType _type , std::istream& _in, signed char& _value) const;
 
-  void readInteger(ValueType _type, std::istream& _in, int& _value) const;
-  void readInteger(ValueType _type, std::istream& _in, unsigned int& _value) const;
+  template<typename T>
+  void readInteger(ValueType _type, std::istream& _in, T& _value) const;
 
   /// Read unsupported properties in PLY file
   void consume_input(std::istream& _in, int _count) const {
@@ -210,6 +208,18 @@ private:
 
   template<typename T>
   inline void read(_PLYReader_::ValueType _type, std::istream& _in, T& _value, OpenMesh::GenProg::FalseType /*_binary*/) const
+  {
+    _in >> _value;
+  }
+
+  template<typename T>
+  inline void readInteger(_PLYReader_::ValueType _type, std::istream& _in, T& _value, OpenMesh::GenProg::TrueType /*_binary*/) const
+  {
+    readInteger(_type, _in, _value);
+  }
+
+  template<typename T>
+  inline void readInteger(_PLYReader_::ValueType _type, std::istream& _in, T& _value, OpenMesh::GenProg::FalseType /*_binary*/) const
   {
     _in >> _value;
   }
