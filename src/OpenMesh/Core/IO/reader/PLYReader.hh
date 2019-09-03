@@ -139,8 +139,8 @@ private:
   void readValue(ValueType _type , std::istream& _in, short& _value) const;
   void readValue(ValueType _type , std::istream& _in, signed char& _value) const;
 
-  void readInteger(ValueType _type, std::istream& _in, int& _value) const;
-  void readInteger(ValueType _type, std::istream& _in, unsigned int& _value) const;
+  template<typename T>
+  void readInteger(ValueType _type, std::istream& _in, T& _value) const;
 
   /// Read unsupported properties in PLY file
   void consume_input(std::istream& _in, int _count) const {
@@ -223,7 +223,7 @@ private:
   {
     _in >> _value;
   }
-  
+
   //read and assign custom properties with the given type. Also creates property, if not exist
   template<bool binary, typename T, typename Handle>
   void readCreateCustomProperty(std::istream& _in, BaseImporter& _bi, Handle _h, const std::string& _propName, const ValueType _valueType, const ValueType _listType) const;
