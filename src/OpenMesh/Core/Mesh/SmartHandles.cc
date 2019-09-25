@@ -66,6 +66,54 @@ SmartHalfedgeHandle SmartVertexHandle::in() const
   return out().opp();
 }
 
+PolyConnectivity::ConstVertexFaceRange SmartVertexHandle::faces() const
+{
+  assert(mesh() != nullptr);
+  return mesh()->vf_range(*this);
+}
+
+PolyConnectivity::ConstVertexEdgeRange SmartVertexHandle::edges() const
+{
+  assert(mesh() != nullptr);
+  return mesh()->ve_range(*this);
+}
+
+PolyConnectivity::ConstVertexVertexRange SmartVertexHandle::vertices() const
+{
+  assert(mesh() != nullptr);
+  return mesh()->vv_range(*this);
+}
+
+PolyConnectivity::ConstVertexIHalfedgeRange SmartVertexHandle::incoming_halfedges() const
+{
+  assert(mesh() != nullptr);
+  return mesh()->vih_range(*this);
+}
+
+PolyConnectivity::ConstVertexOHalfedgeRange SmartVertexHandle::outgoing_halfedges() const
+{
+  assert(mesh() != nullptr);
+  return mesh()->voh_range(*this);
+}
+
+uint SmartVertexHandle::valence() const
+{
+  assert(mesh() != nullptr);
+  return mesh()->valence(*this);
+}
+
+bool SmartVertexHandle::is_boundary() const
+{
+  assert(mesh() != nullptr);
+  return mesh()->is_boundary(*this);
+}
+
+bool SmartVertexHandle::is_manifold() const
+{
+  assert(mesh() != nullptr);
+  return mesh()->is_manifold(*this);
+}
+
 SmartHalfedgeHandle SmartHalfedgeHandle::next() const
 {
   assert(mesh() != nullptr);
@@ -102,10 +150,21 @@ SmartFaceHandle SmartHalfedgeHandle::face() const
   return make_smart(mesh()->face_handle(*this), mesh());
 }
 
-SmartHalfedgeHandle SmartEdgeHandle::h(unsigned int _i) const
+bool SmartHalfedgeHandle::is_boundary() const
+{
+  assert(mesh() != nullptr);
+  return mesh()->is_boundary(*this);
+}
+
+SmartHalfedgeHandle SmartEdgeHandle::halfedge(unsigned int _i) const
 {
   assert(mesh() != nullptr);
   return make_smart(mesh()->halfedge_handle(*this, _i), mesh());
+}
+
+SmartHalfedgeHandle SmartEdgeHandle::h(unsigned int _i) const
+{
+  return halfedge(_i);
 }
 
 SmartHalfedgeHandle SmartEdgeHandle::h0() const
@@ -118,9 +177,14 @@ SmartHalfedgeHandle SmartEdgeHandle::h1() const
   return h(1);
 }
 
+SmartVertexHandle SmartEdgeHandle::vertex(unsigned int _i) const
+{
+  return halfedge(_i).from();
+}
+
 SmartVertexHandle SmartEdgeHandle::v(unsigned int _i) const
 {
-  return h(_i).from();
+  return vertex(_i);
 }
 
 SmartVertexHandle SmartEdgeHandle::v0() const
@@ -133,10 +197,52 @@ SmartVertexHandle SmartEdgeHandle::v1() const
   return v(1);
 }
 
+bool SmartEdgeHandle::is_boundary() const
+{
+  assert(mesh() != nullptr);
+  return mesh()->is_boundary(*this);
+}
+
 SmartHalfedgeHandle SmartFaceHandle::halfedge() const
 {
   assert(mesh() != nullptr);
   return make_smart(mesh()->halfedge_handle(*this), mesh());
+}
+
+PolyConnectivity::ConstFaceVertexRange SmartFaceHandle::vertices() const
+{
+  assert(mesh() != nullptr);
+  return mesh()->fv_range(*this);
+}
+
+PolyConnectivity::ConstFaceHalfedgeRange SmartFaceHandle::halfedges() const
+{
+  assert(mesh() != nullptr);
+  return mesh()->fh_range(*this);
+}
+
+PolyConnectivity::ConstFaceEdgeRange SmartFaceHandle::edges() const
+{
+  assert(mesh() != nullptr);
+  return mesh()->fe_range(*this);
+}
+
+PolyConnectivity::ConstFaceFaceRange SmartFaceHandle::faces() const
+{
+  assert(mesh() != nullptr);
+  return mesh()->ff_range(*this);
+}
+
+uint SmartFaceHandle::valence() const
+{
+  assert(mesh() != nullptr);
+  return mesh()->valence(*this);
+}
+
+bool SmartFaceHandle::is_boundary() const
+{
+  assert(mesh() != nullptr);
+  return mesh()->is_boundary(*this);
 }
 
 
