@@ -321,4 +321,51 @@ TEST_F(OpenMeshSmartHandles, ComplicatedNavigtaion)
 }
 
 
+/* Test performance of smart handles
+ */
+TEST_F(OpenMeshSmartHandles, Performance)
+{
+  int n_tests = 10000000;
+
+  auto t_before_old = std::chrono::high_resolution_clock::now();
+
+  std::vector<OpenMesh::HalfedgeHandle> halfedges0;
+  for (int i = 0; i < n_tests; ++i)
+  {
+    for (auto vh : mesh_.vertices())
+    {
+      auto heh = mesh_.prev_halfedge_handle(
+                 mesh_.prev_halfedge_handle(
+                 mesh_.opposite_halfedge_handle(
+                 mesh_.next_halfedge_handle(
+                 mesh_.next_halfedge_handle(
+                 mesh_.halfedge_handle(vh))))));
+      if (i == 0)
+        halfedges0.push_back(heh);
+    }
+  }
+
+  auto t_after_old = std::chrono::high_resolution_clock::now();
+
+  std::vector<OpenMesh::HalfedgeHandle> halfedges1;
+  for (int i = 0; i < n_tests; ++i)
+  {
+    for (auto vh : mesh_.vertices())
+    {
+      auto svh = OpenMesh::make_smart(vh, mesh_);
+      auto heh = svh.out().next().next().opp().prev().prev();
+      if (i == 0)
+        halfedges1.push_back(heh);
+    }
+  }
+
+  auto t_after_new = std::chrono::high_resolution_clock::now();
+
+  std::cout << "Conventional navigation took " << std::chrono::duration_cast<std::chrono::milliseconds>(t_after_old-t_before_old).count() << "ms" << std::endl;
+  std::cout << "SmartHandle  navigation took " << std::chrono::duration_cast<std::chrono::milliseconds>(t_after_new-t_after_old ).count() << "ms" << std::endl;
+
+  EXPECT_EQ(halfedges0, halfedges1) << "halfedges do not match";
+
+}
+
 }
