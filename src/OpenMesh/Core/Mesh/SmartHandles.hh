@@ -64,6 +64,7 @@ struct SmartFaceHandle;
 
 //== CLASS DEFINITION =========================================================
 
+/// Base class for all smart handle types
 class SmartBaseHandle
 {
 public:
@@ -79,22 +80,34 @@ private:
 
 };
 
+/// Smart version of VertexHandle contains a pointer to the corresponding mesh and allows easier access to navigation methods
 struct SmartVertexHandle : public SmartBaseHandle, VertexHandle
 {
   explicit SmartVertexHandle(int _idx=-1, const PolyConnectivity* _mesh = nullptr) : SmartBaseHandle(_mesh), VertexHandle(_idx) {}
 
+  /// Returns an outgoing halfedge
   SmartHalfedgeHandle out()      const;
+  /// Returns an outgoing halfedge
   SmartHalfedgeHandle halfedge() const; // alias for out
+  /// Returns an incoming halfedge
   SmartHalfedgeHandle in()       const;
 
+  /// Returns a range of faces incident to the vertex (PolyConnectivity::vf_range())
   PolyConnectivity::ConstVertexFaceRange      faces()              const;
+  /// Returns a range of edges incident to the vertex (PolyConnectivity::ve_range())
   PolyConnectivity::ConstVertexEdgeRange      edges()              const;
+  /// Returns a range of vertices adjacent to the vertex (PolyConnectivity::vv_range())
   PolyConnectivity::ConstVertexVertexRange    vertices()           const;
+  /// Returns a range of outgoing halfedges incident to the vertex (PolyConnectivity::voh_range())
   PolyConnectivity::ConstVertexIHalfedgeRange incoming_halfedges() const;
+  /// Returns a range of incoming halfedges incident to the vertex (PolyConnectivity::vih_range())
   PolyConnectivity::ConstVertexOHalfedgeRange outgoing_halfedges() const;
 
+  /// Returns valence of the vertex
   uint valence()     const;
+  /// Returns true iff the vertex is incident to a boundary halfedge
   bool is_boundary() const;
+  /// Returns true iff (the mesh at) the vertex is two-manifold ?
   bool is_manifold() const;
 };
 
@@ -102,13 +115,20 @@ struct SmartHalfedgeHandle : public SmartBaseHandle, HalfedgeHandle
 {
   explicit SmartHalfedgeHandle(int _idx=-1, const PolyConnectivity* _mesh = nullptr) : SmartBaseHandle(_mesh), HalfedgeHandle(_idx) {}
 
+  /// Returns next halfedge handle
   SmartHalfedgeHandle next() const;
+  /// Returns previous halfedge handle
   SmartHalfedgeHandle prev() const;
+  /// Returns opposite halfedge handle
   SmartHalfedgeHandle opp()  const;
+  /// Returns vertex pointed to by halfedge
   SmartVertexHandle   to()   const;
+  /// Returns vertex at start of halfedge
   SmartVertexHandle   from() const;
+  /// Returns incident face of halfedge
   SmartFaceHandle     face() const;
 
+  /// Returns true iff the halfedge is on the boundary (i.e. it has no corresponding face)
   bool is_boundary() const;
 };
 
@@ -116,15 +136,24 @@ struct SmartEdgeHandle : public SmartBaseHandle, EdgeHandle
 {
   explicit SmartEdgeHandle(int _idx=-1, const PolyConnectivity* _mesh = nullptr) : SmartBaseHandle(_mesh), EdgeHandle(_idx) {}
 
+  /// Returns one of the two halfedges of the edge
   SmartHalfedgeHandle halfedge(unsigned int _i) const;
+  /// Shorthand for halfedge()
   SmartHalfedgeHandle h(unsigned int _i)        const;
+  /// Shorthand for halfedge(0)
   SmartHalfedgeHandle h0()                      const;
+  /// Shorthand for halfedge(1)
   SmartHalfedgeHandle h1()                      const;
+  /// Returns one of the two incident vertices of the edge
   SmartVertexHandle   vertex(unsigned int _i)   const;
+  /// Shorthand for vertex()
   SmartVertexHandle   v(unsigned int _i)        const;
+  /// Shorthand for vertex(0)
   SmartVertexHandle   v0()                      const;
+  /// Shorthand for vertex(1)
   SmartVertexHandle   v1()                      const;
 
+  /// Returns true iff the edge lies on the boundary (i.e. one of the halfedges is boundary)
   bool is_boundary() const;
 };
 
@@ -132,26 +161,41 @@ struct SmartFaceHandle : public SmartBaseHandle, FaceHandle
 {
   explicit SmartFaceHandle(int _idx=-1, const PolyConnectivity* _mesh = nullptr) : SmartBaseHandle(_mesh), FaceHandle(_idx) {}
 
+  /// Returns one of the halfedges of the face
   SmartHalfedgeHandle halfedge() const;
 
+  /// Returns a range of vertices incident to the face (PolyConnectivity::fv_range())
   PolyConnectivity::ConstFaceVertexRange   vertices()  const;
+  /// Returns a range of halfedges of the face (PolyConnectivity::fh_range())
   PolyConnectivity::ConstFaceHalfedgeRange halfedges() const;
+  /// Returns a range of edges of the face (PolyConnectivity::fv_range())
   PolyConnectivity::ConstFaceEdgeRange     edges()     const;
+  /// Returns a range adjacent faces of the face (PolyConnectivity::ff_range())
   PolyConnectivity::ConstFaceFaceRange     faces()     const;
 
+  /// Returns the valence of the face
   uint valence()     const;
+  /// Returns true iff the face lies at the boundary (i.e. one of the edges is boundary)
   bool is_boundary() const;
 };
 
 
+/// Creats a SmartVertexHandle from a VertexHandle and a Mesh
 inline SmartVertexHandle   make_smart(VertexHandle   _vh, const PolyConnectivity* _mesh) { return SmartVertexHandle  (_vh.idx(), _mesh); }
+/// Creats a SmartHalfedgeHandle from a HalfedgeHandle and a Mesh
 inline SmartHalfedgeHandle make_smart(HalfedgeHandle _hh, const PolyConnectivity* _mesh) { return SmartHalfedgeHandle(_hh.idx(), _mesh); }
+/// Creats a SmartEdgeHandle from an EdgeHandle and a Mesh
 inline SmartEdgeHandle     make_smart(EdgeHandle     _eh, const PolyConnectivity* _mesh) { return SmartEdgeHandle    (_eh.idx(), _mesh); }
+/// Creats a SmartFaceHandle from a FaceHandle and a Mesh
 inline SmartFaceHandle     make_smart(FaceHandle     _fh, const PolyConnectivity* _mesh) { return SmartFaceHandle    (_fh.idx(), _mesh); }
 
+/// Creats a SmartVertexHandle from a VertexHandle and a Mesh
 inline SmartVertexHandle   make_smart(VertexHandle   _vh, const PolyConnectivity& _mesh) { return SmartVertexHandle  (_vh.idx(), &_mesh); }
+/// Creats a SmartHalfedgeHandle from a HalfedgeHandle and a Mesh
 inline SmartHalfedgeHandle make_smart(HalfedgeHandle _hh, const PolyConnectivity& _mesh) { return SmartHalfedgeHandle(_hh.idx(), &_mesh); }
+/// Creats a SmartEdgeHandle from an EdgeHandle and a Mesh
 inline SmartEdgeHandle     make_smart(EdgeHandle     _eh, const PolyConnectivity& _mesh) { return SmartEdgeHandle    (_eh.idx(), &_mesh); }
+/// Creats a SmartFaceHandle from a FaceHandle and a Mesh
 inline SmartFaceHandle     make_smart(FaceHandle     _fh, const PolyConnectivity& _mesh) { return SmartFaceHandle    (_fh.idx(), &_mesh); }
 
 
