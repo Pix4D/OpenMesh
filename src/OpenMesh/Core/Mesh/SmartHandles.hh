@@ -102,12 +102,12 @@ struct SmartHalfedgeHandle : public SmartBaseHandle, HalfedgeHandle
 {
   explicit SmartHalfedgeHandle(int _idx=-1, const PolyConnectivity* _mesh = nullptr) : SmartBaseHandle(_mesh), HalfedgeHandle(_idx) {}
 
-  SmartHalfedgeHandle next()     const;
-  SmartHalfedgeHandle prev()     const;
-  SmartHalfedgeHandle opp()      const;
-  SmartVertexHandle   to()       const;
-  SmartVertexHandle   from()     const;
-  SmartFaceHandle     face()     const;
+  SmartHalfedgeHandle next() const;
+  SmartHalfedgeHandle prev() const;
+  SmartHalfedgeHandle opp()  const;
+  SmartVertexHandle   to()   const;
+  SmartVertexHandle   from() const;
+  SmartFaceHandle     face() const;
 
   bool is_boundary() const;
 };
@@ -116,14 +116,14 @@ struct SmartEdgeHandle : public SmartBaseHandle, EdgeHandle
 {
   explicit SmartEdgeHandle(int _idx=-1, const PolyConnectivity* _mesh = nullptr) : SmartBaseHandle(_mesh), EdgeHandle(_idx) {}
 
-  SmartHalfedgeHandle halfedge(unsigned int _i)  const;
-  SmartHalfedgeHandle h(unsigned int _i)         const;
-  SmartHalfedgeHandle h0()                       const;
-  SmartHalfedgeHandle h1()                       const;
-  SmartVertexHandle   vertex(unsigned int _i)    const;
-  SmartVertexHandle   v(unsigned int _i)         const;
-  SmartVertexHandle   v0()                       const;
-  SmartVertexHandle   v1()                       const;
+  SmartHalfedgeHandle halfedge(unsigned int _i) const;
+  SmartHalfedgeHandle h(unsigned int _i)        const;
+  SmartHalfedgeHandle h0()                      const;
+  SmartHalfedgeHandle h1()                      const;
+  SmartVertexHandle   vertex(unsigned int _i)   const;
+  SmartVertexHandle   v(unsigned int _i)        const;
+  SmartVertexHandle   v0()                      const;
+  SmartVertexHandle   v1()                      const;
 
   bool is_boundary() const;
 };
@@ -144,15 +144,15 @@ struct SmartFaceHandle : public SmartBaseHandle, FaceHandle
 };
 
 
-inline SmartVertexHandle   make_smart(VertexHandle _vh,    const PolyConnectivity* _mesh) { return SmartVertexHandle  (_vh.idx(), _mesh); }
-inline SmartHalfedgeHandle make_smart(HalfedgeHandle _vh,  const PolyConnectivity* _mesh) { return SmartHalfedgeHandle(_vh.idx(), _mesh); }
-inline SmartEdgeHandle     make_smart(EdgeHandle _vh,      const PolyConnectivity* _mesh) { return SmartEdgeHandle    (_vh.idx(), _mesh); }
-inline SmartFaceHandle     make_smart(FaceHandle _vh,      const PolyConnectivity* _mesh) { return SmartFaceHandle    (_vh.idx(), _mesh); }
+inline SmartVertexHandle   make_smart(VertexHandle   _vh, const PolyConnectivity* _mesh) { return SmartVertexHandle  (_vh.idx(), _mesh); }
+inline SmartHalfedgeHandle make_smart(HalfedgeHandle _hh, const PolyConnectivity* _mesh) { return SmartHalfedgeHandle(_hh.idx(), _mesh); }
+inline SmartEdgeHandle     make_smart(EdgeHandle     _eh, const PolyConnectivity* _mesh) { return SmartEdgeHandle    (_eh.idx(), _mesh); }
+inline SmartFaceHandle     make_smart(FaceHandle     _fh, const PolyConnectivity* _mesh) { return SmartFaceHandle    (_fh.idx(), _mesh); }
 
-inline SmartVertexHandle   make_smart(VertexHandle _vh,    const PolyConnectivity& _mesh) { return SmartVertexHandle  (_vh.idx(), &_mesh); }
-inline SmartHalfedgeHandle make_smart(HalfedgeHandle _vh,  const PolyConnectivity& _mesh) { return SmartHalfedgeHandle(_vh.idx(), &_mesh); }
-inline SmartEdgeHandle     make_smart(EdgeHandle _vh,      const PolyConnectivity& _mesh) { return SmartEdgeHandle    (_vh.idx(), &_mesh); }
-inline SmartFaceHandle     make_smart(FaceHandle _vh,      const PolyConnectivity& _mesh) { return SmartFaceHandle    (_vh.idx(), &_mesh); }
+inline SmartVertexHandle   make_smart(VertexHandle   _vh, const PolyConnectivity& _mesh) { return SmartVertexHandle  (_vh.idx(), &_mesh); }
+inline SmartHalfedgeHandle make_smart(HalfedgeHandle _hh, const PolyConnectivity& _mesh) { return SmartHalfedgeHandle(_hh.idx(), &_mesh); }
+inline SmartEdgeHandle     make_smart(EdgeHandle     _eh, const PolyConnectivity& _mesh) { return SmartEdgeHandle    (_eh.idx(), &_mesh); }
+inline SmartFaceHandle     make_smart(FaceHandle     _fh, const PolyConnectivity& _mesh) { return SmartFaceHandle    (_fh.idx(), &_mesh); }
 
 
 //=============================================================================
