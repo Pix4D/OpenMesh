@@ -83,40 +83,40 @@ struct SmartVertexHandle : public SmartBaseHandle, VertexHandle
 {
   explicit SmartVertexHandle(int _idx=-1, PolyConnectivity* _mesh = nullptr) : SmartBaseHandle(_idx, _mesh) {}
 
-  SmartHalfedgeHandle out();
-  SmartHalfedgeHandle halfedge(); // alias for out
-  SmartHalfedgeHandle in();
+  SmartHalfedgeHandle out() const;
+  SmartHalfedgeHandle halfedge() const; // alias for out
+  SmartHalfedgeHandle in() const;
 };
 
 struct SmartHalfedgeHandle : public SmartBaseHandle, HalfedgeHandle
 {
   explicit SmartHalfedgeHandle(int _idx=-1, PolyConnectivity* _mesh = nullptr) : SmartBaseHandle(_idx, _mesh) {}
 
-  SmartHalfedgeHandle next();
-  SmartHalfedgeHandle prev();
-  SmartHalfedgeHandle opp();
-  SmartVertexHandle   to();
-  SmartVertexHandle   from();
-  SmartFaceHandle     face();
+  SmartHalfedgeHandle next() const;
+  SmartHalfedgeHandle prev() const;
+  SmartHalfedgeHandle opp() const;
+  SmartVertexHandle   to() const;
+  SmartVertexHandle   from() const;
+  SmartFaceHandle     face() const;
 };
 
 struct SmartEdgeHandle : public SmartBaseHandle, EdgeHandle
 {
   explicit SmartEdgeHandle(int _idx=-1, PolyConnectivity* _mesh = nullptr) : SmartBaseHandle(_idx, _mesh) {}
 
-  SmartHalfedgeHandle h(unsigned int _i);
-  SmartHalfedgeHandle h0();
-  SmartHalfedgeHandle h1();
-  SmartVertexHandle   v(unsigned int _i);
-  SmartVertexHandle   v0();
-  SmartVertexHandle   v1();
+  SmartHalfedgeHandle h(unsigned int _i) const;
+  SmartHalfedgeHandle h0() const;
+  SmartHalfedgeHandle h1() const;
+  SmartVertexHandle   v(unsigned int _i) const;
+  SmartVertexHandle   v0() const;
+  SmartVertexHandle   v1() const;
 };
 
 struct SmartFaceHandle : public SmartBaseHandle, FaceHandle
 {
   explicit SmartFaceHandle(int _idx=-1, PolyConnectivity* _mesh = nullptr) : SmartBaseHandle(_idx, _mesh) {}
 
-  SmartHalfedgeHandle halfedge();
+  SmartHalfedgeHandle halfedge() const;
 };
 
 

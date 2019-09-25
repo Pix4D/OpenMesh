@@ -50,90 +50,90 @@
 namespace OpenMesh
 {
 
-SmartHalfedgeHandle SmartVertexHandle::out()
+SmartHalfedgeHandle SmartVertexHandle::out() const
 {
   assert(mesh() != nullptr);
   return make_smart(mesh()->halfedge_handle(*this), mesh());
 }
 
-SmartHalfedgeHandle SmartVertexHandle::halfedge()
+SmartHalfedgeHandle SmartVertexHandle::halfedge() const
 {
   return out();
 }
 
-SmartHalfedgeHandle SmartVertexHandle::in()
+SmartHalfedgeHandle SmartVertexHandle::in() const
 {
   return out().opp();
 }
 
-SmartHalfedgeHandle SmartHalfedgeHandle::next()
+SmartHalfedgeHandle SmartHalfedgeHandle::next() const
 {
   assert(mesh() != nullptr);
   return make_smart(mesh()->next_halfedge_handle(*this), mesh());
 }
 
-SmartHalfedgeHandle SmartHalfedgeHandle::prev()
+SmartHalfedgeHandle SmartHalfedgeHandle::prev() const
 {
   assert(mesh() != nullptr);
   return make_smart(mesh()->prev_halfedge_handle(*this), mesh());
 }
 
-SmartHalfedgeHandle SmartHalfedgeHandle::opp()
+SmartHalfedgeHandle SmartHalfedgeHandle::opp() const
 {
   assert(mesh() != nullptr);
   return make_smart(mesh()->opposite_halfedge_handle(*this), mesh());
 }
 
-SmartVertexHandle SmartHalfedgeHandle::to()
+SmartVertexHandle SmartHalfedgeHandle::to() const
 {
   assert(mesh() != nullptr);
   return make_smart(mesh()->to_vertex_handle(*this), mesh());
 }
 
-SmartVertexHandle SmartHalfedgeHandle::from()
+SmartVertexHandle SmartHalfedgeHandle::from() const
 {
   assert(mesh() != nullptr);
   return make_smart(mesh()->from_vertex_handle(*this), mesh());
 }
 
-SmartFaceHandle SmartHalfedgeHandle::face()
+SmartFaceHandle SmartHalfedgeHandle::face() const
 {
   assert(mesh() != nullptr);
   return make_smart(mesh()->face_handle(*this), mesh());
 }
 
-SmartHalfedgeHandle SmartEdgeHandle::h(unsigned int _i)
+SmartHalfedgeHandle SmartEdgeHandle::h(unsigned int _i) const
 {
   assert(mesh() != nullptr);
   return make_smart(mesh()->halfedge_handle(*this, _i), mesh());
 }
 
-SmartHalfedgeHandle SmartEdgeHandle::h0()
+SmartHalfedgeHandle SmartEdgeHandle::h0() const
 {
   return h(0);
 }
 
-SmartHalfedgeHandle SmartEdgeHandle::h1()
+SmartHalfedgeHandle SmartEdgeHandle::h1() const
 {
   return h(1);
 }
 
-SmartVertexHandle SmartEdgeHandle::v(unsigned int _i)
+SmartVertexHandle SmartEdgeHandle::v(unsigned int _i) const
 {
   return h(_i).from();
 }
 
-SmartVertexHandle SmartEdgeHandle::v0()
+SmartVertexHandle SmartEdgeHandle::v0() const
 {
   return v(0);
 }
 
-SmartVertexHandle SmartEdgeHandle::v1()
+SmartVertexHandle SmartEdgeHandle::v1() const
 {
   return v(1);
 }
 
-SmartHalfedgeHandle SmartFaceHandle::halfedge()
+SmartHalfedgeHandle SmartFaceHandle::halfedge() const
 {
   assert(mesh() != nullptr);
   return make_smart(mesh()->halfedge_handle(*this), mesh());
