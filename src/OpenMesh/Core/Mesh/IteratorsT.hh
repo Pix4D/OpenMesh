@@ -40,9 +40,7 @@
  * ========================================================================= */
 
 
-
-#ifndef OPENMESH_ITERATORS_HH
-#define OPENMESH_ITERATORS_HH
+#pragma once
 
 //=============================================================================
 //
@@ -56,6 +54,7 @@
 
 #include <OpenMesh/Core/System/config.h>
 #include <OpenMesh/Core/Mesh/Status.hh>
+#include <OpenMesh/Core/Mesh/SmartHandles.hh>
 #include <cassert>
 #include <cstddef>
 #include <iterator>
@@ -89,19 +88,20 @@ class GenericIteratorT {
         typedef value_handle                    value_type;
         typedef std::bidirectional_iterator_tag iterator_category;
         typedef std::ptrdiff_t                  difference_type;
-        typedef const value_type&               reference;
-        typedef const value_type*               pointer;
         typedef const Mesh*                     mesh_ptr;
         typedef const Mesh&                     mesh_ref;
+        typedef decltype(make_smart(std::declval<ValueHandle>(), std::declval<Mesh>())) SmartHandle;
+        typedef const SmartHandle&              reference;
+        typedef const SmartHandle*              pointer;
 
         /// Default constructor.
         GenericIteratorT()
-        : mesh_(0), skip_bits_(0)
+        : hnd_(make_smart(ValueHandle(),nullptr)), skip_bits_(0)
         {}
 
         /// Construct with mesh and a target handle.
         GenericIteratorT(mesh_ref _mesh, value_handle _hnd, bool _skip=false)
-        : mesh_(&_mesh), hnd_(_hnd), skip_bits_(0)
+        : hnd_(make_smart(_hnd, _mesh)), skip_bits_(0)
         {
             if (_skip) enable_skipping();
         }
@@ -139,7 +139,7 @@ class GenericIteratorT {
 
         /// Are two iterators equal? Only valid if they refer to the same mesh!
         bool operator==(const GenericIteratorT& _rhs) const {
-            return ((mesh_ == _rhs.mesh_) && (hnd_ == _rhs.hnd_));
+            return ((hnd_.mesh() == _rhs.hnd_.mesh()) && (hnd_ == _rhs.hnd_));
         }
 
         /// Not equal?
@@ -210,7 +210,7 @@ class GenericIteratorT {
 
         /// Turn on skipping: automatically skip deleted/hidden elements
         void enable_skipping() {
-            if (mesh_ && (mesh_->*PrimitiveStatusMember)()) {
+            if (hnd_.mesh() && (hnd_.mesh()->*PrimitiveStatusMember)()) {
                 Attributes::StatusInfo status;
                 status.set_deleted(true);
                 status.set_hidden(true);
@@ -228,27 +228,24 @@ class GenericIteratorT {
     private:
 
         void skip_fwd() {
-            assert(mesh_ && skip_bits_);
-            while ((hnd_.idx() < (signed) (mesh_->*PrimitiveCountMember)())
-                    && (mesh_->status(hnd_).bits() & skip_bits_))
+            assert(hnd_.mesh() && skip_bits_);
+            while ((hnd_.idx() < (signed) (hnd_.mesh()->*PrimitiveCountMember)())
+                    && (hnd_.mesh()->status(hnd_).bits() & skip_bits_))
                 hnd_.__increment();
         }
 
         void skip_bwd() {
-            assert(mesh_ && skip_bits_);
-            while ((hnd_.idx() >= 0) && (mesh_->status(hnd_).bits() & skip_bits_))
+            assert(hnd_.mesh() && skip_bits_);
+            while ((hnd_.idx() >= 0) && (hnd_.mesh()->status(hnd_).bits() & skip_bits_))
                 hnd_.__decrement();
         }
 
     protected:
-        mesh_ptr mesh_;
-        value_handle hnd_;
+        SmartHandle hnd_;
         unsigned int skip_bits_;
 };
 
 //=============================================================================
 } // namespace Iterators
 } // namespace OpenMesh
-//=============================================================================
-#endif 
 //=============================================================================

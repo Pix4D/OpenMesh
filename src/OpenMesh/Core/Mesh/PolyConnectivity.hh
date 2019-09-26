@@ -45,11 +45,16 @@
 #define OPENMESH_POLYCONNECTIVITY_HH
 
 #include <OpenMesh/Core/Mesh/ArrayKernel.hh>
-#include <OpenMesh/Core/Mesh/IteratorsT.hh>
 #include <OpenMesh/Core/Mesh/CirculatorsT.hh>
 
 namespace OpenMesh
 {
+
+namespace Iterators
+{
+  template <class Mesh, class ValueHandle, class MemberOwner, bool (MemberOwner::*PrimitiveStatusMember)() const, size_t (MemberOwner::*PrimitiveCountMember)() const>
+  class GenericIteratorT;
+}
 
 /** \brief Connectivity Class for polygonal meshes
 */
@@ -532,32 +537,24 @@ public:
   //@{
 
   /// Begin iterator for vertices
-  VertexIter vertices_sbegin()
-  { return VertexIter(*this, VertexHandle(0), true); }
+  VertexIter vertices_sbegin();
   /// Const begin iterator for vertices
-  ConstVertexIter vertices_sbegin() const
-  { return ConstVertexIter(*this, VertexHandle(0), true); }
+  ConstVertexIter vertices_sbegin() const;
 
   /// Begin iterator for halfedges
-  HalfedgeIter halfedges_sbegin()
-  { return HalfedgeIter(*this, HalfedgeHandle(0), true); }
+  HalfedgeIter halfedges_sbegin();
   /// Const begin iterator for halfedges
-  ConstHalfedgeIter halfedges_sbegin() const
-  { return ConstHalfedgeIter(*this, HalfedgeHandle(0), true); }
+  ConstHalfedgeIter halfedges_sbegin() const;
 
   /// Begin iterator for edges
-  EdgeIter edges_sbegin()
-  { return EdgeIter(*this, EdgeHandle(0), true); }
+  EdgeIter edges_sbegin();
   /// Const begin iterator for edges
-  ConstEdgeIter edges_sbegin() const
-  { return ConstEdgeIter(*this, EdgeHandle(0), true); }
+  ConstEdgeIter edges_sbegin() const;
 
   /// Begin iterator for faces
-  FaceIter faces_sbegin()
-  { return FaceIter(*this, FaceHandle(0), true); }
+  FaceIter faces_sbegin();
   /// Const begin iterator for faces
-  ConstFaceIter faces_sbegin() const
-  { return ConstFaceIter(*this, FaceHandle(0), true); }
+  ConstFaceIter faces_sbegin() const;
 
   //@}
 
@@ -1626,5 +1623,7 @@ private: // Working storage for add_face()
 };
 
 }//namespace OpenMesh
+
+#include <OpenMesh/Core/Mesh/IteratorsT.hh>
 
 #endif//OPENMESH_POLYCONNECTIVITY_HH

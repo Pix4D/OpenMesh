@@ -40,8 +40,7 @@
  * ========================================================================= */
 
 
-#ifndef OPENMESH_SMARTHANDLES_HH
-#define OPENMESH_SMARTHANDLES_HH
+#pragma once
 
 
 //== INCLUDES =================================================================
@@ -401,6 +400,4 @@ inline bool SmartFaceHandle::is_boundary() const
 } // namespace OpenMesh
 //=============================================================================
 
-
-#endif // OPENMESH_SMARTHANDLES_HH
 //=============================================================================

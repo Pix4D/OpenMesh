@@ -719,6 +719,46 @@ PolyConnectivity::ConstFaceIter PolyConnectivity::faces_end() const
   return ConstFaceIter(*this, FaceHandle(int(n_faces())));
 }
 
+PolyConnectivity::VertexIter PolyConnectivity::vertices_sbegin()
+{
+  return VertexIter(*this, VertexHandle(0), true);
+}
+
+PolyConnectivity::ConstVertexIter PolyConnectivity::vertices_sbegin() const
+{
+  return ConstVertexIter(*this, VertexHandle(0), true);
+}
+
+PolyConnectivity::HalfedgeIter PolyConnectivity::halfedges_sbegin()
+{
+  return HalfedgeIter(*this, HalfedgeHandle(0), true);
+}
+
+PolyConnectivity::ConstHalfedgeIter PolyConnectivity::halfedges_sbegin() const
+{
+  return ConstHalfedgeIter(*this, HalfedgeHandle(0), true);
+}
+
+PolyConnectivity::EdgeIter PolyConnectivity::edges_sbegin()
+{
+  return EdgeIter(*this, EdgeHandle(0), true);
+}
+
+PolyConnectivity::ConstEdgeIter PolyConnectivity::edges_sbegin() const
+{
+  return ConstEdgeIter(*this, EdgeHandle(0), true);
+}
+
+PolyConnectivity::FaceIter PolyConnectivity::faces_sbegin()
+{
+  return FaceIter(*this, FaceHandle(0), true);
+}
+
+PolyConnectivity::ConstFaceIter PolyConnectivity::faces_sbegin() const
+{
+  return ConstFaceIter(*this, FaceHandle(0), true);
+}
+
 //-----------------------------------------------------------------------------
 void PolyConnectivity::collapse(HalfedgeHandle _hh)
 {
