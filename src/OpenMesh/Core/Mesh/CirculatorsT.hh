@@ -572,7 +572,7 @@ class GenericCirculatorT_DEPRECATED : protected GenericCirculatorBaseT<typename 
          * This function clutters your code. Use dereferencing operators -> and * instead.
          */
         OM_DEPRECATED("This function clutters your code. Use dereferencing operators -> and * instead.")
-        value_type handle() const {
+        smart_value_type handle() const {
           return **this;
         }
 
