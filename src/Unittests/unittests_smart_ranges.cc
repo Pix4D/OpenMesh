@@ -198,7 +198,6 @@ TEST_F(OpenMeshSmartRanges, Sum)
 TEST_F(OpenMeshSmartRanges, PropertyManagerAsFunctor)
 {
   auto myPos = OpenMesh::makeTemporaryProperty<OpenMesh::VertexHandle, Mesh::Point>(mesh_);
-
   for (auto vh : mesh_.vertices())
     myPos(vh) = mesh_.point(vh);
 
@@ -210,6 +209,69 @@ TEST_F(OpenMeshSmartRanges, PropertyManagerAsFunctor)
   auto cog2 = mesh_.vertices().avg(myPos);
 
   EXPECT_LT(norm(cog - cog2), 0.00001) << "Computed center of gravities are significantly different.";
+}
+
+/* Test to vector
+ */
+TEST_F(OpenMeshSmartRanges, ToVector)
+{
+  auto uvs = OpenMesh::makeTemporaryProperty<OpenMesh::HalfedgeHandle, OpenMesh::Vec2d>(mesh_);
+
+  for (auto heh : mesh_.halfedges())
+    uvs(heh) = OpenMesh::Vec2d(heh.idx(), (heh.idx() * 13)%7);
+
+  for (auto fh : mesh_.faces())
+  {
+    auto tri_uvs = fh.halfedges().to_vector(uvs);
+    auto heh_handles = fh.halfedges().to_vector();
+//    for (auto heh : heh_handles)
+//      auto n = heh.next();
+  }
+
+  auto vertex_vec = mesh_.vertices().to_vector();
+  for (auto vh : vertex_vec)
+    auto heh = vh.out();
+}
+
+/* Test to array
+ */
+TEST_F(OpenMeshSmartRanges, ToArray)
+{
+  auto uvs = OpenMesh::makeTemporaryProperty<OpenMesh::HalfedgeHandle, OpenMesh::Vec2d>(mesh_);
+
+  for (auto heh : mesh_.halfedges())
+    uvs(heh) = OpenMesh::Vec2d(heh.idx(), (heh.idx() * 13)%7);
+
+  for (auto fh : mesh_.faces())
+  {
+    auto tri_uvs = fh.halfedges().to_array<3>(uvs);
+    auto heh_handles = fh.halfedges().to_array<3>();
+  }
+}
+
+/* Test bounding box
+ */
+TEST_F(OpenMeshSmartRanges, BoundingBox)
+{
+  auto myPos = OpenMesh::makeTemporaryProperty<OpenMesh::VertexHandle, Mesh::Point>(mesh_);
+  for (auto vh : mesh_.vertices())
+    myPos(vh) = mesh_.point(vh);
+
+  auto uvs = OpenMesh::makeTemporaryProperty<OpenMesh::HalfedgeHandle, OpenMesh::Vec2d>(mesh_);
+  for (auto heh : mesh_.halfedges())
+    uvs(heh) = OpenMesh::Vec2d(heh.idx(), (heh.idx() * 13)%7);
+
+  auto bb_min = mesh_.vertices().elem_wise_min<3>(myPos);
+  auto bb_max = mesh_.vertices().elem_wise_max<3>(myPos);
+
+  EXPECT_LT(norm(bb_min - Mesh::Point(-1,-1,-1)), 0.000001) << "Bounding box minimum seems off";
+  EXPECT_LT(norm(bb_max - Mesh::Point( 1, 1, 1)), 0.000001) << "Bounding box maximum seems off";
+
+  for (auto fh : mesh_.faces())
+  {
+    auto uv_bb_min = fh.halfedges().elem_wise_min<2>(uvs);
+    auto uv_bb_max = fh.halfedges().elem_wise_max<2>(uvs);
+  }
 }
 
 
