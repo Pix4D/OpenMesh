@@ -284,6 +284,103 @@ TEST_F(OpenMeshSmartHandles, SimpleRanges)
   }
 }
 
+/* Test if ranges yield the same elements when using smart handles
+ */
+TEST_F(OpenMeshSmartHandles, RangesOfRanges)
+{
+  for (auto vh : mesh_.vertices())
+  {
+    {
+      std::vector<OpenMesh::VertexHandle> handles0;
+      std::vector<OpenMesh::VertexHandle> handles1;
+      for (auto h : mesh_.vv_range(vh))
+        for (auto h2 : mesh_.vv_range(h))
+          handles0.push_back(h2);
+      for (auto h : vh.vertices())
+        for (auto h2 : h.vertices())
+          handles1.push_back(h2);
+      EXPECT_EQ(handles0, handles1) << "vertex range of vertex range does not match";
+    }
+    {
+      std::vector<OpenMesh::HalfedgeHandle> handles0;
+      std::vector<OpenMesh::HalfedgeHandle> handles1;
+      for (auto h : mesh_.vv_range(vh))
+        for (auto h2 : mesh_.voh_range(h))
+          handles0.push_back(h2);
+      for (auto h : vh.vertices())
+        for (auto h2 : h.outgoing_halfedges())
+          handles1.push_back(h2);
+      EXPECT_EQ(handles0, handles1) << "outgoing halfedge range of vertex range does not match";
+    }
+    {
+      std::vector<OpenMesh::HalfedgeHandle> handles0;
+      std::vector<OpenMesh::HalfedgeHandle> handles1;
+      for (auto h : mesh_.vv_range(vh))
+        for (auto h2 : mesh_.vih_range(h))
+          handles0.push_back(h2);
+      for (auto h : vh.vertices())
+        for (auto h2 : h.incoming_halfedges())
+          handles1.push_back(h2);
+      EXPECT_EQ(handles0, handles1) << "incoming halfedge range of vertex range does not match";
+    }
+    {
+      std::vector<OpenMesh::EdgeHandle> handles0;
+      std::vector<OpenMesh::EdgeHandle> handles1;
+      for (auto h : mesh_.vv_range(vh))
+        for (auto h2 : mesh_.ve_range(h))
+          handles0.push_back(h2);
+      for (auto h : vh.vertices())
+        for (auto h2 : h.edges())
+          handles1.push_back(h2);
+      EXPECT_EQ(handles0, handles1) << "edge range of vertex range does not match";
+    }
+    {
+      std::vector<OpenMesh::FaceHandle> handles0;
+      std::vector<OpenMesh::FaceHandle> handles1;
+      for (auto h : mesh_.vv_range(vh))
+        for (auto h2 : mesh_.vf_range(h))
+          handles0.push_back(h2);
+      for (auto h : vh.vertices())
+        for (auto h2 : h.faces())
+          handles1.push_back(h2);
+      EXPECT_EQ(handles0, handles1) << "face range of vertex range does not match";
+    }
+    {
+      std::vector<OpenMesh::VertexHandle> handles0;
+      std::vector<OpenMesh::VertexHandle> handles1;
+      for (auto h : mesh_.vf_range(vh))
+        for (auto h2 : mesh_.fv_range(h))
+          handles0.push_back(h2);
+      for (auto h : vh.faces())
+        for (auto h2 : h.vertices())
+          handles1.push_back(h2);
+      EXPECT_EQ(handles0, handles1) << "vertex range of face range does not match";
+    }
+    {
+      std::vector<OpenMesh::HalfedgeHandle> handles0;
+      std::vector<OpenMesh::HalfedgeHandle> handles1;
+      for (auto h : mesh_.vf_range(vh))
+        for (auto h2 : mesh_.fh_range(h))
+          handles0.push_back(h2);
+      for (auto h : vh.faces())
+        for (auto h2 : h.halfedges())
+          handles1.push_back(h2);
+      EXPECT_EQ(handles0, handles1) << "vertex range of face range does not match";
+    }
+    {
+      std::vector<OpenMesh::FaceHandle> handles0;
+      std::vector<OpenMesh::FaceHandle> handles1;
+      for (auto h : mesh_.vf_range(vh))
+        for (auto h2 : mesh_.ff_range(h))
+          handles0.push_back(h2);
+      for (auto h : vh.faces())
+        for (auto h2 : h.faces())
+          handles1.push_back(h2);
+      EXPECT_EQ(handles0, handles1) << "vertex range of face range does not match";
+    }
+  }
+}
+
 
 /* Test a chain of navigation on a cube
  */
