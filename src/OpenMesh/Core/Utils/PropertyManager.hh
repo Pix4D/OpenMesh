@@ -381,6 +381,30 @@ class PropertyManager {
         }
 
         /**
+         * Enables convenient access to the encapsulated property.
+         *
+         * For a usage example see this class' documentation.
+         *
+         * @param handle A handle of the appropriate handle type. (I.e. \p VertexHandle for \p VPropHandleT, etc.)
+         */
+        template<typename HandleType>
+        inline typename PROPTYPE::reference operator() (const HandleType &handle) {
+            return mesh_->property(prop_, handle);
+        }
+
+        /**
+         * Enables convenient access to the encapsulated property.
+         *
+         * For a usage example see this class' documentation.
+         *
+         * @param handle A handle of the appropriate handle type. (I.e. \p VertexHandle for \p VPropHandleT, etc.)
+         */
+        template<typename HandleType>
+        inline typename PROPTYPE::const_reference operator() (const HandleType &handle) const {
+            return mesh_->property(prop_, handle);
+        }
+
+        /**
          * Conveniently set the property for an entire range of values.
          *
          * Examples:

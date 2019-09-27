@@ -59,7 +59,7 @@ struct SmartRangeT
   // TODO: Someone with better c++ knowledge may improve the code below.
 
   template <typename Functor>
-  auto sum(Functor f) -> decltype (f(std::declval<HandleT>())+f(std::declval<HandleT>()))
+  auto sum(Functor&& f) -> decltype (f(std::declval<HandleT>())+f(std::declval<HandleT>()))
   {
     auto range = static_cast<const RangeT*>(this);
     auto begin = range->begin();
@@ -72,6 +72,27 @@ struct SmartRangeT
       sum += f(*it);
     return sum;
   }
+
+  template <typename Functor>
+  auto avg(Functor&& f) -> decltype (1.0 * (f(std::declval<HandleT>())+f(std::declval<HandleT>())))
+  {
+    auto range = static_cast<const RangeT*>(this);
+    auto begin = range->begin();
+    auto end   = range->end();
+    assert(begin != end);
+    decltype (f(*begin) + f(*begin)) sum = f(*begin);
+    auto it = begin;
+    ++it;
+    int n_elements = 1;
+    for (; it != end; ++it)
+    {
+      sum += f(*it);
+      ++n_elements;
+    }
+    return (1.0 / n_elements) * sum;
+  }
+
+
 
 };
 

@@ -2,6 +2,7 @@
 #include <Unittests/unittests_common.hh>
 
 #include <OpenMesh/Core/Mesh/SmartHandles.hh>
+#include <OpenMesh/Core/Utils/PropertyManager.hh>
 
 #include <iostream>
 #include <chrono>
@@ -189,6 +190,26 @@ TEST_F(OpenMeshSmartRanges, Sum)
     EXPECT_EQ(fh.edges().sum(F<OpenMesh::EdgeHandle>()), mesh_.valence(fh));
   for (auto fh : mesh_.faces())
     EXPECT_EQ(fh.faces().sum(F<OpenMesh::FaceHandle>()), 3);
+}
+
+
+/* Test if Property Manager can be used in smart ranges
+ */
+TEST_F(OpenMeshSmartRanges, PropertyManagerAsFunctor)
+{
+  auto myPos = OpenMesh::makeTemporaryProperty<OpenMesh::VertexHandle, Mesh::Point>(mesh_);
+
+  for (auto vh : mesh_.vertices())
+    myPos(vh) = mesh_.point(vh);
+
+  Mesh::Point cog(0,0,0);
+  for (auto vh : mesh_.vertices())
+    cog += mesh_.point(vh);
+  cog /= mesh_.n_vertices();
+
+  auto cog2 = mesh_.vertices().avg(myPos);
+
+  EXPECT_LT(norm(cog - cog2), 0.00001) << "Computed center of gravities are significantly different.";
 }
 
 
