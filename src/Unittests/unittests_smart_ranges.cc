@@ -224,8 +224,8 @@ TEST_F(OpenMeshSmartRanges, ToVector)
   {
     auto tri_uvs = fh.halfedges().to_vector(uvs);
     auto heh_handles = fh.halfedges().to_vector();
-//    for (auto heh : heh_handles)
-//      auto n = heh.next();
+    for (auto heh : heh_handles)
+      auto n = heh.next();
   }
 
   auto vertex_vec = mesh_.vertices().to_vector();

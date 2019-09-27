@@ -82,6 +82,9 @@ struct RangeTraitT
 };
 
 
+template <typename CirculatorRangeTraitT>
+class CirculatorRange;
+
 template<
     typename CONTAINER_T,
     typename ITER_T,
@@ -1098,29 +1101,6 @@ public:
   ConstFaceRange all_faces() const;
 
 
-  /// Generic class for iterator ranges.
-  template <typename CirculatorRangeTraitT>
-  class CirculatorRange : public SmartRangeT<CirculatorRange<CirculatorRangeTraitT>, typename CirculatorRangeTraitT::TO_ENTITYE_TYPE>{
-      public:
-          typedef typename CirculatorRangeTraitT::ITER_TYPE ITER_TYPE;
-          typedef typename CirculatorRangeTraitT::CENTER_ENTITY_TYPE CENTER_ENTITY_TYPE;
-          typedef typename CirculatorRangeTraitT::CONTAINER_TYPE CONTAINER_TYPE;
-          typedef ITER_TYPE iterator;
-          typedef ITER_TYPE const_iterator;
-
-          CirculatorRange(
-                  const CONTAINER_TYPE &container,
-                  CENTER_ENTITY_TYPE center) :
-              container_(container), center_(center) {}
-          ITER_TYPE begin() const { return CirculatorRangeTraitT::begin(container_, center_); }
-          ITER_TYPE end() const { return CirculatorRangeTraitT::end(container_, center_); }
-
-      private:
-          const CONTAINER_TYPE &container_;
-          CENTER_ENTITY_TYPE center_;
-  };
-
-
   typedef CirculatorRange<CirculatorRangeTraitT<
           PolyConnectivity,
           ConstVertexVertexCWIter,
@@ -1507,7 +1487,7 @@ namespace OpenMesh {
 
 /// Generic class for vertex/halfedge/edge/face ranges.
 template <typename RangeTraitT>
-class EntityRange : public SmartRangeT<EntityRange<RangeTraitT>, typename RangeTraitT::ITER_TYPE::value_handle> {
+class EntityRange : public SmartRangeT<EntityRange<RangeTraitT>, typename RangeTraitT::ITER_TYPE::SmartHandle> {
     public:
         typedef typename RangeTraitT::ITER_TYPE iterator;
         typedef typename RangeTraitT::ITER_TYPE const_iterator;
@@ -1518,6 +1498,29 @@ class EntityRange : public SmartRangeT<EntityRange<RangeTraitT>, typename RangeT
 
     private:
         typename RangeTraitT::CONTAINER_TYPE &container_;
+};
+
+/// Generic class for iterator ranges.
+template <typename CirculatorRangeTraitT>
+//class CirculatorRange : public SmartRangeT<CirculatorRange<CirculatorRangeTraitT>, decltype (make_smart(std::declval<typename CirculatorRangeTraitT::TO_ENTITYE_TYPE>(), std::declval<PolyConnectivity>()))>{
+class CirculatorRange : public SmartRangeT<CirculatorRange<CirculatorRangeTraitT>, typename SmartHandle<typename CirculatorRangeTraitT::TO_ENTITYE_TYPE>::type>{
+    public:
+        typedef typename CirculatorRangeTraitT::ITER_TYPE ITER_TYPE;
+        typedef typename CirculatorRangeTraitT::CENTER_ENTITY_TYPE CENTER_ENTITY_TYPE;
+        typedef typename CirculatorRangeTraitT::CONTAINER_TYPE CONTAINER_TYPE;
+        typedef ITER_TYPE iterator;
+        typedef ITER_TYPE const_iterator;
+
+        CirculatorRange(
+                const CONTAINER_TYPE &container,
+                CENTER_ENTITY_TYPE center) :
+            container_(container), center_(center) {}
+        ITER_TYPE begin() const { return CirculatorRangeTraitT::begin(container_, center_); }
+        ITER_TYPE end() const { return CirculatorRangeTraitT::end(container_, center_); }
+
+    private:
+        const CONTAINER_TYPE &container_;
+        CENTER_ENTITY_TYPE center_;
 };
 
 

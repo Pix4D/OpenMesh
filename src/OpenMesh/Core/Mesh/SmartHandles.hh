@@ -198,6 +198,15 @@ inline SmartEdgeHandle     make_smart(EdgeHandle     _eh, const PolyConnectivity
 inline SmartFaceHandle     make_smart(FaceHandle     _fh, const PolyConnectivity& _mesh) { return SmartFaceHandle    (_fh.idx(), &_mesh); }
 
 
+// helper to convert Handle Types to Smarthandle Types
+template <typename HandleT>
+struct SmartHandle;
+
+template <> struct SmartHandle<VertexHandle>   { using type = SmartVertexHandle;   };
+template <> struct SmartHandle<HalfedgeHandle> { using type = SmartHalfedgeHandle; };
+template <> struct SmartHandle<EdgeHandle>     { using type = SmartEdgeHandle;     };
+template <> struct SmartHandle<FaceHandle>     { using type = SmartFaceHandle;     };
+
 
 inline SmartHalfedgeHandle SmartVertexHandle::out() const
 {
@@ -213,36 +222,6 @@ inline SmartHalfedgeHandle SmartVertexHandle::halfedge() const
 inline SmartHalfedgeHandle SmartVertexHandle::in() const
 {
   return out().opp();
-}
-
-inline PolyConnectivity::ConstVertexFaceRange SmartVertexHandle::faces() const
-{
-  assert(mesh() != nullptr);
-  return mesh()->vf_range(*this);
-}
-
-inline PolyConnectivity::ConstVertexEdgeRange SmartVertexHandle::edges() const
-{
-  assert(mesh() != nullptr);
-  return mesh()->ve_range(*this);
-}
-
-inline PolyConnectivity::ConstVertexVertexRange SmartVertexHandle::vertices() const
-{
-  assert(mesh() != nullptr);
-  return mesh()->vv_range(*this);
-}
-
-inline PolyConnectivity::ConstVertexIHalfedgeRange SmartVertexHandle::incoming_halfedges() const
-{
-  assert(mesh() != nullptr);
-  return mesh()->vih_range(*this);
-}
-
-inline PolyConnectivity::ConstVertexOHalfedgeRange SmartVertexHandle::outgoing_halfedges() const
-{
-  assert(mesh() != nullptr);
-  return mesh()->voh_range(*this);
 }
 
 inline uint SmartVertexHandle::valence() const
@@ -356,30 +335,6 @@ inline SmartHalfedgeHandle SmartFaceHandle::halfedge() const
 {
   assert(mesh() != nullptr);
   return make_smart(mesh()->halfedge_handle(*this), mesh());
-}
-
-inline PolyConnectivity::ConstFaceVertexRange SmartFaceHandle::vertices() const
-{
-  assert(mesh() != nullptr);
-  return mesh()->fv_range(*this);
-}
-
-inline PolyConnectivity::ConstFaceHalfedgeRange SmartFaceHandle::halfedges() const
-{
-  assert(mesh() != nullptr);
-  return mesh()->fh_range(*this);
-}
-
-inline PolyConnectivity::ConstFaceEdgeRange SmartFaceHandle::edges() const
-{
-  assert(mesh() != nullptr);
-  return mesh()->fe_range(*this);
-}
-
-inline PolyConnectivity::ConstFaceFaceRange SmartFaceHandle::faces() const
-{
-  assert(mesh() != nullptr);
-  return mesh()->ff_range(*this);
 }
 
 inline uint SmartFaceHandle::valence() const
