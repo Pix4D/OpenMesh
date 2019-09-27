@@ -508,7 +508,7 @@ class GenericCirculatorT_DEPRECATED : protected GenericCirculatorBaseT<typename 
             const GenericCirculatorBaseT<Mesh>* self = this;
 #ifndef NDEBUG
             assert(this->heh_.is_valid());
-            value_type res = (self->GenericCirculatorT_DEPRECATED_TraitsT::toHandle(this->mesh_);
+            value_type res = (GenericCirculatorT_DEPRECATED_TraitsT::toHandle(this->mesh_, this->heh_));
             assert(res.is_valid());
             return make_smart(res, this->mesh_);
 #else
