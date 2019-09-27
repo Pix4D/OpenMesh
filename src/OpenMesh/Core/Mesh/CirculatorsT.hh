@@ -321,7 +321,7 @@ class GenericCirculatorT : protected GenericCirculatorBaseT<typename GenericCirc
             assert(this->heh_.is_valid());
             value_type res = GenericCirculatorT_TraitsT::toHandle(this->mesh_, this->heh_);
             assert(res.is_valid());
-            return res;
+            return make_smart(res, this->mesh_);
 #else
             return make_smart(GenericCirculatorT_TraitsT::toHandle(this->mesh_, this->heh_), this->mesh_);
 #endif
@@ -510,7 +510,7 @@ class GenericCirculatorT_DEPRECATED : protected GenericCirculatorBaseT<typename 
             assert(this->heh_.is_valid());
             value_type res = (self->GenericCirculatorT_DEPRECATED_TraitsT::toHandle(this->mesh_);
             assert(res.is_valid());
-            return res;
+            return make_smart(res, this->mesh_);
 #else
             return make_smart(GenericCirculatorT_DEPRECATED_TraitsT::toHandle(this->mesh_, this->heh_), this->mesh_);
 #endif
