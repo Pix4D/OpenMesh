@@ -249,28 +249,34 @@ TEST_F(OpenMeshSmartRanges, ToArray)
   }
 }
 
+
 /* Test bounding box
  */
 TEST_F(OpenMeshSmartRanges, BoundingBox)
 {
-  auto myPos = OpenMesh::makeTemporaryProperty<OpenMesh::VertexHandle, Mesh::Point>(mesh_);
+  // The custom vecs OpenMesh are tested with here do not implement a min or max function.
+  // Thus we convert here.
+  auto myPos = OpenMesh::makeTemporaryProperty<OpenMesh::VertexHandle, OpenMesh::Vec3f>(mesh_);
   for (auto vh : mesh_.vertices())
-    myPos(vh) = mesh_.point(vh);
+    for (size_t i = 0; i < 3; ++i)
+      myPos(vh)[i] = mesh_.point(vh)[i];
+
+  auto bb_min = mesh_.vertices().min(myPos);
+  auto bb_max = mesh_.vertices().max(myPos);
+  auto bb     = mesh_.vertices().minmax(myPos);
+
+  EXPECT_LT(norm(bb_min - OpenMesh::Vec3f(-1,-1,-1)), 0.000001) << "Bounding box minimum seems off";
+  EXPECT_LT(norm(bb_max - OpenMesh::Vec3f( 1, 1, 1)), 0.000001) << "Bounding box maximum seems off";
+
 
   auto uvs = OpenMesh::makeTemporaryProperty<OpenMesh::HalfedgeHandle, OpenMesh::Vec2d>(mesh_);
   for (auto heh : mesh_.halfedges())
     uvs(heh) = OpenMesh::Vec2d(heh.idx(), (heh.idx() * 13)%7);
 
-  auto bb_min = mesh_.vertices().elem_wise_min<3>(myPos);
-  auto bb_max = mesh_.vertices().elem_wise_max<3>(myPos);
-
-  EXPECT_LT(norm(bb_min - Mesh::Point(-1,-1,-1)), 0.000001) << "Bounding box minimum seems off";
-  EXPECT_LT(norm(bb_max - Mesh::Point( 1, 1, 1)), 0.000001) << "Bounding box maximum seems off";
-
   for (auto fh : mesh_.faces())
   {
-    auto uv_bb_min = fh.halfedges().elem_wise_min<2>(uvs);
-    auto uv_bb_max = fh.halfedges().elem_wise_max<2>(uvs);
+    auto uv_bb_min = fh.halfedges().min(uvs);
+    auto uv_bb_max = fh.halfedges().max(uvs);
   }
 }
 

@@ -71,7 +71,6 @@ struct SmartRangeT
   // TODO: Someone with better c++ knowledge may improve the code below.
 
 
-
   template <typename Functor>
   auto sum(Functor&& f) -> decltype (f(std::declval<HandleT>())+f(std::declval<HandleT>()))
   {
@@ -130,46 +129,49 @@ struct SmartRangeT
   }
 
 
-  template <int n, typename Functor>
-  auto elem_wise_min(Functor&& f) -> typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type
+  template <typename Functor>
+  auto min(Functor&& f) -> typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type
   {
+    using std::min;
+
     auto range = static_cast<const RangeT*>(this);
     auto it    = range->begin();
     auto end   = range->end();
     assert(it != end);
 
-    typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type min = f(*it);
+    typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type res = f(*it);
     ++it;
 
     for (; it != end; ++it)
-    {
-      const auto& tmp = f(*it);
-      for (int i = 0; i < n; ++i)
-        min[i] = std::min(min[i], tmp[i]);
-    }
+      res = min(res, f(*it));
 
-    return min;
+    return res;
   }
 
-  template <int n, typename Functor>
-  auto elem_wise_max(Functor&& f) -> typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type
+  template <typename Functor>
+  auto max(Functor&& f) -> typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type
   {
+    using std::max;
+
     auto range = static_cast<const RangeT*>(this);
     auto it    = range->begin();
     auto end   = range->end();
     assert(it != end);
 
-    typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type max = f(*it);
+    typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type res = f(*it);
     ++it;
 
     for (; it != end; ++it)
-    {
-      const auto& tmp = f(*it);
-      for (int i = 0; i < n; ++i)
-        max[i] = std::max(max[i], tmp[i]);
-    }
+      res = max(res, f(*it));
 
-    return max;
+    return res;
+  }
+
+  template <typename Functor>
+  auto minmax(Functor&& f) -> std::pair<typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type,
+                                        typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type>
+  {
+    return std::make_pair(this->min(f), this->max(f));
   }
 
 
