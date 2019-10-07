@@ -47,6 +47,7 @@
 
 #include "Handles.hh"
 #include <OpenMesh/Core/Mesh/PolyConnectivity.hh>
+#include <OpenMesh/Core/System/OpenMeshDLLMacros.hh>
 
 
 //== NAMESPACES ===============================================================
@@ -64,7 +65,7 @@ struct SmartFaceHandle;
 //== CLASS DEFINITION =========================================================
 
 /// Base class for all smart handle types
-class SmartBaseHandle
+class OPENMESHDLLEXPORT SmartBaseHandle
 {
 public:
   explicit SmartBaseHandle(const PolyConnectivity* _mesh = nullptr) : mesh_(_mesh) {}
@@ -80,7 +81,7 @@ private:
 };
 
 /// Smart version of VertexHandle contains a pointer to the corresponding mesh and allows easier access to navigation methods
-struct SmartVertexHandle : public SmartBaseHandle, VertexHandle
+struct OPENMESHDLLEXPORT SmartVertexHandle : public SmartBaseHandle, VertexHandle
 {
   explicit SmartVertexHandle(int _idx=-1, const PolyConnectivity* _mesh = nullptr) : SmartBaseHandle(_mesh), VertexHandle(_idx) {}
 
@@ -110,7 +111,7 @@ struct SmartVertexHandle : public SmartBaseHandle, VertexHandle
   bool is_manifold() const;
 };
 
-struct SmartHalfedgeHandle : public SmartBaseHandle, HalfedgeHandle
+struct OPENMESHDLLEXPORT SmartHalfedgeHandle : public SmartBaseHandle, HalfedgeHandle
 {
   explicit SmartHalfedgeHandle(int _idx=-1, const PolyConnectivity* _mesh = nullptr) : SmartBaseHandle(_mesh), HalfedgeHandle(_idx) {}
 
@@ -131,7 +132,7 @@ struct SmartHalfedgeHandle : public SmartBaseHandle, HalfedgeHandle
   bool is_boundary() const;
 };
 
-struct SmartEdgeHandle : public SmartBaseHandle, EdgeHandle
+struct OPENMESHDLLEXPORT SmartEdgeHandle : public SmartBaseHandle, EdgeHandle
 {
   explicit SmartEdgeHandle(int _idx=-1, const PolyConnectivity* _mesh = nullptr) : SmartBaseHandle(_mesh), EdgeHandle(_idx) {}
 
@@ -156,7 +157,7 @@ struct SmartEdgeHandle : public SmartBaseHandle, EdgeHandle
   bool is_boundary() const;
 };
 
-struct SmartFaceHandle : public SmartBaseHandle, FaceHandle
+struct OPENMESHDLLEXPORT SmartFaceHandle : public SmartBaseHandle, FaceHandle
 {
   explicit SmartFaceHandle(int _idx=-1, const PolyConnectivity* _mesh = nullptr) : SmartBaseHandle(_mesh), FaceHandle(_idx) {}
 
