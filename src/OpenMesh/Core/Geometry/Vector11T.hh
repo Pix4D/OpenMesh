@@ -762,14 +762,14 @@ VectorT<Scalar, DIM>& minimize(VectorT<Scalar, DIM>& _v1, VectorT<Scalar, DIM>& 
 /// \relates OpenMesh::VectorT
 /// non-member max
 template<typename Scalar, int DIM>
-VectorT<Scalar, DIM>& max(VectorT<Scalar, DIM>& _v1, VectorT<Scalar, DIM>& _v2) {
+VectorT<Scalar, DIM> max(VectorT<Scalar, DIM>& _v1, VectorT<Scalar, DIM>& _v2) {
     return VectorT<Scalar, DIM>(_v1).maximize(_v2);
 }
 
 /// \relates OpenMesh::VectorT
 /// non-member min
 template<typename Scalar, int DIM>
-VectorT<Scalar, DIM>& min(VectorT<Scalar, DIM>& _v1, VectorT<Scalar, DIM>& _v2) {
+VectorT<Scalar, DIM> min(VectorT<Scalar, DIM>& _v1, VectorT<Scalar, DIM>& _v2) {
     return VectorT<Scalar, DIM>(_v1).minimize(_v2);
 }
 
