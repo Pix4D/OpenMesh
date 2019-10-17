@@ -1526,21 +1526,21 @@ private: // Working storage for add_face()
 namespace OpenMesh {
 
 
-inline SmartHalfedgeHandle PolyConnectivity::next_halfedge_handle(SmartHalfedgeHandle _heh) const        { return _heh.next(); }
-inline SmartHalfedgeHandle PolyConnectivity::prev_halfedge_handle(SmartHalfedgeHandle _heh) const        { return _heh.prev(); }
-inline SmartHalfedgeHandle PolyConnectivity::opposite_halfedge_handle(SmartHalfedgeHandle _heh) const    { return _heh.opp(); }
-inline SmartHalfedgeHandle PolyConnectivity::ccw_rotated_halfedge_handle(SmartHalfedgeHandle _heh) const { return _heh.prev().opp(); }
-inline SmartHalfedgeHandle PolyConnectivity::cw_rotated_halfedge_handle(SmartHalfedgeHandle _heh) const  { return _heh.opp().next();}
+inline SmartHalfedgeHandle PolyConnectivity::next_halfedge_handle(SmartHalfedgeHandle _heh) const        { return make_smart(next_halfedge_handle(HalfedgeHandle(_heh)),        *this); }
+inline SmartHalfedgeHandle PolyConnectivity::prev_halfedge_handle(SmartHalfedgeHandle _heh) const        { return make_smart(prev_halfedge_handle(HalfedgeHandle(_heh)),        *this); }
+inline SmartHalfedgeHandle PolyConnectivity::opposite_halfedge_handle(SmartHalfedgeHandle _heh) const    { return make_smart(opposite_halfedge_handle(HalfedgeHandle(_heh)),    *this); }
+inline SmartHalfedgeHandle PolyConnectivity::ccw_rotated_halfedge_handle(SmartHalfedgeHandle _heh) const { return make_smart(ccw_rotated_halfedge_handle(HalfedgeHandle(_heh)), *this); }
+inline SmartHalfedgeHandle PolyConnectivity::cw_rotated_halfedge_handle(SmartHalfedgeHandle _heh) const  { return make_smart(cw_rotated_halfedge_handle(HalfedgeHandle(_heh)),  *this); }
 
 inline SmartHalfedgeHandle PolyConnectivity::s_halfedge_handle(SmartEdgeHandle _eh, unsigned int _i) { return make_smart(ArrayKernel::s_halfedge_handle(EdgeHandle(_eh), _i), _eh.mesh()); }
 inline SmartEdgeHandle     PolyConnectivity::s_edge_handle(SmartHalfedgeHandle _heh)                 { return make_smart(ArrayKernel::s_edge_handle(HalfedgeHandle(_heh)), _heh.mesh()); }
 
-inline SmartHalfedgeHandle PolyConnectivity::halfedge_handle(SmartEdgeHandle _eh, unsigned int _i) const { return _eh.halfedge(_i); }
-inline SmartEdgeHandle PolyConnectivity::edge_handle(SmartHalfedgeHandle _heh) const                     { return _heh.edge();      }
-inline SmartHalfedgeHandle PolyConnectivity::halfedge_handle(SmartFaceHandle _fh) const                  { return _fh.halfedge();   }
-inline SmartHalfedgeHandle PolyConnectivity::halfedge_handle(SmartVertexHandle _vh) const                { return _vh.halfedge();   }
+inline SmartHalfedgeHandle PolyConnectivity::halfedge_handle(SmartEdgeHandle _eh, unsigned int _i) const { return make_smart(halfedge_handle(EdgeHandle(_eh), _i), *this); }
+inline SmartEdgeHandle PolyConnectivity::edge_handle(SmartHalfedgeHandle _heh) const                     { return make_smart(edge_handle(HalfedgeHandle(_heh)),    *this); }
+inline SmartHalfedgeHandle PolyConnectivity::halfedge_handle(SmartFaceHandle _fh) const                  { return make_smart(halfedge_handle(FaceHandle(_fh)),     *this); }
+inline SmartHalfedgeHandle PolyConnectivity::halfedge_handle(SmartVertexHandle _vh) const                { return make_smart(halfedge_handle(VertexHandle(_vh)),   *this); }
 
-inline SmartFaceHandle PolyConnectivity::face_handle(SmartHalfedgeHandle _heh) const                     { return _heh.face();      }
+inline SmartFaceHandle PolyConnectivity::face_handle(SmartHalfedgeHandle _heh) const                     { return make_smart(face_handle(HalfedgeHandle(_heh)),    *this); }
 
 
 
