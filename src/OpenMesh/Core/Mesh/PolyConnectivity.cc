@@ -113,7 +113,7 @@ void PolyConnectivity::adjust_outgoing_halfedge(VertexHandle _vh)
 
 //-----------------------------------------------------------------------------
 
-PolyConnectivity::FaceHandle
+SmartFaceHandle
 PolyConnectivity::add_face(const VertexHandle* _vertex_handles, size_t _vhs_size)
 {
   VertexHandle                   vh;
@@ -142,7 +142,7 @@ PolyConnectivity::add_face(const VertexHandle* _vertex_handles, size_t _vhs_size
     if ( !is_boundary(_vertex_handles[i]) )
     {
       omerr() << "PolyMeshT::add_face: complex vertex\n";
-      return InvalidFaceHandle;
+      return make_smart(InvalidFaceHandle, this);
     }
 
     // Initialise edge attributes
@@ -154,7 +154,7 @@ PolyConnectivity::add_face(const VertexHandle* _vertex_handles, size_t _vhs_size
     if (!edgeData_[i].is_new && !is_boundary(edgeData_[i].halfedge_handle))
     {
       omerr() << "PolyMeshT::add_face: complex edge\n";
-      return InvalidFaceHandle;
+      return make_smart(InvalidFaceHandle, this);
     }
   }
 
@@ -186,7 +186,7 @@ PolyConnectivity::add_face(const VertexHandle* _vertex_handles, size_t _vhs_size
         if (boundary_prev == inner_prev)
         {
           omerr() << "PolyMeshT::add_face: patch re-linking failed\n";
-          return InvalidFaceHandle;
+          return make_smart(InvalidFaceHandle, this);
         }
 
         assert(is_boundary(boundary_prev));
@@ -297,12 +297,12 @@ PolyConnectivity::add_face(const VertexHandle* _vertex_handles, size_t _vhs_size
     if (edgeData_[i].needs_adjust)
       adjust_outgoing_halfedge(_vertex_handles[i]);
 
-  return fh;
+  return make_smart(fh, this);
 }
 
 //-----------------------------------------------------------------------------
 
-FaceHandle PolyConnectivity::add_face(VertexHandle _vh0, VertexHandle _vh1, VertexHandle _vh2, VertexHandle _vh3)
+SmartFaceHandle PolyConnectivity::add_face(VertexHandle _vh0, VertexHandle _vh1, VertexHandle _vh2, VertexHandle _vh3)
 {
   VertexHandle vhs[4] = { _vh0, _vh1, _vh2, _vh3 };
   return add_face(vhs, 4);
@@ -310,7 +310,7 @@ FaceHandle PolyConnectivity::add_face(VertexHandle _vh0, VertexHandle _vh1, Vert
 
 //-----------------------------------------------------------------------------
 
-FaceHandle PolyConnectivity::add_face(VertexHandle _vh0, VertexHandle _vh1, VertexHandle _vh2)
+SmartFaceHandle PolyConnectivity::add_face(VertexHandle _vh0, VertexHandle _vh1, VertexHandle _vh2)
 {
   VertexHandle vhs[3] = { _vh0, _vh1, _vh2 };
   return add_face(vhs, 3);
@@ -318,8 +318,16 @@ FaceHandle PolyConnectivity::add_face(VertexHandle _vh0, VertexHandle _vh1, Vert
 
 //-----------------------------------------------------------------------------
 
-FaceHandle PolyConnectivity::add_face(const std::vector<VertexHandle>& _vhandles)
+SmartFaceHandle PolyConnectivity::add_face(const std::vector<VertexHandle>& _vhandles)
 { return add_face(&_vhandles.front(), _vhandles.size()); }
+
+//-----------------------------------------------------------------------------
+
+SmartFaceHandle PolyConnectivity::add_face(const std::vector<SmartVertexHandle>& _vhandles)
+{
+  std::vector<VertexHandle> vhandles(_vhandles.begin(), _vhandles.end());
+  return add_face(&vhandles.front(), vhandles.size());
+}
 
 
 //-----------------------------------------------------------------------------

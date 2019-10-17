@@ -481,8 +481,7 @@ public:
   //@{
 
   /// Add a new vertex 
-  inline VertexHandle add_vertex()
-  { return new_vertex(); }
+  inline SmartVertexHandle add_vertex();
 
   /** \brief Add and connect a new face
   *
@@ -491,7 +490,16 @@ public:
   *
   * @param _vhandles sorted list of vertex handles (also defines order in which the vertices are added to the face)
   */
-  FaceHandle add_face(const std::vector<VertexHandle>& _vhandles);
+  SmartFaceHandle add_face(const std::vector<VertexHandle>& _vhandles);
+
+  /** \brief Add and connect a new face
+  *
+  * Create a new face consisting of the vertices provided by the vertex handle vector.
+  * (The vertices have to be already added to the mesh by add_vertex)
+  *
+  * @param _vhandles sorted list of vertex handles (also defines order in which the vertices are added to the face)
+  */
+  SmartFaceHandle add_face(const std::vector<SmartVertexHandle>& _vhandles);
  
    
   /** \brief Add and connect a new face
@@ -503,7 +511,7 @@ public:
   * @param _vh1 Second vertex handle
   * @param _vh2 Third  vertex handle
   */
-  FaceHandle add_face(VertexHandle _vh0, VertexHandle _vh1, VertexHandle _vh2);
+  SmartFaceHandle add_face(VertexHandle _vh0, VertexHandle _vh1, VertexHandle _vh2);
 
   /** \brief Add and connect a new face
   *
@@ -515,7 +523,7 @@ public:
   * @param _vh2 Third  vertex handle
   * @param _vh3 Fourth vertex handle
   */
-  FaceHandle add_face(VertexHandle _vh0, VertexHandle _vh1, VertexHandle _vh2, VertexHandle _vh3);
+  SmartFaceHandle add_face(VertexHandle _vh0, VertexHandle _vh1, VertexHandle _vh2, VertexHandle _vh3);
  
   /** \brief Add and connect a new face
   *
@@ -525,7 +533,7 @@ public:
   * @param _vhandles pointer to a sorted list of vertex handles (also defines order in which the vertices are added to the face)
   * @param _vhs_size number of vertex handles in the array
   */
-  FaceHandle add_face(const VertexHandle* _vhandles, size_t _vhs_size);
+  SmartFaceHandle add_face(const VertexHandle* _vhandles, size_t _vhs_size);
 
   //@}
 
@@ -1525,6 +1533,8 @@ private: // Working storage for add_face()
 
 namespace OpenMesh {
 
+
+inline SmartVertexHandle PolyConnectivity::add_vertex() { return make_smart(new_vertex(), *this); }
 
 inline SmartHalfedgeHandle PolyConnectivity::next_halfedge_handle(SmartHalfedgeHandle _heh) const        { return make_smart(next_halfedge_handle(HalfedgeHandle(_heh)),        *this); }
 inline SmartHalfedgeHandle PolyConnectivity::prev_halfedge_handle(SmartHalfedgeHandle _heh) const        { return make_smart(prev_halfedge_handle(HalfedgeHandle(_heh)),        *this); }
