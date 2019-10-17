@@ -461,4 +461,16 @@ TEST_F(OpenMeshSmartHandles, Performance)
 
 }
 
+
+/* Mix old and new api
+ */
+TEST_F(OpenMeshSmartHandles, MixOldAndNew)
+{
+  for (auto heh : mesh_.halfedges())
+  {
+    heh = mesh_.opposite_halfedge_handle(heh);
+  }
+}
+
+
 }
