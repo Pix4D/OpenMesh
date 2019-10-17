@@ -476,4 +476,30 @@ TEST_F(OpenMeshSmartHandles, MixOldAndNew)
 }
 
 
+
+/* comparability
+ */
+TEST_F(OpenMeshSmartHandles, ComparisionBetweenSmartHandleAndNormalHandles)
+{
+  OpenMesh::VertexHandle vh(0);
+  OpenMesh::SmartVertexHandle svh(0, &mesh_);
+  EXPECT_EQ(vh, svh) << "Vertex handle and smart vertex handle are different";
+
+  std::vector<OpenMesh::VertexHandle> vertices = mesh_.vertices().to_vector([](OpenMesh::SmartVertexHandle _svh) { return OpenMesh::VertexHandle(_svh); });
+
+  std::replace(vertices.begin(), vertices.end(), OpenMesh::VertexHandle(0), OpenMesh::VertexHandle(1));
+  EXPECT_EQ(vertices[0], OpenMesh::VertexHandle(1));
+
+  std::vector<OpenMesh::SmartVertexHandle> smart_vertices = mesh_.vertices().to_vector();
+
+  std::replace(smart_vertices.begin(), smart_vertices.end(), OpenMesh::SmartVertexHandle(0, &mesh_), OpenMesh::SmartVertexHandle(1, &mesh_));
+  EXPECT_EQ(smart_vertices[0], OpenMesh::VertexHandle(1));
+  EXPECT_EQ(smart_vertices[0], OpenMesh::SmartVertexHandle(1, &mesh_));
+
+  std::replace(vertices.begin(), vertices.end(),  OpenMesh::SmartVertexHandle(1, &mesh_), OpenMesh::SmartVertexHandle(2, &mesh_));
+  EXPECT_EQ(vertices[0], OpenMesh::VertexHandle(2));
+
+}
+
+
 }
