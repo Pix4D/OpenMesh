@@ -466,9 +466,12 @@ TEST_F(OpenMeshSmartHandles, Performance)
  */
 TEST_F(OpenMeshSmartHandles, MixOldAndNew)
 {
-  for (auto heh : mesh_.halfedges())
+  for (OpenMesh::SmartHalfedgeHandle heh : mesh_.halfedges())
   {
     heh = mesh_.opposite_halfedge_handle(heh);
+    OpenMesh::SmartEdgeHandle eh  = OpenMesh::PolyConnectivity::s_edge_handle(heh);
+    OpenMesh::SmartEdgeHandle eh2 = mesh_.edge_handle(heh);
+    OpenMesh::SmartFaceHandle fh = mesh_.face_handle(heh);
   }
 }
 

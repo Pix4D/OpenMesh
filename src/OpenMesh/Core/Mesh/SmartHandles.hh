@@ -125,6 +125,8 @@ struct OPENMESHDLLEXPORT SmartHalfedgeHandle : public SmartBaseHandle, HalfedgeH
   SmartVertexHandle   to()   const;
   /// Returns vertex at start of halfedge
   SmartVertexHandle   from() const;
+  /// Returns incident edge of halfedge
+  SmartEdgeHandle     edge() const;
   /// Returns incident face of halfedge
   SmartFaceHandle     face() const;
 
@@ -271,6 +273,12 @@ inline SmartVertexHandle SmartHalfedgeHandle::from() const
 {
   assert(mesh() != nullptr);
   return make_smart(mesh()->from_vertex_handle(*this), mesh());
+}
+
+inline SmartEdgeHandle SmartHalfedgeHandle::edge() const
+{
+  assert(mesh() != nullptr);
+  return make_smart(mesh()->edge_handle(*this), mesh());
 }
 
 inline SmartFaceHandle SmartHalfedgeHandle::face() const

@@ -102,7 +102,10 @@ struct CirculatorRangeTraitT
   static ITER_TYPE end(const CONTAINER_TYPE& _container, CENTER_ENTITY_TYPE _ce)   { return (_container.*end_fn)(_ce); }
 };
 
-
+struct SmartVertexHandle;
+struct SmartHalfedgeHandle;
+struct SmartEdgeHandle;
+struct SmartFaceHandle;
 
 /** \brief Connectivity Class for polygonal meshes
 */
@@ -180,7 +183,7 @@ public:
     using Mesh = This;
     using CenterEntityHandle = This::VertexHandle;
     using ValueHandle = This::HalfedgeHandle;
-    static ValueHandle toHandle(const Mesh* const _mesh, This::HalfedgeHandle _heh) { return _heh;}
+    static ValueHandle toHandle(const Mesh* const /*_mesh*/, This::HalfedgeHandle _heh) { return _heh;}
   };
 
   /**
@@ -219,7 +222,7 @@ public:
     using Mesh = This;
     using CenterEntityHandle = This::VertexHandle;
     using ValueHandle = This::FaceHandle;
-    static ValueHandle toHandle(const Mesh* const _mesh, This::HalfedgeHandle _heh) { return _mesh->face_handle(_heh); }
+    static ValueHandle toHandle(const Mesh* const _mesh, This::HalfedgeHandle _heh) { return static_cast<const ArrayKernel*>(_mesh)->face_handle(_heh); }
   };
 
   /**
@@ -239,7 +242,7 @@ public:
     using Mesh = This;
     using CenterEntityHandle = This::VertexHandle;
     using ValueHandle = This::EdgeHandle;
-    static ValueHandle toHandle(const Mesh* const _mesh, This::HalfedgeHandle _heh) { return _mesh->edge_handle(_heh); }
+    static ValueHandle toHandle(const Mesh* const _mesh, This::HalfedgeHandle _heh) { return static_cast<const ArrayKernel*>(_mesh)->edge_handle(_heh); }
   };
 
   /**
@@ -258,7 +261,7 @@ public:
     using Mesh = This;
     using CenterEntityHandle = This::FaceHandle;
     using ValueHandle = This::HalfedgeHandle;
-    static ValueHandle toHandle(const Mesh* const _mesh, This::HalfedgeHandle _heh) { return _heh; }
+    static ValueHandle toHandle(const Mesh* const /*_mesh*/, This::HalfedgeHandle _heh) { return _heh; }
   };
 
   /**
@@ -296,7 +299,7 @@ public:
     using Mesh = This;
     using CenterEntityHandle = This::FaceHandle;
     using ValueHandle = This::VertexHandle;
-    static ValueHandle toHandle(const Mesh* const _mesh, This::HalfedgeHandle _heh) { return _mesh->to_vertex_handle(_heh); }
+    static ValueHandle toHandle(const Mesh* const _mesh, This::HalfedgeHandle _heh) { return static_cast<const ArrayKernel*>(_mesh)->to_vertex_handle(_heh); }
   };
 
   /**
@@ -327,7 +330,7 @@ public:
     using Mesh = This;
     using CenterEntityHandle = This::FaceHandle;
     using ValueHandle = This::EdgeHandle;
-    static ValueHandle toHandle(const Mesh* const _mesh, This::HalfedgeHandle _heh) { return _mesh->edge_handle(_heh); }
+    static ValueHandle toHandle(const Mesh* const _mesh, This::HalfedgeHandle _heh) { return static_cast<const ArrayKernel*>(_mesh)->edge_handle(_heh); }
   };
 
   /**
@@ -347,7 +350,7 @@ public:
     using Mesh = This;
     using CenterEntityHandle = This::FaceHandle;
     using ValueHandle = This::FaceHandle;
-    static ValueHandle toHandle(const Mesh* const _mesh, This::HalfedgeHandle _heh) { return _mesh->face_handle(_mesh->opposite_halfedge_handle(_heh)); }
+    static ValueHandle toHandle(const Mesh* const _mesh, This::HalfedgeHandle _heh) { return static_cast<const ArrayKernel*>(_mesh)->face_handle(_mesh->opposite_halfedge_handle(_heh)); }
   };
 
   /**
@@ -564,6 +567,42 @@ public:
       edges and faces.
   */
   void delete_face(FaceHandle _fh, bool _delete_isolated_vertices=true);
+
+
+  //@}
+
+  /** \name Navigation with smart handles to allow usage of old-style navigation with smart handles
+  */
+  //@{
+
+  using ArrayKernel::next_halfedge_handle;
+  using ArrayKernel::prev_halfedge_handle;
+  using ArrayKernel::opposite_halfedge_handle;
+  using ArrayKernel::ccw_rotated_halfedge_handle;
+  using ArrayKernel::cw_rotated_halfedge_handle;
+
+  inline SmartHalfedgeHandle next_halfedge_handle       (SmartHalfedgeHandle _heh) const;
+  inline SmartHalfedgeHandle prev_halfedge_handle       (SmartHalfedgeHandle _heh) const;
+  inline SmartHalfedgeHandle opposite_halfedge_handle   (SmartHalfedgeHandle _heh) const;
+  inline SmartHalfedgeHandle ccw_rotated_halfedge_handle(SmartHalfedgeHandle _heh) const;
+  inline SmartHalfedgeHandle cw_rotated_halfedge_handle (SmartHalfedgeHandle _heh) const;
+
+  using ArrayKernel::s_halfedge_handle;
+  using ArrayKernel::s_edge_handle;
+
+  static SmartHalfedgeHandle s_halfedge_handle(SmartEdgeHandle _eh, unsigned int _i);
+  static SmartEdgeHandle s_edge_handle(SmartHalfedgeHandle _heh);
+
+  using ArrayKernel::halfedge_handle;
+  using ArrayKernel::edge_handle;
+  using ArrayKernel::face_handle;
+
+  inline SmartHalfedgeHandle halfedge_handle(SmartEdgeHandle _eh, unsigned int _i) const;
+  inline SmartHalfedgeHandle halfedge_handle(SmartFaceHandle _fh) const;
+  inline SmartHalfedgeHandle halfedge_handle(SmartVertexHandle _vh) const;
+  inline SmartEdgeHandle edge_handle(SmartHalfedgeHandle _heh) const;
+  inline SmartFaceHandle face_handle(SmartHalfedgeHandle _heh) const;
+
 
   //@}
   
@@ -1482,8 +1521,28 @@ private: // Working storage for add_face()
 
 #include <OpenMesh/Core/Mesh/IteratorsT.hh>
 #include <OpenMesh/Core/Mesh/CirculatorsT.hh>
+#include <OpenMesh/Core/Mesh/SmartHandles.hh>
 
 namespace OpenMesh {
+
+
+inline SmartHalfedgeHandle PolyConnectivity::next_halfedge_handle(SmartHalfedgeHandle _heh) const        { return _heh.next(); }
+inline SmartHalfedgeHandle PolyConnectivity::prev_halfedge_handle(SmartHalfedgeHandle _heh) const        { return _heh.prev(); }
+inline SmartHalfedgeHandle PolyConnectivity::opposite_halfedge_handle(SmartHalfedgeHandle _heh) const    { return _heh.opp(); }
+inline SmartHalfedgeHandle PolyConnectivity::ccw_rotated_halfedge_handle(SmartHalfedgeHandle _heh) const { return _heh.prev().opp(); }
+inline SmartHalfedgeHandle PolyConnectivity::cw_rotated_halfedge_handle(SmartHalfedgeHandle _heh) const  { return _heh.opp().next();}
+
+inline SmartHalfedgeHandle PolyConnectivity::s_halfedge_handle(SmartEdgeHandle _eh, unsigned int _i) { return make_smart(ArrayKernel::s_halfedge_handle(EdgeHandle(_eh), _i), _eh.mesh()); }
+inline SmartEdgeHandle     PolyConnectivity::s_edge_handle(SmartHalfedgeHandle _heh)                 { return make_smart(ArrayKernel::s_edge_handle(HalfedgeHandle(_heh)), _heh.mesh()); }
+
+inline SmartHalfedgeHandle PolyConnectivity::halfedge_handle(SmartEdgeHandle _eh, unsigned int _i) const { return _eh.halfedge(_i); }
+inline SmartEdgeHandle PolyConnectivity::edge_handle(SmartHalfedgeHandle _heh) const                     { return _heh.edge();      }
+inline SmartHalfedgeHandle PolyConnectivity::halfedge_handle(SmartFaceHandle _fh) const                  { return _fh.halfedge();   }
+inline SmartHalfedgeHandle PolyConnectivity::halfedge_handle(SmartVertexHandle _vh) const                { return _vh.halfedge();   }
+
+inline SmartFaceHandle PolyConnectivity::face_handle(SmartHalfedgeHandle _heh) const                     { return _heh.face();      }
+
+
 
 /// Generic class for vertex/halfedge/edge/face ranges.
 template <typename RangeTraitT>
