@@ -85,8 +85,8 @@ public:
    *
    *
    * */
-  FaceHandle add_face(const VertexHandle* _vhandles, size_t _vhs_size);
-  
+  SmartFaceHandle add_face(const VertexHandle* _vhandles, size_t _vhs_size);
+
   /** \brief Add a face with arbitrary valence to the triangle mesh
      *
      * Override OpenMesh::Mesh::PolyMeshT::add_face(). Faces that aren't
@@ -95,7 +95,17 @@ public:
      *
      *
      * */
-  FaceHandle add_face(const std::vector<VertexHandle>& _vhandles);
+  SmartFaceHandle add_face(const std::vector<VertexHandle>& _vhandles);
+
+  /** \brief Add a face with arbitrary valence to the triangle mesh
+     *
+     * Override OpenMesh::Mesh::PolyMeshT::add_face(). Faces that aren't
+     * triangles will be triangulated and added. In this case an
+     * invalid face handle will be returned.
+     *
+     *
+     * */
+  SmartFaceHandle add_face(const std::vector<SmartVertexHandle>& _vhandles);
 
   /** \brief Add a face to the mesh (triangle)
    *
@@ -107,7 +117,7 @@ public:
    * @param _vh2 VertexHandle 3
    * @return FaceHandle of the added face (invalid, if the operation failed)
    */
-  FaceHandle add_face(VertexHandle _vh0, VertexHandle _vh1, VertexHandle _vh2);
+  SmartFaceHandle add_face(VertexHandle _vh0, VertexHandle _vh1, VertexHandle _vh2);
   
   //@}
 

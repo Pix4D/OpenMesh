@@ -264,10 +264,10 @@ public:
    * @param _p  New point position that will be inserted at the edge
    * @return    Vertex handle of the newly added vertex
    */
-  inline VertexHandle split(EdgeHandle _eh, const Point& _p)
+  inline SmartVertexHandle split(EdgeHandle _eh, const Point& _p)
   {
     //Do not call PolyMeshT function below as this does the wrong operation
-    const VertexHandle vh = this->add_vertex(_p); Kernel::split(_eh, vh); return vh;
+    const SmartVertexHandle vh = this->add_vertex(_p); Kernel::split(_eh, vh); return vh;
   }
 
   /** \brief Edge split (= 2-to-4 split)
@@ -278,10 +278,10 @@ public:
    * @param _p  New point position that will be inserted at the edge
    * @return    Vertex handle of the newly added vertex
    */
-  inline VertexHandle split_copy(EdgeHandle _eh, const Point& _p)
+  inline SmartVertexHandle split_copy(EdgeHandle _eh, const Point& _p)
   {
     //Do not call PolyMeshT function below as this does the wrong operation
-    const VertexHandle vh = this->add_vertex(_p); Kernel::split_copy(_eh, vh); return vh;
+    const SmartVertexHandle vh = this->add_vertex(_p); Kernel::split_copy(_eh, vh); return vh;
   }
 
   /** \brief Edge split (= 2-to-4 split)
@@ -319,8 +319,8 @@ public:
    *
    * @return Vertex handle of the new vertex
    */
-  inline VertexHandle split(FaceHandle _fh, const Point& _p)
-  { const VertexHandle vh = this->add_vertex(_p); PolyMesh::split(_fh, vh); return vh; }
+  inline SmartVertexHandle split(FaceHandle _fh, const Point& _p)
+  { const SmartVertexHandle vh = this->add_vertex(_p); PolyMesh::split(_fh, vh); return vh; }
 
   /** \brief Face split (= 1-to-3 split, calls corresponding PolyMeshT function).
    *
@@ -331,8 +331,8 @@ public:
    *
    * @return Vertex handle of the new vertex
    */
-  inline VertexHandle split_copy(FaceHandle _fh, const Point& _p)
-  { const VertexHandle vh = this->add_vertex(_p);  PolyMesh::split_copy(_fh, vh); return vh; }
+  inline SmartVertexHandle split_copy(FaceHandle _fh, const Point& _p)
+  { const SmartVertexHandle vh = this->add_vertex(_p);  PolyMesh::split_copy(_fh, vh); return vh; }
 
 
   /** \brief Face split (= 1-to-4) split, splits edges at midpoints and adds 4 new faces in the interior).

@@ -501,5 +501,65 @@ TEST_F(OpenMeshSmartHandles, ComparisionBetweenSmartHandleAndNormalHandles)
 
 }
 
+TEST(OpenMeshSmartHandlesNoFixture, AddingFacesPolyMesh)
+{
+  using MyMesh = OpenMesh::PolyMesh_ArrayKernelT<>;
+
+  MyMesh mesh;
+
+  std::vector<OpenMesh::SmartVertexHandle> vertices;
+  for (int i = 0; i < 4; ++i)
+    vertices.push_back(mesh.add_vertex(MyMesh::Point()));
+
+  auto fh = mesh.add_face(vertices);
+
+  for (auto heh : fh.halfedges())
+  {
+    heh = heh.next();
+  }
+}
+
+TEST(OpenMeshSmartHandlesNoFixture, AddingFacesTriMesh)
+{
+  using MyMesh = OpenMesh::TriMesh_ArrayKernelT<>;
+
+  MyMesh mesh;
+
+  std::vector<OpenMesh::SmartVertexHandle> vertices;
+  for (int i = 0; i < 4; ++i)
+    vertices.push_back(mesh.add_vertex(MyMesh::Point()));
+
+  auto fh = mesh.add_face(vertices);
+
+  for (auto heh : fh.halfedges())
+  {
+    heh = heh.next();
+  }
+}
+
+TEST(OpenMeshSmartHandlesNoFixture, SplitTriMesh)
+{
+  using MyMesh = OpenMesh::TriMesh_ArrayKernelT<>;
+
+  MyMesh mesh;
+
+  std::vector<OpenMesh::SmartVertexHandle> vertices;
+  for (int i = 0; i < 3; ++i)
+    vertices.push_back(mesh.add_vertex(MyMesh::Point()));
+
+  auto fh = mesh.add_face(vertices);
+
+  auto p = (MyMesh::Point());
+
+  OpenMesh::SmartVertexHandle vh = mesh.split(fh, p);
+
+  OpenMesh::SmartEdgeHandle eh = fh.halfedge().edge();
+  OpenMesh::SmartVertexHandle vh2 = mesh.split(eh, p);
+
+}
+
+
+
+
 
 }
