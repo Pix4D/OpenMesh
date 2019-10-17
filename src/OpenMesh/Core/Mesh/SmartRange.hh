@@ -116,6 +116,26 @@ struct SmartRangeT
     return (1.0 / n_elements) * sum;
   }
 
+  template <typename Functor>
+  auto any_of(Functor&& f) -> bool
+  {
+    auto range = static_cast<const RangeT*>(this);
+    for (auto e : *range)
+      if (f(e))
+        return true;
+    return false;
+  }
+
+  template <typename Functor>
+  auto all_of(Functor&& f) -> bool
+  {
+    auto range = static_cast<const RangeT*>(this);
+    for (auto e : *range)
+      if (!f(e))
+        return false;
+    return true;
+  }
+
   /** @brief Convert range to array.
   *
   * Converts the range of elements into an array of objects returned by functor \p f.
