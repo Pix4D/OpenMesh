@@ -123,7 +123,7 @@ struct SmartRangeT
   {
     auto range = static_cast<const RangeT*>(this);
     std::vector<typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type> res;
-    for (auto e : *range)
+    for (const auto& e : *range)
       res.push_back(f(e));
     return res;
   }
