@@ -119,6 +119,8 @@ unittests.exe --gtest_output=xml
 
 unittests_customvec.exe --gtest_output=xml
 
+unittests_doublevec.exe --gtest_output=xml
+
 cd ..
 
 cd ..
@@ -146,6 +148,8 @@ cd unittests
 unittests.exe --gtest_output=xml
 
 unittests_customvec.exe --gtest_output=xml
+
+unittests_doublevec.exe --gtest_output=xml
 
 IF %errorlevel% NEQ 0 exit /b %errorlevel%
 
