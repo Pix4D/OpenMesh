@@ -40,8 +40,8 @@
  * ========================================================================= */
 
 
-#ifndef OPENMESH_DEFAULTTRIMESH_HH
-#define OPENMESH_DEFAULTTRIMESH_HH
+#ifndef OPENMESH_DEFAULTPOLYMESH_HH
+#define OPENMESH_DEFAULTPOLYMESH_HH
 
 
 //== INCLUDES =================================================================
@@ -62,5 +62,5 @@ typedef PolyMesh_ArrayKernelT<DefaultTraitsDouble> PolyMesh;
 //=============================================================================
 
 //=============================================================================
-#endif // OPENMESH_DEFAULTTRIMESH_HH defined
+#endif // OPENMESH_DEFAULTPOLYMESH_HH defined
 //=============================================================================
