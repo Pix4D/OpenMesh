@@ -69,14 +69,14 @@ make
 #build the unit tests
 make unittests
 
+cd Unittests
+
 echo -e "${OUTPUT}"
 echo ""
 echo "======================================================================"
 echo "Running unittests Release version with vectorchecks enabled"
 echo "======================================================================"
 echo -e "${NC}"
-
-cd Unittests
 
 #execute tests
 ./unittests --gtest_color=yes --gtest_output=xml
@@ -88,7 +88,18 @@ echo "Running unittests Release version with minimal vector type"
 echo "======================================================================"
 echo -e "${NC}"
 
+#execute tests
 ./unittests_customvec --gtest_color=yes --gtest_output=xml
+
+echo -e "${OUTPUT}"
+echo ""
+echo "======================================================================"
+echo "Running unittests Release version with double vector type"
+echo "======================================================================"
+echo -e "${NC}"
+
+#execute tests
+./unittests_doublevec --gtest_color=yes --gtest_output=xml
 
 cd ..
 cd ..
@@ -115,15 +126,14 @@ make
 #build the unit tests
 make unittests
 
+cd Unittests
+
 echo -e "${OUTPUT}"
 echo ""
 echo "======================================================================"
 echo "Running unittests Debug version with vectorchecks enabled"
 echo "======================================================================"
 echo -e "${NC}"
-
-
-cd Unittests
 
 #execute tests
 ./unittests --gtest_color=yes --gtest_output=xml
@@ -135,7 +145,18 @@ echo "Running unittests Debug version with minimal vector type"
 echo "======================================================================"
 echo -e "${NC}"
 
+#execute tests
 ./unittests_customvec --gtest_color=yes --gtest_output=xml
+
+echo -e "${OUTPUT}"
+echo ""
+echo "======================================================================"
+echo "Running unittests Debug version with double vector type"
+echo "======================================================================"
+echo -e "${NC}"
+
+#execute tests
+./unittests_doublevec --gtest_color=yes --gtest_output=xml
 
 cd ..
 cd ..
