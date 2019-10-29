@@ -5,7 +5,7 @@
 cppcheck:
   stage: build
   script: "CI/ci-cppcheck.sh"
-  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker] 
   artifacts:
     paths:
@@ -14,20 +14,20 @@ cppcheck:
 gcc-c++11-test-debug:
   stage: test
   script: "CI/ci-linux-test.sh gcc C++11 debug"
-  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
 
 
 gcc-c++11-test-release:
   stage: test
   script: "CI/ci-linux-test.sh gcc C++11 release"
-  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
 
 gcc-c++11-build-debug:
   stage: build
   script: "CI/ci-linux-build.sh gcc C++11 debug"
-  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
   artifacts:
     paths:
@@ -36,7 +36,7 @@ gcc-c++11-build-debug:
 gcc-c++11-build-release:
   stage: build
   script: "CI/ci-linux-build.sh gcc C++11 release"
-  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
   artifacts:
     paths:
@@ -45,19 +45,19 @@ gcc-c++11-build-release:
 clang-c++11-test-debug:
   stage: test
   script: "CI/ci-linux-test.sh clang C++11 debug"
-  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
 
 clang-c++11-test-release:
   stage: test
   script: "CI/ci-linux-test.sh clang C++11 release"
-  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
 
 clang-c++11-build-debug:
   stage: build
   script: "CI/ci-linux-build.sh clang C++11 debug"
-  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
   artifacts:
     paths:
@@ -66,7 +66,7 @@ clang-c++11-build-debug:
 clang-c++11-build-release:
   stage: build
   script: "CI/ci-linux-build.sh clang C++11 release"
-  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker] 
   artifacts:
     paths:
@@ -75,19 +75,19 @@ clang-c++11-build-release:
 gcc-c++14-test-debug:
   stage: test
   script: "CI/ci-linux-test.sh gcc C++14 debug"
-  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
 
 gcc-c++14-test-release:
   stage: test
   script: "CI/ci-linux-test.sh gcc C++14 release"
-  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
 
 gcc-c++14-build-debug:
   stage: build
   script: "CI/ci-linux-build.sh gcc C++14 debug"
-  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
   artifacts:
     paths:
@@ -96,7 +96,7 @@ gcc-c++14-build-debug:
 gcc-c++14-build-release:
   stage: build
   script: "CI/ci-linux-build.sh gcc C++14 release"
-  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
   artifacts:
     paths:
@@ -105,19 +105,19 @@ gcc-c++14-build-release:
 clang-c++14-test-debug:
   stage: test
   script: "CI/ci-linux-test.sh clang C++14 debug"
-  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
 
 clang-c++14-test-release:
   stage: test
   script: "CI/ci-linux-test.sh clang C++14 release"
-  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
 
 clang-c++14-build-debug:
   stage: build
   script: "CI/ci-linux-build.sh clang C++14 debug"
-  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
   artifacts:
     paths:
@@ -126,7 +126,7 @@ clang-c++14-build-debug:
 clang-c++14-build-release:
   stage: build
   script: "CI/ci-linux-build.sh clang C++14 release"
-  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
   artifacts:
     paths:
