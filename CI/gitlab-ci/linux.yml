@@ -1,0 +1,133 @@
+# -----------------
+# Linux tasks
+# -----------------
+
+cppcheck:
+  stage: build
+  script: "CI/ci-cppcheck.sh"
+  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  tags: [Docker] 
+  artifacts:
+    paths:
+      - cppcheck.log
+
+gcc-c++11-test-debug:
+  stage: test
+  script: "CI/ci-linux-test.sh gcc C++11 debug"
+  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  tags: [Docker]
+
+
+gcc-c++11-test-release:
+  stage: test
+  script: "CI/ci-linux-test.sh gcc C++11 release"
+  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  tags: [Docker]
+
+gcc-c++11-build-debug:
+  stage: build
+  script: "CI/ci-linux-build.sh gcc C++11 debug"
+  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  tags: [Docker]
+  artifacts:
+    paths:
+    - build-debug-gcc-cpp11-Vector-Checks/
+
+gcc-c++11-build-release:
+  stage: build
+  script: "CI/ci-linux-build.sh gcc C++11 release"
+  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  tags: [Docker]
+  artifacts:
+    paths:
+    - build-release-gcc-cpp11-Vector-Checks/
+
+clang-c++11-test-debug:
+  stage: test
+  script: "CI/ci-linux-test.sh clang C++11 debug"
+  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  tags: [Docker]
+
+clang-c++11-test-release:
+  stage: test
+  script: "CI/ci-linux-test.sh clang C++11 release"
+  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  tags: [Docker]
+
+clang-c++11-build-debug:
+  stage: build
+  script: "CI/ci-linux-build.sh clang C++11 debug"
+  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  tags: [Docker]
+  artifacts:
+    paths:
+    - build-debug-clang-cpp11-Vector-Checks/
+
+clang-c++11-build-release:
+  stage: build
+  script: "CI/ci-linux-build.sh clang C++11 release"
+  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  tags: [Docker] 
+  artifacts:
+    paths:
+    - build-release-clang-cpp11-Vector-Checks/
+
+gcc-c++14-test-debug:
+  stage: test
+  script: "CI/ci-linux-test.sh gcc C++14 debug"
+  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  tags: [Docker]
+
+gcc-c++14-test-release:
+  stage: test
+  script: "CI/ci-linux-test.sh gcc C++14 release"
+  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  tags: [Docker]
+
+gcc-c++14-build-debug:
+  stage: build
+  script: "CI/ci-linux-build.sh gcc C++14 debug"
+  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  tags: [Docker]
+  artifacts:
+    paths:
+    - build-debug-gcc-cpp14-Vector-Checks/
+
+gcc-c++14-build-release:
+  stage: build
+  script: "CI/ci-linux-build.sh gcc C++14 release"
+  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  tags: [Docker]
+  artifacts:
+    paths:
+    - build-release-gcc-cpp14-Vector-Checks/
+
+clang-c++14-test-debug:
+  stage: test
+  script: "CI/ci-linux-test.sh clang C++14 debug"
+  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  tags: [Docker]
+
+clang-c++14-test-release:
+  stage: test
+  script: "CI/ci-linux-test.sh clang C++14 release"
+  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  tags: [Docker]
+
+clang-c++14-build-debug:
+  stage: build
+  script: "CI/ci-linux-build.sh clang C++14 debug"
+  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  tags: [Docker]
+  artifacts:
+    paths:
+    - build-debug-clang-cpp14-Vector-Checks/
+
+clang-c++14-build-release:
+  stage: build
+  script: "CI/ci-linux-build.sh clang C++14 release"
+  image: graphics.rwth-aachen.de:4567/moebius/docker/docker-openmesh-container
+  tags: [Docker]
+  artifacts:
+    paths:
+    - build-release-clang-cpp14-Vector-Checks/
