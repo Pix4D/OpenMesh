@@ -1,0 +1,37 @@
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
+{linux.yml}
+
+{mac.yml}
+
+{windows.yml}
+
+Doc-publish:
+  stage: deploy
+  only:
+     - master
+  script: "CI/ci-doc.sh"
+  tags:
+     - Linux
+     - stretch     
+
+Sources:
+  stage: deploy
+  only:
+     - master
+  script: "CI/ci-source.sh"
+  tags:
+     - Linux
+     - stretch     
+  artifacts:
+    paths:
+      - OpenMesh*.zip
+      - OpenMesh*.tar.bz2
+      - OpenMesh*.tar.gz
+

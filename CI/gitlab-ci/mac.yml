@@ -1,0 +1,35 @@
+# -----------------
+# Apple tasks
+# -----------------
+
+macos-cpp11-debug:
+  stage: build
+  script: "CI/ci-mac-build.sh C++11 debug ; CI/ci-mac-test.sh C++11 debug"
+  tags:
+    - Apple
+
+macos-cpp14-debug:
+  stage: build
+  script: "CI/ci-mac-build.sh C++14 debug ; CI/ci-mac-test.sh C++14 debug"
+  tags:
+    - Apple
+
+macos-cpp11-release:
+  stage: build
+  script: "CI/ci-mac-build.sh C++11 release ; CI/ci-mac-test.sh C++11 release"
+  tags:
+    - Apple
+  artifacts:
+    paths:
+      - build-release-cpp11/*.dmg
+      - build-release-cpp11/*.tar.gz
+
+macos-cpp14-release:
+  stage: build
+  script: "CI/ci-mac-build.sh C++14 release ; CI/ci-mac-test.sh C++14 release"
+  tags:
+    - Apple
+  artifacts:
+    paths:
+      - build-release-cpp14/*.dmg
+      - build-release-cpp14/*.tar.gz
