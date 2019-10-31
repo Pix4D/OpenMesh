@@ -1169,6 +1169,9 @@ public:
           &PolyConnectivity::faces_sbegin,
           &PolyConnectivity::faces_end> ConstFaceRangeSkipping;
 
+  template <typename HandleType>
+  struct ElementRange;
+
   /**
    * @return The vertices as a range object suitable
    * for C++11 range based for loops. Will skip deleted vertices.
@@ -1217,6 +1220,21 @@ public:
    */
   ConstFaceRange all_faces() const { return ConstFaceRange(*this); }
 
+  /**
+   * @return The elements corresponding to the template type as a range object suitable
+   * for C++11 range based for loops. Will skip deleted faces.
+   */
+  template <typename HandleType>
+  typename ElementRange<HandleType>::RangeSkipping elements() const;
+
+  /**
+   * @return The elements corresponding to the template type as a range object suitable
+   * for C++11 range based for loops. Will include deleted faces.
+   */
+  template <typename HandleType>
+  typename ElementRange<HandleType>::Range all_elements() const;
+
+
   /// Generic class for iterator ranges.
   template<
       typename CONTAINER_TYPE,
@@ -1240,6 +1258,7 @@ public:
           const CONTAINER_TYPE &container_;
           CENTER_ENTITY_TYPE center_;
   };
+
 
   typedef CirculatorRange<
           PolyConnectivity,
@@ -1624,6 +1643,52 @@ private: // Working storage for add_face()
        std::vector<std::pair<HalfedgeHandle, HalfedgeHandle> > next_cache_; // cache for set_next_halfedge and vertex' set_halfedge
 
 };
+
+template <>
+struct PolyConnectivity::ElementRange<VertexHandle>
+{
+  using Range         = ConstVertexRange;
+  using RangeSkipping = ConstVertexRangeSkipping;
+};
+
+template <>
+struct PolyConnectivity::ElementRange<HalfedgeHandle>
+{
+  using Range         = ConstHalfedgeRange;
+  using RangeSkipping = ConstHalfedgeRangeSkipping;
+};
+
+template <>
+struct PolyConnectivity::ElementRange<EdgeHandle>
+{
+  using Range         = ConstEdgeRange;
+  using RangeSkipping = ConstEdgeRangeSkipping;
+};
+
+template <>
+struct PolyConnectivity::ElementRange<FaceHandle>
+{
+  using Range         = ConstFaceRange;
+  using RangeSkipping = ConstFaceRangeSkipping;
+};
+
+
+template <>
+inline PolyConnectivity::ConstVertexRangeSkipping   PolyConnectivity::elements<VertexHandle>()       const { return ConstVertexRangeSkipping(*this);   }
+template <>
+inline PolyConnectivity::ConstVertexRange           PolyConnectivity::all_elements<VertexHandle>()   const { return ConstVertexRange(*this);           }
+template <>
+inline PolyConnectivity::ConstHalfedgeRangeSkipping PolyConnectivity::elements<HalfedgeHandle>()     const { return ConstHalfedgeRangeSkipping(*this); }
+template <>
+inline PolyConnectivity::ConstHalfedgeRange         PolyConnectivity::all_elements<HalfedgeHandle>() const { return ConstHalfedgeRange(*this);         }
+template <>
+inline PolyConnectivity::ConstEdgeRangeSkipping     PolyConnectivity::elements<EdgeHandle>()         const { return ConstEdgeRangeSkipping(*this);     }
+template <>
+inline PolyConnectivity::ConstEdgeRange             PolyConnectivity::all_elements<EdgeHandle>()     const { return ConstEdgeRange(*this);             }
+template <>
+inline PolyConnectivity::ConstFaceRangeSkipping     PolyConnectivity::elements<FaceHandle>()         const { return ConstFaceRangeSkipping(*this);     }
+template <>
+inline PolyConnectivity::ConstFaceRange             PolyConnectivity::all_elements<FaceHandle>()     const { return ConstFaceRange(*this);             }
 
 }//namespace OpenMesh
 
