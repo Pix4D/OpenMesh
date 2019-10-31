@@ -147,21 +147,39 @@ TEST_F(OpenMeshReadWritePLY, LoadSimplePLYWithVertexColors) {
     EXPECT_EQ(18u , mesh_.n_edges())    << "The number of loaded edges is not correct!";
     EXPECT_EQ(12u , mesh_.n_faces())    << "The number of loaded faces is not correct!";
 
-    EXPECT_EQ(255,   mesh_.color(mesh_.vertex_handle(0))[0] ) << "Wrong vertex color at vertex 0 component 0";
+#ifdef TEST_DOUBLE_TRAITS
+    EXPECT_FLOAT_EQ(1.0, mesh_.color(mesh_.vertex_handle(0))[0] ) << "Wrong vertex color at vertex 0 component 0";
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(0))[1] ) << "Wrong vertex color at vertex 0 component 1";
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(0))[2] ) << "Wrong vertex color at vertex 0 component 2";
+
+    EXPECT_FLOAT_EQ(1.0, mesh_.color(mesh_.vertex_handle(3))[0] ) << "Wrong vertex color at vertex 3 component 0";
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(3))[1] ) << "Wrong vertex color at vertex 3 component 1";
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(3))[2] ) << "Wrong vertex color at vertex 3 component 2";
+
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(4))[0] ) << "Wrong vertex color at vertex 4 component 0";
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(4))[1] ) << "Wrong vertex color at vertex 4 component 1";
+    EXPECT_FLOAT_EQ(1.0, mesh_.color(mesh_.vertex_handle(4))[2] ) << "Wrong vertex color at vertex 4 component 2";
+
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(7))[0] ) << "Wrong vertex color at vertex 7 component 0";
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(7))[1] ) << "Wrong vertex color at vertex 7 component 1";
+    EXPECT_FLOAT_EQ(1.0, mesh_.color(mesh_.vertex_handle(7))[2] ) << "Wrong vertex color at vertex 7 component 2";
+#else
+    EXPECT_EQ(255, mesh_.color(mesh_.vertex_handle(0))[0] ) << "Wrong vertex color at vertex 0 component 0";
     EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(0))[1] ) << "Wrong vertex color at vertex 0 component 1";
     EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(0))[2] ) << "Wrong vertex color at vertex 0 component 2";
 
-    EXPECT_EQ(255,   mesh_.color(mesh_.vertex_handle(3))[0] ) << "Wrong vertex color at vertex 3 component 0";
-    EXPECT_EQ(0, mesh_.color(mesh_.vertex_handle(3))[1] ) << "Wrong vertex color at vertex 3 component 1";
-    EXPECT_EQ(0, mesh_.color(mesh_.vertex_handle(3))[2] ) << "Wrong vertex color at vertex 3 component 2";
+    EXPECT_EQ(255, mesh_.color(mesh_.vertex_handle(3))[0] ) << "Wrong vertex color at vertex 3 component 0";
+    EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(3))[1] ) << "Wrong vertex color at vertex 3 component 1";
+    EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(3))[2] ) << "Wrong vertex color at vertex 3 component 2";
 
-    EXPECT_EQ(0, mesh_.color(mesh_.vertex_handle(4))[0] ) << "Wrong vertex color at vertex 4 component 0";
+    EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(4))[0] ) << "Wrong vertex color at vertex 4 component 0";
     EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(4))[1] ) << "Wrong vertex color at vertex 4 component 1";
-    EXPECT_EQ(255,   mesh_.color(mesh_.vertex_handle(4))[2] ) << "Wrong vertex color at vertex 4 component 2";
+    EXPECT_EQ(255, mesh_.color(mesh_.vertex_handle(4))[2] ) << "Wrong vertex color at vertex 4 component 2";
 
-    EXPECT_EQ(0, mesh_.color(mesh_.vertex_handle(7))[0] ) << "Wrong vertex color at vertex 7 component 0";
-    EXPECT_EQ(0, mesh_.color(mesh_.vertex_handle(7))[1] ) << "Wrong vertex color at vertex 7 component 1";
+    EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(7))[0] ) << "Wrong vertex color at vertex 7 component 0";
+    EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(7))[1] ) << "Wrong vertex color at vertex 7 component 1";
     EXPECT_EQ(255, mesh_.color(mesh_.vertex_handle(7))[2] ) << "Wrong vertex color at vertex 7 component 2";
+#endif
 
     EXPECT_FALSE(options.vertex_has_normal()) << "Wrong user options are returned!";
     EXPECT_FALSE(options.vertex_has_texcoord()) << "Wrong user options are returned!";
@@ -190,21 +208,39 @@ TEST_F(OpenMeshReadWritePLY, LoadPLYFromMeshLabWithVertexColors) {
     EXPECT_EQ(18u , mesh_.n_edges())    << "The number of loaded edges is not correct!";
     EXPECT_EQ(12u , mesh_.n_faces())    << "The number of loaded faces is not correct!";
 
+#ifdef TEST_DOUBLE_TRAITS
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(0))[0] ) << "Wrong vertex color at vertex 0 component 0";
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(0))[1] ) << "Wrong vertex color at vertex 0 component 1";
+    EXPECT_FLOAT_EQ(1.0, mesh_.color(mesh_.vertex_handle(0))[2] ) << "Wrong vertex color at vertex 0 component 2";
+
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(3))[0] ) << "Wrong vertex color at vertex 3 component 0";
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(3))[1] ) << "Wrong vertex color at vertex 3 component 1";
+    EXPECT_FLOAT_EQ(1.0, mesh_.color(mesh_.vertex_handle(3))[2] ) << "Wrong vertex color at vertex 3 component 2";
+
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(4))[0] ) << "Wrong vertex color at vertex 4 component 0";
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(4))[1] ) << "Wrong vertex color at vertex 4 component 1";
+    EXPECT_FLOAT_EQ(1.0, mesh_.color(mesh_.vertex_handle(4))[2] ) << "Wrong vertex color at vertex 4 component 2";
+
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(7))[0] ) << "Wrong vertex color at vertex 7 component 0";
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(7))[1] ) << "Wrong vertex color at vertex 7 component 1";
+    EXPECT_FLOAT_EQ(1.0, mesh_.color(mesh_.vertex_handle(7))[2] ) << "Wrong vertex color at vertex 7 component 2";
+#else
     EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(0))[0] ) << "Wrong vertex color at vertex 0 component 0";
     EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(0))[1] ) << "Wrong vertex color at vertex 0 component 1";
-    EXPECT_EQ(255,   mesh_.color(mesh_.vertex_handle(0))[2] ) << "Wrong vertex color at vertex 0 component 2";
+    EXPECT_EQ(255, mesh_.color(mesh_.vertex_handle(0))[2] ) << "Wrong vertex color at vertex 0 component 2";
 
     EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(3))[0] ) << "Wrong vertex color at vertex 3 component 0";
-    EXPECT_EQ(0, mesh_.color(mesh_.vertex_handle(3))[1] ) << "Wrong vertex color at vertex 3 component 1";
+    EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(3))[1] ) << "Wrong vertex color at vertex 3 component 1";
     EXPECT_EQ(255, mesh_.color(mesh_.vertex_handle(3))[2] ) << "Wrong vertex color at vertex 3 component 2";
 
-    EXPECT_EQ(0, mesh_.color(mesh_.vertex_handle(4))[0] ) << "Wrong vertex color at vertex 4 component 0";
+    EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(4))[0] ) << "Wrong vertex color at vertex 4 component 0";
     EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(4))[1] ) << "Wrong vertex color at vertex 4 component 1";
-    EXPECT_EQ(255,   mesh_.color(mesh_.vertex_handle(4))[2] ) << "Wrong vertex color at vertex 4 component 2";
+    EXPECT_EQ(255, mesh_.color(mesh_.vertex_handle(4))[2] ) << "Wrong vertex color at vertex 4 component 2";
 
-    EXPECT_EQ(0, mesh_.color(mesh_.vertex_handle(7))[0] ) << "Wrong vertex color at vertex 7 component 0";
-    EXPECT_EQ(0, mesh_.color(mesh_.vertex_handle(7))[1] ) << "Wrong vertex color at vertex 7 component 1";
+    EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(7))[0] ) << "Wrong vertex color at vertex 7 component 0";
+    EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(7))[1] ) << "Wrong vertex color at vertex 7 component 1";
     EXPECT_EQ(255, mesh_.color(mesh_.vertex_handle(7))[2] ) << "Wrong vertex color at vertex 7 component 2";
+#endif
 
     EXPECT_FALSE(options.vertex_has_normal()) << "Wrong user options are returned!";
     EXPECT_FALSE(options.vertex_has_texcoord()) << "Wrong user options are returned!";
@@ -242,21 +278,39 @@ TEST_F(OpenMeshReadWritePLY, WriteAndReadBinaryPLYWithVertexColors) {
     EXPECT_EQ(18u , mesh_.n_edges())    << "The number of loaded edges is not correct!";
     EXPECT_EQ(12u , mesh_.n_faces())    << "The number of loaded faces is not correct!";
 
+#ifdef TEST_DOUBLE_TRAITS
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(0))[0] ) << "Wrong vertex color at vertex 0 component 0";
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(0))[1] ) << "Wrong vertex color at vertex 0 component 1";
+    EXPECT_FLOAT_EQ(1.0, mesh_.color(mesh_.vertex_handle(0))[2] ) << "Wrong vertex color at vertex 0 component 2";
+
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(3))[0] ) << "Wrong vertex color at vertex 3 component 0";
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(3))[1] ) << "Wrong vertex color at vertex 3 component 1";
+    EXPECT_FLOAT_EQ(1.0, mesh_.color(mesh_.vertex_handle(3))[2] ) << "Wrong vertex color at vertex 3 component 2";
+
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(4))[0] ) << "Wrong vertex color at vertex 4 component 0";
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(4))[1] ) << "Wrong vertex color at vertex 4 component 1";
+    EXPECT_FLOAT_EQ(1.0, mesh_.color(mesh_.vertex_handle(4))[2] ) << "Wrong vertex color at vertex 4 component 2";
+
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(7))[0] ) << "Wrong vertex color at vertex 7 component 0";
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(7))[1] ) << "Wrong vertex color at vertex 7 component 1";
+    EXPECT_FLOAT_EQ(1.0, mesh_.color(mesh_.vertex_handle(7))[2] ) << "Wrong vertex color at vertex 7 component 2";
+#else
     EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(0))[0] ) << "Wrong vertex color at vertex 0 component 0";
     EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(0))[1] ) << "Wrong vertex color at vertex 0 component 1";
-    EXPECT_EQ(255,   mesh_.color(mesh_.vertex_handle(0))[2] ) << "Wrong vertex color at vertex 0 component 2";
+    EXPECT_EQ(255, mesh_.color(mesh_.vertex_handle(0))[2] ) << "Wrong vertex color at vertex 0 component 2";
 
     EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(3))[0] ) << "Wrong vertex color at vertex 3 component 0";
-    EXPECT_EQ(0, mesh_.color(mesh_.vertex_handle(3))[1] ) << "Wrong vertex color at vertex 3 component 1";
+    EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(3))[1] ) << "Wrong vertex color at vertex 3 component 1";
     EXPECT_EQ(255, mesh_.color(mesh_.vertex_handle(3))[2] ) << "Wrong vertex color at vertex 3 component 2";
 
-    EXPECT_EQ(0, mesh_.color(mesh_.vertex_handle(4))[0] ) << "Wrong vertex color at vertex 4 component 0";
+    EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(4))[0] ) << "Wrong vertex color at vertex 4 component 0";
     EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(4))[1] ) << "Wrong vertex color at vertex 4 component 1";
-    EXPECT_EQ(255,   mesh_.color(mesh_.vertex_handle(4))[2] ) << "Wrong vertex color at vertex 4 component 2";
+    EXPECT_EQ(255, mesh_.color(mesh_.vertex_handle(4))[2] ) << "Wrong vertex color at vertex 4 component 2";
 
-    EXPECT_EQ(0, mesh_.color(mesh_.vertex_handle(7))[0] ) << "Wrong vertex color at vertex 7 component 0";
-    EXPECT_EQ(0, mesh_.color(mesh_.vertex_handle(7))[1] ) << "Wrong vertex color at vertex 7 component 1";
+    EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(7))[0] ) << "Wrong vertex color at vertex 7 component 0";
+    EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(7))[1] ) << "Wrong vertex color at vertex 7 component 1";
     EXPECT_EQ(255, mesh_.color(mesh_.vertex_handle(7))[2] ) << "Wrong vertex color at vertex 7 component 2";
+#endif
 
     EXPECT_FALSE(options.vertex_has_normal()) << "Wrong user options are returned!";
     EXPECT_FALSE(options.vertex_has_texcoord()) << "Wrong user options are returned!";
@@ -294,21 +348,39 @@ TEST_F(OpenMeshReadWritePLY, WriteAndReadPLYWithFloatVertexColors) {
     EXPECT_EQ(18u , mesh_.n_edges())    << "The number of loaded edges is not correct!";
     EXPECT_EQ(12u , mesh_.n_faces())    << "The number of loaded faces is not correct!";
 
+#ifdef TEST_DOUBLE_TRAITS
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(0))[0] ) << "Wrong vertex color at vertex 0 component 0";
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(0))[1] ) << "Wrong vertex color at vertex 0 component 1";
+    EXPECT_FLOAT_EQ(1.0, mesh_.color(mesh_.vertex_handle(0))[2] ) << "Wrong vertex color at vertex 0 component 2";
+
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(3))[0] ) << "Wrong vertex color at vertex 3 component 0";
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(3))[1] ) << "Wrong vertex color at vertex 3 component 1";
+    EXPECT_FLOAT_EQ(1.0, mesh_.color(mesh_.vertex_handle(3))[2] ) << "Wrong vertex color at vertex 3 component 2";
+
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(4))[0] ) << "Wrong vertex color at vertex 4 component 0";
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(4))[1] ) << "Wrong vertex color at vertex 4 component 1";
+    EXPECT_FLOAT_EQ(1.0, mesh_.color(mesh_.vertex_handle(4))[2] ) << "Wrong vertex color at vertex 4 component 2";
+
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(7))[0] ) << "Wrong vertex color at vertex 7 component 0";
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(7))[1] ) << "Wrong vertex color at vertex 7 component 1";
+    EXPECT_FLOAT_EQ(1.0, mesh_.color(mesh_.vertex_handle(7))[2] ) << "Wrong vertex color at vertex 7 component 2";
+#else
     EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(0))[0] ) << "Wrong vertex color at vertex 0 component 0";
     EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(0))[1] ) << "Wrong vertex color at vertex 0 component 1";
-    EXPECT_EQ(255,   mesh_.color(mesh_.vertex_handle(0))[2] ) << "Wrong vertex color at vertex 0 component 2";
+    EXPECT_EQ(255, mesh_.color(mesh_.vertex_handle(0))[2] ) << "Wrong vertex color at vertex 0 component 2";
 
     EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(3))[0] ) << "Wrong vertex color at vertex 3 component 0";
-    EXPECT_EQ(0, mesh_.color(mesh_.vertex_handle(3))[1] ) << "Wrong vertex color at vertex 3 component 1";
+    EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(3))[1] ) << "Wrong vertex color at vertex 3 component 1";
     EXPECT_EQ(255, mesh_.color(mesh_.vertex_handle(3))[2] ) << "Wrong vertex color at vertex 3 component 2";
 
-    EXPECT_EQ(0, mesh_.color(mesh_.vertex_handle(4))[0] ) << "Wrong vertex color at vertex 4 component 0";
+    EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(4))[0] ) << "Wrong vertex color at vertex 4 component 0";
     EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(4))[1] ) << "Wrong vertex color at vertex 4 component 1";
-    EXPECT_EQ(255,   mesh_.color(mesh_.vertex_handle(4))[2] ) << "Wrong vertex color at vertex 4 component 2";
+    EXPECT_EQ(255, mesh_.color(mesh_.vertex_handle(4))[2] ) << "Wrong vertex color at vertex 4 component 2";
 
-    EXPECT_EQ(0, mesh_.color(mesh_.vertex_handle(7))[0] ) << "Wrong vertex color at vertex 7 component 0";
-    EXPECT_EQ(0, mesh_.color(mesh_.vertex_handle(7))[1] ) << "Wrong vertex color at vertex 7 component 1";
+    EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(7))[0] ) << "Wrong vertex color at vertex 7 component 0";
+    EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(7))[1] ) << "Wrong vertex color at vertex 7 component 1";
     EXPECT_EQ(255, mesh_.color(mesh_.vertex_handle(7))[2] ) << "Wrong vertex color at vertex 7 component 2";
+#endif
 
     EXPECT_FALSE(options.vertex_has_normal()) << "Wrong user options are returned!";
     EXPECT_FALSE(options.vertex_has_texcoord()) << "Wrong user options are returned!";
@@ -348,21 +420,39 @@ TEST_F(OpenMeshReadWritePLY, WriteAndReadBinaryPLYWithFloatVertexColors) {
     EXPECT_EQ(18u , mesh_.n_edges())    << "The number of loaded edges is not correct!";
     EXPECT_EQ(12u , mesh_.n_faces())    << "The number of loaded faces is not correct!";
 
+#ifdef TEST_DOUBLE_TRAITS
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(0))[0] ) << "Wrong vertex color at vertex 0 component 0";
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(0))[1] ) << "Wrong vertex color at vertex 0 component 1";
+    EXPECT_FLOAT_EQ(1.0, mesh_.color(mesh_.vertex_handle(0))[2] ) << "Wrong vertex color at vertex 0 component 2";
+
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(3))[0] ) << "Wrong vertex color at vertex 3 component 0";
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(3))[1] ) << "Wrong vertex color at vertex 3 component 1";
+    EXPECT_FLOAT_EQ(1.0, mesh_.color(mesh_.vertex_handle(3))[2] ) << "Wrong vertex color at vertex 3 component 2";
+
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(4))[0] ) << "Wrong vertex color at vertex 4 component 0";
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(4))[1] ) << "Wrong vertex color at vertex 4 component 1";
+    EXPECT_FLOAT_EQ(1.0, mesh_.color(mesh_.vertex_handle(4))[2] ) << "Wrong vertex color at vertex 4 component 2";
+
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(7))[0] ) << "Wrong vertex color at vertex 7 component 0";
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(7))[1] ) << "Wrong vertex color at vertex 7 component 1";
+    EXPECT_FLOAT_EQ(1.0, mesh_.color(mesh_.vertex_handle(7))[2] ) << "Wrong vertex color at vertex 7 component 2";
+#else
     EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(0))[0] ) << "Wrong vertex color at vertex 0 component 0";
     EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(0))[1] ) << "Wrong vertex color at vertex 0 component 1";
-    EXPECT_EQ(255,   mesh_.color(mesh_.vertex_handle(0))[2] ) << "Wrong vertex color at vertex 0 component 2";
+    EXPECT_EQ(255, mesh_.color(mesh_.vertex_handle(0))[2] ) << "Wrong vertex color at vertex 0 component 2";
 
     EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(3))[0] ) << "Wrong vertex color at vertex 3 component 0";
-    EXPECT_EQ(0, mesh_.color(mesh_.vertex_handle(3))[1] ) << "Wrong vertex color at vertex 3 component 1";
+    EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(3))[1] ) << "Wrong vertex color at vertex 3 component 1";
     EXPECT_EQ(255, mesh_.color(mesh_.vertex_handle(3))[2] ) << "Wrong vertex color at vertex 3 component 2";
 
-    EXPECT_EQ(0, mesh_.color(mesh_.vertex_handle(4))[0] ) << "Wrong vertex color at vertex 4 component 0";
+    EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(4))[0] ) << "Wrong vertex color at vertex 4 component 0";
     EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(4))[1] ) << "Wrong vertex color at vertex 4 component 1";
-    EXPECT_EQ(255,   mesh_.color(mesh_.vertex_handle(4))[2] ) << "Wrong vertex color at vertex 4 component 2";
+    EXPECT_EQ(255, mesh_.color(mesh_.vertex_handle(4))[2] ) << "Wrong vertex color at vertex 4 component 2";
 
-    EXPECT_EQ(0, mesh_.color(mesh_.vertex_handle(7))[0] ) << "Wrong vertex color at vertex 7 component 0";
-    EXPECT_EQ(0, mesh_.color(mesh_.vertex_handle(7))[1] ) << "Wrong vertex color at vertex 7 component 1";
+    EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(7))[0] ) << "Wrong vertex color at vertex 7 component 0";
+    EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(7))[1] ) << "Wrong vertex color at vertex 7 component 1";
     EXPECT_EQ(255, mesh_.color(mesh_.vertex_handle(7))[2] ) << "Wrong vertex color at vertex 7 component 2";
+#endif
 
     EXPECT_FALSE(options.vertex_has_normal()) << "Wrong user options are returned!";
     EXPECT_FALSE(options.vertex_has_texcoord()) << "Wrong user options are returned!";
@@ -905,6 +995,23 @@ TEST_F(OpenMeshReadWritePLY, LoadSimplePLYWithFaceColors) {
     EXPECT_EQ(18u, mesh_.n_edges())    << "The number of loaded edges is not correct!";
     EXPECT_EQ(12u, mesh_.n_faces())    << "The number of loaded faces is not correct!";
 
+#ifdef TEST_DOUBLE_TRAITS
+    EXPECT_FLOAT_EQ(107/255.0, mesh_.color(mesh_.face_handle(0))[0] ) << "Wrong face color at face 0";
+    EXPECT_FLOAT_EQ(117/255.0, mesh_.color(mesh_.face_handle(0))[1] ) << "Wrong face color at face 0";
+    EXPECT_FLOAT_EQ(177/255.0, mesh_.color(mesh_.face_handle(0))[2] ) << "Wrong face color at face 0";
+
+    EXPECT_FLOAT_EQ(107/255.0, mesh_.color(mesh_.face_handle(3))[0] ) << "Wrong face color at face 3";
+    EXPECT_FLOAT_EQ(255/255.0, mesh_.color(mesh_.face_handle(3))[1] ) << "Wrong face color at face 3";
+    EXPECT_FLOAT_EQ(135/255.0, mesh_.color(mesh_.face_handle(3))[2] ) << "Wrong face color at face 3";
+
+    EXPECT_FLOAT_EQ(163/255.0, mesh_.color(mesh_.face_handle(4))[0] ) << "Wrong face color at face 4";
+    EXPECT_FLOAT_EQ(107/255.0, mesh_.color(mesh_.face_handle(4))[1] ) << "Wrong face color at face 4";
+    EXPECT_FLOAT_EQ(177/255.0, mesh_.color(mesh_.face_handle(4))[2] ) << "Wrong face color at face 4";
+
+    EXPECT_FLOAT_EQ(255/255.0, mesh_.color(mesh_.face_handle(7))[0] ) << "Wrong face color at face 7";
+    EXPECT_FLOAT_EQ(140/255.0, mesh_.color(mesh_.face_handle(7))[1] ) << "Wrong face color at face 7";
+    EXPECT_FLOAT_EQ(107/255.0, mesh_.color(mesh_.face_handle(7))[2] ) << "Wrong face color at face 7";
+#else
     EXPECT_EQ(107, mesh_.color(mesh_.face_handle(0))[0] ) << "Wrong face color at face 0";
     EXPECT_EQ(117, mesh_.color(mesh_.face_handle(0))[1] ) << "Wrong face color at face 0";
     EXPECT_EQ(177, mesh_.color(mesh_.face_handle(0))[2] ) << "Wrong face color at face 0";
@@ -920,6 +1027,7 @@ TEST_F(OpenMeshReadWritePLY, LoadSimplePLYWithFaceColors) {
     EXPECT_EQ(255, mesh_.color(mesh_.face_handle(7))[0] ) << "Wrong face color at face 7";
     EXPECT_EQ(140, mesh_.color(mesh_.face_handle(7))[1] ) << "Wrong face color at face 7";
     EXPECT_EQ(107, mesh_.color(mesh_.face_handle(7))[2] ) << "Wrong face color at face 7";
+#endif
 
     EXPECT_FALSE(options.vertex_has_normal()) << "Wrong user options are returned!";
     EXPECT_FALSE(options.vertex_has_texcoord()) << "Wrong user options are returned!";
@@ -995,21 +1103,39 @@ TEST_F(OpenMeshReadWritePLY, WriteAndReadPLYWithFaceColors) {
         EXPECT_EQ(18u, mesh_.n_edges())    << "The number of loaded edges is not correct: " << outFileName;
         EXPECT_EQ(12u, mesh_.n_faces())    << "The number of loaded faces is not correct: " << outFileName;
 
-        EXPECT_EQ(107, mesh_.color(mesh_.face_handle(0))[0] ) << "Wrong face color at face 0: " << outFileName;
-        EXPECT_EQ(117, mesh_.color(mesh_.face_handle(0))[1] ) << "Wrong face color at face 0: " << outFileName;
-        EXPECT_EQ(177, mesh_.color(mesh_.face_handle(0))[2] ) << "Wrong face color at face 0: " << outFileName;
+#ifdef TEST_DOUBLE_TRAITS
+        EXPECT_FLOAT_EQ(107/255.0, mesh_.color(mesh_.face_handle(0))[0] ) << "Wrong face color at face 0";
+        EXPECT_FLOAT_EQ(117/255.0, mesh_.color(mesh_.face_handle(0))[1] ) << "Wrong face color at face 0";
+        EXPECT_FLOAT_EQ(177/255.0, mesh_.color(mesh_.face_handle(0))[2] ) << "Wrong face color at face 0";
 
-        EXPECT_EQ(107, mesh_.color(mesh_.face_handle(3))[0] ) << "Wrong face color at face 3: " << outFileName;
-        EXPECT_EQ(255, mesh_.color(mesh_.face_handle(3))[1] ) << "Wrong face color at face 3: " << outFileName;
-        EXPECT_EQ(135, mesh_.color(mesh_.face_handle(3))[2] ) << "Wrong face color at face 3: " << outFileName;
+        EXPECT_FLOAT_EQ(107/255.0, mesh_.color(mesh_.face_handle(3))[0] ) << "Wrong face color at face 3";
+        EXPECT_FLOAT_EQ(255/255.0, mesh_.color(mesh_.face_handle(3))[1] ) << "Wrong face color at face 3";
+        EXPECT_FLOAT_EQ(135/255.0, mesh_.color(mesh_.face_handle(3))[2] ) << "Wrong face color at face 3";
 
-        EXPECT_EQ(163, mesh_.color(mesh_.face_handle(4))[0] ) << "Wrong face color at face 4: " << outFileName;
-        EXPECT_EQ(107, mesh_.color(mesh_.face_handle(4))[1] ) << "Wrong face color at face 4: " << outFileName;
-        EXPECT_EQ(177, mesh_.color(mesh_.face_handle(4))[2] ) << "Wrong face color at face 4: " << outFileName;
+        EXPECT_FLOAT_EQ(163/255.0, mesh_.color(mesh_.face_handle(4))[0] ) << "Wrong face color at face 4";
+        EXPECT_FLOAT_EQ(107/255.0, mesh_.color(mesh_.face_handle(4))[1] ) << "Wrong face color at face 4";
+        EXPECT_FLOAT_EQ(177/255.0, mesh_.color(mesh_.face_handle(4))[2] ) << "Wrong face color at face 4";
 
-        EXPECT_EQ(255, mesh_.color(mesh_.face_handle(7))[0] ) << "Wrong face color at face 7: " << outFileName;
-        EXPECT_EQ(140, mesh_.color(mesh_.face_handle(7))[1] ) << "Wrong face color at face 7: " << outFileName;
-        EXPECT_EQ(107, mesh_.color(mesh_.face_handle(7))[2] ) << "Wrong face color at face 7: " << outFileName;
+        EXPECT_FLOAT_EQ(255/255.0, mesh_.color(mesh_.face_handle(7))[0] ) << "Wrong face color at face 7";
+        EXPECT_FLOAT_EQ(140/255.0, mesh_.color(mesh_.face_handle(7))[1] ) << "Wrong face color at face 7";
+        EXPECT_FLOAT_EQ(107/255.0, mesh_.color(mesh_.face_handle(7))[2] ) << "Wrong face color at face 7";
+#else
+        EXPECT_EQ(107, mesh_.color(mesh_.face_handle(0))[0] ) << "Wrong face color at face 0";
+        EXPECT_EQ(117, mesh_.color(mesh_.face_handle(0))[1] ) << "Wrong face color at face 0";
+        EXPECT_EQ(177, mesh_.color(mesh_.face_handle(0))[2] ) << "Wrong face color at face 0";
+
+        EXPECT_EQ(107, mesh_.color(mesh_.face_handle(3))[0] ) << "Wrong face color at face 3";
+        EXPECT_EQ(255, mesh_.color(mesh_.face_handle(3))[1] ) << "Wrong face color at face 3";
+        EXPECT_EQ(135, mesh_.color(mesh_.face_handle(3))[2] ) << "Wrong face color at face 3";
+
+        EXPECT_EQ(163, mesh_.color(mesh_.face_handle(4))[0] ) << "Wrong face color at face 4";
+        EXPECT_EQ(107, mesh_.color(mesh_.face_handle(4))[1] ) << "Wrong face color at face 4";
+        EXPECT_EQ(177, mesh_.color(mesh_.face_handle(4))[2] ) << "Wrong face color at face 4";
+
+        EXPECT_EQ(255, mesh_.color(mesh_.face_handle(7))[0] ) << "Wrong face color at face 7";
+        EXPECT_EQ(140, mesh_.color(mesh_.face_handle(7))[1] ) << "Wrong face color at face 7";
+        EXPECT_EQ(107, mesh_.color(mesh_.face_handle(7))[2] ) << "Wrong face color at face 7";
+#endif
 
         EXPECT_FALSE(options.vertex_has_normal()) << "Wrong user options are returned: " << outFileName;
         EXPECT_FALSE(options.vertex_has_texcoord()) << "Wrong user options are returned: " << outFileName;
