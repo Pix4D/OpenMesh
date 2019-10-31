@@ -136,27 +136,21 @@ TEST_F(OpenMeshPropertyManager, set_range_bool) {
  * ====================================================================
  */
 
-template<typename PropHandle, typename Mesh>
-bool has_property(const Mesh& _mesh, const std::string& _name) {
-    auto dummy_handle = PropHandle{};
-    return _mesh.get_property_handle(dummy_handle, _name);
-}
-
 /*
  * Temporary property
  */
 TEST_F(OpenMeshPropertyManager, cpp11_temp_property) {
     using handle_type = OpenMesh::VPropHandleT<int>;
     const auto prop_name = "pm_v_test_property";
-    ASSERT_FALSE(has_property<handle_type>(mesh_, prop_name));
+    ASSERT_FALSE((OpenMesh::hasProperty<OpenMesh::VertexHandle, int>(mesh_, prop_name)));
 
     {
         auto vprop = OpenMesh::makeTemporaryProperty<OpenMesh::VertexHandle, int>(mesh_, prop_name);
         static_cast<void>(vprop); // Unused variable
-        ASSERT_TRUE(has_property<handle_type>(mesh_, prop_name));
+        ASSERT_TRUE((OpenMesh::hasProperty<OpenMesh::VertexHandle, int>(mesh_, prop_name)));
     }
 
-    ASSERT_FALSE(has_property<handle_type>(mesh_, prop_name));
+    ASSERT_FALSE((OpenMesh::hasProperty<OpenMesh::VertexHandle, int>(mesh_, prop_name)));
 }
 
 /*
@@ -166,7 +160,6 @@ TEST_F(OpenMeshPropertyManager, cpp11_temp_property) {
 TEST_F(OpenMeshPropertyManager, cpp11_temp_property_shadowing) {
     auto vh = mesh_.add_vertex({0,0,0}); // Dummy vertex to attach properties to
 
-    using handle_type = OpenMesh::VPropHandleT<int>;
     const auto prop_name = "pm_v_test_property";
 
     auto outer_prop = OpenMesh::makeTemporaryProperty<OpenMesh::VertexHandle, int>(mesh_, prop_name);
@@ -182,7 +175,7 @@ TEST_F(OpenMeshPropertyManager, cpp11_temp_property_shadowing) {
     }
 
     // Ensure outer_prop still exists and its data has not been overwritten by inner_prop
-    ASSERT_TRUE(has_property<handle_type>(mesh_, prop_name));
+    ASSERT_TRUE((OpenMesh::hasProperty<OpenMesh::VertexHandle, int>(mesh_, prop_name)));
     ASSERT_EQ(100, outer_prop[vh]);
 }
 
@@ -196,10 +189,9 @@ TEST_F(OpenMeshPropertyManager, cpp11_temp_property_shadowing) {
 TEST_F(OpenMeshPropertyManager, cpp11_persistent_and_non_owning_properties) {
     auto vh = mesh_.add_vertex({0,0,0}); // Dummy vertex to attach properties to
 
-    using handle_type = OpenMesh::VPropHandleT<int>;
     const auto prop_name = "pm_v_test_property";
 
-    ASSERT_FALSE(has_property<handle_type>(mesh_, prop_name));
+    ASSERT_FALSE((OpenMesh::hasProperty<OpenMesh::VertexHandle, int>(mesh_, prop_name)));
 
     {
         auto prop = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, int>(mesh_, prop_name);
@@ -207,7 +199,7 @@ TEST_F(OpenMeshPropertyManager, cpp11_persistent_and_non_owning_properties) {
         // End of scope, property persists
     }
 
-    ASSERT_TRUE(has_property<handle_type>(mesh_, prop_name));
+    ASSERT_TRUE((OpenMesh::hasProperty<OpenMesh::VertexHandle, int>(mesh_, prop_name)));
 
     {
         // Since a property of the same name and type already exists, this refers to the existing property.
@@ -217,7 +209,7 @@ TEST_F(OpenMeshPropertyManager, cpp11_persistent_and_non_owning_properties) {
         // End of scope, property persists
     }
 
-    ASSERT_TRUE(has_property<handle_type>(mesh_, prop_name));
+    ASSERT_TRUE((OpenMesh::hasProperty<OpenMesh::VertexHandle, int>(mesh_, prop_name)));
 
     {
         // Acquire non-owning handle to the property, knowing it exists
@@ -225,7 +217,7 @@ TEST_F(OpenMeshPropertyManager, cpp11_persistent_and_non_owning_properties) {
         ASSERT_EQ(200, prop[vh]);
     }
 
-    ASSERT_TRUE(has_property<handle_type>(mesh_, prop_name));
+    ASSERT_TRUE((OpenMesh::hasProperty<OpenMesh::VertexHandle, int>(mesh_, prop_name)));
 
     {
         // Attempt to acquire non-owning handle for a non-existing property
@@ -235,7 +227,7 @@ TEST_F(OpenMeshPropertyManager, cpp11_persistent_and_non_owning_properties) {
         ASSERT_THROW(code_that_throws(), std::runtime_error);
     }
 
-    ASSERT_TRUE(has_property<handle_type>(mesh_, prop_name));
+    ASSERT_TRUE((OpenMesh::hasProperty<OpenMesh::VertexHandle, int>(mesh_, prop_name)));
 }
 
 }
