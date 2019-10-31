@@ -545,9 +545,37 @@ struct MPropHandleT : public BasePropHandleT<T>
 {
   typedef T                       Value;
   typedef T                       value_type;
+  typedef void                    Handle;
 
   explicit MPropHandleT(int _idx=-1) : BasePropHandleT<T>(_idx) {}
   explicit MPropHandleT(const BasePropHandleT<T>& _b) : BasePropHandleT<T>(_b) {}
+};
+
+template <typename HandleT>
+struct PropHandle;
+
+template <>
+struct PropHandle<VertexHandle> {
+  template <typename T>
+  using type = VPropHandleT<T>;
+};
+
+template <>
+struct PropHandle<HalfedgeHandle> {
+  template <typename T>
+  using type = HPropHandleT<T>;
+};
+
+template <>
+struct PropHandle<EdgeHandle> {
+  template <typename T>
+  using type = EPropHandleT<T>;
+};
+
+template <>
+struct PropHandle<FaceHandle> {
+  template <typename T>
+  using type = FPropHandleT<T>;
 };
 
 } // namespace OpenMesh

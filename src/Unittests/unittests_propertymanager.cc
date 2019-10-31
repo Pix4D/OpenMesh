@@ -131,55 +131,6 @@ TEST_F(OpenMeshPropertyManager, set_range_bool) {
 }
 
 /*
- * ====================================================================
- * Factory Functions
- * ====================================================================
- */
-
-/*
- * Temporary property
- */
-TEST_F(OpenMeshPropertyManager, cpp11_temp_property) {
-    using handle_type = OpenMesh::VPropHandleT<int>;
-    const auto prop_name = "pm_v_test_property";
-    ASSERT_FALSE((OpenMesh::hasProperty<OpenMesh::VertexHandle, int>(mesh_, prop_name)));
-
-    {
-        auto vprop = OpenMesh::makeTemporaryProperty<OpenMesh::VertexHandle, int>(mesh_, prop_name);
-        static_cast<void>(vprop); // Unused variable
-        ASSERT_TRUE((OpenMesh::hasProperty<OpenMesh::VertexHandle, int>(mesh_, prop_name)));
-    }
-
-    ASSERT_FALSE((OpenMesh::hasProperty<OpenMesh::VertexHandle, int>(mesh_, prop_name)));
-}
-
-/*
- * Two temporary properties on a mesh using the same name and type. The second
- * (inner) one shadows the first (outer) one instead of aliasing.
- */
-TEST_F(OpenMeshPropertyManager, cpp11_temp_property_shadowing) {
-    auto vh = mesh_.add_vertex({0,0,0}); // Dummy vertex to attach properties to
-
-    const auto prop_name = "pm_v_test_property";
-
-    auto outer_prop = OpenMesh::makeTemporaryProperty<OpenMesh::VertexHandle, int>(mesh_, prop_name);
-    outer_prop[vh] = 100;
-    ASSERT_EQ(100, outer_prop[vh]);
-
-    {
-        // inner_prop uses same type and name as outer_prop
-        auto inner_prop = OpenMesh::makeTemporaryProperty<OpenMesh::VertexHandle, int>(mesh_, prop_name);
-        inner_prop[vh] = 200;
-        ASSERT_EQ(200, inner_prop[vh]);
-        // End of scope: inner_prop is removed from mesh_
-    }
-
-    // Ensure outer_prop still exists and its data has not been overwritten by inner_prop
-    ASSERT_TRUE((OpenMesh::hasProperty<OpenMesh::VertexHandle, int>(mesh_, prop_name)));
-    ASSERT_EQ(100, outer_prop[vh]);
-}
-
-/*
  * In sequence:
  * - add a persistent property to a mesh
  * - retrieve an existing property of a mesh and modify it
@@ -315,8 +266,8 @@ TEST_F(OpenMeshPropertyManager, property_copying_same_mesh) {
 
   // unnamed to unnamed
   {
-    auto prop1 = OpenMesh::VProp<int>(3, mesh_);
-    auto prop2 = OpenMesh::VProp<int>(0, mesh_);
+    auto prop1 = OpenMesh::VProp<int>(mesh_, 3);
+    auto prop2 = OpenMesh::VProp<int>(mesh_, 0);
     EXPECT_EQ(prop1[OpenMesh::VertexHandle(0)], 3) << "Property not initialized correctly";
     EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
 
@@ -341,7 +292,7 @@ TEST_F(OpenMeshPropertyManager, property_copying_same_mesh) {
   // unnamed to named
   {
     auto prop1 = OpenMesh::VProp<int>(mesh_);
-    auto prop2 = OpenMesh::VProp<int>(0, mesh_, "ids");
+    auto prop2 = OpenMesh::VProp<int>(mesh_, "ids", 0);
     EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
 
     for (auto vh : mesh_.vertices())
@@ -579,8 +530,8 @@ TEST_F(OpenMeshPropertyManager, property_copying_different_mesh) {
 
   // unnamed to unnamed
   {
-    auto prop1 = OpenMesh::VProp<int>(3, mesh_);
-    auto prop2 = OpenMesh::VProp<int>(0, copy);
+    auto prop1 = OpenMesh::VProp<int>(mesh_, 3);
+    auto prop2 = OpenMesh::VProp<int>(copy, 0);
     EXPECT_EQ(prop1[OpenMesh::VertexHandle(0)], 3) << "Property not initialized correctly";
     EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
 
@@ -600,13 +551,13 @@ TEST_F(OpenMeshPropertyManager, property_copying_different_mesh) {
 
     EXPECT_EQ(prop1[OpenMesh::VertexHandle(0)], 0) << "Property not copied correctly";
     EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
-    EXPECT_NO_FATAL_FAILURE(prop2[OpenMesh::VertexHandle(copy.n_vertices()-1)]) << "Property not correctly resized";
+    EXPECT_NO_FATAL_FAILURE(prop2[OpenMesh::VertexHandle(static_cast<int>(copy.n_vertices())-1)]) << "Property not correctly resized";
   }
 
   // unnamed to named
   {
     auto prop1 = OpenMesh::VProp<int>(mesh_);
-    auto prop2 = OpenMesh::VProp<int>(0, copy, "ids");
+    auto prop2 = OpenMesh::VProp<int>(copy, "ids", 0);
     EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
 
     for (auto vh : mesh_.vertices())
@@ -731,7 +682,7 @@ TEST_F(OpenMeshPropertyManager, property_moving_different_mesh) {
     EXPECT_FALSE(prop1.isValid()) << "prop1 not invalidated after moving";
 
     EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
-    EXPECT_NO_FATAL_FAILURE(prop2[OpenMesh::VertexHandle(copy.n_vertices()-1)]) << "Property not correctly resized";
+    EXPECT_NO_FATAL_FAILURE(prop2[OpenMesh::VertexHandle(static_cast<int>(copy.n_vertices())-1)]) << "Property not correctly resized";
   }
 
   // unnamed to named
