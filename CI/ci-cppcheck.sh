@@ -3,6 +3,8 @@
 # Exit script on any error
 set -e 
 
+CPU_COUNT=$(grep -c processor /proc/cpuinfo)
+
 #=====================================
 # Color Settings:
 #=====================================

@@ -1,38 +1,175 @@
+#############################################################
+#                                                           #
+# This is an auto generated file. Do not make               #
+# changes to this file. They possible will be overriden.    #
+#                                                           #
+# To make persistent changes changes files in               #
+# ./CI/gitlab-ci/ ...                                       #
+# and regenerate this file with the configuration tool      #
+#                                                           #
+#############################################################
+
 stages:
   - build
+  - test
   - deploy
 
-gcc-c++11:
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
+# -----------------
+# Linux tasks
+# -----------------
+
+cppcheck:
   stage: build
-  script: "CI/ci-linux.sh gcc C++11"
+  script: "CI/ci-cppcheck.sh"
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags: [Docker] 
+  artifacts:
+    paths:
+      - cppcheck.log
+
+gcc-c++11-test-debug:
+  stage: test
+  script: "CI/ci-linux-test.sh gcc C++11 debug"
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags: [Docker]
+
+
+gcc-c++11-test-release:
+  stage: test
+  script: "CI/ci-linux-test.sh gcc C++11 release"
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags: [Docker]
+
+gcc-c++11-build-debug:
+  stage: build
+  script: "CI/ci-linux-build.sh gcc C++11 debug"
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags: [Docker]
+  artifacts:
+    paths:
+    - build-debug-gcc-cpp11-Vector-Checks/
+
+gcc-c++11-build-release:
+  stage: build
+  script: "CI/ci-linux-build.sh gcc C++11 release"
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags: [Docker]
+  artifacts:
+    paths:
+    - build-release-gcc-cpp11-Vector-Checks/
+
+clang-c++11-test-debug:
+  stage: test
+  script: "CI/ci-linux-test.sh clang C++11 debug"
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags: [Docker]
+
+clang-c++11-test-release:
+  stage: test
+  script: "CI/ci-linux-test.sh clang C++11 release"
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags: [Docker]
+
+clang-c++11-build-debug:
+  stage: build
+  script: "CI/ci-linux-build.sh clang C++11 debug"
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags: [Docker]
+  artifacts:
+    paths:
+    - build-debug-clang-cpp11-Vector-Checks/
+
+clang-c++11-build-release:
+  stage: build
+  script: "CI/ci-linux-build.sh clang C++11 release"
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags: [Docker] 
+  artifacts:
+    paths:
+    - build-release-clang-cpp11-Vector-Checks/
+
+gcc-c++14-test-debug:
+  stage: test
+  script: "CI/ci-linux-test.sh gcc C++14 debug"
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags: [Docker]
+
+gcc-c++14-test-release:
+  stage: test
+  script: "CI/ci-linux-test.sh gcc C++14 release"
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags: [Docker]
+
+gcc-c++14-build-debug:
+  stage: build
+  script: "CI/ci-linux-build.sh gcc C++14 debug"
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags: [Docker]
+  artifacts:
+    paths:
+    - build-debug-gcc-cpp14-Vector-Checks/
+
+gcc-c++14-build-release:
+  stage: build
+  script: "CI/ci-linux-build.sh gcc C++14 release"
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags: [Docker]
+  artifacts:
+    paths:
+    - build-release-gcc-cpp14-Vector-Checks/
+
+clang-c++14-test-debug:
+  stage: test
+  script: "CI/ci-linux-test.sh clang C++14 debug"
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags: [Docker]
+
+clang-c++14-test-release:
+  stage: test
+  script: "CI/ci-linux-test.sh clang C++14 release"
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags: [Docker]
+
+clang-c++14-build-debug:
+  stage: build
+  script: "CI/ci-linux-build.sh clang C++14 debug"
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags: [Docker]
+  artifacts:
+    paths:
+    - build-debug-clang-cpp14-Vector-Checks/
+
+clang-c++14-build-release:
+  stage: build
+  script: "CI/ci-linux-build.sh clang C++14 release"
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags: [Docker]
+  artifacts:
+    paths:
+    - build-release-clang-cpp14-Vector-Checks/
+
+# -----------------
+# Apple tasks
+# -----------------
+
+macos-cpp11-debug:
+  stage: build
+  script: "CI/ci-mac-build.sh C++11 debug ; CI/ci-mac-test.sh C++11 debug"
   tags:
-    - Linux
-    - stretch
+    - Apple
 
-clang-c++11:
+macos-cpp14-debug:
   stage: build
-  script: "CI/ci-linux.sh clang C++11"
+  script: "CI/ci-mac-build.sh C++14 debug ; CI/ci-mac-test.sh C++14 debug"
   tags:
-    - Linux
-    - stretch   
+    - Apple
 
-gcc-c++14:
+macos-cpp11-release:
   stage: build
-  script: "CI/ci-linux.sh gcc C++14"
-  tags:
-    - Linux
-    - stretch    
-
-clang-c++14:
-  stage: build
-  script: "CI/ci-linux.sh clang C++14"
-  tags: 
-    - Linux
-    - stretch    
-
-macos-cpp11:
-  stage: build
-  script: "CI/ci-mac.sh C++11"
+  script: "CI/ci-mac-build.sh C++11 release ; CI/ci-mac-test.sh C++11 release"
   tags:
     - Apple
   artifacts:
@@ -40,9 +177,9 @@ macos-cpp11:
       - build-release-cpp11/*.dmg
       - build-release-cpp11/*.tar.gz
 
-macos-cpp14:
+macos-cpp14-release:
   stage: build
-  script: "CI/ci-mac.sh C++14"
+  script: "CI/ci-mac-build.sh C++14 release ; CI/ci-mac-test.sh C++14 release"
   tags:
     - Apple
   artifacts:
@@ -50,16 +187,10 @@ macos-cpp14:
       - build-release-cpp14/*.dmg
       - build-release-cpp14/*.tar.gz
 
-cppcheck:
-  stage: build
-  script: "CI/ci-cppcheck.sh"
-  tags:
-    - Linux
-    - stretch    
-  artifacts:
-    paths:
-      - cppcheck.log
-      
+# -----------------
+# Windows tasks
+# -----------------
+
 VS2017-64-bit-shared-apps:
   stage: build
   variables:
@@ -262,7 +393,7 @@ VS2015-32-bit-static-no-apps:
   artifacts:
     paths:
       - build-release/*.exe
-      
+
 Doc-publish:
   stage: deploy
   only:
@@ -285,4 +416,5 @@ Sources:
       - OpenMesh*.zip
       - OpenMesh*.tar.bz2
       - OpenMesh*.tar.gz
+
 

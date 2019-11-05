@@ -516,7 +516,7 @@ public:
       // Copy all properties, if build in is true
       // Otherwise, copy only properties without build in specifier
       if ( *p_it && ( _copyBuildIn || (*p_it)->name().substr(0,2) != "v:" ) )
-        (*p_it)->copy(_vh_from.idx(), _vh_to.idx());
+        (*p_it)->copy(static_cast<size_t>(_vh_from.idx()), static_cast<size_t>(_vh_to.idx()));
 
     }
   }
@@ -690,6 +690,9 @@ public: //----------------------------------------------------- element numbers
   virtual size_t n_edges()     const { return 0; }
   virtual size_t n_faces()     const { return 0; }
 
+  template <typename HandleT>
+  size_t n_elements() const;
+
 
 protected: //------------------------------------------- synchronize properties
 
@@ -812,6 +815,16 @@ private:
   PropertyContainer  fprops_;
   PropertyContainer  mprops_;
 };
+
+
+template <>
+inline size_t BaseKernel::n_elements<VertexHandle>() const   { return n_vertices(); }
+template <>
+inline size_t BaseKernel::n_elements<HalfedgeHandle>() const { return n_halfedges(); }
+template <>
+inline size_t BaseKernel::n_elements<EdgeHandle>() const     { return n_edges(); }
+template <>
+inline size_t BaseKernel::n_elements<FaceHandle>() const     { return n_faces(); }
 
 
 //=============================================================================

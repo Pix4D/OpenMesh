@@ -51,8 +51,8 @@ protected: // SubdividerT interface
         _m.request_edge_status();
         _m.request_vertex_status();
         _m.request_face_status();
-        PropertyManager<EPropHandleT<typename mesh_t::VertexHandle>, mesh_t> edge_midpoint(_m, "edge_midpoint");
-        PropertyManager<VPropHandleT<bool>, mesh_t> is_original_vertex(_m, "is_original_vertex");
+        PropertyManager<EPropHandleT<typename mesh_t::VertexHandle>> edge_midpoint(_m, "edge_midpoint");
+        PropertyManager<VPropHandleT<bool>> is_original_vertex(_m, "is_original_vertex");
 
         for (size_t iteration = 0; iteration < _n; ++iteration) {
             is_original_vertex.set_range(_m.vertices_begin(), _m.vertices_end(), true);

@@ -485,6 +485,7 @@ struct VPropHandleT : public BasePropHandleT<T>
 {
   typedef T                       Value;
   typedef T                       value_type;
+  typedef VertexHandle            Handle;
 
   explicit VPropHandleT(int _idx=-1) : BasePropHandleT<T>(_idx) {}
   explicit VPropHandleT(const BasePropHandleT<T>& _b) : BasePropHandleT<T>(_b) {}
@@ -499,6 +500,7 @@ struct HPropHandleT : public BasePropHandleT<T>
 {
   typedef T                       Value;
   typedef T                       value_type;
+  typedef HalfedgeHandle          Handle;
 
   explicit HPropHandleT(int _idx=-1) : BasePropHandleT<T>(_idx) {}
   explicit HPropHandleT(const BasePropHandleT<T>& _b) : BasePropHandleT<T>(_b) {}
@@ -513,6 +515,7 @@ struct EPropHandleT : public BasePropHandleT<T>
 {
   typedef T                       Value;
   typedef T                       value_type;
+  typedef EdgeHandle              Handle;
 
   explicit EPropHandleT(int _idx=-1) : BasePropHandleT<T>(_idx) {}
   explicit EPropHandleT(const BasePropHandleT<T>& _b) : BasePropHandleT<T>(_b) {}
@@ -527,6 +530,7 @@ struct FPropHandleT : public BasePropHandleT<T>
 {
   typedef T                       Value;
   typedef T                       value_type;
+  typedef FaceHandle              Handle;
 
   explicit FPropHandleT(int _idx=-1) : BasePropHandleT<T>(_idx) {}
   explicit FPropHandleT(const BasePropHandleT<T>& _b) : BasePropHandleT<T>(_b) {}
@@ -541,9 +545,37 @@ struct MPropHandleT : public BasePropHandleT<T>
 {
   typedef T                       Value;
   typedef T                       value_type;
+  typedef void                    Handle;
 
   explicit MPropHandleT(int _idx=-1) : BasePropHandleT<T>(_idx) {}
   explicit MPropHandleT(const BasePropHandleT<T>& _b) : BasePropHandleT<T>(_b) {}
+};
+
+template <typename HandleT>
+struct PropHandle;
+
+template <>
+struct PropHandle<VertexHandle> {
+  template <typename T>
+  using type = VPropHandleT<T>;
+};
+
+template <>
+struct PropHandle<HalfedgeHandle> {
+  template <typename T>
+  using type = HPropHandleT<T>;
+};
+
+template <>
+struct PropHandle<EdgeHandle> {
+  template <typename T>
+  using type = EPropHandleT<T>;
+};
+
+template <>
+struct PropHandle<FaceHandle> {
+  template <typename T>
+  using type = FPropHandleT<T>;
 };
 
 } // namespace OpenMesh

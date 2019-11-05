@@ -44,6 +44,7 @@
 
 #include <OpenMesh/Core/System/config.h>
 #include <OpenMesh/Core/Utils/HandleToPropHandle.hh>
+#include <OpenMesh/Core/Mesh/PolyConnectivity.hh>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -59,6 +60,8 @@ namespace OpenMesh {
  * makeTemporaryProperty(), getProperty(), and getOrMakeProperty()
  * to construct a PropertyManager, e.g.
  *
+ * Note that the second template parameter is depcretated.
+ *
  * \code
  * {
  *     TriMesh mesh;
@@ -73,27 +76,54 @@ namespace OpenMesh {
  * }
  * \endcode
  */
-template<typename PROPTYPE, typename MeshT>
+template<typename PROPTYPE, typename MeshT = int>
 class PropertyManager {
-#if (defined(_MSC_VER) && (_MSC_VER >= 1800)) || __cplusplus > 199711L || defined(__GXX_EXPERIMENTAL_CXX0X__)
+
     public:
-        PropertyManager(const PropertyManager&) = delete;
-        PropertyManager& operator=(const PropertyManager&) = delete;
-#else
+        using Value      = typename PROPTYPE::Value;
+        using value_type = typename PROPTYPE::value_type;
+        using Handle     = typename PROPTYPE::Handle;
+        using Self       = PropertyManager<PROPTYPE, MeshT>;
+
     private:
-        /**
-         * Noncopyable because there aren't no straightforward copy semantics.
-         */
-        PropertyManager(const PropertyManager&);
+        // Mesh properties (MPropHandleT<...>) are stored differently than the other properties.
+        // This class implements different behavior when copying or swapping data from one
+        // property manager to a another one.
+        template <typename PropertyManager2, typename PropHandleT>
+        struct StorageT;
 
-        /**
-         * Noncopyable because there aren't no straightforward copy semantics.
-         */
-        PropertyManager& operator=(const PropertyManager&);
-#endif
+        // specialization for Mesh Properties
+        template <typename PropertyManager2>
+        struct StorageT<PropertyManager2, MPropHandleT<Value>> {
+          static void copy(const PropertyManager<PROPTYPE, MeshT>& from, PropertyManager2& to) {
+            *to = *from;
+          }
+          static void swap(PropertyManager<PROPTYPE, MeshT>& from, PropertyManager2& to) {
+            std::swap(*to, *from);
+          }
+        };
+
+        // definition for other Mesh Properties
+        template <typename PropertyManager2, typename PropHandleT>
+        struct StorageT {
+          static void copy(const PropertyManager<PROPTYPE, MeshT>& from, PropertyManager2& to) {
+            from.copy_to(from.mesh_.template all_elements<Handle>(), to, to.mesh_.template all_elements<Handle>());
+          }
+          static void swap(PropertyManager<PROPTYPE, MeshT>& lhs, PropertyManager2& rhs) {
+            std::swap(lhs.mesh_.property(lhs.prop_).data_vector(), rhs.mesh_.property(rhs.prop_).data_vector());
+            // resize the property to the correct size
+            lhs.mesh_.property(lhs.prop_).resize(lhs.mesh_.template n_elements<Handle>());
+            rhs.mesh_.property(rhs.prop_).resize(rhs.mesh_.template n_elements<Handle>());
+          }
+        };
+
+        using Storage = StorageT<Self, PROPTYPE>;
 
     public:
+
         /**
+         * @deprecated Use a constructor without \p existing and check existance with hasProperty() instead.
+         *
          * Constructor.
          *
          * Throws an \p std::runtime_error if \p existing is true and
@@ -107,22 +137,114 @@ class PropertyManager {
          * the instance merely acts as a convenience wrapper around an existing property with no
          * lifecycle management whatsoever.
          *
-         * @see PropertyManager::createIfNotExists, makePropertyManagerFromNew,
-         * makePropertyManagerFromExisting, makePropertyManagerFromExistingOrNew
+         * @see PropertyManager::getOrMakeProperty, PropertyManager::getProperty,
+         * PropertyManager::makeTemporaryProperty
          */
-        PropertyManager(MeshT &mesh, const char *propname, bool existing = false) : mesh_(&mesh), retain_(existing), name_(propname) {
+        OM_DEPRECATED("Use the constructor without parameter 'existing' instead. Check for existance with hasProperty") // As long as this overload exists, initial value must be first parameter due to ambiguity for properties of type bool
+        PropertyManager(PolyConnectivity& mesh, const char *propname, bool existing) : mesh_(mesh), retain_(existing), name_(propname) {
             if (existing) {
-                if (!mesh_->get_property_handle(prop_, propname)) {
+                if (!mesh_.get_property_handle(prop_, propname)) {
                     std::ostringstream oss;
                     oss << "Requested property handle \"" << propname << "\" does not exist.";
                     throw std::runtime_error(oss.str());
                 }
             } else {
-                mesh_->add_property(prop_, propname);
+                mesh_.add_property(prop_, propname);
             }
         }
 
-        PropertyManager() : mesh_(0), retain_(false) {
+        /**
+         * Constructor.
+         *
+         * Asks for a property with name propname and creates one if none exists. Lifetime is not managed.
+         *
+         * @param mesh The mesh on which to create the property.
+         * @param propname The name of the property.
+         */
+        PropertyManager(PolyConnectivity& mesh, const char *propname) : mesh_(mesh), retain_(true), name_(propname) {
+            if (!mesh_.get_property_handle(prop_, propname)) {
+              mesh_.add_property(prop_, propname);
+            }
+        }
+
+        /**
+         * Constructor.
+         *
+         * Asks for a property with name propname and creates one if none exists. Lifetime is not managed.
+         *
+         * @param initial_value If the proeprty is newly created, it will be initialized with intial_value.
+         *        If the property already existed, nothing is changes.
+         * @param mesh The mesh on which to create the property.
+         * @param propname The name of the property.
+         */
+        PropertyManager(const Value& intial_value, PolyConnectivity& mesh, const char *propname) : mesh_(mesh), retain_(true), name_(propname) {
+            if (!mesh_.get_property_handle(prop_, propname)) {
+              mesh_.add_property(prop_, propname);
+              set_range(mesh_.all_elements<Handle>(), intial_value);
+            }
+        }
+
+        /**
+         * Constructor.
+         *
+         * Create an anonymous property. Lifetime is managed.
+         *
+         * @param mesh The mesh on which to create the property.
+         */
+        PropertyManager(PolyConnectivity& mesh) : mesh_(mesh), retain_(false), name_("") {
+            mesh_.add_property(prop_, name_);
+        }
+
+        /**
+         * Constructor.
+         *
+         * Create an anonymous property. Lifetime is managed.
+         *
+         * @param initial_value The property will be initialized with intial_value.
+         * @param mesh The mesh on which to create the property.
+         */
+        PropertyManager(const Value& intial_value, PolyConnectivity& mesh) : mesh_(mesh), retain_(false), name_("") {
+            mesh_.add_property(prop_, name_);
+            set_range(mesh_.all_elements<Handle>(), intial_value);
+        }
+
+        /**
+         * Constructor.
+         *
+         * Create a wrapper around an existing property. Lifetime is not managed.
+         *
+         * @param mesh The mesh on which to create the property.
+         */
+        PropertyManager(PolyConnectivity& mesh, PROPTYPE property_handle) : mesh_(mesh), prop_(property_handle), retain_(true), name_() {
+        }
+
+        PropertyManager() = delete;
+
+        PropertyManager(const PropertyManager& rhs)
+          :
+            mesh_(rhs.mesh_),
+            prop_(),
+            retain_(rhs.retain_),
+            name_(rhs.name_)
+        {
+          if (rhs.retain_) // named property -> create a property manager referring to the same
+          {
+            prop_ = rhs.prop_;
+          }
+          else // unnamed property -> create a property manager refering to a new property and copy the contents
+          {
+            mesh_.add_property(prop_, name_);
+            Storage::copy(rhs, *this);
+          }
+        }
+
+        PropertyManager& operator=(const PropertyManager& rhs)
+        {
+          if (&mesh_ == &rhs.mesh_ && prop_ == rhs.prop_)
+            ; // nothing to do
+          else
+            Storage::copy(rhs, *this);
+          return *this;
         }
 
         ~PropertyManager() {
@@ -130,49 +252,75 @@ class PropertyManager {
         }
 
         void swap(PropertyManager &rhs) {
-            std::swap(mesh_, rhs.mesh_);
-            std::swap(prop_, rhs.prop_);
-            std::swap(retain_, rhs.retain_);
-            std::swap(name_, rhs.name_);
+          // swap the data stored in the properties
+          Storage::swap(rhs, *this);
         }
 
-        static bool propertyExists(MeshT &mesh, const char *propname) {
+        static bool propertyExists(PolyConnectivity &mesh, const char *propname) {
             PROPTYPE dummy;
             return mesh.get_property_handle(dummy, propname);
         }
 
-        bool isValid() const { return mesh_ != 0; }
+        bool isValid() const { return prop_.is_valid(); }
         operator bool() const { return isValid(); }
 
         const PROPTYPE &getRawProperty() const { return prop_; }
 
         const std::string &getName() const { return name_; }
 
-        MeshT &getMesh() const { return *mesh_; }
+        /**
+         * Get the mesh corresponding to the property.
+         *
+         * If you use PropertyManager without second template parameter (recommended)
+         * you need to specify the actual mesh type when using this function, e.g.:
+         * \code
+         * {
+         *     TriMesh mesh;
+         *     auto visited = VProp<bool>(mesh);
+         *     TriMesh& mesh_ref = visited.getMesh<TriMesh>();
+         * }
+         *
+         */
+        template <typename MeshType >
+        MeshType& getMesh() const { return dynamic_cast<MeshType&>(mesh_); }
 
-#if (defined(_MSC_VER) && (_MSC_VER >= 1800)) || __cplusplus > 199711L || defined(__GXX_EXPERIMENTAL_CXX0X__)
-        /// Only for pre C++11 compatibility.
-
-        typedef PropertyManager<PROPTYPE, MeshT> Proxy;
+        MeshT& getMesh() const { return dynamic_cast<MeshT&>(mesh_); }
 
         /**
          * Move constructor. Transfers ownership (delete responsibility).
          */
-        PropertyManager(PropertyManager &&rhs) : mesh_(rhs.mesh_), prop_(rhs.prop_), retain_(rhs.retain_), name_(rhs.name_) {
-            rhs.retain_ = true;
+        PropertyManager(PropertyManager &&rhs)
+          :
+            mesh_(rhs.mesh_),
+            prop_(rhs.prop_),
+            retain_(rhs.retain_),
+            name_(rhs.name_)
+        {
+          if (!rhs.retain_)
+            rhs.prop_.invalidate(); // only invalidate unnamed properties
         }
 
         /**
          * Move assignment. Transfers ownership (delete responsibility).
          */
-        PropertyManager &operator=(PropertyManager &&rhs) {
-            if (&rhs != this) {
-                deleteProperty();
-                mesh_ = rhs.mesh_;
-                prop_ = rhs.prop_;
-                retain_ = rhs.retain_;
-                name_ = rhs.name_;
-                rhs.retain_ = true;
+        PropertyManager& operator=(PropertyManager&& rhs)
+        {
+            if ((&mesh_ != &rhs.mesh_) || (prop_ != rhs.prop_))
+            {
+              if (rhs.retain_)
+              {
+                // retained properties cannot be invalidated. Copy instead
+                Storage::copy(rhs, *this);
+              }
+              else
+              {
+                // swap the data stored in the properties
+                Storage::swap(rhs, *this);
+                // remove the property from rhs
+                rhs.mesh_.remove_property(rhs.prop_);
+                // invalidate prop_
+                rhs.prop_.invalidate();
+              }
             }
             return *this;
         }
@@ -184,11 +332,8 @@ class PropertyManager {
          *
          * @see makePropertyManagerFromExistingOrNew
          */
-        static PropertyManager createIfNotExists(MeshT &mesh, const char *propname) {
-            PROPTYPE dummy_prop;
-            PropertyManager pm(mesh, propname, mesh.get_property_handle(dummy_prop, propname));
-            pm.retain();
-            return std::move(pm);
+        static PropertyManager createIfNotExists(PolyConnectivity &mesh, const char *propname) {
+            return PropertyManager(mesh, propname);
         }
 
         /**
@@ -201,7 +346,7 @@ class PropertyManager {
          * @see makePropertyManagerFromExistingOrNew
          */
         template<typename PROP_VALUE, typename ITERATOR_TYPE>
-        static PropertyManager createIfNotExists(MeshT &mesh, const char *propname,
+        static PropertyManager createIfNotExists(PolyConnectivity &mesh, const char *propname,
                 const ITERATOR_TYPE &begin, const ITERATOR_TYPE &end,
                 const PROP_VALUE &init_value) {
             const bool exists = propertyExists(mesh, propname);
@@ -222,15 +367,15 @@ class PropertyManager {
          * @see makePropertyManagerFromExistingOrNew
          */
         template<typename PROP_VALUE, typename ITERATOR_RANGE>
-        static PropertyManager createIfNotExists(MeshT &mesh, const char *propname,
+        static PropertyManager createIfNotExists(PolyConnectivity &mesh, const char *propname,
                 const ITERATOR_RANGE &range, const PROP_VALUE &init_value) {
             return createIfNotExists(
                     mesh, propname, range.begin(), range.end(), init_value);
         }
 
         PropertyManager duplicate(const char *clone_name) {
-            PropertyManager pm(*mesh_, clone_name, false);
-            pm.mesh_->property(pm.prop_) = mesh_->property(prop_);
+            PropertyManager pm(mesh_, clone_name, false);
+            pm.mesh_.property(pm.prop_) = mesh_.property(prop_);
             return pm;
         }
 
@@ -239,89 +384,6 @@ class PropertyManager {
          */
         PropertyManager move() {
             return std::move(*this);
-        }
-
-#else
-        class Proxy {
-            private:
-                Proxy(MeshT *mesh_, PROPTYPE prop_, bool retain_, const std::string &name_) :
-                    mesh_(mesh_), prop_(prop_), retain_(retain_), name_(name_) {}
-                MeshT *mesh_;
-                PROPTYPE prop_;
-                bool retain_;
-                std::string name_;
-
-                friend class PropertyManager;
-        };
-
-        operator Proxy() {
-            Proxy p(mesh_, prop_, retain_, name_);
-            mesh_ = 0;
-            retain_ = true;
-            return p;
-        }
-
-        Proxy move() {
-            return (Proxy)*this;
-        }
-
-        PropertyManager(Proxy p) : mesh_(p.mesh_), prop_(p.prop_), retain_(p.retain_), name_(p.name_) {}
-
-        PropertyManager &operator=(Proxy p) {
-            PropertyManager(p).swap(*this);
-            return *this;
-        }
-
-        /**
-         * Create a property manager for the supplied property and mesh.
-         * If the property doesn't exist, it is created. In any case,
-         * lifecycle management is disabled.
-         *
-         * @see makePropertyManagerFromExistingOrNew
-         */
-        static Proxy createIfNotExists(MeshT &mesh, const char *propname) {
-            PROPTYPE dummy_prop;
-            PropertyManager pm(mesh, propname, mesh.get_property_handle(dummy_prop, propname));
-            pm.retain();
-            return (Proxy)pm;
-        }
-
-        /**
-         * Like createIfNotExists() with two parameters except, if the property
-         * doesn't exist, it is initialized with the supplied value over
-         * the supplied range after creation. If the property already exists,
-         * this method has the exact same effect as the two parameter version.
-         * Lifecycle management is disabled in any case.
-         *
-         * @see makePropertyManagerFromExistingOrNew
-         */
-        template<typename PROP_VALUE, typename ITERATOR_TYPE>
-        static Proxy createIfNotExists(MeshT &mesh, const char *propname,
-                const ITERATOR_TYPE &begin, const ITERATOR_TYPE &end,
-                const PROP_VALUE &init_value) {
-            const bool exists = propertyExists(mesh, propname);
-            PropertyManager pm(mesh, propname, exists);
-            pm.retain();
-            if (!exists)
-                pm.set_range(begin, end, init_value);
-            return (Proxy)pm;
-        }
-
-        Proxy duplicate(const char *clone_name) {
-            PropertyManager pm(*mesh_, clone_name, false);
-            pm.mesh_->property(pm.prop_) = mesh_->property(prop_);
-            return (Proxy)pm;
-        }
-#endif
-
-        /**
-         * \brief Disable lifecycle management for this property.
-         *
-         * If this method is called, the encapsulated property will not be deleted
-         * upon destruction of the PropertyManager instance.
-         */
-        inline void retain(bool doRetain = true) {
-            retain_ = doRetain;
         }
 
         /**
@@ -337,7 +399,7 @@ class PropertyManager {
          * @note This method is only used for mesh properties.
          */
         typename PROPTYPE::reference& operator*() {
-            return mesh_->mproperty(prop_)[0];
+            return mesh_.mproperty(prop_)[0];
         }
 
         /**
@@ -353,7 +415,7 @@ class PropertyManager {
          * @note This method is only used for mesh properties.
          */
         typename PROPTYPE::const_reference& operator*() const {
-            return mesh_->mproperty(prop_)[0];
+            return mesh_.mproperty(prop_)[0];
         }
 
         /**
@@ -365,7 +427,7 @@ class PropertyManager {
          */
         template<typename HandleType>
         inline typename PROPTYPE::reference operator[] (const HandleType &handle) {
-            return mesh_->property(prop_, handle);
+            return mesh_.property(prop_, handle);
         }
 
         /**
@@ -377,7 +439,7 @@ class PropertyManager {
          */
         template<typename HandleType>
         inline typename PROPTYPE::const_reference operator[] (const HandleType &handle) const {
-            return mesh_->property(prop_, handle);
+            return mesh_.property(prop_, handle);
         }
 
         /**
@@ -389,7 +451,7 @@ class PropertyManager {
          */
         template<typename HandleType>
         inline typename PROPTYPE::reference operator() (const HandleType &handle) {
-            return mesh_->property(prop_, handle);
+            return mesh_.property(prop_, handle);
         }
 
         /**
@@ -401,7 +463,7 @@ class PropertyManager {
          */
         template<typename HandleType>
         inline typename PROPTYPE::const_reference operator() (const HandleType &handle) const {
-            return mesh_->property(prop_, handle);
+            return mesh_.property(prop_, handle);
         }
 
         /**
@@ -410,7 +472,7 @@ class PropertyManager {
          * Examples:
          * \code
          * MeshT mesh;
-         * PropertyManager<VPropHandleT<double>, MeshT> distance(
+         * PropertyManager<VPropHandleT<double>> distance(
          *     mesh, "distance.plugin-example.i8.informatik.rwth-aachen.de");
          * distance.set_range(
          *     mesh.vertices_begin(), mesh.vertices_end(),
@@ -458,9 +520,9 @@ class PropertyManager {
          * Will be used with dst_propmanager. Used to double check the bounds.
          */
         template<typename HandleTypeIterator, typename PROPTYPE_2,
-                 typename MeshT_2, typename HandleTypeIterator_2>
+                 typename HandleTypeIterator_2>
         void copy_to(HandleTypeIterator begin, HandleTypeIterator end,
-                PropertyManager<PROPTYPE_2, MeshT_2> &dst_propmanager,
+                PropertyManager<PROPTYPE_2> &dst_propmanager,
                 HandleTypeIterator_2 dst_begin, HandleTypeIterator_2 dst_end) const {
 
             for (; begin != end && dst_begin != dst_end; ++begin, ++dst_begin) {
@@ -469,13 +531,14 @@ class PropertyManager {
         }
 
         template<typename RangeType, typename PROPTYPE_2,
-                 typename MeshT_2, typename RangeType_2>
+                 typename RangeType_2>
         void copy_to(const RangeType &range,
-                PropertyManager<PROPTYPE_2, MeshT_2> &dst_propmanager,
+                PropertyManager<PROPTYPE_2> &dst_propmanager,
                 const RangeType_2 &dst_range) const {
             copy_to(range.begin(), range.end(), dst_propmanager,
                     dst_range.begin(), dst_range.end());
         }
+
 
         /**
          * Copy the values of a property from a source range to
@@ -491,15 +554,15 @@ class PropertyManager {
          * @param dst_mesh Destination mesh on which to copy.
          * @param dst_range Destination range.
          */
-        template<typename RangeType, typename MeshT_2, typename RangeType_2>
+        template<typename RangeType, typename RangeType_2>
         static void copy(const char *prop_name,
-                MeshT &src_mesh, const RangeType &src_range,
-                MeshT_2 &dst_mesh, const RangeType_2 &dst_range) {
+                PolyConnectivity &src_mesh, const RangeType &src_range,
+                PolyConnectivity &dst_mesh, const RangeType_2 &dst_range) {
 
-            typedef OpenMesh::PropertyManager<PROPTYPE, MeshT> DstPM;
+            typedef OpenMesh::PropertyManager<PROPTYPE> DstPM;
             DstPM dst(DstPM::createIfNotExists(dst_mesh, prop_name));
 
-            typedef OpenMesh::PropertyManager<PROPTYPE, MeshT_2> SrcPM;
+            typedef OpenMesh::PropertyManager<PROPTYPE> SrcPM;
             SrcPM src(src_mesh, prop_name, true);
 
             src.copy_to(src_range, dst, dst_range);
@@ -507,18 +570,20 @@ class PropertyManager {
 
     private:
         void deleteProperty() {
-            if (!retain_)
-                mesh_->remove_property(prop_);
+            if (!retain_ && prop_.is_valid())
+                mesh_.remove_property(prop_);
         }
 
     private:
-        MeshT *mesh_;
+        PolyConnectivity& mesh_;
         PROPTYPE prop_;
         bool retain_;
         std::string name_;
 };
 
 /** @relates PropertyManager
+ *
+ * @deprecated Temporary properties should not have a name.
  *
  * Creates a new property whose lifetime is limited to the current scope.
  *
@@ -541,13 +606,72 @@ class PropertyManager {
  * @param propname (optional) The name of the created property
  * @tparam ElementT Element type of the created property, e.g. VertexHandle, HalfedgeHandle, etc.
  * @tparam T Value type of the created property, e.g., \p double, \p int, etc.
- * @tparam MeshT Type of the mesh. Can often be inferred from \p mesh
  * @returns A PropertyManager handling the lifecycle of the property
  */
-template<typename ElementT, typename T, typename MeshT>
-PropertyManager<typename HandleToPropHandle<ElementT, T>::type, MeshT>
-makeTemporaryProperty(MeshT &mesh, const char *propname = "") {
-    return PropertyManager<typename HandleToPropHandle<ElementT, T>::type, MeshT>(mesh, propname, false);
+template<typename ElementT, typename T>
+PropertyManager<typename HandleToPropHandle<ElementT, T>::type>
+OM_DEPRECATED("Named temporary properties are deprecated. Either create a temporary without name or a non-temporary with name")
+makeTemporaryProperty(PolyConnectivity &mesh, const char *propname) {
+    return PropertyManager<typename HandleToPropHandle<ElementT, T>::type>(mesh, propname, false);
+}
+
+/** @relates PropertyManager
+ *
+ * Creates a new property whose lifetime is limited to the current scope.
+ *
+ * Used for temporary properties. Shadows any existing properties of
+ * matching name and type.
+ *
+ * Example:
+ * @code
+ * PolyMesh m;
+ * {
+ *     auto is_quad = makeTemporaryProperty<FaceHandle, bool>(m);
+ *     for (auto& fh : m.faces()) {
+ *         is_quad[fh] = (m.valence(fh) == 4);
+ *     }
+ *     // The property is automatically removed from the mesh at the end of the scope.
+ * }
+ * @endcode
+ *
+ * @param mesh The mesh on which the property is created
+ * @tparam ElementT Element type of the created property, e.g. VertexHandle, HalfedgeHandle, etc.
+ * @tparam T Value type of the created property, e.g., \p double, \p int, etc.
+ * @returns A PropertyManager handling the lifecycle of the property
+ */
+template<typename ElementT, typename T>
+PropertyManager<typename HandleToPropHandle<ElementT, T>::type>
+makeTemporaryProperty(PolyConnectivity &mesh) {
+    return PropertyManager<typename HandleToPropHandle<ElementT, T>::type>(mesh);
+}
+
+
+/** @relates PropertyManager
+ *
+ * Tests whether a property with the given element type, value type, and name is
+ * present on the given mesh.
+ *
+ * * Example:
+ * @code
+ * PolyMesh m;
+ * if (hasProperty<FaceHandle, bool>(m, "is_quad")) {
+ *     // We now know the property exists: getProperty won't throw.
+ *     auto is_quad = getProperty<FaceHandle, bool>(m, "is_quad");
+ *     // Use is_quad here.
+ * }
+ * @endcode
+ *
+ * @param mesh The mesh in question
+ * @param propname The property name of the expected property
+ * @tparam ElementT Element type of the expected property, e.g. VertexHandle, HalfedgeHandle, etc.
+ * @tparam T Value type of the expected property, e.g., \p double, \p int, etc.
+ * @tparam MeshT Type of the mesh. Can often be inferred from \p mesh
+ */
+template<typename ElementT, typename T>
+bool
+hasProperty(const PolyConnectivity &mesh, const char *propname) {
+    typename HandleToPropHandle<ElementT, T>::type ph;
+    return mesh.get_property_handle(ph, propname);
 }
 
 /** @relates PropertyManager
@@ -575,13 +699,18 @@ makeTemporaryProperty(MeshT &mesh, const char *propname = "") {
  * @param propname The name of the created property
  * @tparam ElementT Element type of the created property, e.g. VertexHandle, HalfedgeHandle, etc.
  * @tparam T Value type of the created property, e.g., \p double, \p int, etc.
- * @tparam MeshT Type of the mesh. Can often be inferred from \p mesh
  * @returns A PropertyManager wrapping the property
  */
-template<typename ElementT, typename T, typename MeshT>
-PropertyManager<typename HandleToPropHandle<ElementT, T>::type, MeshT>
-getProperty(MeshT &mesh, const char *propname) {
-    return PropertyManager<typename HandleToPropHandle<ElementT, T>::type, MeshT>(mesh, propname, true);
+template<typename ElementT, typename T>
+PropertyManager<typename HandleToPropHandle<ElementT, T>::type>
+getProperty(PolyConnectivity &mesh, const char *propname) {
+  if (!hasProperty<ElementT, T>(mesh, propname))
+  {
+    std::ostringstream oss;
+    oss << "Requested property handle \"" << propname << "\" does not exist.";
+    throw std::runtime_error(oss.str());
+  }
+  return PropertyManager<typename HandleToPropHandle<ElementT, T>::type>(mesh, propname);
 }
 
 /** @relates PropertyManager
@@ -611,41 +740,12 @@ getProperty(MeshT &mesh, const char *propname) {
  * @param propname The name of the created property
  * @tparam ElementT Element type of the created property, e.g. VertexHandle, HalfedgeHandle, etc.
  * @tparam T Value type of the created property, e.g., \p double, \p int, etc.
- * @tparam MeshT Type of the mesh. Can often be inferred from \p mesh
  * @returns A PropertyManager wrapping the property
  */
-template<typename ElementT, typename T, typename MeshT>
-PropertyManager<typename HandleToPropHandle<ElementT, T>::type, MeshT>
-getOrMakeProperty(MeshT &mesh, const char *propname) {
-    return PropertyManager<typename HandleToPropHandle<ElementT, T>::type, MeshT>::createIfNotExists(mesh, propname);
-}
-
-/** @relates PropertyManager
- *
- * Tests whether a property with the given element type, value type, and name is
- * present on the given mesh.
- *
- * * Example:
- * @code
- * PolyMesh m;
- * if (hasProperty<FaceHandle, bool>(m, "is_quad")) {
- *     // We now know the property exists: getProperty won't throw.
- *     auto is_quad = getProperty<FaceHandle, bool>(m, "is_quad");
- *     // Use is_quad here.
- * }
- * @endcode
- *
- * @param mesh The mesh in question
- * @param propname The property name of the expected property
- * @tparam ElementT Element type of the expected property, e.g. VertexHandle, HalfedgeHandle, etc.
- * @tparam T Value type of the expected property, e.g., \p double, \p int, etc.
- * @tparam MeshT Type of the mesh. Can often be inferred from \p mesh
- */
-template<typename ElementT, typename T, typename MeshT>
-bool
-hasProperty(const MeshT &mesh, const char *propname) {
-    typename HandleToPropHandle<ElementT, T>::type ph;
-    return mesh.get_property_handle(ph, propname);
+template<typename ElementT, typename T>
+PropertyManager<typename HandleToPropHandle<ElementT, T>::type>
+getOrMakeProperty(PolyConnectivity &mesh, const char *propname) {
+    return PropertyManager<typename HandleToPropHandle<ElementT, T>::type>::createIfNotExists(mesh, propname);
 }
 
 /** @relates PropertyManager
@@ -657,11 +757,11 @@ hasProperty(const MeshT &mesh, const char *propname) {
  * Intended for temporary properties. Shadows any existing properties of
  * matching name and type.
  */
-template<typename PROPTYPE, typename MeshT>
+template<typename PROPTYPE>
 OM_DEPRECATED("Use makeTemporaryProperty instead.")
-PropertyManager<PROPTYPE, MeshT> makePropertyManagerFromNew(MeshT &mesh, const char *propname)
+PropertyManager<PROPTYPE> makePropertyManagerFromNew(PolyConnectivity &mesh, const char *propname)
 {
-    return PropertyManager<PROPTYPE, MeshT>(mesh, propname, false);
+    return PropertyManager<PROPTYPE>(mesh, propname, false);
 }
 
 /** \relates PropertyManager
@@ -676,11 +776,11 @@ PropertyManager<PROPTYPE, MeshT> makePropertyManagerFromNew(MeshT &mesh, const c
  * @throws std::runtime_error if no property with the name \p propname of
  * matching type exists.
  */
-template<typename PROPTYPE, typename MeshT>
+template<typename PROPTYPE>
 OM_DEPRECATED("Use getProperty instead.")
-PropertyManager<PROPTYPE, MeshT> makePropertyManagerFromExisting(MeshT &mesh, const char *propname)
+PropertyManager<PROPTYPE> makePropertyManagerFromExisting(PolyConnectivity &mesh, const char *propname)
 {
-    return PropertyManager<PROPTYPE, MeshT>(mesh, propname, true);
+    return PropertyManager<PROPTYPE>(mesh, propname, true);
 }
 
 /** @relates PropertyManager
@@ -691,11 +791,11 @@ PropertyManager<PROPTYPE, MeshT> makePropertyManagerFromExisting(MeshT &mesh, co
  *
  * Intended for creating or accessing persistent properties.
  */
-template<typename PROPTYPE, typename MeshT>
+template<typename PROPTYPE>
 OM_DEPRECATED("Use getOrMakeProperty instead.")
-PropertyManager<PROPTYPE, MeshT> makePropertyManagerFromExistingOrNew(MeshT &mesh, const char *propname)
+PropertyManager<PROPTYPE> makePropertyManagerFromExistingOrNew(PolyConnectivity &mesh, const char *propname)
 {
-    return PropertyManager<PROPTYPE, MeshT>::createIfNotExists(mesh, propname);
+    return PropertyManager<PROPTYPE>::createIfNotExists(mesh, propname);
 }
 
 /** @relates PropertyManager
@@ -709,14 +809,14 @@ PropertyManager<PROPTYPE, MeshT> makePropertyManagerFromExistingOrNew(MeshT &mes
  *
  * Intended for creating or accessing persistent properties.
  */
-template<typename PROPTYPE, typename MeshT,
+template<typename PROPTYPE,
     typename ITERATOR_TYPE, typename PROP_VALUE>
 OM_DEPRECATED("Use getOrMakeProperty instead.")
-PropertyManager<PROPTYPE, MeshT> makePropertyManagerFromExistingOrNew(
-        MeshT &mesh, const char *propname,
+PropertyManager<PROPTYPE> makePropertyManagerFromExistingOrNew(
+        PolyConnectivity &mesh, const char *propname,
         const ITERATOR_TYPE &begin, const ITERATOR_TYPE &end,
         const PROP_VALUE &init_value) {
-    return PropertyManager<PROPTYPE, MeshT>::createIfNotExists(
+    return PropertyManager<PROPTYPE>::createIfNotExists(
             mesh, propname, begin, end, init_value);
 }
 
@@ -731,16 +831,45 @@ PropertyManager<PROPTYPE, MeshT> makePropertyManagerFromExistingOrNew(
  *
  * Intended for creating or accessing persistent properties.
  */
-template<typename PROPTYPE, typename MeshT,
+template<typename PROPTYPE,
     typename ITERATOR_RANGE, typename PROP_VALUE>
 OM_DEPRECATED("Use getOrMakeProperty instead.")
-PropertyManager<PROPTYPE, MeshT> makePropertyManagerFromExistingOrNew(
-        MeshT &mesh, const char *propname,
+PropertyManager<PROPTYPE> makePropertyManagerFromExistingOrNew(
+        PolyConnectivity &mesh, const char *propname,
         const ITERATOR_RANGE &range,
         const PROP_VALUE &init_value) {
-    return makePropertyManagerFromExistingOrNew<PROPTYPE, MeshT>(
+    return makePropertyManagerFromExistingOrNew<PROPTYPE>(
             mesh, propname, range.begin(), range.end(), init_value);
 }
+
+
+/** @relates PropertyManager
+ * Returns a convenience wrapper around the points property of a mesh.
+ */
+template<typename MeshT>
+PropertyManager<OpenMesh::VPropHandleT<typename MeshT::Point>>
+getPointsProperty(MeshT &mesh) {
+  return PropertyManager<OpenMesh::VPropHandleT<typename MeshT::Point>>(mesh, mesh.points_property_handle());
+}
+
+template <typename HandleT, typename T>
+using Prop = PropertyManager<typename PropHandle<HandleT>::template type<T>>;
+
+template <typename T>
+using VProp = PropertyManager<OpenMesh::VPropHandleT<T>>;
+
+template <typename T>
+using HProp = PropertyManager<OpenMesh::HPropHandleT<T>>;
+
+template <typename T>
+using EProp = PropertyManager<OpenMesh::EPropHandleT<T>>;
+
+template <typename T>
+using FProp = PropertyManager<OpenMesh::FPropHandleT<T>>;
+
+template <typename T>
+using MProp = PropertyManager<OpenMesh::MPropHandleT<T>>;
+
 
 } /* namespace OpenMesh */
 #endif /* PROPERTYMANAGER_HH_ */

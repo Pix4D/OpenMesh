@@ -62,7 +62,7 @@ TEST_F(OpenMeshPropertyManager, set_range_bool) {
 
   {
       OpenMesh::PropertyManager<
-          OpenMesh::VPropHandleT<bool>, Mesh> pm_v_bool(mesh_, "pm_v_bool");
+          OpenMesh::VPropHandleT<bool>> pm_v_bool(mesh_, "pm_v_bool");
       pm_v_bool.set_range(mesh_.vertices_begin(), mesh_.vertices_end(), false);
       for (int i = 0; i < 4; ++i)
           ASSERT_FALSE(pm_v_bool[vhandle[i]]);
@@ -71,7 +71,7 @@ TEST_F(OpenMeshPropertyManager, set_range_bool) {
           ASSERT_TRUE(pm_v_bool[vhandle[i]]);
 
       OpenMesh::PropertyManager<
-          OpenMesh::EPropHandleT<bool>, Mesh> pm_e_bool(mesh_, "pm_e_bool");
+          OpenMesh::EPropHandleT<bool>> pm_e_bool(mesh_, "pm_e_bool");
       pm_e_bool.set_range(mesh_.edges_begin(), mesh_.edges_end(), false);
       for (Mesh::EdgeIter e_it = mesh_.edges_begin(), f_end = mesh_.edges_end();
               e_it != f_end; ++e_it)
@@ -82,7 +82,7 @@ TEST_F(OpenMeshPropertyManager, set_range_bool) {
           ASSERT_TRUE(pm_e_bool[*e_it]);
 
       OpenMesh::PropertyManager<
-          OpenMesh::FPropHandleT<bool>, Mesh> pm_f_bool(mesh_, "pm_f_bool");
+          OpenMesh::FPropHandleT<bool>> pm_f_bool(mesh_, "pm_f_bool");
       pm_f_bool.set_range(mesh_.faces_begin(), mesh_.faces_end(), false);
       for (Mesh::FaceIter f_it = mesh_.faces_begin(), f_end = mesh_.faces_end();
               f_it != f_end; ++f_it)
@@ -98,7 +98,7 @@ TEST_F(OpenMeshPropertyManager, set_range_bool) {
    */
   {
       OpenMesh::PropertyManager<
-          OpenMesh::VPropHandleT<bool>, Mesh> pm_v_bool(mesh_, "pm_v_bool2");
+          OpenMesh::VPropHandleT<bool>> pm_v_bool(mesh_, "pm_v_bool2");
       pm_v_bool.set_range(mesh_.vertices(), false);
       for (int i = 0; i < 4; ++i)
           ASSERT_FALSE(pm_v_bool[vhandle[i]]);
@@ -107,7 +107,7 @@ TEST_F(OpenMeshPropertyManager, set_range_bool) {
           ASSERT_TRUE(pm_v_bool[vhandle[i]]);
 
       OpenMesh::PropertyManager<
-          OpenMesh::EPropHandleT<bool>, Mesh> pm_e_bool(mesh_, "pm_e_bool2");
+          OpenMesh::EPropHandleT<bool>> pm_e_bool(mesh_, "pm_e_bool2");
       pm_e_bool.set_range(mesh_.edges(), false);
       for (Mesh::EdgeIter e_it = mesh_.edges_begin(), f_end = mesh_.edges_end();
               e_it != f_end; ++e_it)
@@ -118,7 +118,7 @@ TEST_F(OpenMeshPropertyManager, set_range_bool) {
           ASSERT_TRUE(pm_e_bool[*e_it]);
 
       OpenMesh::PropertyManager<
-          OpenMesh::FPropHandleT<bool>, Mesh> pm_f_bool(mesh_, "pm_f_bool2");
+          OpenMesh::FPropHandleT<bool>> pm_f_bool(mesh_, "pm_f_bool2");
       pm_f_bool.set_range(mesh_.faces(), false);
       for (Mesh::FaceIter f_it = mesh_.faces_begin(), f_end = mesh_.faces_end();
               f_it != f_end; ++f_it)
@@ -131,62 +131,6 @@ TEST_F(OpenMeshPropertyManager, set_range_bool) {
 }
 
 /*
- * ====================================================================
- * Factory Functions
- * ====================================================================
- */
-
-template<typename PropHandle, typename Mesh>
-bool has_property(const Mesh& _mesh, const std::string& _name) {
-    auto dummy_handle = PropHandle{};
-    return _mesh.get_property_handle(dummy_handle, _name);
-}
-
-/*
- * Temporary property
- */
-TEST_F(OpenMeshPropertyManager, cpp11_temp_property) {
-    using handle_type = OpenMesh::VPropHandleT<int>;
-    const auto prop_name = "pm_v_test_property";
-    ASSERT_FALSE(has_property<handle_type>(mesh_, prop_name));
-
-    {
-        auto vprop = OpenMesh::makeTemporaryProperty<OpenMesh::VertexHandle, int>(mesh_, prop_name);
-        static_cast<void>(vprop); // Unused variable
-        ASSERT_TRUE(has_property<handle_type>(mesh_, prop_name));
-    }
-
-    ASSERT_FALSE(has_property<handle_type>(mesh_, prop_name));
-}
-
-/*
- * Two temporary properties on a mesh using the same name and type. The second
- * (inner) one shadows the first (outer) one instead of aliasing.
- */
-TEST_F(OpenMeshPropertyManager, cpp11_temp_property_shadowing) {
-    auto vh = mesh_.add_vertex({0,0,0}); // Dummy vertex to attach properties to
-
-    using handle_type = OpenMesh::VPropHandleT<int>;
-    const auto prop_name = "pm_v_test_property";
-
-    auto outer_prop = OpenMesh::makeTemporaryProperty<OpenMesh::VertexHandle, int>(mesh_, prop_name);
-    outer_prop[vh] = 100;
-    ASSERT_EQ(100, outer_prop[vh]);
-
-    {
-        // inner_prop uses same type and name as outer_prop
-        auto inner_prop = OpenMesh::makeTemporaryProperty<OpenMesh::VertexHandle, int>(mesh_, prop_name);
-        inner_prop[vh] = 200;
-        ASSERT_EQ(200, inner_prop[vh]);
-        // End of scope: inner_prop is removed from mesh_
-    }
-
-    // Ensure outer_prop still exists and its data has not been overwritten by inner_prop
-    ASSERT_TRUE(has_property<handle_type>(mesh_, prop_name));
-    ASSERT_EQ(100, outer_prop[vh]);
-}
-
-/*
  * In sequence:
  * - add a persistent property to a mesh
  * - retrieve an existing property of a mesh and modify it
@@ -196,10 +140,9 @@ TEST_F(OpenMeshPropertyManager, cpp11_temp_property_shadowing) {
 TEST_F(OpenMeshPropertyManager, cpp11_persistent_and_non_owning_properties) {
     auto vh = mesh_.add_vertex({0,0,0}); // Dummy vertex to attach properties to
 
-    using handle_type = OpenMesh::VPropHandleT<int>;
     const auto prop_name = "pm_v_test_property";
 
-    ASSERT_FALSE(has_property<handle_type>(mesh_, prop_name));
+    ASSERT_FALSE((OpenMesh::hasProperty<OpenMesh::VertexHandle, int>(mesh_, prop_name)));
 
     {
         auto prop = OpenMesh::getOrMakeProperty<OpenMesh::VertexHandle, int>(mesh_, prop_name);
@@ -207,7 +150,7 @@ TEST_F(OpenMeshPropertyManager, cpp11_persistent_and_non_owning_properties) {
         // End of scope, property persists
     }
 
-    ASSERT_TRUE(has_property<handle_type>(mesh_, prop_name));
+    ASSERT_TRUE((OpenMesh::hasProperty<OpenMesh::VertexHandle, int>(mesh_, prop_name)));
 
     {
         // Since a property of the same name and type already exists, this refers to the existing property.
@@ -217,7 +160,7 @@ TEST_F(OpenMeshPropertyManager, cpp11_persistent_and_non_owning_properties) {
         // End of scope, property persists
     }
 
-    ASSERT_TRUE(has_property<handle_type>(mesh_, prop_name));
+    ASSERT_TRUE((OpenMesh::hasProperty<OpenMesh::VertexHandle, int>(mesh_, prop_name)));
 
     {
         // Acquire non-owning handle to the property, knowing it exists
@@ -225,7 +168,7 @@ TEST_F(OpenMeshPropertyManager, cpp11_persistent_and_non_owning_properties) {
         ASSERT_EQ(200, prop[vh]);
     }
 
-    ASSERT_TRUE(has_property<handle_type>(mesh_, prop_name));
+    ASSERT_TRUE((OpenMesh::hasProperty<OpenMesh::VertexHandle, int>(mesh_, prop_name)));
 
     {
         // Attempt to acquire non-owning handle for a non-existing property
@@ -235,7 +178,630 @@ TEST_F(OpenMeshPropertyManager, cpp11_persistent_and_non_owning_properties) {
         ASSERT_THROW(code_that_throws(), std::runtime_error);
     }
 
-    ASSERT_TRUE(has_property<handle_type>(mesh_, prop_name));
+    ASSERT_TRUE((OpenMesh::hasProperty<OpenMesh::VertexHandle, int>(mesh_, prop_name)));
 }
+
+
+TEST_F(OpenMeshPropertyManager, property_copy_construction) {
+  for (int i = 0; i < 1000000; ++i)
+    mesh_.add_vertex(Mesh::Point());
+
+  // unnamed
+  {
+    auto prop1 = OpenMesh::VProp<int>(mesh_);
+    for (auto vh : mesh_.vertices())
+      prop1[vh] = vh.idx()*2-13;
+
+    auto  prop2 = prop1; // prop1 and prop2 should be two different properties with the same content
+
+    prop1.set_range(mesh_.vertices(), 0);
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13);
+  }
+
+  // named
+  {
+    auto prop1 = OpenMesh::VProp<int>(mesh_, "ids");
+    for (auto vh : mesh_.vertices())
+      prop1[vh] = vh.idx()*2-13;
+
+    auto prop2 = prop1; // prop1 and prop2 should refere to the same property
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13);
+
+    prop1.set_range(mesh_.vertices(), 0);
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0);
+  }
+}
+
+TEST_F(OpenMeshPropertyManager, property_move_construction) {
+  for (int i = 0; i < 1000000; ++i)
+    mesh_.add_vertex(Mesh::Point());
+
+  // unnamed
+  {
+    auto prop1 = OpenMesh::VProp<int>(mesh_);
+    for (auto vh : mesh_.vertices())
+      prop1[vh] = vh.idx()*2-13;
+
+    auto t_start = std::chrono::high_resolution_clock::now();
+    auto prop2 = std::move(prop1);
+    auto t_end = std::chrono::high_resolution_clock::now();
+    std::cout << "move constructing property from temporary took " << std::chrono::duration_cast<std::chrono::milliseconds>(t_end-t_start).count() << "ms" << std::endl;
+
+    EXPECT_FALSE(prop1.isValid()) << "prop1 should have been invalidated";
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13);
+  }
+
+  // named
+  {
+    auto prop1 = OpenMesh::VProp<int>(mesh_, "ids");
+    for (auto vh : mesh_.vertices())
+      prop1[vh] = vh.idx()*2-13;
+
+    auto t_start = std::chrono::high_resolution_clock::now();
+    auto prop2 = std::move(prop1); // prop1 and prop2 should refere to the same property
+    auto t_end = std::chrono::high_resolution_clock::now();
+    std::cout << "move constructing from named took " << std::chrono::duration_cast<std::chrono::milliseconds>(t_end-t_start).count() << "ms" << std::endl;
+
+    EXPECT_TRUE(prop1.isValid()) << "named properties cannot be invalidated";
+
+    EXPECT_EQ(prop1[OpenMesh::VertexHandle(0)], -13) << "property is not valid anymore";
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13) << "did not copy property correctly";
+
+    prop1.set_range(mesh_.vertices(), 0);
+
+    EXPECT_EQ(prop1[OpenMesh::VertexHandle(0)], 0);
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0);
+  }
+}
+
+
+TEST_F(OpenMeshPropertyManager, property_copying_same_mesh) {
+
+  for (int i = 0; i < 1000000; ++i)
+    mesh_.add_vertex(Mesh::Point());
+
+  // unnamed to unnamed
+  {
+    auto prop1 = OpenMesh::VProp<int>(3, mesh_);
+    auto prop2 = OpenMesh::VProp<int>(0, mesh_);
+    EXPECT_EQ(prop1[OpenMesh::VertexHandle(0)], 3) << "Property not initialized correctly";
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
+
+    for (auto vh : mesh_.vertices())
+      prop1[vh] = vh.idx()*2-13;
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
+
+    auto t_start = std::chrono::high_resolution_clock::now();
+    prop2 = prop1;
+    auto t_end = std::chrono::high_resolution_clock::now();
+    std::cout << "copying property temporary to temporary took " << std::chrono::duration_cast<std::chrono::milliseconds>(t_end-t_start).count() << "ms" << std::endl;
+
+    EXPECT_EQ(prop1[OpenMesh::VertexHandle(0)], -13) << "Temporary property got destroyed";
+
+    prop1.set_range(mesh_.vertices(), 0);
+
+    EXPECT_EQ(prop1[OpenMesh::VertexHandle(0)], 0) << "Property not copied correctly";
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+  }
+
+  // unnamed to named
+  {
+    auto prop1 = OpenMesh::VProp<int>(mesh_);
+    auto prop2 = OpenMesh::VProp<int>(0, mesh_, "ids");
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
+
+    for (auto vh : mesh_.vertices())
+      prop1[vh] = vh.idx()*2-13;
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
+
+    auto t_start = std::chrono::high_resolution_clock::now();
+    prop2 = prop1;
+    auto t_end = std::chrono::high_resolution_clock::now();
+    std::cout << "copying property temporary to named took  " << std::chrono::duration_cast<std::chrono::milliseconds>(t_end-t_start).count() << "ms" << std::endl;
+
+    EXPECT_EQ(prop1[OpenMesh::VertexHandle(0)], -13) << "Temporary property got destroyed";
+
+    prop1.set_range(mesh_.vertices(), 0);
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+
+    auto prop3 = OpenMesh::VProp<int>(mesh_, "ids");
+    EXPECT_EQ(prop3[OpenMesh::VertexHandle(0)], -13) << "property with name 'ids' was not correctly changed";
+  }
+
+  // named to unnamed
+  {
+    auto prop1 = OpenMesh::VProp<int>(mesh_, "ids2");
+    auto prop2 = OpenMesh::VProp<int>(mesh_);
+    prop2.set_range(mesh_.vertices(), 0);
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
+
+    for (auto vh : mesh_.vertices())
+      prop1[vh] = vh.idx()*2-13;
+
+    auto t_start = std::chrono::high_resolution_clock::now();
+    prop2 = prop1;
+    auto t_end = std::chrono::high_resolution_clock::now();
+    std::cout << "copying property named to temporary took  " << std::chrono::duration_cast<std::chrono::milliseconds>(t_end-t_start).count() << "ms" << std::endl;
+
+    prop1.set_range(mesh_.vertices(), 0);
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+
+  }
+
+  // named to named (different names)
+  {
+    auto prop1 = OpenMesh::VProp<int>(mesh_, "ids3");
+    auto prop2 = OpenMesh::VProp<int>(mesh_, "ids4");
+    prop2.set_range(mesh_.vertices(), 0);
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
+
+    for (auto vh : mesh_.vertices())
+      prop1[vh] = vh.idx()*2-13;
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
+
+    auto t_start = std::chrono::high_resolution_clock::now();
+    prop2 = prop1;
+    auto t_end = std::chrono::high_resolution_clock::now();
+    std::cout << "copying property named to named with different name took  " << std::chrono::duration_cast<std::chrono::milliseconds>(t_end-t_start).count() << "ms" << std::endl;
+
+    prop1.set_range(mesh_.vertices(), 0);
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+  }
+
+  // named to named (same names)
+  {
+    auto prop1 = OpenMesh::VProp<int>(mesh_, "ids5");
+    auto prop2 = OpenMesh::VProp<int>(mesh_, "ids5");
+
+    for (auto vh : mesh_.vertices())
+      prop1[vh] = vh.idx()*2-13;
+
+    EXPECT_EQ(prop1[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+
+    auto t_start = std::chrono::high_resolution_clock::now();
+    prop2 = prop1; // this should be a no op
+    auto t_end = std::chrono::high_resolution_clock::now();
+    std::cout << "copying property named to named with same name took " << std::chrono::duration_cast<std::chrono::milliseconds>(t_end-t_start).count() << "ms" << std::endl;
+
+    EXPECT_EQ(prop1[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+
+    prop1.set_range(mesh_.vertices(), 42);
+
+    EXPECT_EQ(prop1[OpenMesh::VertexHandle(0)], 42) << "Property not copied correctly";
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 42) << "Property not copied correctly";
+
+    auto prop3 = OpenMesh::VProp<int>(mesh_, "ids5");
+    EXPECT_EQ(prop3[OpenMesh::VertexHandle(0)], 42) << "Property not copied correctly";
+  }
+
+  {
+    auto prop1 = OpenMesh::MProp<int>(mesh_);
+    *prop1 = 43;
+    auto prop2 = prop1;
+
+    prop2 = prop1;
+
+    prop2 = std::move(prop1);
+  }
+}
+
+
+TEST_F(OpenMeshPropertyManager, property_moving_same_mesh) {
+
+  for (int i = 0; i < 1000000; ++i)
+    mesh_.add_vertex(Mesh::Point());
+
+  // unnamed to unnamed
+  {
+    auto prop1 = OpenMesh::VProp<int>(mesh_);
+    auto prop2 = OpenMesh::VProp<int>(mesh_);
+    prop2.set_range(mesh_.vertices(), 0);
+
+    for (auto vh : mesh_.vertices())
+      prop1[vh] = vh.idx()*2-13;
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
+
+    auto t_start = std::chrono::high_resolution_clock::now();
+    prop2 = std::move(prop1); // this should be cheap
+    auto t_end = std::chrono::high_resolution_clock::now();
+    std::cout << "moving property temporary to temporary took  " << std::chrono::duration_cast<std::chrono::milliseconds>(t_end-t_start).count() << "ms" << std::endl;
+
+    EXPECT_FALSE(prop1.isValid()) << "prop1 not invalidated after moving";
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+  }
+
+  // unnamed to named
+  {
+    auto prop1 = OpenMesh::VProp<int>(mesh_);
+    auto prop2 = OpenMesh::VProp<int>(mesh_, "ids");
+    prop2.set_range(mesh_.vertices(), 0);
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
+
+    for (auto vh : mesh_.vertices())
+      prop1[vh] = vh.idx()*2-13;
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
+
+    auto t_start = std::chrono::high_resolution_clock::now();
+    prop2 = std::move(prop1);
+    auto t_end = std::chrono::high_resolution_clock::now();
+    std::cout << "moving property temporary to named took  " << std::chrono::duration_cast<std::chrono::milliseconds>(t_end-t_start).count() << "ms" << std::endl;
+
+    EXPECT_FALSE(prop1.isValid()) << "prop1 not invalidated after moving";
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+
+    auto prop3 = OpenMesh::VProp<int>(mesh_, "ids");
+    EXPECT_EQ(prop3[OpenMesh::VertexHandle(0)], -13) << "property with name 'ids' was not correctly changed";
+  }
+
+  // named to unnamed
+  {
+    auto prop1 = OpenMesh::VProp<int>(mesh_, "ids2");
+    auto prop2 = OpenMesh::VProp<int>(mesh_);
+    prop2.set_range(mesh_.vertices(), 0);
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
+
+    for (auto vh : mesh_.vertices())
+      prop1[vh] = vh.idx()*2-13;
+
+    auto t_start = std::chrono::high_resolution_clock::now();
+    prop2 = std::move(prop1); // moving named properties will not invalidate the property and will copy the data
+    auto t_end = std::chrono::high_resolution_clock::now();
+    std::cout << "moving property named to temporary took  " << std::chrono::duration_cast<std::chrono::milliseconds>(t_end-t_start).count() << "ms" << std::endl;
+
+    EXPECT_TRUE(prop1.isValid()) << "named prop1 should not be invalidated by moving";
+
+    prop1.set_range(mesh_.vertices(), 0);
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+
+  }
+
+  // named to named (different names)
+  {
+    auto prop1 = OpenMesh::VProp<int>(mesh_, "ids3");
+    auto prop2 = OpenMesh::VProp<int>(mesh_, "ids4");
+    prop2.set_range(mesh_.vertices(), 0);
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
+
+    for (auto vh : mesh_.vertices())
+      prop1[vh] = vh.idx()*2-13;
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
+
+    auto t_start = std::chrono::high_resolution_clock::now();
+    prop2 = std::move(prop1); // moving named properties will not invalidate the property and will copy the data
+    auto t_end = std::chrono::high_resolution_clock::now();
+    std::cout << "moving property named to named with different name took  " << std::chrono::duration_cast<std::chrono::milliseconds>(t_end-t_start).count() << "ms" << std::endl;
+
+    EXPECT_TRUE(prop1.isValid()) << "named prop1 should not be invalidated by moving";
+
+    prop1.set_range(mesh_.vertices(), 0);
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+  }
+
+  // named to named (same names)
+  {
+    auto prop1 = OpenMesh::VProp<int>(mesh_, "ids5");
+    auto prop2 = OpenMesh::VProp<int>(mesh_, "ids5");
+
+    for (auto vh : mesh_.vertices())
+      prop1[vh] = vh.idx()*2-13;
+
+    EXPECT_EQ(prop1[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+
+    auto t_start = std::chrono::high_resolution_clock::now();
+    prop2 = std::move(prop1); // this should be a no op
+    auto t_end = std::chrono::high_resolution_clock::now();
+    std::cout << "moving property named to named with same name took  " << std::chrono::duration_cast<std::chrono::milliseconds>(t_end-t_start).count() << "ms" << std::endl;
+
+    EXPECT_TRUE(prop1.isValid()) << "named prop1 should not be invalidated by moving";
+
+    EXPECT_EQ(prop1[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+
+    prop1.set_range(mesh_.vertices(), 0);
+
+    EXPECT_EQ(prop1[OpenMesh::VertexHandle(0)], 0) << "Property not copied correctly";
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not copied correctly";
+
+    auto prop3 = OpenMesh::VProp<int>(mesh_, "ids5");
+    EXPECT_EQ(prop3[OpenMesh::VertexHandle(0)], 0) << "Property not copied correctly";
+  }
+}
+
+
+
+TEST_F(OpenMeshPropertyManager, property_copying_different_mesh) {
+
+  for (int i = 0; i < 1000000; ++i)
+    mesh_.add_vertex(Mesh::Point());
+
+  auto copy = mesh_;
+  for (int i = 0; i < 10; ++i)
+    copy.add_vertex(Mesh::Point());
+
+  // unnamed to unnamed
+  {
+    auto prop1 = OpenMesh::VProp<int>(3, mesh_);
+    auto prop2 = OpenMesh::VProp<int>(0, copy);
+    EXPECT_EQ(prop1[OpenMesh::VertexHandle(0)], 3) << "Property not initialized correctly";
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
+
+    for (auto vh : mesh_.vertices())
+      prop1[vh] = vh.idx()*2-13;
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
+
+    auto t_start = std::chrono::high_resolution_clock::now();
+    prop2 = prop1;
+    auto t_end = std::chrono::high_resolution_clock::now();
+    std::cout << "copying property temporary to temporary took " << std::chrono::duration_cast<std::chrono::milliseconds>(t_end-t_start).count() << "ms" << std::endl;
+
+    EXPECT_EQ(prop1[OpenMesh::VertexHandle(0)], -13) << "Temporary property got destroyed";
+
+    prop1.set_range(mesh_.vertices(), 0);
+
+    EXPECT_EQ(prop1[OpenMesh::VertexHandle(0)], 0) << "Property not copied correctly";
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+    EXPECT_NO_FATAL_FAILURE(prop2[OpenMesh::VertexHandle(static_cast<int>(copy.n_vertices())-1)]) << "Property not correctly resized";
+  }
+
+  // unnamed to named
+  {
+    auto prop1 = OpenMesh::VProp<int>(mesh_);
+    auto prop2 = OpenMesh::VProp<int>(0, copy, "ids");
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
+
+    for (auto vh : mesh_.vertices())
+      prop1[vh] = vh.idx()*2-13;
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
+
+    auto t_start = std::chrono::high_resolution_clock::now();
+    prop2 = prop1;
+    auto t_end = std::chrono::high_resolution_clock::now();
+    std::cout << "copying property temporary to named took  " << std::chrono::duration_cast<std::chrono::milliseconds>(t_end-t_start).count() << "ms" << std::endl;
+
+    EXPECT_EQ(prop1[OpenMesh::VertexHandle(0)], -13) << "Temporary property got destroyed";
+
+    prop1.set_range(mesh_.vertices(), 0);
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+
+    auto prop3 = OpenMesh::VProp<int>(copy, "ids");
+    EXPECT_EQ(prop3[OpenMesh::VertexHandle(0)], -13) << "property with name 'ids' was not correctly changed";
+  }
+
+  // named to unnamed
+  {
+    auto prop1 = OpenMesh::VProp<int>(mesh_, "ids2");
+    auto prop2 = OpenMesh::VProp<int>(copy);
+    prop2.set_range(mesh_.vertices(), 0);
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
+
+    for (auto vh : mesh_.vertices())
+      prop1[vh] = vh.idx()*2-13;
+
+    auto t_start = std::chrono::high_resolution_clock::now();
+    prop2 = prop1;
+    auto t_end = std::chrono::high_resolution_clock::now();
+    std::cout << "copying property named to temporary took  " << std::chrono::duration_cast<std::chrono::milliseconds>(t_end-t_start).count() << "ms" << std::endl;
+
+    prop1.set_range(mesh_.vertices(), 0);
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+
+  }
+
+  // named to named (different names)
+  {
+    auto prop1 = OpenMesh::VProp<int>(mesh_, "ids3");
+    auto prop2 = OpenMesh::VProp<int>(copy, "ids4");
+    prop2.set_range(mesh_.vertices(), 0);
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
+
+    for (auto vh : mesh_.vertices())
+      prop1[vh] = vh.idx()*2-13;
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
+
+    auto t_start = std::chrono::high_resolution_clock::now();
+    prop2 = prop1;
+    auto t_end = std::chrono::high_resolution_clock::now();
+    std::cout << "copying property named to named with different name took  " << std::chrono::duration_cast<std::chrono::milliseconds>(t_end-t_start).count() << "ms" << std::endl;
+
+    prop1.set_range(mesh_.vertices(), 0);
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+  }
+
+  // named to named (same names)
+  {
+    auto prop1 = OpenMesh::VProp<int>(mesh_, "ids5");
+    auto prop2 = OpenMesh::VProp<int>(copy, "ids5");
+
+    for (auto vh : mesh_.vertices())
+      prop1[vh] = vh.idx()*2-13;
+
+    EXPECT_EQ(prop1[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+
+    auto t_start = std::chrono::high_resolution_clock::now();
+    prop2 = prop1; // this should be a no op
+    auto t_end = std::chrono::high_resolution_clock::now();
+    std::cout << "copying property named to named with same name took " << std::chrono::duration_cast<std::chrono::milliseconds>(t_end-t_start).count() << "ms" << std::endl;
+
+    EXPECT_EQ(prop1[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+
+    prop1.set_range(mesh_.vertices(), 42);
+
+    EXPECT_EQ(prop1[OpenMesh::VertexHandle(0)], 42) << "Property not copied correctly";
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+
+    auto prop3 = OpenMesh::VProp<int>(mesh_, "ids5");
+    EXPECT_EQ(prop3[OpenMesh::VertexHandle(0)], 42) << "Property not copied correctly";
+    auto prop4 = OpenMesh::VProp<int>(copy, "ids5");
+    EXPECT_EQ(prop4[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+  }
+}
+
+
+TEST_F(OpenMeshPropertyManager, property_moving_different_mesh) {
+
+  for (int i = 0; i < 1000000; ++i)
+    mesh_.add_vertex(Mesh::Point());
+
+  auto copy = mesh_;
+  for (int i = 0; i < 10; ++i)
+    copy.add_vertex(Mesh::Point());
+
+  // unnamed to unnamed
+  {
+    auto prop1 = OpenMesh::VProp<int>(mesh_);
+    auto prop2 = OpenMesh::VProp<int>(copy);
+    prop2.set_range(mesh_.vertices(), 0);
+
+    for (auto vh : mesh_.vertices())
+      prop1[vh] = vh.idx()*2-13;
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
+
+    auto t_start = std::chrono::high_resolution_clock::now();
+    prop2 = std::move(prop1); // this should be cheap
+    auto t_end = std::chrono::high_resolution_clock::now();
+    std::cout << "moving property temporary to temporary took  " << std::chrono::duration_cast<std::chrono::milliseconds>(t_end-t_start).count() << "ms" << std::endl;
+
+    EXPECT_FALSE(prop1.isValid()) << "prop1 not invalidated after moving";
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+    EXPECT_NO_FATAL_FAILURE(prop2[OpenMesh::VertexHandle(static_cast<int>(copy.n_vertices())-1)]) << "Property not correctly resized";
+  }
+
+  // unnamed to named
+  {
+    auto prop1 = OpenMesh::VProp<int>(mesh_);
+    auto prop2 = OpenMesh::VProp<int>(copy, "ids");
+    prop2.set_range(mesh_.vertices(), 0);
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
+
+    for (auto vh : mesh_.vertices())
+      prop1[vh] = vh.idx()*2-13;
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
+
+    auto t_start = std::chrono::high_resolution_clock::now();
+    prop2 = std::move(prop1);
+    auto t_end = std::chrono::high_resolution_clock::now();
+    std::cout << "moving property temporary to named took  " << std::chrono::duration_cast<std::chrono::milliseconds>(t_end-t_start).count() << "ms" << std::endl;
+
+    EXPECT_FALSE(prop1.isValid()) << "prop1 not invalidated after moving";
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+
+    auto prop3 = OpenMesh::VProp<int>(copy, "ids");
+    EXPECT_EQ(prop3[OpenMesh::VertexHandle(0)], -13) << "property with name 'ids' was not correctly changed";
+  }
+
+  // named to unnamed
+  {
+    auto prop1 = OpenMesh::VProp<int>(mesh_, "ids2");
+    auto prop2 = OpenMesh::VProp<int>(copy);
+    prop2.set_range(mesh_.vertices(), 0);
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
+
+    for (auto vh : mesh_.vertices())
+      prop1[vh] = vh.idx()*2-13;
+
+    auto t_start = std::chrono::high_resolution_clock::now();
+    prop2 = std::move(prop1); // moving named properties will not invalidate the property and will copy the data
+    auto t_end = std::chrono::high_resolution_clock::now();
+    std::cout << "moving property named to temporary took  " << std::chrono::duration_cast<std::chrono::milliseconds>(t_end-t_start).count() << "ms" << std::endl;
+
+    EXPECT_TRUE(prop1.isValid()) << "named prop1 should not be invalidated by moving";
+
+    prop1.set_range(mesh_.vertices(), 0);
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+
+  }
+
+  // named to named (different names)
+  {
+    auto prop1 = OpenMesh::VProp<int>(mesh_, "ids3");
+    auto prop2 = OpenMesh::VProp<int>(copy, "ids4");
+    prop2.set_range(mesh_.vertices(), 0);
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
+
+    for (auto vh : mesh_.vertices())
+      prop1[vh] = vh.idx()*2-13;
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
+
+    auto t_start = std::chrono::high_resolution_clock::now();
+    prop2 = std::move(prop1); // moving named properties will not invalidate the property and will copy the data
+    auto t_end = std::chrono::high_resolution_clock::now();
+    std::cout << "moving property named to named with different name took  " << std::chrono::duration_cast<std::chrono::milliseconds>(t_end-t_start).count() << "ms" << std::endl;
+
+    EXPECT_TRUE(prop1.isValid()) << "named prop1 should not be invalidated by moving";
+
+    prop1.set_range(mesh_.vertices(), 0);
+
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+  }
+
+  // named to named (same names)
+  {
+    auto prop1 = OpenMesh::VProp<int>(mesh_, "ids5");
+    auto prop2 = OpenMesh::VProp<int>(copy, "ids5");
+
+    auto prop6 = OpenMesh::Prop<OpenMesh::VertexHandle, int>(mesh_);
+    prop6 = prop1;
+
+    for (auto vh : mesh_.vertices())
+      prop1[vh] = vh.idx()*2-13;
+
+    EXPECT_EQ(prop1[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+
+    auto t_start = std::chrono::high_resolution_clock::now();
+    prop2 = std::move(prop1); // should copy
+    auto t_end = std::chrono::high_resolution_clock::now();
+    std::cout << "moving property named to named with same name took  " << std::chrono::duration_cast<std::chrono::milliseconds>(t_end-t_start).count() << "ms" << std::endl;
+
+    EXPECT_TRUE(prop1.isValid()) << "named prop1 should not be invalidated by moving";
+
+    EXPECT_EQ(prop1[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+
+    prop1.set_range(mesh_.vertices(), 42);
+
+    EXPECT_EQ(prop1[OpenMesh::VertexHandle(0)], 42) << "Property not copied correctly";
+    EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+
+    auto prop3 = OpenMesh::VProp<int>(mesh_, "ids5");
+    EXPECT_EQ(prop3[OpenMesh::VertexHandle(0)], 42) << "Property not copied correctly";
+    auto prop4 = OpenMesh::VProp<int>(copy, "ids5");
+    EXPECT_EQ(prop4[OpenMesh::VertexHandle(0)], -13) << "Property not copied correctly";
+  }
+}
+
+
 
 }
