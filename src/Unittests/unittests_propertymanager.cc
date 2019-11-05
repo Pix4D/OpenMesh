@@ -6,8 +6,10 @@
 
 //#define ENABLE_PROPERTY_TIMING_OUTPUT
 #ifdef ENABLE_PROPERTY_TIMING_OUTPUT
+#define N_VERTICES_TIMING 1000000
 #define TIMING_OUTPUT(X) X
 #else
+#define N_VERTICES_TIMING 10
 #define TIMING_OUTPUT(X)
 #endif
 
@@ -190,7 +192,7 @@ TEST_F(OpenMeshPropertyManager, cpp11_persistent_and_non_owning_properties) {
 
 
 TEST_F(OpenMeshPropertyManager, property_copy_construction) {
-  for (int i = 0; i < 1000000; ++i)
+  for (int i = 0; i < N_VERTICES_TIMING; ++i)
     mesh_.add_vertex(Mesh::Point());
 
   // unnamed
@@ -223,7 +225,7 @@ TEST_F(OpenMeshPropertyManager, property_copy_construction) {
 }
 
 TEST_F(OpenMeshPropertyManager, property_move_construction) {
-  for (int i = 0; i < 1000000; ++i)
+  for (int i = 0; i < N_VERTICES_TIMING; ++i)
     mesh_.add_vertex(Mesh::Point());
 
   // unnamed
@@ -268,7 +270,7 @@ TEST_F(OpenMeshPropertyManager, property_move_construction) {
 
 TEST_F(OpenMeshPropertyManager, property_copying_same_mesh) {
 
-  for (int i = 0; i < 1000000; ++i)
+  for (int i = 0; i < N_VERTICES_TIMING; ++i)
     mesh_.add_vertex(Mesh::Point());
 
   // unnamed to unnamed
@@ -407,7 +409,7 @@ TEST_F(OpenMeshPropertyManager, property_copying_same_mesh) {
 
 TEST_F(OpenMeshPropertyManager, property_moving_same_mesh) {
 
-  for (int i = 0; i < 1000000; ++i)
+  for (int i = 0; i < N_VERTICES_TIMING; ++i)
     mesh_.add_vertex(Mesh::Point());
 
   // unnamed to unnamed
@@ -538,7 +540,7 @@ TEST_F(OpenMeshPropertyManager, property_moving_same_mesh) {
 
 TEST_F(OpenMeshPropertyManager, property_copying_different_mesh) {
 
-  for (int i = 0; i < 1000000; ++i)
+  for (int i = 0; i < N_VERTICES_TIMING; ++i)
     mesh_.add_vertex(Mesh::Point());
 
   auto copy = mesh_;
@@ -673,7 +675,7 @@ TEST_F(OpenMeshPropertyManager, property_copying_different_mesh) {
 
 TEST_F(OpenMeshPropertyManager, property_moving_different_mesh) {
 
-  for (int i = 0; i < 1000000; ++i)
+  for (int i = 0; i < N_VERTICES_TIMING; ++i)
     mesh_.add_vertex(Mesh::Point());
 
   auto copy = mesh_;
@@ -852,7 +854,7 @@ OpenMesh::VProp<int> get_id_prop(const OpenMesh::PolyConnectivity& mesh)
 
 TEST_F(OpenMeshPropertyManager, return_property_from_function) {
 
-  for (int i = 0; i < 1000000; ++i)
+  for (int i = 0; i < N_VERTICES_TIMING; ++i)
     mesh_.add_vertex(Mesh::Point());
 
   auto t_start = std::chrono::high_resolution_clock::now();
