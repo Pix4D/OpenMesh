@@ -74,30 +74,19 @@ Below is the complete source code:
 
 ## Property Lifetime
 
-In the above example, we chose to use makeTemporaryProperty(). This causes the created property to automatically be removed from the mesh as soon as we leave the scope of the associated handle variable \c cog.
+In the above example, we chose to use VProp without a name. This causes the created property to automatically be removed from the mesh as soon as we leave the scope of the associated handle variable \c cog.
 
-If, instead, a property is desired to survive its local scope, it should be created with using getOrMakeProperty(). In that case, the property must be given a name that can later be used to retrieve the property. For example:
+If, instead, a property is desired to survive its local scope, it should be created with a name. For example:
 
 \code
-    auto face_area = OpenMesh::makeTemporaryProperty<OpenMesh::FaceHandle, double>(mesh, "face_area");
+    auto face_area = OpenMesh::FProp<double>(mesh, "face_area");
 \endcode
 
-At a later time, we can use the getProperty() function to obtain a handle to a property that was previously created by refering to its name:
+At a later time, we can access the same property by using the same name. If we want to make sure, that we access a property that has already been created earler, we can use hasProperty() to test whether a mesh has the desired property:
 \code
-    try {
-        auto face_area = OpenMesh::getProperty<OpenMesh::FaceHandle, double>(mesh, "face_area");
-        // Use the face_area property.
-    }
-    catch (const std::runtime_error& e) {
-        // Property not found. Handle the error here.
-    }
-\endcode
-
-Using hasProperty(), we can test whether a mesh has a certain property:
-\code
-    if (OpenMesh::hasProperty<OpenMesh::EdgeHandle, bool>(mesh, "is_valley")) {
+    if (OpenMesh::hasProperty<OpenMesh::FaceHandle, double>(mesh, "face_area")) {
         // Property exists. Do something with it.
-        auto valley = OpenMesh::getProperty<OpenMesh::EdgeHandle, bool>(mesh, "is_valley");
+        auto valley = OpenMesh::FProp<bool>(mesh, "face_area");
     }
     else {
         // Property does not exist. Do something else.
@@ -108,9 +97,9 @@ Using hasProperty(), we can test whether a mesh has a certain property:
 
 ## Low-Level Property API
 
-The functions makeTemporaryProperty(), getOrMakeProperty(), and getProperty() are the convenient high-level interface for creating and accessing mesh properties.
+The property managers VProp, HProp, EProp, FProp and MProp are the convenient high-level interface for creating and accessing mesh properties.
 
-Beneath these convenience functions, there is also a low-level property interface where handle and property lifetime must be managed manually. This interface is accessed through a mesh's add_property(), remove_property(), and property() functions and several property handle classes (OpenMesh::VPropHandleT, OpenMesh::HPropHandleT, OpenMesh::EPropHandleT, OpenMesh::FPropHandleT, OpenMesh::MPropHandleT).
+Beneath these convenience functions, there is also a low-level property interface where handle and property lifetime must be managed manually. This interface is accessed through a mesh's add_property(), get_property(), remove_property(), and property() functions and several property handle classes (OpenMesh::VPropHandleT, OpenMesh::HPropHandleT, OpenMesh::EPropHandleT, OpenMesh::FPropHandleT, OpenMesh::MPropHandleT).
 
 ---
 

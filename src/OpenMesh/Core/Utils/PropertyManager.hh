@@ -184,15 +184,15 @@ class PropertyManager {
          *
          * Asks for a property with name propname and creates one if none exists. Lifetime is not managed.
          *
-         * @param initial_value If the proeprty is newly created, it will be initialized with intial_value.
+         * @param initial_value If the proeprty is newly created, it will be initialized with initial_value.
          *        If the property already existed, nothing is changes.
          * @param mesh The mesh on which to create the property.
          * @param propname The name of the property.
          */
-        PropertyManager(const Value& intial_value, PolyConnectivity& mesh, const char *propname) : mesh_(mesh), retain_(true), name_(propname) {
+        PropertyManager(const Value& initial_value, PolyConnectivity& mesh, const char *propname) : mesh_(mesh), retain_(true), name_(propname) {
             if (!mesh_.get_property_handle(prop_, propname)) {
               PropertyManager::mesh().add_property(prop_, propname);
-              set_range(mesh_.all_elements<Handle>(), intial_value);
+              set_range(mesh_.all_elements<Handle>(), initial_value);
             }
         }
 
@@ -212,12 +212,12 @@ class PropertyManager {
          *
          * Create an anonymous property. Lifetime is managed.
          *
-         * @param initial_value The property will be initialized with intial_value.
+         * @param initial_value The property will be initialized with initial_value.
          * @param mesh The mesh on which to create the property.
          */
-        PropertyManager(const Value& intial_value, const PolyConnectivity& mesh) : mesh_(mesh), retain_(false), name_("") {
+        PropertyManager(const Value& initial_value, const PolyConnectivity& mesh) : mesh_(mesh), retain_(false), name_("") {
             PropertyManager::mesh().add_property(prop_, name_);
-            set_range(mesh_.all_elements<Handle>(), intial_value);
+            set_range(mesh_.all_elements<Handle>(), initial_value);
         }
 
         /**
