@@ -545,7 +545,7 @@ struct MPropHandleT : public BasePropHandleT<T>
 {
   typedef T                       Value;
   typedef T                       value_type;
-  typedef void                    Handle;
+  typedef MeshHandle              Handle;
 
   explicit MPropHandleT(int _idx=-1) : BasePropHandleT<T>(_idx) {}
   explicit MPropHandleT(const BasePropHandleT<T>& _b) : BasePropHandleT<T>(_b) {}
