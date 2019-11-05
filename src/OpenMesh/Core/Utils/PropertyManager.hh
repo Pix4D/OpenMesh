@@ -288,11 +288,6 @@ class PropertyManager {
 
         MeshT& getMesh() const { return dynamic_cast<MeshT&>(mesh_); }
 
-#if (defined(_MSC_VER) && (_MSC_VER >= 1800)) || __cplusplus > 199711L || defined(__GXX_EXPERIMENTAL_CXX0X__)
-        /// Only for pre C++11 compatibility.
-
-        typedef PropertyManager<PROPTYPE> Proxy;
-
         /**
          * Move constructor. Transfers ownership (delete responsibility).
          */
@@ -392,79 +387,6 @@ class PropertyManager {
         PropertyManager move() {
             return std::move(*this);
         }
-
-#else
-        class Proxy {
-            private:
-                Proxy(PolyConnectivity *mesh_, PROPTYPE prop_, bool retain_, const std::string &name_) :
-                    mesh_(mesh_), prop_(prop_), retain_(retain_), name_(name_) {}
-                PolyConnectivity *mesh_;
-                PROPTYPE prop_;
-                bool retain_;
-                std::string name_;
-
-                friend class PropertyManager;
-        };
-
-        operator Proxy() {
-            Proxy p(mesh_, prop_, retain_, name_);
-            mesh_ = 0;
-            retain_ = true;
-            return p;
-        }
-
-        Proxy move() {
-            return (Proxy)*this;
-        }
-
-        PropertyManager(Proxy p) : mesh_(p.mesh_), prop_(p.prop_), retain_(p.retain_), name_(p.name_) {}
-
-        PropertyManager &operator=(Proxy p) {
-            PropertyManager(p).swap(*this);
-            return *this;
-        }
-
-        /**
-         * Create a property manager for the supplied property and mesh.
-         * If the property doesn't exist, it is created. In any case,
-         * lifecycle management is disabled.
-         *
-         * @see makePropertyManagerFromExistingOrNew
-         */
-        static Proxy createIfNotExists(PolyConnectivity &mesh, const char *propname) {
-            PROPTYPE dummy_prop;
-            PropertyManager pm(mesh, propname, mesh.get_property_handle(dummy_prop, propname));
-            pm.retain();
-            return (Proxy)pm;
-        }
-
-        /**
-         * Like createIfNotExists() with two parameters except, if the property
-         * doesn't exist, it is initialized with the supplied value over
-         * the supplied range after creation. If the property already exists,
-         * this method has the exact same effect as the two parameter version.
-         * Lifecycle management is disabled in any case.
-         *
-         * @see makePropertyManagerFromExistingOrNew
-         */
-        template<typename PROP_VALUE, typename ITERATOR_TYPE>
-        static Proxy createIfNotExists(PolyConnectivity &mesh, const char *propname,
-                const ITERATOR_TYPE &begin, const ITERATOR_TYPE &end,
-                const PROP_VALUE &init_value) {
-            const bool exists = propertyExists(mesh, propname);
-            PropertyManager pm(mesh, propname, exists);
-            pm.retain();
-            if (!exists)
-                pm.set_range(begin, end, init_value);
-            return (Proxy)pm;
-        }
-
-        Proxy duplicate(const char *clone_name) {
-            PropertyManager pm(*mesh_, clone_name, false);
-            pm.mesh_.property(pm.prop_) = mesh_.property(prop_);
-            return (Proxy)pm;
-        }
-#endif
 
         /**
          * Access the value of the encapsulated mesh property.
