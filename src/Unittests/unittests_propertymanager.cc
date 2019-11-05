@@ -266,8 +266,8 @@ TEST_F(OpenMeshPropertyManager, property_copying_same_mesh) {
 
   // unnamed to unnamed
   {
-    auto prop1 = OpenMesh::VProp<int>(mesh_, 3);
-    auto prop2 = OpenMesh::VProp<int>(mesh_, 0);
+    auto prop1 = OpenMesh::VProp<int>(3, mesh_);
+    auto prop2 = OpenMesh::VProp<int>(0, mesh_);
     EXPECT_EQ(prop1[OpenMesh::VertexHandle(0)], 3) << "Property not initialized correctly";
     EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
 
@@ -292,7 +292,7 @@ TEST_F(OpenMeshPropertyManager, property_copying_same_mesh) {
   // unnamed to named
   {
     auto prop1 = OpenMesh::VProp<int>(mesh_);
-    auto prop2 = OpenMesh::VProp<int>(mesh_, "ids", 0);
+    auto prop2 = OpenMesh::VProp<int>(0, mesh_, "ids");
     EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
 
     for (auto vh : mesh_.vertices())
@@ -384,6 +384,16 @@ TEST_F(OpenMeshPropertyManager, property_copying_same_mesh) {
 
     auto prop3 = OpenMesh::VProp<int>(mesh_, "ids5");
     EXPECT_EQ(prop3[OpenMesh::VertexHandle(0)], 42) << "Property not copied correctly";
+  }
+
+  {
+    auto prop1 = OpenMesh::MProp<int>(mesh_);
+    *prop1 = 43;
+    auto prop2 = prop1;
+
+    prop2 = prop1;
+
+    prop2 = std::move(prop1);
   }
 }
 
@@ -530,8 +540,8 @@ TEST_F(OpenMeshPropertyManager, property_copying_different_mesh) {
 
   // unnamed to unnamed
   {
-    auto prop1 = OpenMesh::VProp<int>(mesh_, 3);
-    auto prop2 = OpenMesh::VProp<int>(copy, 0);
+    auto prop1 = OpenMesh::VProp<int>(3, mesh_);
+    auto prop2 = OpenMesh::VProp<int>(0, copy);
     EXPECT_EQ(prop1[OpenMesh::VertexHandle(0)], 3) << "Property not initialized correctly";
     EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
 
@@ -557,7 +567,7 @@ TEST_F(OpenMeshPropertyManager, property_copying_different_mesh) {
   // unnamed to named
   {
     auto prop1 = OpenMesh::VProp<int>(mesh_);
-    auto prop2 = OpenMesh::VProp<int>(copy, "ids", 0);
+    auto prop2 = OpenMesh::VProp<int>(0, copy, "ids");
     EXPECT_EQ(prop2[OpenMesh::VertexHandle(0)], 0) << "Property not initialized correctly";
 
     for (auto vh : mesh_.vertices())
@@ -761,6 +771,9 @@ TEST_F(OpenMeshPropertyManager, property_moving_different_mesh) {
   {
     auto prop1 = OpenMesh::VProp<int>(mesh_, "ids5");
     auto prop2 = OpenMesh::VProp<int>(copy, "ids5");
+
+    auto prop6 = OpenMesh::Prop<OpenMesh::VertexHandle, int>(mesh_);
+    prop6 = prop1;
 
     for (auto vh : mesh_.vertices())
       prop1[vh] = vh.idx()*2-13;

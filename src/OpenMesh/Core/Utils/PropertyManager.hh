@@ -140,7 +140,7 @@ class PropertyManager {
          * @see PropertyManager::getOrMakeProperty, PropertyManager::getProperty,
          * PropertyManager::makeTemporaryProperty
          */
-        OM_DEPRECATED("Use the constructor without parameter 'existing' instead. Check for existance with hasProperty")
+        OM_DEPRECATED("Use the constructor without parameter 'existing' instead. Check for existance with hasProperty") // As long as this overload exists, initial value must be first parameter due to ambiguity for properties of type bool
         PropertyManager(PolyConnectivity& mesh, const char *propname, bool existing) : mesh_(mesh), retain_(existing), name_(propname) {
             if (existing) {
                 if (!mesh_.get_property_handle(prop_, propname)) {
@@ -171,13 +171,13 @@ class PropertyManager {
          * Constructor.
          *
          * Asks for a property with name propname and creates one if none exists. Lifetime is not managed.
-         * If the property is created it is initialized with \p initial_value
          *
+         * @param initial_value If the proeprty is newly created, it will be initialized with intial_value.
+         *        If the property already existed, nothing is changes.
          * @param mesh The mesh on which to create the property.
-         * @param initial_value
          * @param propname The name of the property.
          */
-        PropertyManager(PolyConnectivity& mesh, const char *propname, const Value& intial_value) : mesh_(mesh), retain_(true), name_(propname) {
+        PropertyManager(const Value& intial_value, PolyConnectivity& mesh, const char *propname) : mesh_(mesh), retain_(true), name_(propname) {
             if (!mesh_.get_property_handle(prop_, propname)) {
               mesh_.add_property(prop_, propname);
               set_range(mesh_.all_elements<Handle>(), intial_value);
@@ -199,11 +199,11 @@ class PropertyManager {
          * Constructor.
          *
          * Create an anonymous property. Lifetime is managed.
-         * If the property is created it is initialized with \p initial_value
          *
+         * @param initial_value The property will be initialized with intial_value.
          * @param mesh The mesh on which to create the property.
          */
-        PropertyManager(PolyConnectivity& mesh, const Value& intial_value) : mesh_(mesh), retain_(false), name_("") {
+        PropertyManager(const Value& intial_value, PolyConnectivity& mesh) : mesh_(mesh), retain_(false), name_("") {
             mesh_.add_property(prop_, name_);
             set_range(mesh_.all_elements<Handle>(), intial_value);
         }
