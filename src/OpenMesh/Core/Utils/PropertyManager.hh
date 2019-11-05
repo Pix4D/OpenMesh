@@ -101,6 +101,12 @@ class PropertyManager {
           static void swap(PropertyManager<PROPTYPE, MeshT>& from, PropertyManager2& to) {
             std::swap(*to, *from);
           }
+          static const Value& access_property_const(PolyConnectivity& mesh, const PROPTYPE& prop_handle, const Handle&) {
+            return mesh.property(prop_handle);
+          }
+          static Value& access_property(PolyConnectivity& mesh, const PROPTYPE& prop_handle, const Handle&) {
+            return mesh.property(prop_handle);
+          }
         };
 
         // definition for other Mesh Properties
@@ -110,10 +116,16 @@ class PropertyManager {
             from.copy_to(from.mesh_.template all_elements<Handle>(), to, to.mesh_.template all_elements<Handle>());
           }
           static void swap(PropertyManager<PROPTYPE, MeshT>& lhs, PropertyManager2& rhs) {
-            std::swap(lhs.mesh_.property(lhs.prop_).data_vector(), rhs.mesh_.property(rhs.prop_).data_vector());
+            std::swap(lhs.mesh().property(lhs.prop_).data_vector(), rhs.mesh().property(rhs.prop_).data_vector());
             // resize the property to the correct size
-            lhs.mesh_.property(lhs.prop_).resize(lhs.mesh_.template n_elements<Handle>());
-            rhs.mesh_.property(rhs.prop_).resize(rhs.mesh_.template n_elements<Handle>());
+            lhs.mesh().property(lhs.prop_).resize(lhs.mesh().template n_elements<Handle>());
+            rhs.mesh().property(rhs.prop_).resize(rhs.mesh().template n_elements<Handle>());
+          }
+          static const Value& access_property_const(PolyConnectivity& mesh, const PROPTYPE& prop_handle, const Handle& handle) {
+            return mesh.property(prop_handle, handle);
+          }
+          static Value& access_property(PolyConnectivity& mesh, const PROPTYPE& prop_handle, const Handle& handle) {
+            return mesh.property(prop_handle, handle);
           }
         };
 
@@ -143,13 +155,13 @@ class PropertyManager {
         OM_DEPRECATED("Use the constructor without parameter 'existing' instead. Check for existance with hasProperty") // As long as this overload exists, initial value must be first parameter due to ambiguity for properties of type bool
         PropertyManager(PolyConnectivity& mesh, const char *propname, bool existing) : mesh_(mesh), retain_(existing), name_(propname) {
             if (existing) {
-                if (!mesh_.get_property_handle(prop_, propname)) {
+                if (!PropertyManager::mesh().get_property_handle(prop_, propname)) {
                     std::ostringstream oss;
                     oss << "Requested property handle \"" << propname << "\" does not exist.";
                     throw std::runtime_error(oss.str());
                 }
             } else {
-                mesh_.add_property(prop_, propname);
+                PropertyManager::mesh().add_property(prop_, propname);
             }
         }
 
@@ -162,8 +174,8 @@ class PropertyManager {
          * @param propname The name of the property.
          */
         PropertyManager(PolyConnectivity& mesh, const char *propname) : mesh_(mesh), retain_(true), name_(propname) {
-            if (!mesh_.get_property_handle(prop_, propname)) {
-              mesh_.add_property(prop_, propname);
+            if (!PropertyManager::mesh().get_property_handle(prop_, propname)) {
+              PropertyManager::mesh().add_property(prop_, propname);
             }
         }
 
@@ -179,7 +191,7 @@ class PropertyManager {
          */
         PropertyManager(const Value& intial_value, PolyConnectivity& mesh, const char *propname) : mesh_(mesh), retain_(true), name_(propname) {
             if (!mesh_.get_property_handle(prop_, propname)) {
-              mesh_.add_property(prop_, propname);
+              PropertyManager::mesh().add_property(prop_, propname);
               set_range(mesh_.all_elements<Handle>(), intial_value);
             }
         }
@@ -191,8 +203,8 @@ class PropertyManager {
          *
          * @param mesh The mesh on which to create the property.
          */
-        PropertyManager(PolyConnectivity& mesh) : mesh_(mesh), retain_(false), name_("") {
-            mesh_.add_property(prop_, name_);
+        PropertyManager(const PolyConnectivity& mesh) : mesh_(mesh), retain_(false), name_("") {
+            PropertyManager::mesh().add_property(prop_, name_);
         }
 
         /**
@@ -203,8 +215,8 @@ class PropertyManager {
          * @param initial_value The property will be initialized with intial_value.
          * @param mesh The mesh on which to create the property.
          */
-        PropertyManager(const Value& intial_value, PolyConnectivity& mesh) : mesh_(mesh), retain_(false), name_("") {
-            mesh_.add_property(prop_, name_);
+        PropertyManager(const Value& intial_value, const PolyConnectivity& mesh) : mesh_(mesh), retain_(false), name_("") {
+            PropertyManager::mesh().add_property(prop_, name_);
             set_range(mesh_.all_elements<Handle>(), intial_value);
         }
 
@@ -233,7 +245,7 @@ class PropertyManager {
           }
           else // unnamed property -> create a property manager refering to a new property and copy the contents
           {
-            mesh_.add_property(prop_, name_);
+            PropertyManager::mesh().add_property(prop_, name_);
             Storage::copy(rhs, *this);
           }
         }
@@ -282,9 +294,9 @@ class PropertyManager {
          *
          */
         template <typename MeshType >
-        MeshType& getMesh() const { return dynamic_cast<MeshType&>(mesh_); }
+        const MeshType& getMesh() const { return dynamic_cast<MeshType&>(mesh_); }
 
-        MeshT& getMesh() const { return dynamic_cast<MeshT&>(mesh_); }
+        const MeshT& getMesh() const { return dynamic_cast<MeshT&>(mesh_); }
 
         /**
          * Move constructor. Transfers ownership (delete responsibility).
@@ -317,7 +329,7 @@ class PropertyManager {
                 // swap the data stored in the properties
                 Storage::swap(rhs, *this);
                 // remove the property from rhs
-                rhs.mesh_.remove_property(rhs.prop_);
+                rhs.mesh().remove_property(rhs.prop_);
                 // invalidate prop_
                 rhs.prop_.invalidate();
               }
@@ -373,18 +385,6 @@ class PropertyManager {
                     mesh, propname, range.begin(), range.end(), init_value);
         }
 
-        PropertyManager duplicate(const char *clone_name) {
-            PropertyManager pm(mesh_, clone_name, false);
-            pm.mesh_.property(pm.prop_) = mesh_.property(prop_);
-            return pm;
-        }
-
-        /**
-         * Included for backwards compatibility with non-C++11 version.
-         */
-        PropertyManager move() {
-            return std::move(*this);
-        }
 
         /**
          * Access the value of the encapsulated mesh property.
@@ -399,7 +399,7 @@ class PropertyManager {
          * @note This method is only used for mesh properties.
          */
         typename PROPTYPE::reference& operator*() {
-            return mesh_.mproperty(prop_)[0];
+            return mesh().mproperty(prop_)[0];
         }
 
         /**
@@ -415,7 +415,7 @@ class PropertyManager {
          * @note This method is only used for mesh properties.
          */
         typename PROPTYPE::const_reference& operator*() const {
-            return mesh_.mproperty(prop_)[0];
+            return mesh().mproperty(prop_)[0];
         }
 
         /**
@@ -425,9 +425,8 @@ class PropertyManager {
          *
          * @param handle A handle of the appropriate handle type. (I.e. \p VertexHandle for \p VPropHandleT, etc.)
          */
-        template<typename HandleType>
-        inline typename PROPTYPE::reference operator[] (const HandleType &handle) {
-            return mesh_.property(prop_, handle);
+        inline typename PROPTYPE::reference operator[] (Handle handle) {
+            return mesh().property(prop_, handle);
         }
 
         /**
@@ -437,9 +436,8 @@ class PropertyManager {
          *
          * @param handle A handle of the appropriate handle type. (I.e. \p VertexHandle for \p VPropHandleT, etc.)
          */
-        template<typename HandleType>
-        inline typename PROPTYPE::const_reference operator[] (const HandleType &handle) const {
-            return mesh_.property(prop_, handle);
+        inline typename PROPTYPE::const_reference operator[] (const Handle& handle) const {
+            return mesh().property(prop_, handle);
         }
 
         /**
@@ -449,9 +447,9 @@ class PropertyManager {
          *
          * @param handle A handle of the appropriate handle type. (I.e. \p VertexHandle for \p VPropHandleT, etc.)
          */
-        template<typename HandleType>
-        inline typename PROPTYPE::reference operator() (const HandleType &handle) {
-            return mesh_.property(prop_, handle);
+        inline typename PROPTYPE::reference operator() (const Handle& handle = Handle()) {
+//            return mesh().property(prop_, handle);
+            return Storage::access_property(mesh(), prop_, handle);
         }
 
         /**
@@ -461,9 +459,9 @@ class PropertyManager {
          *
          * @param handle A handle of the appropriate handle type. (I.e. \p VertexHandle for \p VPropHandleT, etc.)
          */
-        template<typename HandleType>
-        inline typename PROPTYPE::const_reference operator() (const HandleType &handle) const {
-            return mesh_.property(prop_, handle);
+        inline typename PROPTYPE::const_reference operator() (const Handle& handle = Handle()) const {
+//            return mesh().property(prop_, handle);
+            return Storage::access_property_const(mesh(), prop_, handle);
         }
 
         /**
@@ -571,14 +569,48 @@ class PropertyManager {
     private:
         void deleteProperty() {
             if (!retain_ && prop_.is_valid())
-                mesh_.remove_property(prop_);
+                mesh().remove_property(prop_);
+        }
+
+        PolyConnectivity& mesh() const
+        {
+          return const_cast<PolyConnectivity&>(mesh_);
         }
 
     private:
-        PolyConnectivity& mesh_;
+        const PolyConnectivity& mesh_;
         PROPTYPE prop_;
         bool retain_;
         std::string name_;
+};
+
+template <typename PropertyT>
+class ConstPropertyViewer
+{
+public:
+  using Value      = typename PropertyT::Value;
+  using value_type = typename PropertyT::value_type;
+  using Handle     = typename PropertyT::Handle;
+
+  ConstPropertyViewer(const PolyConnectivity& mesh, PropertyT property_handle)
+    :
+      mesh_(mesh),
+      prop_(property_handle)
+  {}
+
+  inline const typename PropertyT::const_reference operator() (const Handle& handle)
+  {
+    return mesh_.property(prop_, handle);
+  }
+
+  inline const typename PropertyT::const_reference operator[] (const Handle& handle)
+  {
+    return mesh_.property(prop_, handle);
+  }
+
+private:
+  const PolyConnectivity& mesh_;
+  PropertyT prop_;
 };
 
 /** @relates PropertyManager
@@ -850,6 +882,16 @@ template<typename MeshT>
 PropertyManager<OpenMesh::VPropHandleT<typename MeshT::Point>>
 getPointsProperty(MeshT &mesh) {
   return PropertyManager<OpenMesh::VPropHandleT<typename MeshT::Point>>(mesh, mesh.points_property_handle());
+}
+
+/** @relates PropertyManager
+ * Returns a convenience wrapper around the points property of a mesh that only allows const access.
+ */
+template<typename MeshT>
+ConstPropertyViewer<OpenMesh::VPropHandleT<typename MeshT::Point>>
+getPointsProperty(const MeshT &mesh) {
+  using PropType = OpenMesh::VPropHandleT<typename MeshT::Point>;
+  return ConstPropertyViewer<PropType>(mesh, mesh.points_property_handle());
 }
 
 template <typename HandleT, typename T>
