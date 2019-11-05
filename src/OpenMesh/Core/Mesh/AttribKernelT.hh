@@ -256,7 +256,7 @@ public:
   void set_point(VertexHandle _vh, const Point& _p)
   { this->property(points_, _vh) = _p; }
 
-  PointsPropertyHandle& points_property_handle()
+  const PointsPropertyHandle& points_property_handle() const
   { return points_; }
 
 
