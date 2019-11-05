@@ -118,21 +118,39 @@ TEST_F(OpenMeshReadWriteOM, LoadSimpleOMWithVertexColors) {
     EXPECT_EQ(18u , mesh_.n_edges())    << "The number of loaded edges is not correct!";
     EXPECT_EQ(12u , mesh_.n_faces())    << "The number of loaded faces is not correct!";
 
-    EXPECT_EQ(255,   mesh_.color(mesh_.vertex_handle(0))[0] ) << "Wrong vertex color at vertex 0 component 0";
+#ifdef TEST_DOUBLE_TRAITS
+    EXPECT_FLOAT_EQ(1.0, mesh_.color(mesh_.vertex_handle(0))[0] ) << "Wrong vertex color at vertex 0 component 0";
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(0))[1] ) << "Wrong vertex color at vertex 0 component 1";
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(0))[2] ) << "Wrong vertex color at vertex 0 component 2";
+
+    EXPECT_FLOAT_EQ(1.0, mesh_.color(mesh_.vertex_handle(3))[0] ) << "Wrong vertex color at vertex 3 component 0";
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(3))[1] ) << "Wrong vertex color at vertex 3 component 1";
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(3))[2] ) << "Wrong vertex color at vertex 3 component 2";
+
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(4))[0] ) << "Wrong vertex color at vertex 4 component 0";
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(4))[1] ) << "Wrong vertex color at vertex 4 component 1";
+    EXPECT_FLOAT_EQ(1.0, mesh_.color(mesh_.vertex_handle(4))[2] ) << "Wrong vertex color at vertex 4 component 2";
+
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(7))[0] ) << "Wrong vertex color at vertex 7 component 0";
+    EXPECT_FLOAT_EQ(0.0, mesh_.color(mesh_.vertex_handle(7))[1] ) << "Wrong vertex color at vertex 7 component 1";
+    EXPECT_FLOAT_EQ(1.0, mesh_.color(mesh_.vertex_handle(7))[2] ) << "Wrong vertex color at vertex 7 component 2";
+#else
+    EXPECT_EQ(255, mesh_.color(mesh_.vertex_handle(0))[0] ) << "Wrong vertex color at vertex 0 component 0";
     EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(0))[1] ) << "Wrong vertex color at vertex 0 component 1";
     EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(0))[2] ) << "Wrong vertex color at vertex 0 component 2";
 
-    EXPECT_EQ(255,   mesh_.color(mesh_.vertex_handle(3))[0] ) << "Wrong vertex color at vertex 3 component 0";
-    EXPECT_EQ(0, mesh_.color(mesh_.vertex_handle(3))[1] ) << "Wrong vertex color at vertex 3 component 1";
-    EXPECT_EQ(0, mesh_.color(mesh_.vertex_handle(3))[2] ) << "Wrong vertex color at vertex 3 component 2";
+    EXPECT_EQ(255, mesh_.color(mesh_.vertex_handle(3))[0] ) << "Wrong vertex color at vertex 3 component 0";
+    EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(3))[1] ) << "Wrong vertex color at vertex 3 component 1";
+    EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(3))[2] ) << "Wrong vertex color at vertex 3 component 2";
 
-    EXPECT_EQ(0, mesh_.color(mesh_.vertex_handle(4))[0] ) << "Wrong vertex color at vertex 4 component 0";
+    EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(4))[0] ) << "Wrong vertex color at vertex 4 component 0";
     EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(4))[1] ) << "Wrong vertex color at vertex 4 component 1";
-    EXPECT_EQ(255,   mesh_.color(mesh_.vertex_handle(4))[2] ) << "Wrong vertex color at vertex 4 component 2";
+    EXPECT_EQ(255, mesh_.color(mesh_.vertex_handle(4))[2] ) << "Wrong vertex color at vertex 4 component 2";
 
-    EXPECT_EQ(0, mesh_.color(mesh_.vertex_handle(7))[0] ) << "Wrong vertex color at vertex 7 component 0";
-    EXPECT_EQ(0, mesh_.color(mesh_.vertex_handle(7))[1] ) << "Wrong vertex color at vertex 7 component 1";
+    EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(7))[0] ) << "Wrong vertex color at vertex 7 component 0";
+    EXPECT_EQ(0,   mesh_.color(mesh_.vertex_handle(7))[1] ) << "Wrong vertex color at vertex 7 component 1";
     EXPECT_EQ(255, mesh_.color(mesh_.vertex_handle(7))[2] ) << "Wrong vertex color at vertex 7 component 2";
+#endif
 
     EXPECT_FALSE(options.vertex_has_normal()) << "Wrong user options are returned!";
     EXPECT_FALSE(options.vertex_has_texcoord()) << "Wrong user options are returned!";
@@ -203,9 +221,15 @@ TEST_F(OpenMeshReadWriteOM, WriteTriangleVertexIntegerColor) {
   Mesh::VertexHandle v3 = mesh.add_vertex(Mesh::Point(0.0,0.0,1.0));
   mesh.add_face(v1,v2,v3);
 
+#ifdef TEST_DOUBLE_TRAITS
+  Mesh::Color c1 = Mesh::Color(0,0,123/255.0,1.0),
+      c2 = Mesh::Color(21/255.0,0,0,1.0),
+      c3 = Mesh::Color(0,222/255.0,0,1.0);
+#else
   Mesh::Color c1 = Mesh::Color(0,0,123),
       c2 = Mesh::Color(21,0,0),
       c3 = Mesh::Color(0,222,0);
+#endif
 
   mesh.set_color(v1,c1);
   mesh.set_color(v2,c2);
@@ -234,9 +258,20 @@ TEST_F(OpenMeshReadWriteOM, WriteTriangleVertexIntegerColor) {
   EXPECT_EQ(Mesh::Point(0.0,1.0,0.0) , cmpMesh.point(v2)) << "Wrong coordinates at vertex 1";
   EXPECT_EQ(Mesh::Point(0.0,0.0,1.0) , cmpMesh.point(v3)) << "Wrong coordinates at vertex 2";
 
+#ifdef TEST_DOUBLE_TRAITS
+  // OM file format does not support writing colors as float. They are stored as unsigned character.
+  // Thus, the values will not be exactly equal.
+  for (size_t i = 0; i < c1.size(); ++i)
+  {
+    EXPECT_FLOAT_EQ(c1[i] , cmpMesh.color(v1)[i]) << "Wrong colors at coordinate " << i << " of vertex 0";
+    EXPECT_FLOAT_EQ(c2[i] , cmpMesh.color(v2)[i]) << "Wrong colors at coordinate " << i << " of vertex 1";
+    EXPECT_FLOAT_EQ(c3[i] , cmpMesh.color(v3)[i]) << "Wrong colors at coordinate " << i << " of vertex 2";
+  }
+#else
   EXPECT_EQ(c1 , cmpMesh.color(v1)) << "Wrong colors at vertex 0";
   EXPECT_EQ(c2 , cmpMesh.color(v2)) << "Wrong colors at vertex 1";
   EXPECT_EQ(c3 , cmpMesh.color(v3)) << "Wrong colors at vertex 2";
+#endif
 
   //clean up
   cmpMesh.release_vertex_colors();
@@ -570,7 +605,15 @@ TEST_F(OpenMeshReadWriteOM, WriteSplitTriangleEdgeIntProperty) {
     EXPECT_EQ(Mesh::Point(1.0,0.0,0.0) , cmpMesh.point(v1)) << "Wrong coordinates at vertex 0";
     EXPECT_EQ(Mesh::Point(0.0,1.0,0.0) , cmpMesh.point(v2)) << "Wrong coordinates at vertex 1";
     EXPECT_EQ(Mesh::Point(0.0,0.0,1.0) , cmpMesh.point(v3)) << "Wrong coordinates at vertex 2";
-    EXPECT_EQ(c , cmpMesh.point(v4)) << "Wrong coordinates at vertex 3";
+
+#ifdef TEST_DOUBLE_TRAITS
+    // TODO: should it be possible to read and write double precision exactly?
+    EXPECT_FLOAT_EQ(c[0] , cmpMesh.point(v4)[0]) << "Wrong coordinate 0 at vertex 4";
+    EXPECT_FLOAT_EQ(c[1] , cmpMesh.point(v4)[1]) << "Wrong coordinate 1 at vertex 4";
+    EXPECT_FLOAT_EQ(c[2] , cmpMesh.point(v4)[2]) << "Wrong coordinate 2 at vertex 4";
+#else
+    EXPECT_EQ(c , cmpMesh.point(v4)) << "Wrong coordinates at vertex 4";
+#endif
 
     EXPECT_EQ(value1 , cmpMesh.property(prop,e1)) << "Wrong property at edge 0";
     EXPECT_EQ(value2 , cmpMesh.property(prop,e2)) << "Wrong property at edge 1";
@@ -746,7 +789,15 @@ TEST_F(OpenMeshReadWriteOM, WriteSplitTriangleStatusProperties) {
     EXPECT_EQ(Mesh::Point(1.0,0.0,0.0) , cmpMesh.point(v0)) << "Wrong coordinates at vertex 0";
     EXPECT_EQ(Mesh::Point(0.0,1.0,0.0) , cmpMesh.point(v1)) << "Wrong coordinates at vertex 1";
     EXPECT_EQ(Mesh::Point(0.0,0.0,1.0) , cmpMesh.point(v2)) << "Wrong coordinates at vertex 2";
+
+#ifdef TEST_DOUBLE_TRAITS
+    // TODO: should it be possible to read and write double precision exactly?
+    EXPECT_FLOAT_EQ(c[0] , cmpMesh.point(v3)[0]) << "Wrong coordinate 0 at vertex 3";
+    EXPECT_FLOAT_EQ(c[1] , cmpMesh.point(v3)[1]) << "Wrong coordinate 1 at vertex 3";
+    EXPECT_FLOAT_EQ(c[2] , cmpMesh.point(v3)[2]) << "Wrong coordinate 2 at vertex 3";
+#else
     EXPECT_EQ(c , cmpMesh.point(v3)) << "Wrong coordinates at vertex 3";
+#endif
 
     for (auto vh : cmpMesh.all_vertices())
     {
