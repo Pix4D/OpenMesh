@@ -1,6 +1,8 @@
-/** \page tutorial_09 Using custom properties
+/** \page tutorial_09 Using custom properties (old style)
 
-This small code example shows how to attach andaccess additional properties on a mesh.
+This small code example shows how to attach and access additional properties on a mesh.
+
+<em>Note that this is an old style of using properties. Nowadays you should use the OpenMesh::PropertyManager instead.</em>
 
 When you want to add an additional properties you have to attach it to a primitive of the
 mesh. You can attach to verticies, halfedges, edges, faces or to the mesh itself. Use the

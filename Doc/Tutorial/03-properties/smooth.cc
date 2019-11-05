@@ -1,11 +1,11 @@
 #include <OpenMesh/Core/IO/MeshIO.hh>
-#include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>
+#include <OpenMesh/Core/Mesh/DefaultTriMesh.hh>
 #include <OpenMesh/Core/Utils/PropertyManager.hh>
 
 #include <iostream>
 #include <vector>
 
-using MyMesh = OpenMesh::TriMesh_ArrayKernelT<>;
+using MyMesh = OpenMesh::TriMesh;
 
 int main(int argc, char** argv)
 {
@@ -27,7 +27,7 @@ int main(int argc, char** argv)
 
     {
       // Add a vertex property storing the computed centers of gravity
-      auto cog = OpenMesh::makeTemporaryProperty<OpenMesh::VertexHandle, MyMesh::Point>(mesh);
+      auto cog = OpenMesh::VProp<MyMesh::Point>(mesh);
 
       // Smooth the mesh several times
       for (int i = 0; i < iterations; ++i) {
