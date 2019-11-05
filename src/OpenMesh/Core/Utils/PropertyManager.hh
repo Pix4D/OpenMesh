@@ -252,10 +252,8 @@ class PropertyManager {
         }
 
         void swap(PropertyManager &rhs) {
-            std::swap(mesh_, rhs.mesh_);
-            std::swap(prop_, rhs.prop_);
-            std::swap(retain_, rhs.retain_);
-            std::swap(name_, rhs.name_);
+          // swap the data stored in the properties
+          Storage::swap(rhs, *this);
         }
 
         static bool propertyExists(PolyConnectivity &mesh, const char *propname) {
@@ -316,7 +314,7 @@ class PropertyManager {
               }
               else
               {
-                // switch the data stored in the properties
+                // swap the data stored in the properties
                 Storage::swap(rhs, *this);
                 // remove the property from rhs
                 rhs.mesh_.remove_property(rhs.prop_);
