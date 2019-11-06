@@ -70,7 +70,12 @@ struct SmartRangeT
 {
   // TODO: Someone with better c++ knowledge may improve the code below.
 
-
+  /** @brief Computes the sum of elements.
+   *
+   * Computes the sum of all elements in the range after applying the functor \p f.
+   *
+   *  @param f Functor that is applied to all elements before computing the sum
+   */
   template <typename Functor>
   auto sum(Functor&& f) -> decltype (f(std::declval<HandleT>())+f(std::declval<HandleT>()))
   {
@@ -86,6 +91,12 @@ struct SmartRangeT
     return sum;
   }
 
+  /** @brief Computes the average of elements.
+   *
+   * Computes the average of all elements in the range after applying the functor \p f.
+   *
+   *  @param f Functor that is applied to all elements before computing the average.
+   */
   template <typename Functor>
   auto avg(Functor&& f) -> decltype (1.0 * (f(std::declval<HandleT>())+f(std::declval<HandleT>())))
   {
@@ -105,6 +116,15 @@ struct SmartRangeT
     return (1.0 / n_elements) * sum;
   }
 
+  /** @brief Convert range to array.
+  *
+  * Converts the range of elements into an array of objects returned by functor \p f.
+  * The size of the array needs to be provided by the user. If the size is larger than the number of
+  * elements in the range, the remaining entries of the array will be uninitialized.
+  *
+  *  @param f Functor that is applied to all elements before putting them into the array. If no functor is provided
+  *           the array will contain the handles.
+  */
   template <int n, typename Functor = Identity>
   auto to_array(Functor&& f = {}) -> std::array<typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type, n>
   {
@@ -118,6 +138,13 @@ struct SmartRangeT
     return res;
   }
 
+  /** @brief Convert range to vector.
+  *
+  * Converts the range of elements into a vector of objects returned by functor \p f.
+  *
+  *  @param f Functor that is applied to all elements before putting them into the vector. If no functor is provided
+  *           the vector will contain the handles.
+  */
   template <typename Functor = Identity>
   auto to_vector(Functor&& f = {}) -> std::vector<typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type>
   {
@@ -128,7 +155,12 @@ struct SmartRangeT
     return res;
   }
 
-
+  /** @brief Compute minimum.
+  *
+  * Computes the minimum of all objects returned by functor \p f.
+  *
+  *  @param f Functor that is applied to all elements before computing minimum.
+  */
   template <typename Functor>
   auto min(Functor&& f) -> typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type
   {
@@ -148,6 +180,12 @@ struct SmartRangeT
     return res;
   }
 
+  /** @brief Compute maximum.
+  *
+  * Computes the maximum of all objects returned by functor \p f.
+  *
+  *  @param f Functor that is applied to all elements before computing maximum.
+  */
   template <typename Functor>
   auto max(Functor&& f) -> typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type
   {
@@ -167,6 +205,13 @@ struct SmartRangeT
     return res;
   }
 
+  /** @brief Computes minimum and maximum.
+  *
+  * Computes the minimum and maximum of all objects returned by functor \p f. Result is returned as std::pair
+  * containing minimum as first and maximum as second element.
+  *
+  *  @param f Functor that is applied to all elements before computing maximum.
+  */
   template <typename Functor>
   auto minmax(Functor&& f) -> std::pair<typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type,
                                         typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type>

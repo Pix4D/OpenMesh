@@ -446,14 +446,14 @@ TEST_F(OpenMeshTutorials, using_iterators_and_circulators) {
 TEST_F(OpenMeshTutorials, using_custom_properties) {
   MyMesh  mesh;
 
-  bool ok = OpenMesh::IO::read_mesh(mesh, "output.off");
-  EXPECT_TRUE(ok) << "Cannot read mesh from file 'output.off'";
+  bool ok = OpenMesh::IO::read_mesh(mesh, "cube_noisy.off");
+  EXPECT_TRUE(ok) << "Cannot read mesh from file 'cube_noisy.off'";
 
   const int iterations = 100;
 
   {
     // Add a vertex property storing the computed centers of gravity
-    auto cog = OpenMesh::makeTemporaryProperty<OpenMesh::VertexHandle, MyMesh::Point>(mesh);
+    auto cog = OpenMesh::VProp<MyMesh::Point>(mesh);
 
     // Smooth the mesh several times
     for (int i = 0; i < iterations; ++i) {
@@ -484,8 +484,8 @@ TEST_F(OpenMeshTutorials, using_custom_properties) {
 TEST_F(OpenMeshTutorials, using_STL_algorithms) {
   MyMeshWithTraits mesh;
 
-  bool ok = OpenMesh::IO::read_mesh(mesh, "output.off");
-  EXPECT_TRUE(ok) << "Cannot read mesh from file 'output.off'";
+  bool ok = OpenMesh::IO::read_mesh(mesh, "cube_noisy.off");
+  EXPECT_TRUE(ok) << "Cannot read mesh from file 'cube_noisy.off'";
 
   SmootherT<MyMeshWithTraits> smoother(mesh);
   smoother.smooth(100);
@@ -880,6 +880,46 @@ TEST_F(OpenMeshTutorials, collapsing_edges) {
     }
   }
   // Our mesh now looks like in the illustration above after the collapsing.
+}
+
+TEST_F(OpenMeshTutorials, using_smart_handles_and_smart_ranges) {
+  MyMesh  mesh;
+
+  bool ok = OpenMesh::IO::read_mesh(mesh, "cube_noisy.off");
+  EXPECT_TRUE(ok) << "Cannot read mesh from file 'cube_noisy.off'";
+
+  const int iterations = 100;
+
+  {
+    // Add a vertex property storing the laplace vector
+    auto laplace = OpenMesh::VProp<MyMesh::Point>(mesh);
+
+    // Add a vertex property storing the laplace of the laplace
+    auto bi_laplace = OpenMesh::VProp<MyMesh::Point>(mesh);
+
+    // Get a propertymanager of the points property of the mesh to use as functor
+    auto points = OpenMesh::getPointsProperty(mesh);
+
+    // Smooth the mesh several times
+    for (int i = 0; i < iterations; ++i) {
+      // Iterate over all vertices to compute laplace vector
+      for (const auto& vh : mesh.vertices())
+        laplace(vh) = vh.vertices().avg(points) - points(vh);
+
+      // Iterate over all vertices to compte update vectors as the negative of the laplace of the laplace damped by 0.5
+      for (const auto& vh : mesh.vertices())
+        bi_laplace(vh) =  (vh.vertices().avg(laplace) - laplace(vh));
+
+      // update points
+      for (const auto& vh : mesh.vertices())
+        points(vh) += -0.5 * bi_laplace(vh);
+    }
+  } // The laplace and update properties are removed is removed from the mesh at the end of this scope.
+
+  // write mesh
+  ok = OpenMesh::IO::write_mesh(mesh, "smoothed_smart_output.off");
+
+  EXPECT_TRUE(ok) << "Cannot write mesh to file 'smoothed_smart_output.off'";
 }
 
 }

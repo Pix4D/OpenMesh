@@ -226,6 +226,7 @@ class PropertyManager {
          * Create a wrapper around an existing property. Lifetime is not managed.
          *
          * @param mesh The mesh on which to create the property.
+         * @param property_handle Handle to an existing property that should be wrapped.
          */
         PropertyManager(PolyConnectivity& mesh, PROPTYPE property_handle) : mesh_(mesh), prop_(property_handle), retain_(true), name_() {
         }
