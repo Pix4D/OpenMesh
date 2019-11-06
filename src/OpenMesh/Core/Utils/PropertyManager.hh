@@ -818,11 +818,11 @@ PropertyManager<PROPTYPE> makePropertyManagerFromNew(PolyConnectivity &mesh, con
  * @throws std::runtime_error if no property with the name \p propname of
  * matching type exists.
  */
-template<typename PROPTYPE>
+template<typename PROPTYPE, typename MeshT = int>
 OM_DEPRECATED("Use getProperty instead.")
-PropertyManager<PROPTYPE> makePropertyManagerFromExisting(PolyConnectivity &mesh, const char *propname)
+PropertyManager<PROPTYPE, MeshT> makePropertyManagerFromExisting(PolyConnectivity &mesh, const char *propname)
 {
-    return PropertyManager<PROPTYPE>(mesh, propname, true);
+    return PropertyManager<PROPTYPE, MeshT>(mesh, propname, true);
 }
 
 /** @relates PropertyManager
@@ -833,11 +833,11 @@ PropertyManager<PROPTYPE> makePropertyManagerFromExisting(PolyConnectivity &mesh
  *
  * Intended for creating or accessing persistent properties.
  */
-template<typename PROPTYPE>
+template<typename PROPTYPE, typename MeshT = int>
 OM_DEPRECATED("Use getOrMakeProperty instead.")
-PropertyManager<PROPTYPE> makePropertyManagerFromExistingOrNew(PolyConnectivity &mesh, const char *propname)
+PropertyManager<PROPTYPE, MeshT> makePropertyManagerFromExistingOrNew(PolyConnectivity &mesh, const char *propname)
 {
-    return PropertyManager<PROPTYPE>::createIfNotExists(mesh, propname);
+    return PropertyManager<PROPTYPE, MeshT>::createIfNotExists(mesh, propname);
 }
 
 /** @relates PropertyManager
