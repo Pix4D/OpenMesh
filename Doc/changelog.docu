@@ -13,7 +13,9 @@
 <li>Property System: Get rid of the OM_FORCE_STATIC_CAST defines. We use the type ids to check if the cast is valid or not. This will add more type safety. </li>
 <li>Default Traits: Added DefaultTraitsDouble as a version of the default traits that uses double precision for positions and normals as well as float for colors. </li>
 <li>Default Mesh Types: Added typdefs for a Triangle Mesh and a PolyMesh which use DefaultTraitsDouble and can be used as default mesh type be the user. </li>
-<li>Template Programming Convenience: Added n_elements which returns the number of elements corresponding to the handle type given as template argument. Also added elements and all_elements methods returning ranges of the elements corresponding to the handle type given as template argument.
+<li>Template Programming Convenience: Added n_elements which returns the number of elements corresponding to the handle type given as template argument. Also added elements and all_elements methods returning ranges of the elements corresponding to the handle type given as template argument.</li>
+<li>Smart Handles: Most userfacing functions returning handles should now return smart handles instead. Smart handles know their corresponding mesh and give convenient access to mesh navigation methods.
+<li>Smart Ranges: OpenMesh ranges now provide a few methods that simplify a few calculations. See documentation for more details.
 </ul>
 
 
@@ -28,7 +30,7 @@
 <ul>
 <li>Change PropertyManager::operator* to access the property value for mesh properties</li>
 <li>PropertyManager: add hasProperty function</li>
-<li>PropertyManager rework: The behavior of the PropertyManager has been changed, hoepfully making it more usable. See tutoial.
+<li>PropertyManager rework: The behavior of the PropertyManager has been changed, hopefully making it more usable. See tutoial.
 </ul>
 
 <b>IO</b>
