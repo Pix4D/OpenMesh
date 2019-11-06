@@ -116,6 +116,13 @@ struct SmartRangeT
     return (1.0 / n_elements) * sum;
   }
 
+  /** @brief Check if any element fulfils condition.
+  *
+  * Checks if functor \p f returns true for any of the elements in the range.
+  * Returns true if that is the case, false otherwise.
+  *
+  *  @param f Functor that is evaluated for all elements.
+  */
   template <typename Functor>
   auto any_of(Functor&& f) -> bool
   {
@@ -126,6 +133,13 @@ struct SmartRangeT
     return false;
   }
 
+  /** @brief Check if all elements fulfil condition.
+  *
+  * Checks if functor \p f returns true for all of the elements in the range.
+  * Returns true if that is the case, false otherwise.
+  *
+  *  @param f Functor that is evaluated for all elements.
+  */
   template <typename Functor>
   auto all_of(Functor&& f) -> bool
   {
