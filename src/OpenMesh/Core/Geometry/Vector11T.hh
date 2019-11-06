@@ -169,6 +169,11 @@ class VectorT {
             std::copy_n(it, DIM, values_.begin());
         }
 
+        /// construct from an array
+        explicit VectorT(container&& _array) {
+            values_ = _array;
+        }
+
         /// copy & cast constructor (explicit)
         template<typename otherScalarType,
             typename = typename std::enable_if<
