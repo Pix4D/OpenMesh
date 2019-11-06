@@ -299,6 +299,15 @@ class PropertyManager {
 
         const MeshT& getMesh() const { return dynamic_cast<MeshT&>(mesh_); }
 
+
+        /**
+         * @deprecated This method no longer has any effect. Instead, named properties are always retained, while unnamed ones are not
+         *
+         * Tells the PropertyManager whether lifetime should be managed or not.
+         */
+        OM_DEPRECATED("retain no longer has any effect. Instead, named properties are always retained, while unnamed ones are not.")
+        void retain(bool = true) {}
+
         /**
          * Move constructor. Transfers ownership (delete responsibility).
          */
