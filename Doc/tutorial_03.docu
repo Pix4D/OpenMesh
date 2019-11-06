@@ -49,7 +49,7 @@ In this example, we will store the \c cog value (see previous example) in a vert
 To do so, we first add a (temporary) property of the desired element type (OpenMesh::VertexHandle) and value type (\c %MyMesh::Point) to the mesh:
 
 \dontinclude 03-properties/smooth.cc
-\skipline makeTemporaryProperty
+\skipline VProp
 
 Enough memory is allocated to hold as many values of \c %MyMesh::Point as there are vertices.
 All insert and delete operations on the mesh are synchronized with the attached properties.
