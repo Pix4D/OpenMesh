@@ -8,6 +8,12 @@
 
 <tr valign=top><td><b>8.1</b> (?/?/?)</td><td>
 
+<b>Breaking Changes</b>
+<ul>
+<li>PropertyManager: PropertyManager only gives const access to the underlying mesh.</li>
+</ul>
+
+
 <b>Core</b>
 <ul>
 <li>Property System: Get rid of the OM_FORCE_STATIC_CAST defines. We use the type ids to check if the cast is valid or not. This will add more type safety. </li>
