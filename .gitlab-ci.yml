@@ -35,13 +35,14 @@ gcc-c++11-test-debug:
   script: "CI/ci-linux-test.sh gcc C++11 debug"
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
-
+  dependencies: [gcc-c++11-build-debug]
 
 gcc-c++11-test-release:
   stage: test
   script: "CI/ci-linux-test.sh gcc C++11 release"
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
+  dependencies: [gcc-c++11-build-release]
 
 gcc-c++11-build-debug:
   stage: build
@@ -66,12 +67,14 @@ clang-c++11-test-debug:
   script: "CI/ci-linux-test.sh clang C++11 debug"
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
+  dependencies: [clang-c++11-build-debug]
 
 clang-c++11-test-release:
   stage: test
   script: "CI/ci-linux-test.sh clang C++11 release"
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
+  dependencies: [clang-c++11-build-release]
 
 clang-c++11-build-debug:
   stage: build
@@ -96,12 +99,14 @@ gcc-c++14-test-debug:
   script: "CI/ci-linux-test.sh gcc C++14 debug"
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
+  dependencies: [gcc-c++14-build-debug]
 
 gcc-c++14-test-release:
   stage: test
   script: "CI/ci-linux-test.sh gcc C++14 release"
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
+  dependencies: [gcc-c++14-build-release]
 
 gcc-c++14-build-debug:
   stage: build
@@ -126,12 +131,14 @@ clang-c++14-test-debug:
   script: "CI/ci-linux-test.sh clang C++14 debug"
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
+  dependencies: [clang-c++14-build-debug]
 
 clang-c++14-test-release:
   stage: test
   script: "CI/ci-linux-test.sh clang C++14 release"
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
+  dependencies: [clang-c++14-build-release]
 
 clang-c++14-build-debug:
   stage: build
