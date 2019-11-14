@@ -40,9 +40,8 @@
  * ========================================================================= */
 
 
+#pragma once
 
-#ifndef OPENMESH_CIRCULATORS_HH
-#define OPENMESH_CIRCULATORS_HH
 //=============================================================================
 //
 //  Vertex and Face circulators for PolyMesh/TriMesh
@@ -54,6 +53,7 @@
 //== INCLUDES =================================================================
 
 #include <OpenMesh/Core/System/config.h>
+#include <OpenMesh/Core/Mesh/SmartHandles.hh>
 #include <cassert>
 #include <cstddef>
 #include <iterator>
@@ -248,19 +248,25 @@ class GenericCirculatorBaseT {
         int lap_counter_;
 };
 
-template<class Mesh, class CenterEntityHandle, class ValueHandle,
-        ValueHandle (GenericCirculatorBaseT<Mesh>::*Handle2Value)() const, bool CW = true >
-class GenericCirculatorT : protected GenericCirculatorBaseT<Mesh> {
+//template<class Mesh, class CenterEntityHandle, class ValueHandle,
+//        ValueHandle (GenericCirculatorBaseT<Mesh>::*Handle2Value)() const, bool CW = true >
+template <typename GenericCirculatorT_TraitsT, bool CW = true>
+class GenericCirculatorT : protected GenericCirculatorBaseT<typename GenericCirculatorT_TraitsT::Mesh> {
     public:
+        using Mesh = typename GenericCirculatorT_TraitsT::Mesh;
+        using value_type = typename GenericCirculatorT_TraitsT::ValueHandle;
+        using CenterEntityHandle = typename GenericCirculatorT_TraitsT::CenterEntityHandle;
+
+        using smart_value_type = decltype(make_smart(std::declval<value_type>(), std::declval<Mesh>()));
+
         typedef std::ptrdiff_t difference_type;
-        typedef ValueHandle value_type;
         typedef const value_type& reference;
-        typedef const value_type* pointer;
+        typedef const smart_value_type* pointer;
         typedef std::bidirectional_iterator_tag iterator_category;
 
         typedef typename GenericCirculatorBaseT<Mesh>::mesh_ptr mesh_ptr;
         typedef typename GenericCirculatorBaseT<Mesh>::mesh_ref mesh_ref;
-        typedef GenericCirculator_ValueHandleFnsT<Mesh, CenterEntityHandle, ValueHandle, CW> GenericCirculator_ValueHandleFns;
+        typedef GenericCirculator_ValueHandleFnsT<Mesh, CenterEntityHandle, value_type, CW> GenericCirculator_ValueHandleFns;
 
     public:
         GenericCirculatorT() {}
@@ -276,8 +282,8 @@ class GenericCirculatorT : protected GenericCirculatorBaseT<Mesh> {
         }
         GenericCirculatorT(const GenericCirculatorT &rhs) : GenericCirculatorBaseT<Mesh>(rhs) {}
 
-        friend class GenericCirculatorT<Mesh,CenterEntityHandle,ValueHandle,Handle2Value,!CW>;
-        explicit GenericCirculatorT( const GenericCirculatorT<Mesh,CenterEntityHandle,ValueHandle,Handle2Value,!CW>& rhs )
+        friend class GenericCirculatorT<GenericCirculatorT_TraitsT,!CW>;
+        explicit GenericCirculatorT( const GenericCirculatorT<GenericCirculatorT_TraitsT,!CW>& rhs )
         :GenericCirculatorBaseT<Mesh>(rhs){}
 
         GenericCirculatorT& operator++() {
@@ -308,16 +314,16 @@ class GenericCirculatorT : protected GenericCirculatorBaseT<Mesh> {
         }
 
         /// Standard dereferencing operator.
-        value_type operator*() const {
+        smart_value_type operator*() const {
             // We can't use this due to a GCC6 compiler bug
             const GenericCirculatorBaseT<Mesh>* self = this;
 #ifndef NDEBUG
             assert(this->heh_.is_valid());
-            value_type res = (self->*Handle2Value)();
+            value_type res = GenericCirculatorT_TraitsT::toHandle(this->mesh_, this->heh_);
             assert(res.is_valid());
-            return res;
+            return make_smart(res, this->mesh_);
 #else
-            return (self->*Handle2Value)();
+            return make_smart(GenericCirculatorT_TraitsT::toHandle(this->mesh_, this->heh_), this->mesh_);
 #endif
         }
 
@@ -357,7 +363,7 @@ class GenericCirculatorT : protected GenericCirculatorBaseT<Mesh> {
         }
 
     private:
-        mutable value_type pointer_deref_value;
+        mutable smart_value_type pointer_deref_value;
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -420,19 +426,22 @@ class GenericCirculator_ValueHandleFnsT_DEPRECATED<Mesh, CenterEntityHandle, typ
         }
 };
 
-template<class Mesh, class CenterEntityHandle, class ValueHandle,
-        ValueHandle (GenericCirculatorBaseT<Mesh>::*Handle2Value)() const>
-class GenericCirculatorT_DEPRECATED : protected GenericCirculatorBaseT<Mesh> {
+template <typename GenericCirculatorT_DEPRECATED_TraitsT>
+class GenericCirculatorT_DEPRECATED : protected GenericCirculatorBaseT<typename GenericCirculatorT_DEPRECATED_TraitsT::Mesh> {
     public:
+        using Mesh = typename GenericCirculatorT_DEPRECATED_TraitsT::Mesh;
+        using CenterEntityHandle = typename GenericCirculatorT_DEPRECATED_TraitsT::CenterEntityHandle;
+        using value_type = typename GenericCirculatorT_DEPRECATED_TraitsT::ValueHandle;
+        using smart_value_type = decltype (make_smart(std::declval<value_type>(), std::declval<Mesh>()));
+
         typedef std::ptrdiff_t difference_type;
-        typedef ValueHandle value_type;
         typedef const value_type& reference;
-        typedef const value_type* pointer;
+        typedef const smart_value_type* pointer;
         typedef std::bidirectional_iterator_tag iterator_category;
 
         typedef typename GenericCirculatorBaseT<Mesh>::mesh_ptr mesh_ptr;
         typedef typename GenericCirculatorBaseT<Mesh>::mesh_ref mesh_ref;
-        typedef GenericCirculator_ValueHandleFnsT_DEPRECATED<Mesh, CenterEntityHandle, ValueHandle> GenericCirculator_ValueHandleFns;
+        typedef GenericCirculator_ValueHandleFnsT_DEPRECATED<Mesh, CenterEntityHandle, value_type> GenericCirculator_ValueHandleFns;
 
     public:
         GenericCirculatorT_DEPRECATED() {}
@@ -494,16 +503,16 @@ class GenericCirculatorT_DEPRECATED : protected GenericCirculatorBaseT<Mesh> {
         }
 
         /// Standard dereferencing operator.
-        value_type operator*() const {
+        smart_value_type operator*() const {
             // We can't use this due to a GCC6 compiler bug
             const GenericCirculatorBaseT<Mesh>* self = this;
 #ifndef NDEBUG
             assert(this->heh_.is_valid());
-            value_type res = (self->*Handle2Value)();
+            value_type res = (GenericCirculatorT_DEPRECATED_TraitsT::toHandle(this->mesh_, this->heh_));
             assert(res.is_valid());
-            return res;
+            return make_smart(res, this->mesh_);
 #else
-            return (self->*Handle2Value)();
+            return make_smart(GenericCirculatorT_DEPRECATED_TraitsT::toHandle(this->mesh_, this->heh_), this->mesh_);
 #endif
         }
 
@@ -563,7 +572,7 @@ class GenericCirculatorT_DEPRECATED : protected GenericCirculatorBaseT<Mesh> {
          * This function clutters your code. Use dereferencing operators -> and * instead.
          */
         OM_DEPRECATED("This function clutters your code. Use dereferencing operators -> and * instead.")
-        value_type handle() const {
+        smart_value_type handle() const {
           return **this;
         }
 
@@ -584,10 +593,9 @@ class GenericCirculatorT_DEPRECATED : protected GenericCirculatorBaseT<Mesh> {
         }
 
     private:
-        mutable value_type pointer_deref_value;
+        mutable smart_value_type pointer_deref_value;
 };
 
 } // namespace Iterators
 } // namespace OpenMesh
 
-#endif

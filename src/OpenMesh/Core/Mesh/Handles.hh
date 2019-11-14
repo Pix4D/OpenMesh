@@ -144,6 +144,15 @@ struct FaceHandle : public BaseHandle
 };
 
 
+/// Handle type for meshes to simplify some template programming
+struct MeshHandle : public BaseHandle
+{
+  explicit MeshHandle(int _idx=-1) : BaseHandle(_idx) {}
+};
+
+
+
+
 //=============================================================================
 } // namespace OpenMesh
 //=============================================================================

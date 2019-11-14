@@ -198,19 +198,19 @@ public:
    *
    * \sa new_vertex(const Point&), new_vertex_dirty()
    */
-  inline VertexHandle new_vertex()
-  { return Kernel::new_vertex(); }
+  inline SmartVertexHandle new_vertex()
+  { return make_smart(Kernel::new_vertex(), this); }
 
   /**
    * \brief Adds a new vertex initialized to a custom position.
    *
    * \sa new_vertex(), new_vertex_dirty()
    */
-  inline VertexHandle new_vertex(const Point& _p)
+  inline SmartVertexHandle new_vertex(const Point& _p)
   {
     VertexHandle vh(Kernel::new_vertex());
     this->set_point(vh, _p);
-    return vh;
+    return make_smart(vh, this);
   }
 
   /**
@@ -224,20 +224,20 @@ public:
    *
    * \sa new_vertex(const Point &)
    */
-  inline VertexHandle new_vertex_dirty(const Point& _p)
+  inline SmartVertexHandle new_vertex_dirty(const Point& _p)
   {
     VertexHandle vh(Kernel::new_vertex_dirty());
     this->set_point(vh, _p);
-    return vh;
+    return make_smart(vh, this);
   }
 
   /// Alias for new_vertex(const Point&).
-  inline VertexHandle add_vertex(const Point& _p)
+  inline SmartVertexHandle add_vertex(const Point& _p)
   { return new_vertex(_p); }
 
   /// Alias for new_vertex_dirty().
-  inline VertexHandle add_vertex_dirty(const Point& _p)
-  { return new_vertex_dirty(_p); }
+  inline SmartVertexHandle add_vertex_dirty(const Point& _p)
+  { return make_smart(new_vertex_dirty(_p), this); }
 
   // --- normal vectors ---
 

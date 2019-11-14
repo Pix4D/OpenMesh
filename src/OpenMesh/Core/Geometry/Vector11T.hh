@@ -169,6 +169,11 @@ class VectorT {
             std::copy_n(it, DIM, values_.begin());
         }
 
+        /// construct from an array
+        explicit VectorT(container&& _array) {
+            values_ = _array;
+        }
+
         /// copy & cast constructor (explicit)
         template<typename otherScalarType,
             typename = typename std::enable_if<
@@ -758,6 +763,21 @@ template<typename Scalar, int DIM>
 VectorT<Scalar, DIM>& minimize(VectorT<Scalar, DIM>& _v1, VectorT<Scalar, DIM>& _v2) {
     return _v1.minimize(_v2);
 }
+
+/// \relates OpenMesh::VectorT
+/// non-member max
+template<typename Scalar, int DIM>
+VectorT<Scalar, DIM> max(const VectorT<Scalar, DIM>& _v1, const VectorT<Scalar, DIM>& _v2) {
+    return _v1.max(_v2);
+}
+
+/// \relates OpenMesh::VectorT
+/// non-member min
+template<typename Scalar, int DIM>
+VectorT<Scalar, DIM> min(const VectorT<Scalar, DIM>& _v1, const VectorT<Scalar, DIM>& _v2) {
+  return _v1.min(_v2);
+}
+
 
 //== TYPEDEFS =================================================================
 
