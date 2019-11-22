@@ -80,10 +80,12 @@ template<typename PROPTYPE, typename MeshT = int>
 class PropertyManager {
 
     public:
-        using Value      = typename PROPTYPE::Value;
-        using value_type = typename PROPTYPE::value_type;
-        using Handle     = typename PROPTYPE::Handle;
-        using Self       = PropertyManager<PROPTYPE, MeshT>;
+        using Value           = typename PROPTYPE::Value;
+        using value_type      = typename PROPTYPE::value_type;
+        using Handle          = typename PROPTYPE::Handle;
+        using Self            = PropertyManager<PROPTYPE, MeshT>;
+        using Reference       = typename PROPTYPE::reference;
+        using ConstReference  = typename PROPTYPE::const_reference;
 
     private:
         // Mesh properties (MPropHandleT<...>) are stored differently than the other properties.
@@ -101,10 +103,10 @@ class PropertyManager {
           static void swap(PropertyManager<PROPTYPE, MeshT>& from, PropertyManager2& to) {
             std::swap(*to, *from);
           }
-          static const Value& access_property_const(PolyConnectivity& mesh, const PROPTYPE& prop_handle, const Handle&) {
+          static ConstReference access_property_const(PolyConnectivity& mesh, const PROPTYPE& prop_handle, const Handle&) {
             return mesh.property(prop_handle);
           }
-          static Value& access_property(PolyConnectivity& mesh, const PROPTYPE& prop_handle, const Handle&) {
+          static Reference access_property(PolyConnectivity& mesh, const PROPTYPE& prop_handle, const Handle&) {
             return mesh.property(prop_handle);
           }
         };
@@ -121,10 +123,10 @@ class PropertyManager {
             lhs.mesh().property(lhs.prop_).resize(lhs.mesh().template n_elements<Handle>());
             rhs.mesh().property(rhs.prop_).resize(rhs.mesh().template n_elements<Handle>());
           }
-          static const Value& access_property_const(PolyConnectivity& mesh, const PROPTYPE& prop_handle, const Handle& handle) {
+          static ConstReference access_property_const(PolyConnectivity& mesh, const PROPTYPE& prop_handle, const Handle& handle) {
             return mesh.property(prop_handle, handle);
           }
-          static Value& access_property(PolyConnectivity& mesh, const PROPTYPE& prop_handle, const Handle& handle) {
+          static Reference access_property(PolyConnectivity& mesh, const PROPTYPE& prop_handle, const Handle& handle) {
             return mesh.property(prop_handle, handle);
           }
         };
