@@ -207,6 +207,24 @@ struct SmartRangeT
     return res;
   }
 
+  /** @brief Get the first element that fulfills a condition.
+  *
+  * Finds the first element of the range for which the functor \p f evaluates to true.
+  * Returns an invalid handle if none evaluates to true
+  *
+  *  @param f Functor that is applied to all elements before putting them into the set. If no functor is provided
+  *           the set will contain the handles.
+  */
+  template <typename Functor>
+  auto first(Functor&& f = {}) -> HandleT
+  {
+    auto range = static_cast<const RangeT*>(this);
+    for (const auto& e : *range)
+      if (f(e))
+        return e;
+    return HandleT();
+  }
+
   /** @brief Compute minimum.
   *
   * Computes the minimum of all objects returned by functor \p f.
