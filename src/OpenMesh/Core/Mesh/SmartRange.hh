@@ -45,6 +45,7 @@
 #include <utility>
 #include <array>
 #include <vector>
+#include <set>
 
 //== NAMESPACES ===============================================================
 
@@ -187,6 +188,41 @@ struct SmartRangeT
     for (const auto& e : *range)
       res.push_back(f(e));
     return res;
+  }
+
+  /** @brief Convert range to set.
+  *
+  * Converts the range of elements into a set of objects returned by functor \p f.
+  *
+  *  @param f Functor that is applied to all elements before putting them into the set. If no functor is provided
+  *           the set will contain the handles.
+  */
+  template <typename Functor = Identity>
+  auto to_set(Functor&& f = {}) -> std::set<typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type>
+  {
+    auto range = static_cast<const RangeT*>(this);
+    std::set<typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type> res;
+    for (const auto& e : *range)
+      res.insert(f(e));
+    return res;
+  }
+
+  /** @brief Get the first element that fulfills a condition.
+  *
+  * Finds the first element of the range for which the functor \p f evaluates to true.
+  * Returns an invalid handle if none evaluates to true
+  *
+  *  @param f Functor that is applied to all elements before putting them into the set. If no functor is provided
+  *           the set will contain the handles.
+  */
+  template <typename Functor>
+  auto first(Functor&& f = {}) -> HandleT
+  {
+    auto range = static_cast<const RangeT*>(this);
+    for (const auto& e : *range)
+      if (f(e))
+        return e;
+    return HandleT();
   }
 
   /** @brief Compute minimum.
