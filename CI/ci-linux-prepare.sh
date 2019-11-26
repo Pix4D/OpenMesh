@@ -30,14 +30,14 @@ elif [ "$COMPILER" == "clang" ]; then
   BUILDPATH="clang"  
 fi  
 
-if [ "$LANGUAGE" == "C++98" ]; then
+if [ "$LANGUAGE" == "cpp98" ]; then
   echo "Building with C++98";
   BUILDPATH="$BUILDPATH-cpp98"
-elif [ "$LANGUAGE" == "C++11" ]; then
+elif [ "$LANGUAGE" == "cpp11" ]; then
   echo "Building with C++11";
   OPTIONS="$OPTIONS -DCMAKE_CXX_FLAGS='-std=c++11' "
   BUILDPATH="$BUILDPATH-cpp11"  
-elif [ "$LANGUAGE" == "C++14" ]; then
+elif [ "$LANGUAGE" == "cpp14" ]; then
   echo "Building with C++14";
   OPTIONS="$OPTIONS -DCMAKE_CXX_FLAGS='-std=c++14' "
   BUILDPATH="$BUILDPATH-cpp14"  
@@ -51,9 +51,9 @@ OUTPUT='\033[0;32m'
 WARNING='\033[0;93m'
 
 if [ "$BUILD_TYPE" == "release" ]; then
-    export BUILD_TYPE=Release
-    export BUILD_TYPE_L=release
+    export BUILD_TYPE=release
+    BUILDPATH="$BUILDPATH-release"  
 else
-    export BUILD_TYPE=Debug
-    export BUILD_TYPE_L=debug
+    export BUILD_TYPE=debug
+    BUILDPATH="$BUILDPATH-debug"  
 fi
