@@ -315,8 +315,6 @@ class GenericCirculatorT : protected GenericCirculatorBaseT<typename GenericCirc
 
         /// Standard dereferencing operator.
         smart_value_type operator*() const {
-            // We can't use this due to a GCC6 compiler bug
-            const GenericCirculatorBaseT<Mesh>* self = this;
 #ifndef NDEBUG
             assert(this->heh_.is_valid());
             value_type res = GenericCirculatorT_TraitsT::toHandle(this->mesh_, this->heh_);
@@ -504,8 +502,6 @@ class GenericCirculatorT_DEPRECATED : protected GenericCirculatorBaseT<typename 
 
         /// Standard dereferencing operator.
         smart_value_type operator*() const {
-            // We can't use this due to a GCC6 compiler bug
-            const GenericCirculatorBaseT<Mesh>* self = this;
 #ifndef NDEBUG
             assert(this->heh_.is_valid());
             value_type res = (GenericCirculatorT_DEPRECATED_TraitsT::toHandle(this->mesh_, this->heh_));
