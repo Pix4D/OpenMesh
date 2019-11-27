@@ -297,9 +297,9 @@ class PropertyManager {
          *
          */
         template <typename MeshType >
-        const MeshType& getMesh() const { return dynamic_cast<MeshType&>(mesh_); }
+        const MeshType& getMesh() const { return dynamic_cast<const MeshType&>(mesh_); }
 
-        const MeshT& getMesh() const { return dynamic_cast<MeshT&>(mesh_); }
+        const MeshT& getMesh() const { return dynamic_cast<const MeshT&>(mesh_); }
 
 
         /**
