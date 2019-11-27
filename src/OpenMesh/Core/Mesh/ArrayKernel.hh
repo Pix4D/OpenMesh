@@ -766,7 +766,7 @@ public:
     //! Complexity: O(1)
     inline void erase(iterator _it)
     {
-      assert(_it != end() && is_in(*_it));
+      assert(_it != const_cast<const ExtStatusSetT*>(this)->end() && is_in(*_it));
       Base::erase(*_it);
       *_it = handles_.back();
       _it.pop_back();
