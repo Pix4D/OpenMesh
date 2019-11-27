@@ -133,16 +133,16 @@ template<class MeshT>
 float ModAspectRatioT<MeshT>::collapse_priority(const CollapseInfo& _ci) {
   typename Mesh::VertexHandle v2, v3;
   typename Mesh::FaceHandle fh;
-  const typename Mesh::Point *p1(&_ci.p1), *p2, *p3;
+  const typename Mesh::Point* p1(&_ci.p1);
   typename Mesh::Scalar r0, r1, r0_min(1.0), r1_min(1.0);
   typename Mesh::ConstVertexOHalfedgeIter voh_it(mesh_, _ci.v0);
 
   v3 = mesh_.to_vertex_handle(*voh_it);
-  p3 = &mesh_.point(v3);
+  auto p3 = &mesh_.point(v3);
 
   while (voh_it.is_valid()) {
     v2 = v3;
-    p2 = p3;
+    auto p2 = p3;
 
     ++voh_it;
     v3 = mesh_.to_vertex_handle(*voh_it);
