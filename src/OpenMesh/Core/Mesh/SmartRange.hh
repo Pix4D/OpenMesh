@@ -161,10 +161,10 @@ struct SmartRangeT
   *           the array will contain the handles.
   */
   template <int n, typename Functor = Identity>
-  auto to_array(Functor&& f = {}) -> std::array<typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type, n>
+  auto to_array(Functor&& f = {}) -> std::array<typename std::decay<decltype (f(std::declval<HandleT>()))>::type, n>
   {
     auto range = static_cast<const RangeT*>(this);
-    std::array<typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type, n> res;
+    std::array<typename std::decay<decltype (f(std::declval<HandleT>()))>::type, n> res;
     auto it = range->begin();
     auto end = range->end();
     int i = 0;
@@ -181,10 +181,10 @@ struct SmartRangeT
   *           the vector will contain the handles.
   */
   template <typename Functor = Identity>
-  auto to_vector(Functor&& f = {}) -> std::vector<typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type>
+  auto to_vector(Functor&& f = {}) -> std::vector<typename std::decay<decltype (f(std::declval<HandleT>()))>::type>
   {
     auto range = static_cast<const RangeT*>(this);
-    std::vector<typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type> res;
+    std::vector<typename std::decay<decltype (f(std::declval<HandleT>()))>::type> res;
     for (const auto& e : *range)
       res.push_back(f(e));
     return res;
@@ -198,10 +198,10 @@ struct SmartRangeT
   *           the set will contain the handles.
   */
   template <typename Functor = Identity>
-  auto to_set(Functor&& f = {}) -> std::set<typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type>
+  auto to_set(Functor&& f = {}) -> std::set<typename std::decay<decltype (f(std::declval<HandleT>()))>::type>
   {
     auto range = static_cast<const RangeT*>(this);
-    std::set<typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type> res;
+    std::set<typename std::decay<decltype (f(std::declval<HandleT>()))>::type> res;
     for (const auto& e : *range)
       res.insert(f(e));
     return res;
@@ -232,7 +232,7 @@ struct SmartRangeT
   *  @param f Functor that is applied to all elements before computing minimum.
   */
   template <typename Functor>
-  auto min(Functor&& f) -> typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type
+  auto min(Functor&& f) -> typename std::decay<decltype (f(std::declval<HandleT>()))>::type
   {
     using std::min;
 
@@ -241,7 +241,7 @@ struct SmartRangeT
     auto end   = range->end();
     assert(it != end);
 
-    typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type res = f(*it);
+    typename std::decay<decltype (f(std::declval<HandleT>()))>::type res = f(*it);
     ++it;
 
     for (; it != end; ++it)
@@ -257,7 +257,7 @@ struct SmartRangeT
   *  @param f Functor that is applied to all elements before computing maximum.
   */
   template <typename Functor>
-  auto max(Functor&& f) -> typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type
+  auto max(Functor&& f) -> typename std::decay<decltype (f(std::declval<HandleT>()))>::type
   {
     using std::max;
 
@@ -266,7 +266,7 @@ struct SmartRangeT
     auto end   = range->end();
     assert(it != end);
 
-    typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type res = f(*it);
+    typename std::decay<decltype (f(std::declval<HandleT>()))>::type res = f(*it);
     ++it;
 
     for (; it != end; ++it)
@@ -283,8 +283,8 @@ struct SmartRangeT
   *  @param f Functor that is applied to all elements before computing maximum.
   */
   template <typename Functor>
-  auto minmax(Functor&& f) -> std::pair<typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type,
-                                        typename std::remove_reference<decltype (f(std::declval<HandleT>()))>::type>
+  auto minmax(Functor&& f) -> std::pair<typename std::decay<decltype (f(std::declval<HandleT>()))>::type,
+                                        typename std::decay<decltype (f(std::declval<HandleT>()))>::type>
   {
     return std::make_pair(this->min(f), this->max(f));
   }
