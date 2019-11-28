@@ -78,13 +78,13 @@ struct SmartRangeT
    *  @param f Functor that is applied to all elements before computing the sum
    */
   template <typename Functor>
-  auto sum(Functor&& f) -> decltype (f(std::declval<HandleT>()))
+  auto sum(Functor&& f) -> typename std::decay<decltype (f(std::declval<HandleT>()))>::type
   {
     auto range = static_cast<const RangeT*>(this);
     auto begin = range->begin();
     auto end   = range->end();
     assert(begin != end);
-    decltype (f(*begin)) sum = f(*begin);
+    typename std::decay<decltype (f(*begin))>::type sum = f(*begin);
     auto it = begin;
     ++it;
     for (; it != end; ++it)
@@ -99,13 +99,13 @@ struct SmartRangeT
    *  @param f Functor that is applied to all elements before computing the average.
    */
   template <typename Functor>
-  auto avg(Functor&& f) -> decltype (f(std::declval<HandleT>()))
+  auto avg(Functor&& f) -> typename std::decay<decltype (f(std::declval<HandleT>()))>::type
   {
     auto range = static_cast<const RangeT*>(this);
     auto begin = range->begin();
     auto end   = range->end();
     assert(begin != end);
-    decltype (f(*begin)) sum = f(*begin);
+    typename std::decay<decltype (f(*begin))>::type sum = f(*begin);
     auto it = begin;
     ++it;
     int n_elements = 1;
