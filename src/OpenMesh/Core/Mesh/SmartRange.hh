@@ -84,12 +84,12 @@ struct SmartRangeT
     auto begin = range->begin();
     auto end   = range->end();
     assert(begin != end);
-    typename std::decay<decltype (f(*begin))>::type sum = f(*begin);
+    typename std::decay<decltype (f(*begin))>::type result = f(*begin);
     auto it = begin;
     ++it;
     for (; it != end; ++it)
-      sum += f(*it);
-    return sum;
+        result += f(*it);
+    return result;
   }
 
   /** @brief Computes the average of elements.
@@ -105,16 +105,16 @@ struct SmartRangeT
     auto begin = range->begin();
     auto end   = range->end();
     assert(begin != end);
-    typename std::decay<decltype (f(*begin))>::type sum = f(*begin);
+    typename std::decay<decltype (f(*begin))>::type result = f(*begin);
     auto it = begin;
     ++it;
     int n_elements = 1;
     for (; it != end; ++it)
     {
-      sum += f(*it);
+        result += f(*it);
       ++n_elements;
     }
-    return (1.0 / n_elements) * sum;
+    return (1.0 / n_elements) * result;
   }
 
   /** @brief Check if any element fulfils condition.
