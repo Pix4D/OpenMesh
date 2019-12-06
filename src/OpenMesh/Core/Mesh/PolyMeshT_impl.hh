@@ -505,6 +505,9 @@ calc_vertex_normal_correct(VertexHandle _vh, Normal& _n) const
     in_he_vec = out_he_vec;
     in_he_vec *= -1;//change the orientation
   }
+  Scalar length = norm(_n);
+  if (length != 0.0)
+    _n *= (Scalar(1.0)/length);
 }
 
 //-----------------------------------------------------------------------------
