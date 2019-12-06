@@ -276,8 +276,23 @@ public:
       _pt = calc_face_centroid(_fh);
   }
 
-  /// Computes and returns the average of the vertices defining _gh
+  /// Computes and returns the average of the vertices defining _fh
   Point calc_face_centroid(FaceHandle _fh) const;
+
+  /// Computes and returns the average of the vertices defining _fh (same as calc_face_centroid)
+  Point calc_centroid(FaceHandle _fh) const;
+
+  /// Computes and returns the average of the vertices defining _eh (same as calc_edge_midpoint)
+  Point calc_centroid(EdgeHandle _eh) const;
+
+  /// Computes and returns the average of the vertices defining _heh (same as calc_edge_midpoint for edge of halfedge)
+  Point calc_centroid(HalfedgeHandle _heh) const;
+
+  /// Returns the point of _vh
+  Point calc_centroid(VertexHandle _vh) const;
+
+  /// Computes and returns the average of the vertices defining the mesh
+  Point calc_centroid(MeshHandle _mh) const;
 
   /// Update normal for halfedge _heh
   void update_normal(HalfedgeHandle _heh, const double _feature_angle = 0.8)

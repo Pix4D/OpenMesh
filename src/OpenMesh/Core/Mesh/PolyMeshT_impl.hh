@@ -250,8 +250,58 @@ calc_face_centroid(FaceHandle _fh) const
   _pt /= valence;
   return _pt;
 }
+
 //-----------------------------------------------------------------------------
 
+template<class Kernel>
+typename PolyMeshT<Kernel>::Point
+PolyMeshT<Kernel>::
+calc_centroid(FaceHandle _fh) const
+{
+  return calc_face_centroid(_fh);
+}
+
+//-----------------------------------------------------------------------------
+
+template<class Kernel>
+typename PolyMeshT<Kernel>::Point
+PolyMeshT<Kernel>::
+calc_centroid(EdgeHandle _eh) const
+{
+  return this->calc_edge_midpoint(_eh);
+}
+
+//-----------------------------------------------------------------------------
+
+template<class Kernel>
+typename PolyMeshT<Kernel>::Point
+PolyMeshT<Kernel>::
+calc_centroid(HalfedgeHandle _heh) const
+{
+  return this->calc_edge_midpoint(this->edge_handle(_heh));
+}
+
+//-----------------------------------------------------------------------------
+
+template<class Kernel>
+typename PolyMeshT<Kernel>::Point
+PolyMeshT<Kernel>::
+calc_centroid(VertexHandle _vh) const
+{
+  return this->point(_vh);
+}
+
+//-----------------------------------------------------------------------------
+
+template<class Kernel>
+typename PolyMeshT<Kernel>::Point
+PolyMeshT<Kernel>::
+calc_centroid(MeshHandle /*_mh*/) const
+{
+  return this->vertices().avg(getPointsProperty(*this));
+}
+
+//-----------------------------------------------------------------------------
 
 template <class Kernel>
 void
