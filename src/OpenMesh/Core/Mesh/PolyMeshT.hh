@@ -271,6 +271,10 @@ public:
   /** Calculate normal vector for face (_p0, _p1, _p2). */
   Normal calc_face_normal(const Point& _p0, const Point& _p1,
                                             const Point& _p2) const;
+
+  /// same as calc_face_normal
+  Normal calc_normal(FaceHandle _fh) const;
+
   /// calculates the average of the vertices defining _fh
   void calc_face_centroid(FaceHandle _fh, Point& _pt) const {
       _pt = calc_face_centroid(_fh);
@@ -323,6 +327,8 @@ public:
    */
   virtual Normal calc_halfedge_normal(HalfedgeHandle _heh, const double _feature_angle = 0.8) const;
 
+  /// same as calc_halfedge_normal
+  Normal calc_normal(HalfedgeHandle, const double _feature_angle = 0.8) const;
 
   /** identifies feature edges w.r.t. the minimal dihedral angle for feature edges (in radians) */
   /** and the status feature tag */
@@ -368,6 +374,8 @@ public:
   void calc_vertex_normal_correct(VertexHandle _vh, Normal& _n) const;
   void calc_vertex_normal_loop(VertexHandle _vh, Normal& _n) const;
 
+  /// same as calc_vertex_normal_correct
+  Normal calc_normal(VertexHandle _vh) const;
 
   //@}
 
@@ -435,6 +443,15 @@ public:
   Point calc_edge_midpoint(EdgeHandle _eh) const
   {
     return calc_edge_midpoint(this->halfedge_handle(_eh, 0));
+  }
+
+  /// calculated and returns the average of the two vertex normals
+  Normal calc_normal(EdgeHandle _eh) const
+  {
+    HalfedgeHandle _heh = this->halfedge_handle(_eh, 0);
+    VertexHandle vh0 = this->from_vertex_handle(_heh);
+    VertexHandle vh1 = this->to_vertex_handle(_heh);
+    return 0.5 * (this->calc_normal(vh0) + this->calc_normal(vh1));
   }
 
   /** defines a consistent representation of a sector geometry:
