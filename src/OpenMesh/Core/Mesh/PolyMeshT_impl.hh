@@ -181,6 +181,14 @@ calc_face_normal(const Point& _p0,
   >::Result());
 }
 
+template<class Kernel>
+typename PolyMeshT<Kernel>::Normal
+PolyMeshT<Kernel>::
+calc_normal(FaceHandle _fh) const
+{
+  return calc_face_normal(_fh);
+}
+
 template <class Kernel>
 typename PolyMeshT<Kernel>::Normal
 PolyMeshT<Kernel>::
@@ -250,8 +258,58 @@ calc_face_centroid(FaceHandle _fh) const
   _pt /= valence;
   return _pt;
 }
+
 //-----------------------------------------------------------------------------
 
+template<class Kernel>
+typename PolyMeshT<Kernel>::Point
+PolyMeshT<Kernel>::
+calc_centroid(FaceHandle _fh) const
+{
+  return calc_face_centroid(_fh);
+}
+
+//-----------------------------------------------------------------------------
+
+template<class Kernel>
+typename PolyMeshT<Kernel>::Point
+PolyMeshT<Kernel>::
+calc_centroid(EdgeHandle _eh) const
+{
+  return this->calc_edge_midpoint(_eh);
+}
+
+//-----------------------------------------------------------------------------
+
+template<class Kernel>
+typename PolyMeshT<Kernel>::Point
+PolyMeshT<Kernel>::
+calc_centroid(HalfedgeHandle _heh) const
+{
+  return this->calc_edge_midpoint(this->edge_handle(_heh));
+}
+
+//-----------------------------------------------------------------------------
+
+template<class Kernel>
+typename PolyMeshT<Kernel>::Point
+PolyMeshT<Kernel>::
+calc_centroid(VertexHandle _vh) const
+{
+  return this->point(_vh);
+}
+
+//-----------------------------------------------------------------------------
+
+template<class Kernel>
+typename PolyMeshT<Kernel>::Point
+PolyMeshT<Kernel>::
+calc_centroid(MeshHandle /*_mh*/) const
+{
+  return this->vertices().avg(getPointsProperty(*this));
+}
+
+//-----------------------------------------------------------------------------
 
 template <class Kernel>
 void
@@ -355,6 +413,18 @@ calc_halfedge_normal(HalfedgeHandle _heh, const double _feature_angle) const
 
 
 template <class Kernel>
+typename PolyMeshT<Kernel>::Normal
+PolyMeshT<Kernel>::
+calc_normal(HalfedgeHandle _heh, const double _feature_angle) const
+{
+  return calc_halfedge_normal(_heh, _feature_angle);
+}
+
+
+//-----------------------------------------------------------------------------
+
+
+template <class Kernel>
 bool
 PolyMeshT<Kernel>::
 is_estimated_feature_edge(HalfedgeHandle _heh, const double _feature_angle) const
@@ -435,6 +505,9 @@ calc_vertex_normal_correct(VertexHandle _vh, Normal& _n) const
     in_he_vec = out_he_vec;
     in_he_vec *= -1;//change the orientation
   }
+  Scalar length = norm(_n);
+  if (length != 0.0)
+    _n *= (Scalar(1.0)/length);
 }
 
 //-----------------------------------------------------------------------------
@@ -459,6 +532,17 @@ calc_vertex_normal_loop(VertexHandle _vh, Normal& _n) const
 
 //-----------------------------------------------------------------------------
 
+template<class Kernel>
+typename PolyMeshT<Kernel>::Normal
+PolyMeshT<Kernel>::
+calc_normal(VertexHandle _vh) const
+{
+  Normal n;
+  calc_vertex_normal_correct(_vh, n);
+  return n;
+}
+
+//-----------------------------------------------------------------------------
 
 template <class Kernel>
 void
