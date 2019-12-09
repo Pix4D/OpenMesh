@@ -43,7 +43,6 @@ TEST_F(OpenMeshMixedDecimater, DecimateMesh80PercentMc) {
 
   typedef OpenMesh::Decimater::MixedDecimaterT< Mesh >  Decimater;
   typedef OpenMesh::Decimater::ModQuadricT< Mesh >::Handle HModQuadric;
-  typedef OpenMesh::Decimater::ModNormalFlippingT< Mesh >::Handle HModNormal;
 
   Decimater decimaterDBG(mesh_);
   HModQuadric hModQuadricDBG;
@@ -67,7 +66,6 @@ TEST_F(OpenMeshMixedDecimater, DecimateMeshToFaceVerticesLimit) {
 
   typedef OpenMesh::Decimater::MixedDecimaterT< Mesh >  Decimater;
   typedef OpenMesh::Decimater::ModQuadricT< Mesh >::Handle HModQuadric;
-  typedef OpenMesh::Decimater::ModNormalFlippingT< Mesh >::Handle HModNormal;
 
   Decimater decimaterDBG(mesh_);
   HModQuadric hModQuadricDBG;
@@ -91,7 +89,6 @@ TEST_F(OpenMeshMixedDecimater, DecimateMeshToFaceFaceLimit) {
 
   typedef OpenMesh::Decimater::MixedDecimaterT< Mesh >  Decimater;
   typedef OpenMesh::Decimater::ModQuadricT< Mesh >::Handle HModQuadric;
-  typedef OpenMesh::Decimater::ModNormalFlippingT< Mesh >::Handle HModNormal;
 
   Decimater decimaterDBG(mesh_);
   HModQuadric hModQuadricDBG;
