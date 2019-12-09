@@ -40,11 +40,7 @@ bool _VTKWriter_::write(const std::string& _filename, BaseExporter& _be, Options
 
 bool _VTKWriter_::write(std::ostream& _out, BaseExporter& _be, Options _opt, std::streamsize _precision) const
 {
-    Vec3f n;
-    Vec2f t;
     VertexHandle vh;
-    OpenMesh::Vec3f c;
-    OpenMesh::Vec4f cA;
 
     // check exporter features
     if (!check(_be, _opt)) {
