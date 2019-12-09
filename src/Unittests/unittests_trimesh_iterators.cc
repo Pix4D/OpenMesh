@@ -904,12 +904,14 @@ TEST_F(OpenMeshIterators, RangeIterators) {
 
   int count_faces_range = 0;
   for (auto fh : mesh_.faces())
-    ++count_faces_range;
+    if (fh.is_valid()) // not actually necessary but fixes unused variable warning
+      ++count_faces_range;
   EXPECT_EQ(1, count_faces_range) << "Wrong number of visited faces.";
 
   int count_faces_range_all = 0;
   for (auto fh : mesh_.all_faces())
-    ++count_faces_range_all;
+    if (fh.is_valid()) // not actually necessary but fixes unused variable warning
+      ++count_faces_range_all;
   EXPECT_EQ(2, count_faces_range_all) << "Wrong number of visited faces.";
 
 
@@ -927,12 +929,14 @@ TEST_F(OpenMeshIterators, RangeIterators) {
 
   int count_edges_range = 0;
   for (auto eh : mesh_.edges())
-    ++count_edges_range;
+    if (eh.is_valid()) // not actually necessary but fixes unused variable warning
+      ++count_edges_range;
   EXPECT_EQ(3, count_edges_range) << "Wrong number of visited edges.";
 
   int count_edges_range_all = 0;
   for (auto eh : mesh_.all_edges())
-    ++count_edges_range_all;
+    if (eh.is_valid()) // not actually necessary but fixes unused variable warning
+      ++count_edges_range_all;
   EXPECT_EQ(5, count_edges_range_all) << "Wrong number of visited edges.";
 
 
@@ -950,12 +954,14 @@ TEST_F(OpenMeshIterators, RangeIterators) {
 
   int count_halfedges_range = 0;
   for (auto heh : mesh_.halfedges())
-    ++count_halfedges_range;
+    if (heh.is_valid()) // not actually necessary but fixes unused variable warning
+      ++count_halfedges_range;
   EXPECT_EQ(6, count_halfedges_range) << "Wrong number of visited halfedges.";
 
   int count_halfedges_range_all = 0;
   for (auto heh : mesh_.all_halfedges())
-    ++count_halfedges_range_all;
+    if (heh.is_valid()) // not actually necessary but fixes unused variable warning
+      ++count_halfedges_range_all;
   EXPECT_EQ(10, count_halfedges_range_all) << "Wrong number of visited halfedges.";
 
 
@@ -973,12 +979,14 @@ TEST_F(OpenMeshIterators, RangeIterators) {
 
   int count_vertices_range = 0;
   for (auto vh : mesh_.vertices())
-    ++count_vertices_range;
+    if (vh.is_valid()) // not actually necessary but fixes unused variable warning
+      ++count_vertices_range;
   EXPECT_EQ(3, count_vertices_range) << "Wrong number of visited vertices.";
 
   int count_vertices_range_all = 0;
   for (auto vh : mesh_.all_vertices())
-    ++count_vertices_range_all;
+    if (vh.is_valid()) // not actually necessary but fixes unused variable warning
+      ++count_vertices_range_all;
   EXPECT_EQ(4, count_vertices_range_all) << "Wrong number of visited vertices.";
 
 
