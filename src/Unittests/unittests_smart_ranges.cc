@@ -225,12 +225,12 @@ TEST_F(OpenMeshSmartRanges, ToVector)
     auto tri_uvs = fh.halfedges().to_vector(uvs);
     auto heh_handles = fh.halfedges().to_vector();
     for (auto heh : heh_handles)
-      auto n = heh.next();
+      heh.next();
   }
 
   auto vertex_vec = mesh_.vertices().to_vector();
   for (auto vh : vertex_vec)
-    auto heh = vh.out();
+    vh.out();
 }
 
 /* Test to array
@@ -244,8 +244,8 @@ TEST_F(OpenMeshSmartRanges, ToArray)
 
   for (auto fh : mesh_.faces())
   {
-    auto tri_uvs = fh.halfedges().to_array<3>(uvs);
-    auto heh_handles = fh.halfedges().to_array<3>();
+    fh.halfedges().to_array<3>(uvs);
+    fh.halfedges().to_array<3>();
   }
 }
 
@@ -263,7 +263,7 @@ TEST_F(OpenMeshSmartRanges, BoundingBox)
 
   auto bb_min = mesh_.vertices().min(myPos);
   auto bb_max = mesh_.vertices().max(myPos);
-  auto bb     = mesh_.vertices().minmax(myPos);
+  mesh_.vertices().minmax(myPos);
 
   EXPECT_LT(norm(bb_min - OpenMesh::Vec3f(-1,-1,-1)), 0.000001) << "Bounding box minimum seems off";
   EXPECT_LT(norm(bb_max - OpenMesh::Vec3f( 1, 1, 1)), 0.000001) << "Bounding box maximum seems off";
@@ -275,8 +275,8 @@ TEST_F(OpenMeshSmartRanges, BoundingBox)
 
   for (auto fh : mesh_.faces())
   {
-    auto uv_bb_min = fh.halfedges().min(uvs);
-    auto uv_bb_max = fh.halfedges().max(uvs);
+    fh.halfedges().min(uvs);
+    fh.halfedges().max(uvs);
   }
 }
 

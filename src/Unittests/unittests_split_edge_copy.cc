@@ -127,7 +127,7 @@ TEST_F(OpenMeshSplitEdgeCopyPolyMesh, SplitEdgeCopyPolymesh) {
   face_vhandles.push_back(vhandle[2]);
   face_vhandles.push_back(vhandle[3]);
 
-  PolyMesh::FaceHandle fh = mesh_.add_face(face_vhandles);
+  mesh_.add_face(face_vhandles);
   PolyMesh::EdgeHandle eh = *mesh_.edges_begin();
 
   // Test setup:

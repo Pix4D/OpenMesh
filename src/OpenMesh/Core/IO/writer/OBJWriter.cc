@@ -206,7 +206,6 @@ _OBJWriter_::
 write(std::ostream& _out, BaseExporter& _be, Options _opt, std::streamsize _precision) const
 {
   unsigned int idx;
-  size_t nV, nF;
   Vec3f v, n;
   Vec2f t;
   VertexHandle vh;

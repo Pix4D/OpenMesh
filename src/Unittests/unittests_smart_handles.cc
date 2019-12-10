@@ -469,9 +469,9 @@ TEST_F(OpenMeshSmartHandles, MixOldAndNew)
   for (OpenMesh::SmartHalfedgeHandle heh : mesh_.halfedges())
   {
     heh = mesh_.opposite_halfedge_handle(heh);
-    OpenMesh::SmartEdgeHandle eh  = OpenMesh::PolyConnectivity::s_edge_handle(heh);
-    OpenMesh::SmartEdgeHandle eh2 = mesh_.edge_handle(heh);
-    OpenMesh::SmartFaceHandle fh = mesh_.face_handle(heh);
+    EXPECT_TRUE((std::is_same<OpenMesh::SmartEdgeHandle, decltype(OpenMesh::PolyConnectivity::s_edge_handle(heh))>::value));
+    EXPECT_TRUE((std::is_same<OpenMesh::SmartEdgeHandle, decltype(mesh_.edge_handle(heh))>::value));
+    EXPECT_TRUE((std::is_same<OpenMesh::SmartFaceHandle, decltype(mesh_.face_handle(heh))>::value));
   }
 }
 
@@ -552,9 +552,10 @@ TEST(OpenMeshSmartHandlesNoFixture, SplitTriMesh)
   auto p = (MyMesh::Point());
 
   OpenMesh::SmartVertexHandle vh = mesh.split(fh, p);
-
   OpenMesh::SmartEdgeHandle eh = fh.halfedge().edge();
   OpenMesh::SmartVertexHandle vh2 = mesh.split(eh, p);
+
+  EXPECT_NE(vh.idx(), vh2.idx()) << "This was only intended to fix an unused variable warning but cool that it caugth an actual error now";
 
 }
 
