@@ -166,7 +166,7 @@ struct F
  */
 TEST_F(OpenMeshSmartRanges, Sum)
 {
-  auto one = [](OpenMesh::VertexHandle ) { return 1; };
+  auto one = [](OpenMesh::VertexHandle ) { return 1u; };
   EXPECT_EQ(mesh_.vertices().sum(one), mesh_.n_vertices());
   EXPECT_EQ(mesh_.vertices().sum(F<OpenMesh::VertexHandle>()), mesh_.n_vertices());
   EXPECT_EQ(mesh_.halfedges().sum(F<OpenMesh::HalfedgeHandle>()), mesh_.n_halfedges());
