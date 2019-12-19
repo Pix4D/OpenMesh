@@ -70,8 +70,8 @@ namespace OpenMesh {
 
 //== IMPLEMENTATION ========================================================== 
 
-template <typename Scalar>
-NormalConeT<Scalar>::
+template <typename Vector>
+NormalConeT<Vector>::
 NormalConeT(const Vec3& _center_normal, Scalar _angle)
   : center_normal_(_center_normal), angle_(_angle)
 {
@@ -81,9 +81,9 @@ NormalConeT(const Vec3& _center_normal, Scalar _angle)
 //----------------------------------------------------------------------------
 
 
-template <typename Scalar>
-Scalar 
-NormalConeT<Scalar>::
+template <typename Vector>
+typename NormalConeT<Vector>::Scalar
+NormalConeT<Vector>::
 max_angle(const Vec3& _norm) const
 {
   Scalar dotp = (center_normal_ | _norm);
@@ -95,9 +95,9 @@ max_angle(const Vec3& _norm) const
 //----------------------------------------------------------------------------
 
 
-template <typename Scalar>
-Scalar 
-NormalConeT<Scalar>::
+template <typename Vector>
+typename NormalConeT<Vector>::Scalar
+NormalConeT<Vector>::
 max_angle(const NormalConeT& _cone) const
 {
   Scalar dotp = (center_normal_ | _cone.center_normal_);
@@ -112,12 +112,12 @@ max_angle(const NormalConeT& _cone) const
 //----------------------------------------------------------------------------
 
 
-template <typename Scalar>
+template <typename Vector>
 void 
-NormalConeT<Scalar>::
+NormalConeT<Vector>::
 merge(const NormalConeT& _cone)
 {
-  Scalar dotp = (center_normal_ | _cone.center_normal_);
+  Scalar dotp = dot(center_normal_, _cone.center_normal_);
 
   if (fabs(dotp) < 0.99999f)
   {

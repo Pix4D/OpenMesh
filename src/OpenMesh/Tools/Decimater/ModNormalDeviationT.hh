@@ -97,7 +97,7 @@ public:
   typedef typename Mesh::VertexHandle               VertexHandle;
   typedef typename Mesh::FaceHandle                 FaceHandle;
   typedef typename Mesh::EdgeHandle                 EdgeHandle;
-  typedef NormalConeT<Scalar>                       NormalCone;
+  typedef NormalConeT<Normal>                       NormalCone;
 
 
 
