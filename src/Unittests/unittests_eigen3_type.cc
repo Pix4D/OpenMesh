@@ -7,6 +7,9 @@
 
 #include <OpenMesh/Core/Mesh/Traits.hh>
 #include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>
+#include <OpenMesh/Tools/Decimater/DecimaterT.hh>
+#include <OpenMesh/Tools/Decimater/ModQuadricT.hh>
+#include <OpenMesh/Tools/Decimater/ModNormalDeviationT.hh>
 
 #include <OpenMesh/Core/Geometry/EigenVectorT.hh>
 
@@ -230,6 +233,37 @@ TEST_F(OpenMeshEigenTest, LoadSimpleOFFFile) {
    EXPECT_EQ(15048u, mesh_.n_faces()) << "The number of loaded faces is not correct!";
 
    mesh_.update_normals();
+}
+
+// Test decimation with Eigen as vector type
+TEST_F(OpenMeshEigenTest, Decimater) {
+   mesh_.clear();
+
+   bool ok = OpenMesh::IO::read_mesh(mesh_, "cube1.off");
+
+   EXPECT_TRUE(ok);
+
+   EXPECT_EQ(7526u , mesh_.n_vertices()) << "The number of loaded vertices is not correct!";
+   EXPECT_EQ(22572u, mesh_.n_edges()) << "The number of loaded edges is not correct!";
+   EXPECT_EQ(15048u, mesh_.n_faces()) << "The number of loaded faces is not correct!";
+
+   mesh_.update_normals();
+
+   OpenMesh::Decimater::DecimaterT<EigenTriMesh> decimater(mesh_);
+   OpenMesh::Decimater::ModQuadricT<EigenTriMesh>::Handle hModQuadric;                   // use a quadric module
+   OpenMesh::Decimater::ModNormalDeviationT<EigenTriMesh>::Handle hModNormalDeviation;   // also use normal deviation module as binary check
+   decimater.add(hModQuadric);
+   decimater.add(hModNormalDeviation);
+   decimater.module(hModQuadric).unset_max_err();
+   decimater.module(hModNormalDeviation).set_normal_deviation(15);
+   decimater.initialize();
+   size_t removedVertices = decimater.decimate_to(8);
+   mesh_.garbage_collection();
+
+   EXPECT_EQ(6998u, removedVertices)    << "The number of remove vertices is not correct!";
+   EXPECT_EQ( 528u, mesh_.n_vertices()) << "The number of vertices after decimation is not correct!";
+   EXPECT_EQ(1578u, mesh_.n_edges())    << "The number of edges after decimation is not correct!";
+   EXPECT_EQ(1052u, mesh_.n_faces())    << "The number of faces after decimation is not correct!";
 }
 
 }
