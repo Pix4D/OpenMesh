@@ -159,14 +159,14 @@ protected:
 template <typename HandleT>
 struct F
 {
-  int operator()(HandleT ) { return 1; }
+  unsigned int operator()(HandleT ) { return 1; }
 };
 
 /* Test if smart ranges work
  */
 TEST_F(OpenMeshSmartRanges, Sum)
 {
-  auto one = [](OpenMesh::VertexHandle ) { return 1; };
+  auto one = [](OpenMesh::VertexHandle ) { return 1u; };
   EXPECT_EQ(mesh_.vertices().sum(one), mesh_.n_vertices());
   EXPECT_EQ(mesh_.vertices().sum(F<OpenMesh::VertexHandle>()), mesh_.n_vertices());
   EXPECT_EQ(mesh_.halfedges().sum(F<OpenMesh::HalfedgeHandle>()), mesh_.n_halfedges());
@@ -189,7 +189,7 @@ TEST_F(OpenMeshSmartRanges, Sum)
   for (auto fh : mesh_.faces())
     EXPECT_EQ(fh.edges().sum(F<OpenMesh::EdgeHandle>()), mesh_.valence(fh));
   for (auto fh : mesh_.faces())
-    EXPECT_EQ(fh.faces().sum(F<OpenMesh::FaceHandle>()), 3);
+    EXPECT_EQ(fh.faces().sum(F<OpenMesh::FaceHandle>()), 3u);
 }
 
 
