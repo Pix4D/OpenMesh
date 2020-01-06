@@ -29,6 +29,7 @@
 <ul>
 <li>Subdivider: Fixed crash in Loop subdivider</li> 
 <li>Subdivider: Fixed crash in ModifiedButterfly subdivider</li>
+<li>Decimater: Fixed ModNormalDeviationT not working for meshes with Eigen Vectors as vector type</li>
 </ul>
 
 
