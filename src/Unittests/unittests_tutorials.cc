@@ -906,15 +906,15 @@ TEST_F(OpenMeshTutorials, using_smart_handles_and_smart_ranges) {
       for (const auto& vh : mesh.vertices())
         laplace(vh) = vh.vertices().avg(points) - points(vh);
 
-      // Iterate over all vertices to compte update vectors as the negative of the laplace of the laplace damped by 0.5
+      // Iterate over all vertices to compute the laplace vector of the laplace vectors
       for (const auto& vh : mesh.vertices())
         bi_laplace(vh) =  (vh.vertices().avg(laplace) - laplace(vh));
 
-      // update points
+      // update points by substracting the bi-laplacian damped by a factor of 0.5
       for (const auto& vh : mesh.vertices())
         points(vh) += -0.5 * bi_laplace(vh);
     }
-  } // The laplace and update properties are removed is removed from the mesh at the end of this scope.
+  } // The laplace and update properties are removed from the mesh at the end of this scope.
 
   // write mesh
   ok = OpenMesh::IO::write_mesh(mesh, "smoothed_smart_output.off");

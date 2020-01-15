@@ -82,7 +82,7 @@ If, instead, a property is desired to survive its local scope, it should be crea
     auto face_area = OpenMesh::FProp<double>(mesh, "face_area");
 \endcode
 
-At a later time, we can access the same property by using the same name. If we want to make sure, that we access a property that has already been created earler, we can use hasProperty() to test whether a mesh has the desired property:
+At a later time, we can access the same property by using the same name. If we want to make sure, that we access a property that has already been created earlier, we can use hasProperty() to test whether a mesh has the desired property:
 \code
     if (OpenMesh::hasProperty<OpenMesh::FaceHandle, double>(mesh, "face_area")) {
         // Property exists. Do something with it.
