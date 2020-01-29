@@ -611,7 +611,6 @@ public:
   inline SmartEdgeHandle edge_handle(SmartHalfedgeHandle _heh) const;
   inline SmartFaceHandle face_handle(SmartHalfedgeHandle _heh) const;
 
-
   //@}
   
   /** \name Begin and end iterators
@@ -1359,8 +1358,7 @@ public:
   // --- shortcuts ---
   
   /// returns the face handle of the opposite halfedge 
-  inline FaceHandle opposite_face_handle(HalfedgeHandle _heh) const
-  { return face_handle(opposite_halfedge_handle(_heh)); }
+  inline SmartFaceHandle opposite_face_handle(HalfedgeHandle _heh) const;
     
   // --- misc ---
 
@@ -1370,7 +1368,7 @@ public:
   void adjust_outgoing_halfedge(VertexHandle _vh);
 
   /// Find halfedge from _vh0 to _vh1. Returns invalid handle if not found.
-  HalfedgeHandle find_halfedge(VertexHandle _start_vh, VertexHandle _end_vh) const;
+  SmartHalfedgeHandle find_halfedge(VertexHandle _start_vh, VertexHandle _end_vh) const;
   /// Vertex valence
   uint valence(VertexHandle _vh) const;
   /// Face valence
