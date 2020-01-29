@@ -54,8 +54,7 @@ const PolyConnectivity::FaceHandle      PolyConnectivity::InvalidFaceHandle;
 
 //-----------------------------------------------------------------------------
 
-PolyConnectivity::HalfedgeHandle
-PolyConnectivity::find_halfedge(VertexHandle _start_vh, VertexHandle _end_vh ) const
+SmartHalfedgeHandle PolyConnectivity::find_halfedge(VertexHandle _start_vh, VertexHandle _end_vh ) const
 {
   assert(_start_vh.is_valid() && _end_vh.is_valid());
 
@@ -63,7 +62,7 @@ PolyConnectivity::find_halfedge(VertexHandle _start_vh, VertexHandle _end_vh ) c
     if (to_vertex_handle(*voh_it) == _end_vh)
       return *voh_it;
 
-  return InvalidHalfedgeHandle;
+  return make_smart(InvalidHalfedgeHandle, this);
 }
 
 
@@ -99,6 +98,14 @@ bool PolyConnectivity::is_manifold(VertexHandle _vh) const
 }
 
 //-----------------------------------------------------------------------------
+
+SmartFaceHandle PolyConnectivity::opposite_face_handle(HalfedgeHandle _heh) const
+{
+  return face_handle(make_smart(opposite_halfedge_handle(_heh), this));
+}
+
+//-----------------------------------------------------------------------------
+
 void PolyConnectivity::adjust_outgoing_halfedge(VertexHandle _vh)
 {
   for (ConstVertexOHalfedgeIter vh_it=cvoh_iter(_vh); vh_it.is_valid(); ++vh_it)
