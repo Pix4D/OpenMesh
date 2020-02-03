@@ -174,17 +174,15 @@ protected:
       // edge property ep_pos_) in the vertex property vp_pos_;
 
       // Attention! Creating new edges, hence make sure the loop ends correctly.
-      e_end = _m.edges_end();
-      for (eit=_m.edges_begin(); eit != e_end; ++eit)
-        split_edge(_m, *eit );
+      for (auto eh : _m.edges())
+        split_edge(_m, eh );
 
 
       // Commit changes in topology and reconsitute consistency
 
       // Attention! Creating new faces, hence make sure the loop ends correctly.
-      f_end   = _m.faces_end();
-      for (fit = _m.faces_begin(); fit != f_end; ++fit)
-        split_face(_m, *fit );
+      for (auto fh : _m.faces())
+        split_face(_m, fh );
 
       if(_update_points) {
         // Commit changes in geometry
