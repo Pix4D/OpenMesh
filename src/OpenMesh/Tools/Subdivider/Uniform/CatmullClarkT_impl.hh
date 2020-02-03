@@ -100,47 +100,38 @@ CatmullClarkT<MeshType,RealType>::subdivide( MeshType& _m , size_t _n , const bo
   {
 
     // Compute face centroid
-    FaceIter f_itr   = _m.faces_begin();
-    FaceIter f_end   = _m.faces_end();
-    for ( ; f_itr != f_end; ++f_itr)
+    for ( auto fh : _m.faces())
     {
       Point centroid;
-      _m.calc_face_centroid( *f_itr, centroid);
-      _m.property( fp_pos_, *f_itr ) = centroid;
+      _m.calc_face_centroid( fh, centroid);
+      _m.property( fp_pos_, fh ) = centroid;
     }
 
     // Compute position for new (edge-) vertices and store them in the edge property
-    EdgeIter e_itr   = _m.edges_begin();
-    EdgeIter e_end   = _m.edges_end();
-    for ( ; e_itr != e_end; ++e_itr)
-      compute_midpoint( _m, *e_itr, _update_points );
+    for ( auto eh : _m.edges())
+      compute_midpoint( _m, eh, _update_points );
 
     // position updates activated?
     if(_update_points)
     {
       // compute new positions for old vertices
-      VertexIter v_itr = _m.vertices_begin();
-      VertexIter v_end = _m.vertices_end();
-      for ( ; v_itr != v_end; ++v_itr)
-        update_vertex( _m, *v_itr );
+      for ( auto vh : _m.vertices())
+        update_vertex( _m, vh );
 
       // Commit changes in geometry
-      v_itr  = _m.vertices_begin();
-      for ( ; v_itr != v_end; ++v_itr)
-        _m.set_point(*v_itr, _m.property( vp_pos_, *v_itr ) );
+      for ( auto vh : _m.vertices())
+        _m.set_point(vh, _m.property( vp_pos_, vh ) );
     }
 
     // Split each edge at midpoint stored in edge property ep_pos_;
     // Attention! Creating new edges, hence make sure the loop ends correctly.
-    e_itr = _m.edges_begin();
-    for ( ; e_itr != e_end; ++e_itr)
-      split_edge( _m, *e_itr );
+    for ( auto eh : _m.edges())
+      split_edge( _m, eh );
 
     // Commit changes in topology and reconsitute consistency
     // Attention! Creating new faces, hence make sure the loop ends correctly.
-    f_itr   = _m.faces_begin();
-    for ( ; f_itr != f_end; ++f_itr)
-      split_face( _m, *f_itr);
+    for ( auto fh : _m.faces())
+      split_face( _m, fh);
 
 
 #if defined(_DEBUG) || defined(DEBUG)

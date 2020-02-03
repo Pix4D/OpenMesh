@@ -179,45 +179,38 @@ protected:
 
     ///TODO:Implement fixed positions
 
-    typename mesh_t::FaceIter   fit, f_end;
-    typename mesh_t::EdgeIter   eit, e_end;
-    typename mesh_t::VertexIter vit;
-
     // Do _n subdivisions
     for (size_t i=0; i < _n; ++i)
     {
 
       // This is an interpolating scheme, old vertices remain the same.
       typename mesh_t::VertexIter initialVerticesEnd = _m.vertices_end();
-      for ( vit  = _m.vertices_begin(); vit != initialVerticesEnd; ++vit)
-        _m.property( vp_pos_, *vit ) = _m.point(*vit);
+      for ( auto vh : _m.vertices())
+        _m.property( vp_pos_, vh ) = _m.point(vh);
 
       // Compute position for new vertices and store them in the edge property
-      for (eit=_m.edges_begin(); eit != _m.edges_end(); ++eit)
-        compute_midpoint( _m, *eit );
+      for (auto eh : _m.edges())
+        compute_midpoint( _m, eh);
 
 
       // Split each edge at midpoint and store precomputed positions (stored in
       // edge property ep_pos_) in the vertex property vp_pos_;
 
       // Attention! Creating new edges, hence make sure the loop ends correctly.
-      e_end = _m.edges_end();
-      for (eit=_m.edges_begin(); eit != e_end; ++eit)
-        split_edge(_m, *eit );
+      for (auto eh : _m.edges())
+        split_edge(_m, eh );
 
 
       // Commit changes in topology and reconsitute consistency
 
       // Attention! Creating new faces, hence make sure the loop ends correctly.
-      f_end   = _m.faces_end();
-      for (fit = _m.faces_begin(); fit != f_end; ++fit)
-        split_face(_m, *fit );
+      for (auto fh : _m.faces())
+        split_face(_m, fh );
 
 
       // Commit changes in geometry
-      for ( vit  = /*initialVerticesEnd;*/_m.vertices_begin();
-            vit != _m.vertices_end(); ++vit)
-        _m.set_point(*vit, _m.property( vp_pos_, *vit ) );
+      for ( auto vh : _m.vertices())
+        _m.set_point(vh, _m.property( vp_pos_, vh ) );
 
 #if defined(_DEBUG) || defined(DEBUG)
       // Now we have an consistent mesh!

@@ -162,11 +162,6 @@ protected:
 
     ///TODO:Implement fixed positions
 
-    typename MeshType::VertexIter       vit;
-    typename MeshType::VertexVertexIter vvit;
-    typename MeshType::EdgeIter         eit;
-    typename MeshType::FaceIter         fit;
-    typename MeshType::FaceVertexIter   fvit;
     typename MeshType::VertexHandle     vh;
     typename MeshType::HalfedgeHandle   heh;
     typename MeshType::Point            pos(0,0,0), zero(0,0,0);
@@ -175,22 +170,22 @@ protected:
     for (size_t l=0; l<_n; ++l)
     {
       // tag existing edges
-      for (eit=_m.edges_begin(); eit != _m.edges_end();++eit)
+      for (auto eh : _m.edges())
       {
-        _m.status( *eit ).set_tagged( true );
-        if ( (gen%2) && _m.is_boundary(*eit) )
-          compute_new_boundary_points( _m, *eit ); // *) creates new vertices
+        _m.status( eh ).set_tagged( true );
+        if ( (gen%2) && _m.is_boundary(eh) )
+          compute_new_boundary_points( _m, eh ); // *) creates new vertices
       }
 
       // do relaxation of old vertices, but store new pos in property vp_pos_
 
-      for (vit=_m.vertices_begin(); vit!=_m.vertices_end(); ++vit)
+      for (auto vh : _m.vertices())
       {
-        if ( _m.is_boundary(*vit) )
+        if ( _m.is_boundary(vh) )
         {
           if ( gen%2 )
           {
-            heh  = _m.halfedge_handle(*vit);
+            heh  = _m.halfedge_handle(vh);
             if (heh.is_valid()) // skip isolated newly inserted vertices *)
             {
               typename OpenMesh::HalfedgeHandle 
@@ -203,60 +198,59 @@ protected:
               pos += _m.point(_m.from_vertex_handle(prev_heh));
               pos *= real_t(4.0);
 
-              pos += real_t(19.0) * _m.point( *vit );
+              pos += real_t(19.0) * _m.point( vh );
               pos *= _1over27;
 
-              _m.property( vp_pos_, *vit ) = pos;
+              _m.property( vp_pos_, vh ) = pos;
             }
           }
           else
-            _m.property( vp_pos_, *vit ) = _m.point( *vit );
+            _m.property( vp_pos_, vh ) = _m.point( vh );
         }
         else
         {
           size_t valence=0;
 
           pos = zero;
-          for ( vvit = _m.vv_iter(*vit); vvit.is_valid(); ++vvit)
+          for ( auto vvh : _m.vv_range(vh))
           {
-            pos += _m.point( *vvit );
+            pos += _m.point( vvh );
             ++valence;
           }
           pos *= weights_[ valence ].second;
-          pos += weights_[ valence ].first * _m.point(*vit);
-          _m.property( vp_pos_, *vit ) =  pos;
+          pos += weights_[ valence ].first * _m.point(vh);
+          _m.property( vp_pos_, vh ) =  pos;
         }
       }   
 
       // insert new vertices, but store pos in vp_pos_
-      typename MeshType::FaceIter fend = _m.faces_end();
-      for (fit = _m.faces_begin();fit != fend; ++fit)
+      for (auto fh : _m.faces())
       {
-        if ( (gen%2) && _m.is_boundary(*fit))
+        if ( (gen%2) && _m.is_boundary(fh))
         {
-          boundary_split( _m, *fit );
+          boundary_split( _m, fh );
         }
         else
         {
-          fvit = _m.fv_iter( *fit );
+          auto fvit = _m.fv_iter( fh );
           pos  = _m.point(  *fvit);
           pos += _m.point(*(++fvit));
           pos += _m.point(*(++fvit));
           pos *= _1over3;
           vh   = _m.add_vertex( zero );
           _m.property( vp_pos_, vh ) = pos;
-          _m.split( *fit, vh );
+          _m.split( fh, vh );
         }
       }
 
       // commit new positions (now iterating over all vertices)
-      for (vit=_m.vertices_begin();vit != _m.vertices_end(); ++vit)
-        _m.set_point(*vit, _m.property( vp_pos_, *vit ) );
+      for (auto vh : _m.vertices())
+        _m.set_point(vh, _m.property( vp_pos_, vh ) );
       
       // flip old edges
-      for (eit=_m.edges_begin(); eit != _m.edges_end(); ++eit)
-        if ( _m.status( *eit ).tagged() && !_m.is_boundary( *eit ) )
-          _m.flip(*eit);
+      for (auto eh : _m.edges())
+        if ( _m.status( eh ).tagged() && !_m.is_boundary( eh ) )
+          _m.flip(eh);
 
       // Now we have an consistent mesh!
       ASSERT_CONSISTENCY( MeshType, _m );
