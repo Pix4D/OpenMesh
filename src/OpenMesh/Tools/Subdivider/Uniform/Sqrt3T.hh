@@ -162,8 +162,6 @@ protected:
 
     ///TODO:Implement fixed positions
 
-    typename MeshType::VertexHandle     vh;
-    typename MeshType::HalfedgeHandle   heh;
     typename MeshType::Point            pos(0,0,0), zero(0,0,0);
     size_t                            &gen = _m.property( mp_gen_ );
 
@@ -185,11 +183,10 @@ protected:
         {
           if ( gen%2 )
           {
-            heh  = _m.halfedge_handle(vh);
+            auto heh  = _m.halfedge_handle(vh);
             if (heh.is_valid()) // skip isolated newly inserted vertices *)
             {
-              typename OpenMesh::HalfedgeHandle 
-                prev_heh = _m.prev_halfedge_handle(heh);
+              auto prev_heh = _m.prev_halfedge_handle(heh);
 
               assert( _m.is_boundary(heh     ) );
               assert( _m.is_boundary(prev_heh) );
@@ -237,7 +234,7 @@ protected:
           pos += _m.point(*(++fvit));
           pos += _m.point(*(++fvit));
           pos *= _1over3;
-          vh   = _m.add_vertex( zero );
+          auto vh = _m.add_vertex( zero );
           _m.property( vp_pos_, vh ) = pos;
           _m.split( fh, vh );
         }
