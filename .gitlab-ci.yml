@@ -3,7 +3,7 @@
 # This is an auto generated file. Do not make               #
 # changes to this file. They possible will be overriden.    #
 #                                                           #
-# To make persistent changes changes files in               #
+# To make persistent changes, changes files in              #
 # ./CI/gitlab-ci/ ...                                       #
 # and regenerate this file with the configuration tool      #
 # python3 ./CI/gitlab-ci/assemble-gitlab-ci.py              #
