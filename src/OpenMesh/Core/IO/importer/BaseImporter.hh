@@ -91,6 +91,9 @@ public:
   // add a vertex with coordinate \c _point
   virtual VertexHandle add_vertex(const Vec3f& _point) = 0;
 
+  // add a vertex with coordinate \c _point
+  virtual VertexHandle add_vertex(const Vec3d& _point) { return add_vertex(Vec3f(_point)); }
+
   // add a vertex without coordinate. Use set_point to set the position deferred
   virtual VertexHandle add_vertex() = 0;
 
@@ -121,6 +124,9 @@ public:
 
   // set vertex normal
   virtual void set_normal(VertexHandle _vh, const Vec3f& _normal) = 0;
+
+  // set vertex normal
+  virtual void set_normal(VertexHandle _vh, const Vec3d& _normal) { set_normal(_vh, Vec3f(_normal)); }
 
   // set vertex color
   virtual void set_color(VertexHandle _vh, const Vec3uc& _color) = 0;
