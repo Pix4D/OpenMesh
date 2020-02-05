@@ -90,11 +90,15 @@ public:
 
   // get vertex data
   virtual Vec3f  point(VertexHandle _vh)    const = 0;
+  virtual Vec3d  pointd(VertexHandle _vh)   const = 0;
+  virtual bool   is_point_double()          const = 0;
   virtual Vec3f  normal(VertexHandle _vh)   const = 0;
+  virtual Vec3d  normald(VertexHandle _vh)  const = 0;
+  virtual bool   is_normal_double()         const = 0;
   virtual Vec3uc color(VertexHandle _vh)    const = 0;
   virtual Vec4uc colorA(VertexHandle _vh)   const = 0;
-  virtual Vec3ui colori(VertexHandle _vh)    const = 0;
-  virtual Vec4ui colorAi(VertexHandle _vh)   const = 0;
+  virtual Vec3ui colori(VertexHandle _vh)   const = 0;
+  virtual Vec4ui colorAi(VertexHandle _vh)  const = 0;
   virtual Vec3f colorf(VertexHandle _vh)    const = 0;
   virtual Vec4f colorAf(VertexHandle _vh)   const = 0;
   virtual Vec2f  texcoord(VertexHandle _vh) const = 0;

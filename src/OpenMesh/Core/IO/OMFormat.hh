@@ -289,7 +289,7 @@ namespace OMFormat {
   inline size_t chunk_header_size( void ) { return sizeof(uint16); }
 
 
-  /// Return the size of a scale in bytes.
+  /// Return the size of a scaler in bytes.
   inline size_t scalar_size( const Chunk::Header& _hdr )
   {
     return _hdr.float_ ? (0x01 << _hdr.bits_) : (0x04 << _hdr.bits_);
