@@ -81,7 +81,7 @@ _OMWriter_& OMWriter() { return __OMWriterInstance; }
 
 
 const OMFormat::uchar _OMWriter_::magic_[3] = "OM";
-const OMFormat::uint8 _OMWriter_::version_  = OMFormat::mk_version(2,0);
+const OMFormat::uint8 _OMWriter_::version_  = OMFormat::mk_version(2,1);
 
 
 _OMWriter_::
@@ -181,6 +181,7 @@ bool _OMWriter_::write_binary(std::ostream& _os, BaseExporter& _be,
 
   unsigned int i, nV, nF;
   Vec3f v;
+  Vec3d vd;
   Vec2f t;
 
   // -------------------- write header
@@ -211,14 +212,28 @@ bool _OMWriter_::write_binary(std::ostream& _os, BaseExporter& _be,
     chunk_header.name_     = false;
     chunk_header.entity_   = OMFormat::Chunk::Entity_Vertex;
     chunk_header.type_     = OMFormat::Chunk::Type_Pos;
-    chunk_header.signed_   = OMFormat::is_signed(v[0]);
-    chunk_header.float_    = OMFormat::is_float(v[0]);
-    chunk_header.dim_      = OMFormat::dim(v);
-    chunk_header.bits_     = OMFormat::bits(v[0]);
+    if (_be.is_point_double())
+    {
+      chunk_header.signed_   = OMFormat::is_signed(vd[0]);
+      chunk_header.float_    = OMFormat::is_float(vd[0]);
+      chunk_header.dim_      = OMFormat::dim(vd);
+      chunk_header.bits_     = OMFormat::bits(vd[0]);
+    }
+    else
+    {
+      chunk_header.signed_   = OMFormat::is_signed(v[0]);
+      chunk_header.float_    = OMFormat::is_float(v[0]);
+      chunk_header.dim_      = OMFormat::dim(v);
+      chunk_header.bits_     = OMFormat::bits(v[0]);
+    }
 
     bytes += store( _os, chunk_header, swap );
-    for (i=0, nV=header.n_vertices_; i<nV; ++i)
-      bytes += vector_store( _os, _be.point(VertexHandle(i)), swap );
+    if (_be.is_point_double())
+      for (i=0, nV=header.n_vertices_; i<nV; ++i)
+        bytes += vector_store( _os, _be.pointd(VertexHandle(i)), swap );
+    else
+      for (i=0, nV=header.n_vertices_; i<nV; ++i)
+        bytes += vector_store( _os, _be.point(VertexHandle(i)), swap );
   }
 
 
@@ -226,18 +241,34 @@ bool _OMWriter_::write_binary(std::ostream& _os, BaseExporter& _be,
   if (_be.n_vertices() && _opt.check( Options::VertexNormal ))
   {
     Vec3f n = _be.normal(VertexHandle(0));
+    Vec3d nd = _be.normald(VertexHandle(0));
 
     chunk_header.name_     = false;
     chunk_header.entity_   = OMFormat::Chunk::Entity_Vertex;
     chunk_header.type_     = OMFormat::Chunk::Type_Normal;
-    chunk_header.signed_   = OMFormat::is_signed(n[0]);
-    chunk_header.float_    = OMFormat::is_float(n[0]);
-    chunk_header.dim_      = OMFormat::dim(n);
-    chunk_header.bits_     = OMFormat::bits(n[0]);
+    if (_be.is_normal_double())
+    {
+      chunk_header.signed_   = OMFormat::is_signed(nd[0]);
+      chunk_header.float_    = OMFormat::is_float(nd[0]);
+      chunk_header.dim_      = OMFormat::dim(nd);
+      chunk_header.bits_     = OMFormat::bits(nd[0]);
+    }
+    else
+    {
+      chunk_header.signed_   = OMFormat::is_signed(n[0]);
+      chunk_header.float_    = OMFormat::is_float(n[0]);
+      chunk_header.dim_      = OMFormat::dim(n);
+      chunk_header.bits_     = OMFormat::bits(n[0]);
+    }
 
     bytes += store( _os, chunk_header, swap );
-    for (i=0, nV=header.n_vertices_; i<nV; ++i)
-      bytes += vector_store( _os, _be.normal(VertexHandle(i)), swap );
+    if (_be.is_normal_double())
+      for (i=0, nV=header.n_vertices_; i<nV; ++i)
+        bytes += vector_store( _os, _be.normald(VertexHandle(i)), swap );
+    else
+      for (i=0, nV=header.n_vertices_; i<nV; ++i)
+        bytes += vector_store( _os, _be.normal(VertexHandle(i)), swap );
+
   }
 
   // ---------- write vertex color
