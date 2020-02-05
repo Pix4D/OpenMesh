@@ -350,6 +350,13 @@ namespace OMFormat {
 #endif
   }
 
+  template <typename T> bool is_double(const T&)
+  {
+    return false;
+  }
+
+  template <> bool is_double<double>(const double&);
+
   template <typename T> bool is_integer(const T)
   {
 #if defined(OM_MISSING_HEADER_LIMITS)

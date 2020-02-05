@@ -65,6 +65,7 @@
 #include <OpenMesh/Core/Utils/vector_cast.hh>
 #include <OpenMesh/Core/Utils/color_cast.hh>
 #include <OpenMesh/Core/IO/exporter/BaseExporter.hh>
+#include <OpenMesh/Core/IO/OMFormat.hh>
 
 
 //=== NAMESPACES ==============================================================
