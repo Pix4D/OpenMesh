@@ -253,6 +253,19 @@ class PropertyManager {
           }
         }
 
+
+        /**
+         * Create property manager referring to a copy of the current property.
+         * This can be used to explicitely create a copy of a named property. The cloned property
+         * will be unnamed.
+         */
+        PropertyManager clone()
+        {
+          PropertyManager result(this->mesh());
+          Storage::copy(*this, result);
+          return result;
+        }
+
         PropertyManager& operator=(const PropertyManager& rhs)
         {
           if (&mesh_ == &rhs.mesh_ && prop_ == rhs.prop_)
