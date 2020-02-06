@@ -355,7 +355,10 @@ namespace OMFormat {
     return false;
   }
 
-  template <> bool is_double<double>(const double&);
+  template <> inline bool is_double(const double&)
+  {
+    return true;
+  }
 
   template <typename T> bool is_integer(const T)
   {
