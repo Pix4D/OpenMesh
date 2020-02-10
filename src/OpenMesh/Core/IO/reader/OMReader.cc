@@ -355,6 +355,10 @@ bool _OMReader_::read_binary_vertex_chunk(std::istream &_is, BaseImporter &_bi, 
             _bi.set_normal(VertexHandle(int(vidx)), v3d);
         }
       }
+      else
+      {
+        omerr() << "Unknown vertex normal format" << std::endl;
+      }
       break;
 
     case Chunk::Type_Texcoord:
@@ -442,6 +446,7 @@ bool _OMReader_::read_binary_face_chunk(std::istream &_is, BaseImporter &_bi, Op
 
   size_t fidx = 0;
   OpenMesh::Vec3f v3f;  // normal
+  OpenMesh::Vec3d v3d;  // normal as double
   OpenMesh::Vec3uc v3uc; // rgb
   OpenMesh::Attributes::StatusInfo status;
 
@@ -496,10 +501,26 @@ bool _OMReader_::read_binary_face_chunk(std::istream &_is, BaseImporter &_bi, Op
       assert( OMFormat::dimensions(chunk_header_) == size_t(OpenMesh::Vec3f::dim()));
 
       fileOptions_ += Options::FaceNormal;
-      for (; fidx < header_.n_faces_ && !_is.eof(); ++fidx) {
-        bytes_ += vector_restore(_is, v3f, _swap);
-        if( fileOptions_.face_has_normal() && _opt.face_has_normal())
-          _bi.set_normal(FaceHandle(int(fidx)), v3f);
+
+      if (chunk_header_.bits_ == OMFormat::bits(0.0f)) // read floats
+      {
+        for (; fidx < header_.n_faces_ && !_is.eof(); ++fidx) {
+          bytes_ += vector_restore(_is, v3f, _swap);
+          if( fileOptions_.face_has_normal() && _opt.face_has_normal())
+            _bi.set_normal(FaceHandle(int(fidx)), v3f);
+        }
+      }
+      else if (chunk_header_.bits_ == OMFormat::bits(0.0)) // read doubles
+      {
+        for (; fidx < header_.n_faces_ && !_is.eof(); ++fidx) {
+          bytes_ += vector_restore(_is, v3d, _swap);
+          if( fileOptions_.face_has_normal() && _opt.face_has_normal())
+            _bi.set_normal(FaceHandle(int(fidx)), v3d);
+        }
+      }
+      else
+      {
+        omerr() << "Unknown face normal format" << std::endl;
       }
       break;
 

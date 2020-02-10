@@ -352,6 +352,12 @@ public:
       mesh_.set_normal(_fh, vector_cast<Normal>(_normal));
   }
 
+  virtual void set_normal(FaceHandle _fh, const Vec3d& _normal) override
+  {
+    if (mesh_.has_face_normals())
+      mesh_.set_normal(_fh, vector_cast<Normal>(_normal));
+  }
+
   virtual void set_color(FaceHandle _fh, const Vec3uc& _color) override
   {
     if (mesh_.has_face_colors())

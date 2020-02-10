@@ -328,6 +328,13 @@ public:
             : Vec3f(0.0f, 0.0f, 0.0f));
   }
 
+  Vec3d  normald(FaceHandle _fh)   const override
+  {
+    return (mesh_.has_face_normals()
+            ? vector_cast<Vec3d>(mesh_.normal(_fh))
+            : Vec3d(0.0, 0.0, 0.0));
+  }
+
   Vec3uc  color(FaceHandle _fh)   const override
   {
     return (mesh_.has_face_colors()

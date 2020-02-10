@@ -122,6 +122,7 @@ public:
   virtual unsigned int
   get_face_texcoords(std::vector<Vec2f>& _hehandles) const = 0;
   virtual Vec3f  normal(FaceHandle _fh)      const = 0;
+  virtual Vec3d  normald(FaceHandle _fh)     const = 0;
   virtual Vec3uc color (FaceHandle _fh)      const = 0;
   virtual Vec4uc colorA(FaceHandle _fh)      const = 0;
   virtual Vec3ui colori(FaceHandle _fh)    const = 0;

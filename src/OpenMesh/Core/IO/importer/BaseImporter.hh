@@ -126,7 +126,7 @@ public:
   virtual void set_normal(VertexHandle _vh, const Vec3f& _normal) = 0;
 
   // set vertex normal
-  virtual void set_normal(VertexHandle _vh, const Vec3d& _normal) { set_normal(_vh, Vec3f(_normal)); }
+  virtual void set_normal(VertexHandle _vh, const Vec3d& _normal) = 0;
 
   // set vertex color
   virtual void set_color(VertexHandle _vh, const Vec3uc& _color) = 0;
@@ -181,6 +181,9 @@ public:
 
   // set face normal
   virtual void set_normal(FaceHandle _fh, const Vec3f& _normal) = 0;
+
+  // set face normal
+  virtual void set_normal(FaceHandle _fh, const Vec3d& _normal) = 0;
 
   // set face color
   virtual void set_color(FaceHandle _fh, const Vec3uc& _color) = 0;
