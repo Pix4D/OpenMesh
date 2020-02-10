@@ -289,7 +289,7 @@ namespace OMFormat {
   inline size_t chunk_header_size( void ) { return sizeof(uint16); }
 
 
-  /// Return the size of a scale in bytes.
+  /// Return the size of a scaler in bytes.
   inline size_t scalar_size( const Chunk::Header& _hdr )
   {
     return _hdr.float_ ? (0x01 << _hdr.bits_) : (0x04 << _hdr.bits_);
@@ -348,6 +348,16 @@ namespace OMFormat {
 #else
     return !std::numeric_limits<T>::is_integer;
 #endif
+  }
+
+  template <typename T> bool is_double(const T&)
+  {
+    return false;
+  }
+
+  template <> inline bool is_double(const double&)
+  {
+    return true;
   }
 
   template <typename T> bool is_integer(const T)

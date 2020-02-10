@@ -65,6 +65,7 @@
 #include <OpenMesh/Core/Utils/vector_cast.hh>
 #include <OpenMesh/Core/Utils/color_cast.hh>
 #include <OpenMesh/Core/IO/exporter/BaseExporter.hh>
+#include <OpenMesh/Core/IO/OMFormat.hh>
 
 
 //=== NAMESPACES ==============================================================
@@ -94,11 +95,33 @@ public:
     return vector_cast<Vec3f>(mesh_.point(_vh));
   }
 
+  Vec3d  pointd(VertexHandle _vh) const override
+  {
+    return vector_cast<Vec3d>(mesh_.point(_vh));
+  }
+
+  bool is_point_double() const override
+  {
+    return OMFormat::is_double(typename Mesh::Point()[0]);
+  }
+
+  bool is_normal_double() const override
+  {
+    return OMFormat::is_double(typename Mesh::Normal()[0]);
+  }
+
   Vec3f  normal(VertexHandle _vh)   const override
   {
     return (mesh_.has_vertex_normals()
-	    ? vector_cast<Vec3f>(mesh_.normal(_vh))
-	    : Vec3f(0.0f, 0.0f, 0.0f));
+      ? vector_cast<Vec3f>(mesh_.normal(_vh))
+      : Vec3f(0.0f, 0.0f, 0.0f));
+  }
+
+  Vec3d  normald(VertexHandle _vh)   const override
+  {
+    return (mesh_.has_vertex_normals()
+      ? vector_cast<Vec3d>(mesh_.normal(_vh))
+      : Vec3d(0.0f, 0.0f, 0.0f));
   }
 
   Vec3uc color(VertexHandle _vh)    const override
@@ -303,6 +326,13 @@ public:
     return (mesh_.has_face_normals()
             ? vector_cast<Vec3f>(mesh_.normal(_fh))
             : Vec3f(0.0f, 0.0f, 0.0f));
+  }
+
+  Vec3d  normald(FaceHandle _fh)   const override
+  {
+    return (mesh_.has_face_normals()
+            ? vector_cast<Vec3d>(mesh_.normal(_fh))
+            : Vec3d(0.0, 0.0, 0.0));
   }
 
   Vec3uc  color(FaceHandle _fh)   const override

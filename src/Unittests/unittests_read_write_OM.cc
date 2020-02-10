@@ -1472,4 +1472,41 @@ TEST_F(OpenMeshReadWriteOM, LoadTriMeshVersion_7_5) {
   EXPECT_FALSE(ok) << file_name;
 }
 
+
+/*
+ * Try to write and load positions and normals that can only be represented by doubles
+ */
+TEST_F(OpenMeshReadWriteOM, WriteAndLoadDoubles) {
+
+  typedef OpenMesh::PolyMesh_ArrayKernelT<OpenMesh::DefaultTraitsDouble> DoublePolyMesh;
+
+  DoublePolyMesh mesh;
+  mesh.request_vertex_normals();
+  mesh.request_face_normals();
+
+  std::vector<OpenMesh::VertexHandle> vertices;
+  for (int i = 0; i < 3; ++i)
+  {
+    vertices.push_back(mesh.add_vertex(DoublePolyMesh::Point(1.0/3.0, std::numeric_limits<double>::min(), std::numeric_limits<double>::max())));
+    mesh.set_normal(vertices.back(), DoublePolyMesh::Normal(1.0/3.0, std::numeric_limits<double>::min(), std::numeric_limits<double>::max()));
+  }
+  auto fh = mesh.add_face(vertices);
+  mesh.set_normal(fh, DoublePolyMesh::Normal(1.0/3.0, std::numeric_limits<double>::min(), std::numeric_limits<double>::max()));
+
+  std::string file_name = "doubles.om";
+
+  OpenMesh::IO::Options opt = OpenMesh::IO::Options::VertexNormal | OpenMesh::IO::Options::FaceNormal;
+  ASSERT_TRUE(OpenMesh::IO::write_mesh(mesh, file_name, opt)) << "Could not write file " << file_name;
+
+  DoublePolyMesh mesh2;
+  mesh2.request_vertex_normals();
+  mesh2.request_face_normals();
+
+  ASSERT_TRUE(OpenMesh::IO::read_mesh(mesh2, file_name, opt)) << "Could not read file " << file_name;
+
+  EXPECT_EQ(mesh.point(OpenMesh::VertexHandle(0)), mesh2.point(OpenMesh::VertexHandle(0)));
+  EXPECT_EQ(mesh.normal(OpenMesh::VertexHandle(0)), mesh2.normal(OpenMesh::VertexHandle(0)));
+  EXPECT_EQ(mesh.normal(OpenMesh::FaceHandle(0)), mesh2.normal(OpenMesh::FaceHandle(0)));
+}
+
 }
