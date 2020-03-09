@@ -353,7 +353,16 @@ struct SmartRangeT
   }
 
 
-
+  template <typename Functor>
+  auto count_if(Functor&& f) -> int
+  {
+    int count = 0;
+    auto range = static_cast<const RangeT*>(this);
+    for (const auto& e : *range)
+      if (f(e))
+        ++count;
+    return count;
+  }
 
 
 };
