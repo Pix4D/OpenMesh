@@ -250,6 +250,37 @@ struct SmartRangeT
     return res;
   }
 
+  /** @brief Compute minimal element.
+  *
+  * Computes the element that minimizes \p f.
+  *
+  *  @param f Functor that is applied to all elements before comparing.
+  */
+  template <typename Functor>
+  auto argmin(Functor&& f) -> HandleT
+  {
+    auto range = static_cast<const RangeT*>(this);
+    auto it    = range->begin();
+    auto min_it = it;
+    auto end   = range->end();
+    assert(it != end);
+
+    typename std::decay<decltype (f(std::declval<HandleT>()))>::type curr_min = f(*it);
+    ++it;
+
+    for (; it != end; ++it)
+    {
+      auto val = f(*it);
+      if (val < curr_min)
+      {
+        curr_min = val;
+        min_it = it;
+      }
+    }
+
+    return *min_it;
+  }
+
   /** @brief Compute maximum.
   *
   * Computes the maximum of all objects returned by functor \p f.
@@ -273,6 +304,38 @@ struct SmartRangeT
       res = max(res, f(*it));
 
     return res;
+  }
+
+
+  /** @brief Compute maximal element.
+  *
+  * Computes the element that maximizes \p f.
+  *
+  *  @param f Functor that is applied to all elements before comparing.
+  */
+  template <typename Functor>
+  auto argmax(Functor&& f) -> HandleT
+  {
+    auto range = static_cast<const RangeT*>(this);
+    auto it    = range->begin();
+    auto max_it = it;
+    auto end   = range->end();
+    assert(it != end);
+
+    typename std::decay<decltype (f(std::declval<HandleT>()))>::type curr_max = f(*it);
+    ++it;
+
+    for (; it != end; ++it)
+    {
+      auto val = f(*it);
+      if (val > curr_max)
+      {
+        curr_max = val;
+        max_it = it;
+      }
+    }
+
+    return *max_it;
   }
 
   /** @brief Computes minimum and maximum.
