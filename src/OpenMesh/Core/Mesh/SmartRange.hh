@@ -353,6 +353,12 @@ struct SmartRangeT
   }
 
 
+  /** @brief Compute number of elements that satisfy a given predicate.
+  *
+  * Computes the numer of elements which satisfy functor \p f.
+  *
+  *  @param f Predicate that elements have to satisfy in order to be counted.
+  */
   template <typename Functor>
   auto count_if(Functor&& f) -> int
   {
