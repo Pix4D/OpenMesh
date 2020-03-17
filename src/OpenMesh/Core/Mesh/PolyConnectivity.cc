@@ -99,13 +99,6 @@ bool PolyConnectivity::is_manifold(VertexHandle _vh) const
 
 //-----------------------------------------------------------------------------
 
-SmartFaceHandle PolyConnectivity::opposite_face_handle(HalfedgeHandle _heh) const
-{
-  return face_handle(make_smart(opposite_halfedge_handle(_heh), this));
-}
-
-//-----------------------------------------------------------------------------
-
 void PolyConnectivity::adjust_outgoing_halfedge(VertexHandle _vh)
 {
   for (ConstVertexOHalfedgeIter vh_it=cvoh_iter(_vh); vh_it.is_valid(); ++vh_it)

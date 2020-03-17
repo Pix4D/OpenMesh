@@ -58,8 +58,8 @@ inline SmartHalfedgeHandle PolyConnectivity::opposite_halfedge_handle(SmartHalfe
 inline SmartHalfedgeHandle PolyConnectivity::ccw_rotated_halfedge_handle(SmartHalfedgeHandle _heh) const { return make_smart(ccw_rotated_halfedge_handle(HalfedgeHandle(_heh)), *this); }
 inline SmartHalfedgeHandle PolyConnectivity::cw_rotated_halfedge_handle(SmartHalfedgeHandle _heh) const  { return make_smart(cw_rotated_halfedge_handle(HalfedgeHandle(_heh)),  *this); }
 
-inline SmartHalfedgeHandle PolyConnectivity::s_halfedge_handle(SmartEdgeHandle _eh, unsigned int _i) { return make_smart(ArrayKernel::s_halfedge_handle(EdgeHandle(_eh), _i), _eh.mesh()); }
-inline SmartEdgeHandle     PolyConnectivity::s_edge_handle(SmartHalfedgeHandle _heh)                 { return make_smart(ArrayKernel::s_edge_handle(HalfedgeHandle(_heh)), _heh.mesh()); }
+inline SmartHalfedgeHandle PolyConnectivity::s_halfedge_handle(SmartEdgeHandle _eh, unsigned int _i)     { return make_smart(ArrayKernel::s_halfedge_handle(EdgeHandle(_eh), _i), _eh.mesh()); }
+inline SmartEdgeHandle     PolyConnectivity::s_edge_handle(SmartHalfedgeHandle _heh)                     { return make_smart(ArrayKernel::s_edge_handle(HalfedgeHandle(_heh)), _heh.mesh()); }
 
 inline SmartHalfedgeHandle PolyConnectivity::halfedge_handle(SmartEdgeHandle _eh, unsigned int _i) const { return make_smart(halfedge_handle(EdgeHandle(_eh), _i), *this); }
 inline SmartEdgeHandle PolyConnectivity::edge_handle(SmartHalfedgeHandle _heh) const                     { return make_smart(edge_handle(HalfedgeHandle(_heh)),    *this); }
@@ -68,6 +68,7 @@ inline SmartHalfedgeHandle PolyConnectivity::halfedge_handle(SmartVertexHandle _
 
 inline SmartFaceHandle PolyConnectivity::face_handle(SmartHalfedgeHandle _heh) const                     { return make_smart(face_handle(HalfedgeHandle(_heh)),    *this); }
 
+inline SmartFaceHandle PolyConnectivity::opposite_face_handle(HalfedgeHandle _heh) const                 { return make_smart(face_handle(opposite_halfedge_handle(_heh)), *this); }
 
 
 /// Generic class for vertex/halfedge/edge/face ranges.
