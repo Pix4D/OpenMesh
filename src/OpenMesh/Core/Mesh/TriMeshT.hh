@@ -178,8 +178,10 @@ public:
   /** \brief Vertex Split: inverse operation to collapse().
    *
    * Insert the new vertex at position v0. The vertex will be added
-   * as the inverse of the vertex split. The faces above the split
+   * as the inverse of the edge collapse. The faces above the split
    * will be correctly attached to the two new edges
+   *
+   * <pre>
    *
    * Before:
    * v_l     v0     v_r
@@ -204,6 +206,8 @@ public:
    *        \|/
    *         x
    *         v1
+   *
+   * </pre>
    *
    * @param _v0_point Point position for the new point
    * @param _v1       Vertex that will be split
@@ -218,8 +222,10 @@ public:
   /** \brief Vertex Split: inverse operation to collapse().
    *
    * Insert the new vertex at position v0. The vertex will be added
-   * as the inverse of the vertex split. The faces above the split
+   * as the inverse of the edge collapse. The faces above the split
    * will be correctly attached to the two new edges
+   *
+   * <pre>
    *
    * Before:
    * v_l     v0     v_r
@@ -244,6 +250,8 @@ public:
    *        \|/
    *         x
    *         v1
+   *
+   * </pre>
    *
    * @param _v0 Vertex handle for the newly inserted point (Input has to be unconnected!)
    * @param _v1 Vertex that will be split
