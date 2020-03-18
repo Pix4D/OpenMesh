@@ -611,6 +611,9 @@ public:
   inline SmartEdgeHandle edge_handle(SmartHalfedgeHandle _heh) const;
   inline SmartFaceHandle face_handle(SmartHalfedgeHandle _heh) const;
 
+  /// returns the face handle of the opposite halfedge
+  inline SmartFaceHandle opposite_face_handle(HalfedgeHandle _heh) const;
+
   //@}
   
   /** \name Begin and end iterators
@@ -1354,11 +1357,6 @@ public:
   bool is_manifold(VertexHandle _vh) const;
 
   /** @} */
-
-  // --- shortcuts ---
-  
-  /// returns the face handle of the opposite halfedge 
-  inline SmartFaceHandle opposite_face_handle(HalfedgeHandle _heh) const;
     
   // --- misc ---
 
