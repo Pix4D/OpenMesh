@@ -371,6 +371,21 @@ struct SmartRangeT
   }
 
 
+  /** @brief Apply a functor to each element.
+  *
+  * Calls functor \p f with each element as parameter
+  *
+  *  @param f Functor that is called for each element.
+  */
+  template <typename Functor>
+  auto for_each(Functor&& f) -> void
+  {
+    auto range = static_cast<const RangeT*>(this);
+    for (const auto& e : *range)
+      f(e);
+  }
+
+
 };
 
 

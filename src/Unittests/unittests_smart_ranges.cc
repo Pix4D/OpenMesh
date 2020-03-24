@@ -197,7 +197,7 @@ TEST_F(OpenMeshSmartRanges, Sum)
  */
 TEST_F(OpenMeshSmartRanges, PropertyManagerAsFunctor)
 {
-  auto myPos = OpenMesh::makeTemporaryProperty<OpenMesh::VertexHandle, Mesh::Point>(mesh_);
+  OpenMesh::VProp<Mesh::Point> myPos(mesh_);
   for (auto vh : mesh_.vertices())
     myPos(vh) = mesh_.point(vh);
 
@@ -215,7 +215,7 @@ TEST_F(OpenMeshSmartRanges, PropertyManagerAsFunctor)
  */
 TEST_F(OpenMeshSmartRanges, ToVector)
 {
-  auto uvs = OpenMesh::makeTemporaryProperty<OpenMesh::HalfedgeHandle, OpenMesh::Vec2d>(mesh_);
+  OpenMesh::HProp<OpenMesh::Vec2d> uvs(mesh_);
 
   for (auto heh : mesh_.halfedges())
     uvs(heh) = OpenMesh::Vec2d(heh.idx(), (heh.idx() * 13)%7);
@@ -237,7 +237,7 @@ TEST_F(OpenMeshSmartRanges, ToVector)
  */
 TEST_F(OpenMeshSmartRanges, ToArray)
 {
-  auto uvs = OpenMesh::makeTemporaryProperty<OpenMesh::HalfedgeHandle, OpenMesh::Vec2d>(mesh_);
+  OpenMesh::HProp<OpenMesh::Vec2d> uvs(mesh_);
 
   for (auto heh : mesh_.halfedges())
     uvs(heh) = OpenMesh::Vec2d(heh.idx(), (heh.idx() * 13)%7);
@@ -256,7 +256,7 @@ TEST_F(OpenMeshSmartRanges, BoundingBox)
 {
   // The custom vecs OpenMesh are tested with here do not implement a min or max function.
   // Thus we convert here.
-  auto myPos = OpenMesh::makeTemporaryProperty<OpenMesh::VertexHandle, OpenMesh::Vec3f>(mesh_);
+  OpenMesh::VProp<OpenMesh::Vec3f> myPos(mesh_);
   for (auto vh : mesh_.vertices())
     for (size_t i = 0; i < 3; ++i)
       myPos(vh)[i] = mesh_.point(vh)[i];
@@ -278,6 +278,21 @@ TEST_F(OpenMeshSmartRanges, BoundingBox)
     fh.halfedges().min(uvs);
     fh.halfedges().max(uvs);
   }
+}
+
+
+/* Test for each
+ */
+TEST_F(OpenMeshSmartRanges, ForEach)
+{
+  std::vector<int> vec;
+  auto f = [&vec](OpenMesh::VertexHandle vh) { vec.push_back(vh.idx()); };
+
+  mesh_.vertices().for_each(f);
+
+  ASSERT_EQ(vec.size(), mesh_.n_vertices()) << "vec has wrong size";
+  for (size_t i = 0; i < vec.size(); ++i)
+    EXPECT_EQ(vec[i], i) << "wrong index in vector";
 }
 
 
