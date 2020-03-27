@@ -65,10 +65,17 @@ struct Identity
 
 }
 
+template <typename RangeT, typename HandleT, typename Functor>
+struct FilteredSmartRangeT;
+
 /// Base class for all smart range types
 template <typename RangeT, typename HandleT>
 struct SmartRangeT
 {
+  using Handle = HandleT;
+  using SmartRange = SmartRangeT<RangeT, HandleT>;
+  using Range = RangeT;
+
   // TODO: Someone with better c++ knowledge may improve the code below.
 
   /** @brief Computes the sum of elements.
@@ -386,6 +393,63 @@ struct SmartRangeT
   }
 
 
+  /** @brief Only iterate over a subset of elements
+   *
+   * Returns a smart range which skips all elements that do not satisfy functor \p f
+   *
+   * @param f Functor that needs to be evaluated to true if the element should not be skipped.
+   */
+  template <typename Functor>
+  auto filtered(Functor&& f) -> FilteredSmartRangeT<SmartRange, Handle, typename std::decay<Functor>::type>
+  {
+    auto range = static_cast<const RangeT*>(this);
+    auto b = (*range).begin();
+    auto e = (*range).end();
+    return FilteredSmartRangeT<SmartRange, Handle, typename std::decay<Functor>::type>(f, b, e);
+  }
+
+};
+
+
+/// Class which applies a filter when iterating over elements
+template <typename RangeT, typename HandleT, typename Functor>
+struct FilteredSmartRangeT : public SmartRangeT<FilteredSmartRangeT<RangeT, HandleT, Functor>, HandleT>
+{
+  using BaseRange = SmartRangeT<FilteredSmartRangeT<RangeT, HandleT, Functor>, HandleT>;
+  using BaseIterator = decltype((std::declval<typename RangeT::Range>().begin()));
+
+  struct FilteredIterator : public BaseIterator
+  {
+
+    FilteredIterator(Functor f, BaseIterator it, BaseIterator end): BaseIterator(it), f_(f), end_(end)
+    {
+      if (!f_(*(*this))) // if start is not valid go to first valid one
+        operator++();
+    }
+
+    FilteredIterator& operator++()
+    {
+      if (BaseIterator::operator==(end_)) // don't go past end
+        return *this;
+
+      // go to next valid one
+      do
+        BaseIterator::operator++();
+      while (BaseIterator::operator!=(end_) && !f_(*(*this)));
+      return *this;
+    }
+
+    Functor f_;
+    BaseIterator end_;
+  };
+
+  FilteredSmartRangeT(Functor f, BaseIterator begin, BaseIterator end) : f_(f), begin_(begin), end_(end){}
+  FilteredIterator begin() const { return FilteredIterator(f_, begin_, end_); }
+  FilteredIterator end()   const { return FilteredIterator(f_, end_, end_); }
+
+  Functor f_;
+  BaseIterator begin_;
+  BaseIterator end_;
 };
 
 
