@@ -415,10 +415,10 @@ TEST_F(OpenMeshSmartHandles, ComplicatedNavigtaion)
  */
 TEST_F(OpenMeshSmartHandles, Performance)
 {
-#if DEBUG
-  int n_tests = 300000;
-#else
+#if NDEBUG
   int n_tests = 10000000;
+#else
+  int n_tests = 300000;
 #endif
 
   auto t_before_old = std::chrono::high_resolution_clock::now();

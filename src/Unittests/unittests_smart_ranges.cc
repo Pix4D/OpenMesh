@@ -296,5 +296,54 @@ TEST_F(OpenMeshSmartRanges, ForEach)
 }
 
 
+/* Test filter
+ */
+TEST_F(OpenMeshSmartRanges, Filtered)
+{
+  using VH = OpenMesh::VertexHandle;
+
+  auto is_even            = [](VH vh) { return vh.idx() % 2 == 0; };
+  auto is_odd             = [](VH vh) { return vh.idx() % 2 == 1; };
+  auto is_divisible_by_3  = [](VH vh) { return vh.idx() % 3 == 0; };
+  auto to_id              = [](VH vh) { return vh.idx(); };
+
+  auto even_vertices = mesh_.vertices().filtered(is_even).to_vector(to_id);
+  EXPECT_EQ(even_vertices.size(), 4);
+  EXPECT_EQ(even_vertices[0], 0);
+  EXPECT_EQ(even_vertices[1], 2);
+  EXPECT_EQ(even_vertices[2], 4);
+  EXPECT_EQ(even_vertices[3], 6);
+
+  auto odd_vertices = mesh_.vertices().filtered(is_odd).to_vector(to_id);
+  EXPECT_EQ(odd_vertices.size(), 4);
+  EXPECT_EQ(odd_vertices[0], 1);
+  EXPECT_EQ(odd_vertices[1], 3);
+  EXPECT_EQ(odd_vertices[2], 5);
+  EXPECT_EQ(odd_vertices[3], 7);
+
+  auto even_3_vertices = mesh_.vertices().filtered(is_even).filtered(is_divisible_by_3).to_vector(to_id);
+  EXPECT_EQ(even_3_vertices.size(), 2);
+  EXPECT_EQ(even_3_vertices[0], 0);
+  EXPECT_EQ(even_3_vertices[1], 6);
+
+  auto odd_3_vertices = mesh_.vertices().filtered(is_odd).filtered(is_divisible_by_3).to_vector(to_id);
+  EXPECT_EQ(odd_3_vertices.size(), 1);
+  EXPECT_EQ(odd_3_vertices[0], 3);
+
+
+  // create a vector of vertices in the order they are visited when iterating over face vertices, but every vertex only once
+  std::vector<VH> vertices;
+  OpenMesh::VProp<bool> to_be_processed(true, mesh_);
+  auto store_vertex = [&](VH vh) { to_be_processed(vh) = false; vertices.push_back(vh); };
+
+  for (auto fh : mesh_.faces())
+    fh.vertices().filtered(to_be_processed).for_each(store_vertex);
+
+  EXPECT_EQ(vertices.size(), mesh_.n_vertices()) << " number of visited vertices not correct";
+  EXPECT_TRUE(mesh_.vertices().all_of([&](VH vh) { return !to_be_processed(vh); })) << "did not visit all vertices";
+
+}
+
+
 
 }
