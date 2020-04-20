@@ -88,7 +88,7 @@ namespace Eigen {
   }
 
   template <typename Derived>
-  MatrixBase<Derived> normalize(MatrixBase<Derived> &x) {
+  MatrixBase<Derived> &normalize(MatrixBase<Derived> &x) {
       x /= x.norm();
       return x;
   }
