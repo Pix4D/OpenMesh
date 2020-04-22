@@ -61,12 +61,12 @@
 using namespace OpenMesh;  
 using namespace OpenMesh::Attributes;
 
-struct MyTraits : public OpenMesh::DefaultTraits
+struct MeshViewerWidgetTraits : public OpenMesh::DefaultTraits
 {
   HalfedgeAttributes(OpenMesh::Attributes::PrevHalfedge);
 };
 
-typedef OpenMesh::TriMesh_ArrayKernelT<MyTraits>  MyMesh;
+typedef OpenMesh::TriMesh_ArrayKernelT<MeshViewerWidgetTraits>  MyMesh;
 
 
 
