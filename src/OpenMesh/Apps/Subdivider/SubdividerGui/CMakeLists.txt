@@ -19,6 +19,7 @@ list (APPEND headers "../../QtViewer/MeshViewerWidgetT_impl.hh")
 
 set (sources
   ../../QtViewer/QGLViewerWidget.cc
+  ../../QtViewer/MeshViewerWidget.cc
   ../SubdivideWidget.cc
   ../qtsubdivider.cc
 )
