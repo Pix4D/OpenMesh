@@ -75,7 +75,7 @@ struct ProgTraits : public OpenMesh::DefaultTraits
 
   
 typedef OpenMesh::TriMesh_ArrayKernelT<ProgTraits>  MyMesh;
-typedef MeshViewerWidgetT<MyMesh>                 MeshViewerWidgetProgBase;
+typedef MeshViewerWidgetT<MyMesh>                   MeshViewerWidgetProgBase;
 
 
 //== CLASS DEFINITION =========================================================

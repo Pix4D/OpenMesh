@@ -5,23 +5,16 @@ include_directories (
   ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-# source code directories
-set (directories 
-  ../../QtViewer
-  ../
+set (headers
+  ../MeshViewerWidget.hh
+  ../SubdivideWidget.hh
+  ../../QtViewer/QGLViewerWidget.hh
+  ../../QtViewer/MeshViewerWidgetT.hh
+  ../../QtViewer/MeshViewerWidgetT_impl.hh
 )
-
-# collect all header and source files
-acg_append_files (headers "*.hh" ${directories})
-
-list (APPEND headers "../../QtViewer/MeshViewerWidgetT_impl.hh")
-list (APPEND headers "../../QtViewer/MeshViewerWidget.hh")
-list (APPEND headers "../../QtViewer/QGLViewerWidget.hh")
-
 
 set (sources
   ../../QtViewer/QGLViewerWidget.cc
-  ../../QtViewer/MeshViewerWidget.cc
   ../SubdivideWidget.cc
   ../qtsubdivider.cc
 )

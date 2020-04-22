@@ -5,12 +5,7 @@ include_directories (
   ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-# collect all header and source files
-set (sources
-  ./mkbalancedpm.cc
-)
-
-acg_add_executable (mkbalancedpm ${sources})
+acg_add_executable (mkbalancedpm mkbalancedpm.cc)
 
 target_link_libraries (mkbalancedpm
   OpenMeshCore

@@ -6,15 +6,18 @@ include_directories (
 )
 
 
-# collect all header and source files
-acg_append_files (headers "*.hh" .)
-acg_append_files (sources "*.cc" .)
+set( headers
+  ProgViewerWidget.hh
+  ../QtViewer/QGLViewerWidget.hh
+  ../QtViewer/MeshViewerWidgetT.hh
+  ../QtViewer/MeshViewerWidgetT_impl.hh
+)
 
-list (APPEND sources "../QtViewer/QGLViewerWidget.cc")
-
-list (APPEND headers "../QtViewer/QGLViewerWidget.hh")
-list (APPEND headers "../QtViewer/MeshViewerWidgetT.hh")
-list (APPEND headers "../QtViewer/MeshViewerWidgetT_impl.hh")
+set( sources
+  ProgViewerWidget.cc
+  progviewer.cc  
+  ../QtViewer/QGLViewerWidget.cc
+)
 
 if (WIN32)
   acg_add_executable( ProgViewer WIN32 ${sources} ${headers})

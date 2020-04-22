@@ -5,12 +5,7 @@ include_directories (
   ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-# collect all header and source files
-set (sources
-  ../adaptive_subdivider.cc
-)
-
-acg_add_executable (commandlineAdaptiveSubdivider ${sources})
+acg_add_executable (commandlineAdaptiveSubdivider ../adaptive_subdivider.cc)
 
 target_link_libraries (commandlineAdaptiveSubdivider
   OpenMeshCore
