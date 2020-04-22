@@ -18,6 +18,7 @@ list (APPEND headers "../../QtViewer/MeshViewerWidgetT_impl.hh")
 
 set (sources
   ../../QtViewer/QGLViewerWidget.cc
+  ../../QtViewer/MeshViewerWidget.cc
   ../DecimaterViewerWidget.cc
   ../decimaterviewer.cc
 )
