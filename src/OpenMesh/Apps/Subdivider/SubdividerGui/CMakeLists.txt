@@ -16,6 +16,7 @@ acg_append_files (headers "*.hh" ${directories})
 
 list (APPEND headers "../../QtViewer/MeshViewerWidgetT_impl.hh")
 list (APPEND headers "../../QtViewer/MeshViewerWidget.hh")
+list (APPEND headers "../../QtViewer/QGLViewerWidget.hh")
 
 
 set (sources
