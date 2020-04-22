@@ -72,7 +72,7 @@
 #  define TRIMESH_KERNEL TriMesh_ArrayKernelT
 #endif
 
-#include <OpenMesh/Apps/QtViewer/MeshViewerWidget.hh>
+#include <OpenMesh/Apps/QtViewer/MeshViewerWidgetT.hh>
 
 #include <OpenMesh/Tools/Decimater/DecimaterT.hh>
 #include <OpenMesh/Tools/Decimater/ModNormalFlippingT.hh>
