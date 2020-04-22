@@ -63,7 +63,7 @@ using namespace OpenMesh;
 using namespace OpenMesh::Attributes;
 
 
-struct MyTraits : public OpenMesh::DefaultTraits
+struct ProgTraits : public OpenMesh::DefaultTraits
 {
   VertexAttributes  ( OpenMesh::Attributes::Normal       |
                       OpenMesh::Attributes::Status       );
@@ -74,28 +74,28 @@ struct MyTraits : public OpenMesh::DefaultTraits
 };
 
   
-typedef OpenMesh::TriMesh_ArrayKernelT<MyTraits>  MyMesh;
-typedef MeshViewerWidgetT<MyMesh>                 MeshViewerWidget;
+typedef OpenMesh::TriMesh_ArrayKernelT<ProgTraits>  MyMesh;
+typedef MeshViewerWidgetT<MyMesh>                   MeshViewerWidgetProgBase;
 
 
 //== CLASS DEFINITION =========================================================
 
 	      
 
-class ProgViewerWidget : public MeshViewerWidget
+class ProgViewerWidget : public MeshViewerWidgetProgBase
 {
   Q_OBJECT
    
 public:
 
-  typedef MeshViewerWidget Base;
+  typedef MeshViewerWidgetProgBase Base;
   typedef ProgViewerWidget This;
 
 
 public:   
   /// default constructor
   explicit ProgViewerWidget(QWidget* _parent=0)
-    : MeshViewerWidget(_parent),
+    : MeshViewerWidgetProgBase(_parent),
       n_base_vertices_(0),
       n_base_faces_(0),
       n_detail_vertices_(0),

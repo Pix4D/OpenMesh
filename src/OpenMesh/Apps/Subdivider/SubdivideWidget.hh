@@ -116,7 +116,7 @@ private slots:
 private:
 
   // widgets
-  MeshViewerWidget* viewer_widget_;
+  MeshViewerWidgetSubdivider* viewer_widget_;
 
   QTimer *timer_;
    

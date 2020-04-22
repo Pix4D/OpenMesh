@@ -98,7 +98,7 @@ SubdivideWidget(QWidget* _parent, const char* _name)
   // sel_topo_type will be set when adding the radio button.;
 
   // examiner widget
-  viewer_widget_ = new MeshViewerWidget();
+  viewer_widget_ = new MeshViewerWidgetSubdivider();
 
   vbox->addWidget(viewer_widget_);
 

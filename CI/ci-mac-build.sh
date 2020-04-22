@@ -13,6 +13,8 @@ echo "BuildPath:  $BUILDPATH"
 echo "Path:       $PATH"
 echo "Language:   $LANGUAGE"
 
+cmake --version
+
 echo -e "${OUTPUT}"
 echo ""
 echo "======================================================================"

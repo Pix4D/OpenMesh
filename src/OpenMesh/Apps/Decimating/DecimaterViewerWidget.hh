@@ -91,18 +91,18 @@ struct MyTraits : public DEFAULT_TRAITS
 };
 
 typedef TRIMESH_KERNEL<MyTraits>                     mesh_t;
-typedef MeshViewerWidgetT<mesh_t>                    MeshViewerWidget;
+typedef MeshViewerWidgetT<mesh_t>                    MeshViewerWidgetDecimaterBase;
 
 //== CLASS DEFINITION =========================================================
 
 
-class DecimaterViewerWidget : public MeshViewerWidget
+class DecimaterViewerWidget : public MeshViewerWidgetDecimaterBase
 {
   Q_OBJECT
    
 public:
   
-  typedef MeshViewerWidget inherited_t;
+  typedef MeshViewerWidgetDecimaterBase inherited_t;
 
   typedef Decimater::DecimaterT<mesh_t>                decimater_t;  
   typedef Decimater::ModQuadricT< mesh_t >::Handle        mod_quadric_t;
@@ -119,7 +119,7 @@ public:
 
   /// default constructor
   explicit DecimaterViewerWidget(QWidget* _parent=0)
-    : MeshViewerWidget(_parent),
+    : MeshViewerWidgetDecimaterBase(_parent),
       animate_(false),
       timer_(0),
       steps_(1)
