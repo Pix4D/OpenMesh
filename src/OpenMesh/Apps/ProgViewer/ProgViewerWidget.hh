@@ -95,7 +95,7 @@ public:
 public:   
   /// default constructor
   explicit ProgViewerWidget(QWidget* _parent=0)
-    : MeshViewerWidget(_parent),
+    : MeshViewerWidgetProgBase(_parent),
       n_base_vertices_(0),
       n_base_faces_(0),
       n_detail_vertices_(0),
