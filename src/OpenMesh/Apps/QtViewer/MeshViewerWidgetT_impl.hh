@@ -39,9 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-
-
-#define OPENMESHAPPS_MESHVIEWERWIDGET_CC
+#pragma once
 
 //== INCLUDES =================================================================
 
@@ -69,7 +67,6 @@ using namespace Qt;
 #  undef max
 #endif
 
-using namespace Qt;
 //== IMPLEMENTATION ========================================================== 
 
 

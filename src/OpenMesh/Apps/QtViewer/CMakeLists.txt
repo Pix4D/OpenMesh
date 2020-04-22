@@ -10,9 +10,16 @@ set (directories
   .
 )
 
-# collect all header and source files
-acg_append_files (headers "*.hh" ${directories})
-acg_append_files (sources "*.cc" ${directories})
+set (sources
+  MeshViewerWidget.cc
+  QGLViewerWidget.cc
+  meshviewer.cc
+)
+
+set (headers
+  MeshViewerWidget.hh
+  QGLViewerWidget.hh  
+)
 
 if (WIN32)
   acg_add_executable (QtViewer WIN32 ${sources} ${headers})

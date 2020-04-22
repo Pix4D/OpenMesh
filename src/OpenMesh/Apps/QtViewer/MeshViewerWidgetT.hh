@@ -191,7 +191,7 @@ protected:
 
 
 //=============================================================================
-#if defined(OM_INCLUDE_TEMPLATES) && !defined(OPENMESHAPPS_MESHVIEWERWIDGET_CC)
+#if defined(OM_INCLUDE_TEMPLATES)
 #  define OPENMESH_MESHVIEWERWIDGET_TEMPLATES
 #  include "MeshViewerWidgetT_impl.hh"
 #endif
