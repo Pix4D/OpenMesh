@@ -6,6 +6,22 @@
 
 <!-- --------------------------------------------------------------------- -->
 
+
+<tr valign=top><td><b>9.0</b> (?/?/?)</td><td>
+
+<b>Breaking Changes</b>
+<ul>
+<li>Dropped 32-bit Windows continuous integration and artifact builds.</li>
+</ul>
+
+<b>Build System</b>
+<ul>
+<li>Dropped 32-bit Windows continuous integration and artifact builds.</li>
+</ul>
+
+</tr>
+
+
 <tr valign=top><td><b>8.1</b> (2020/04/23)</td><td>
 
 <b>Breaking Changes</b>
