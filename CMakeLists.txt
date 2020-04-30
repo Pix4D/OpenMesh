@@ -12,6 +12,12 @@ if("${PROJECT_NAME}" STREQUAL "")
     project (OpenMesh)
 endif()
 
+# Set AUTO UIC/MOC Policy to new for CMAKE 3.17 or higher
+if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.17")
+    cmake_policy(SET CMP0100 NEW)
+endif()
+
+
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 	if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "6.0" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "4.9" OR CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL "4.9")
 		message(WARNING "Your version of GCC contains an optimizer bug. Please verify that you do not use -O3!")
