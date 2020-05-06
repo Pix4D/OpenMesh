@@ -437,7 +437,7 @@ struct FilteredSmartRangeT : public SmartRangeT<FilteredSmartRangeT<RangeT, Hand
 
     FilteredIterator(Functor f, BaseIterator it, BaseIterator end): BaseIterator(it), f_(f), end_(end)
     {
-      if (!f_(*(*this))) // if start is not valid go to first valid one
+      if (!BaseIterator::operator==(end_) && !f_(*(*this))) // if start is not valid go to first valid one
         operator++();
     }
 
