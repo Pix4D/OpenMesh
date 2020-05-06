@@ -301,6 +301,7 @@ TEST_F(OpenMeshSmartRanges, ForEach)
 TEST_F(OpenMeshSmartRanges, Filtered)
 {
   using VH = OpenMesh::VertexHandle;
+  using FH = OpenMesh::FaceHandle;
 
   auto is_even            = [](VH vh) { return vh.idx() % 2 == 0; };
   auto is_odd             = [](VH vh) { return vh.idx() % 2 == 1; };
@@ -341,6 +342,47 @@ TEST_F(OpenMeshSmartRanges, Filtered)
 
   EXPECT_EQ(vertices.size(), mesh_.n_vertices()) << " number of visited vertices not correct";
   EXPECT_TRUE(mesh_.vertices().all_of([&](VH vh) { return !to_be_processed(vh); })) << "did not visit all vertices";
+
+  {
+    OpenMesh::FProp<bool> to_be_visited(true, mesh_);
+    int visited_faces_in_main_loop = 0;
+    int visited_faces_in_sub_loop = 0;
+    for (auto fh : mesh_.faces().filtered(to_be_visited))
+    {
+      to_be_visited(fh) = false;
+      ++visited_faces_in_main_loop;
+      for (auto neighbor : fh.faces().filtered(to_be_visited))
+      {
+        to_be_visited(neighbor) = false;
+        ++visited_faces_in_sub_loop;
+      }
+    }
+
+    EXPECT_LT(visited_faces_in_main_loop, mesh_.n_faces()) << "Visted more faces than expected";
+    EXPECT_TRUE(mesh_.faces().all_of([&](FH fh) { return !to_be_visited(fh); })) << "did not visit all faces";
+    EXPECT_EQ(visited_faces_in_main_loop + visited_faces_in_sub_loop, mesh_.n_faces()) << "Did not visited all faces exactly once";
+  }
+
+  {
+    OpenMesh::FProp<bool> to_be_visited(true, mesh_);
+    const auto& to_be_visited_const_ref = to_be_visited;
+    int visited_faces_in_main_loop = 0;
+    int visited_faces_in_sub_loop = 0;
+    for (auto fh : mesh_.faces().filtered(to_be_visited_const_ref))
+    {
+      to_be_visited(fh) = false;
+      ++visited_faces_in_main_loop;
+      for (auto neighbor : fh.faces().filtered(to_be_visited_const_ref))
+      {
+        to_be_visited(neighbor) = false;
+        ++visited_faces_in_sub_loop;
+      }
+    }
+
+    EXPECT_LT(visited_faces_in_main_loop, mesh_.n_faces()) << "Visted more faces than expected";
+    EXPECT_TRUE(mesh_.faces().all_of([&](FH fh) { return !to_be_visited(fh); })) << "did not visit all faces";
+    EXPECT_EQ(visited_faces_in_main_loop + visited_faces_in_sub_loop, mesh_.n_faces()) << "Did not visited all faces exactly once";
+  }
 
 }
 
