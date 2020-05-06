@@ -408,6 +408,20 @@ struct SmartRangeT
     return FilteredSmartRangeT<SmartRange, Handle, typename std::decay<Functor>::type>(f, b, e);
   }
 
+  /** @brief Only iterate over a subset of elements
+   *
+   * Returns a smart range which skips all elements that do not satisfy functor \p f
+   *
+   * @param f Functor that needs to be evaluated to true if the element should not be skipped.
+   */
+  template <typename Functor>
+  auto filtered(Functor& f) -> FilteredSmartRangeT<SmartRange, Handle, const typename std::decay<Functor>::type&>
+  {
+    auto range = static_cast<const RangeT*>(this);
+    auto b = (*range).begin();
+    auto e = (*range).end();
+    return FilteredSmartRangeT<SmartRange, Handle, const typename std::decay<Functor>::type&>(f, b, e);
+  }
 };
 
 
@@ -423,7 +437,7 @@ struct FilteredSmartRangeT : public SmartRangeT<FilteredSmartRangeT<RangeT, Hand
 
     FilteredIterator(Functor f, BaseIterator it, BaseIterator end): BaseIterator(it), f_(f), end_(end)
     {
-      if (!f_(*(*this))) // if start is not valid go to first valid one
+      if (!BaseIterator::operator==(end_) && !f_(*(*this))) // if start is not valid go to first valid one
         operator++();
     }
 
