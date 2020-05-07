@@ -494,7 +494,7 @@ void TriConnectivity::split_copy(EdgeHandle _eh, VertexHandle _vh)
   const VertexHandle v0 = to_vertex_handle(halfedge_handle(_eh, 0));
   const VertexHandle v1 = to_vertex_handle(halfedge_handle(_eh, 1));
 
-  const int nf = n_faces();
+  const size_t nf = n_faces();
 
   // Split the halfedge ( handle will be preserved)
   split(_eh, _vh);
@@ -512,7 +512,7 @@ void TriConnectivity::split_copy(EdgeHandle _eh, VertexHandle _vh)
     {
       FaceHandle fh0 = face_handle(h);
       FaceHandle fh1 = face_handle(opposite_halfedge_handle(prev_halfedge_handle(h)));
-      if (fh0.idx() >= nf) // is fh0 the new face?
+      if (static_cast<size_t>(fh0.idx()) >= nf) // is fh0 the new face?
         std::swap(fh0, fh1);
 
       // copy properties from old face to new face
