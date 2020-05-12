@@ -1567,6 +1567,9 @@ struct PolyConnectivity::ElementRange<FaceHandle>
 
 }//namespace OpenMesh
 
+#define OPENMESH_POLYCONNECTIVITY_INTERFACE_INCLUDE
+#include <OpenMesh/Core/Mesh/SmartHandles.hh>
 #include <OpenMesh/Core/Mesh/PolyConnectivity_inline_impl.hh>
+#undef OPENMESH_POLYCONNECTIVITY_INTERFACE_INCLUDE
 
 #endif//OPENMESH_POLYCONNECTIVITY_HH
