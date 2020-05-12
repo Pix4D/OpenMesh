@@ -40,7 +40,7 @@
  * ========================================================================= */
 
 #ifndef OPENMESH_POLYCONNECTIVITY_INTERFACE_INCLUDE
-#error Don't include this directly, include instead PolyConnectivity.hh
+#error Dont include this directly, include instead PolyConnectivity.hh
 #endif//OPENMESH_POLYCONNECTIVITY_INTERFACE_INCLUDE
 
 //== NAMESPACES ===============================================================
