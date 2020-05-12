@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <Unittests/unittests_common.hh>
 
-#include <OpenMesh/Core/Mesh/SmartHandles.hh>
+#include <OpenMesh/Core/Mesh/PolyConnectivity.hh>
 
 #include <iostream>
 #include <chrono>
