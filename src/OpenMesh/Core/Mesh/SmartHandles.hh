@@ -39,16 +39,9 @@
  *                                                                           *
  * ========================================================================= */
 
-
-#pragma once
-
-
-//== INCLUDES =================================================================
-
-#include "Handles.hh"
-#include <OpenMesh/Core/Mesh/PolyConnectivity.hh>
-#include <OpenMesh/Core/System/OpenMeshDLLMacros.hh>
-
+#ifndef OPENMESH_POLYCONNECTIVITY_INTERFACE_INCLUDE
+#error Don't include this directly, include instead PolyConnectivity.hh
+#endif//OPENMESH_POLYCONNECTIVITY_INTERFACE_INCLUDE
 
 //== NAMESPACES ===============================================================
 
@@ -357,9 +350,6 @@ inline bool SmartFaceHandle::is_boundary() const
   assert(mesh() != nullptr);
   return mesh()->is_boundary(*this);
 }
-
-
-
 //=============================================================================
 } // namespace OpenMesh
 //=============================================================================
