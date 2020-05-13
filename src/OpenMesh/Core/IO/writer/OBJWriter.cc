@@ -274,7 +274,7 @@ write(std::ostream& _out, BaseExporter& _be, Options _opt, std::streamsize _prec
     unsigned int num = _be.get_face_texcoords(texCoords);
     for(size_t i = 0; i < num ; ++i)
     {
-      texMap[texCoords[i]] = i;
+      texMap[texCoords[i]] = static_cast<int>(i);
     }
   }
 
