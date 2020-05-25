@@ -313,7 +313,8 @@ test-release-clang-cpp14:
   dependencies: [build-release-clang-cpp14]
   needs: [build-release-clang-cpp14]
   artifacts:
-  	- *
+    paths:
+      - *
     reports:
       junit:
         report.xml
