@@ -60,11 +60,8 @@ test-debug-gcc-cpp11:
   tags: [Docker]
   dependencies: [build-debug-gcc-cpp11]
   artifacts: 
-     Unittests/report.xml
-     Unittests/report-customvec.xml
-     Unittests/report-doublevec.xml
-  reports:
-     junit:
+    reports:
+      junit:
         Unittests/report.xml
         Unittests/report-customvec.xml
         Unittests/report-doublevec.xml
@@ -98,11 +95,8 @@ test-release-gcc-cpp11:
   tags: [Docker]
   dependencies: [build-release-gcc-cpp11]
   artifacts: 
-     Unittests/report.xml
-     Unittests/report-customvec.xml
-     Unittests/report-doublevec.xml
-  reports:
-     junit:
+    reports:
+      junit:
         Unittests/report.xml
         Unittests/report-customvec.xml
         Unittests/report-doublevec.xml
@@ -136,11 +130,8 @@ test-debug-clang-cpp11:
   tags: [Docker]
   dependencies: [build-debug-clang-cpp11]
   artifacts: 
-     Unittests/report.xml
-     Unittests/report-customvec.xml
-     Unittests/report-doublevec.xml
-  reports:
-     junit:
+    reports:
+      junit:
         Unittests/report.xml
         Unittests/report-customvec.xml
         Unittests/report-doublevec.xml
@@ -174,11 +165,8 @@ test-release-clang-cpp11:
   tags: [Docker]
   dependencies: [build-release-clang-cpp11]
   artifacts: 
-     Unittests/report.xml
-     Unittests/report-customvec.xml
-     Unittests/report-doublevec.xml
-  reports:
-     junit:
+    reports:
+      junit:
         Unittests/report.xml
         Unittests/report-customvec.xml
         Unittests/report-doublevec.xml
@@ -212,11 +200,8 @@ test-debug-gcc-cpp14:
   tags: [Docker]
   dependencies: [build-debug-gcc-cpp14]
   artifacts: 
-     Unittests/report.xml
-     Unittests/report-customvec.xml
-     Unittests/report-doublevec.xml
-  reports:
-     junit:
+    reports:
+      junit:
         Unittests/report.xml
         Unittests/report-customvec.xml
         Unittests/report-doublevec.xml
@@ -250,11 +235,8 @@ test-release-gcc-cpp14:
   tags: [Docker]
   dependencies: [build-release-gcc-cpp14]
   artifacts: 
-     Unittests/report.xml
-     Unittests/report-customvec.xml
-     Unittests/report-doublevec.xml
-  reports:
-     junit:
+    reports:
+      junit:
         Unittests/report.xml
         Unittests/report-customvec.xml
         Unittests/report-doublevec.xml
@@ -288,11 +270,8 @@ test-debug-clang-cpp14:
   tags: [Docker]
   dependencies: [build-debug-clang-cpp14]
   artifacts: 
-     Unittests/report.xml
-     Unittests/report-customvec.xml
-     Unittests/report-doublevec.xml
-  reports:
-     junit:
+    reports:
+      junit:
         Unittests/report.xml
         Unittests/report-customvec.xml
         Unittests/report-doublevec.xml
@@ -326,11 +305,8 @@ test-release-clang-cpp14:
   tags: [Docker]
   dependencies: [build-release-clang-cpp14]
   artifacts: 
-     Unittests/report.xml
-     Unittests/report-customvec.xml
-     Unittests/report-doublevec.xml
-  reports:
-     junit:
+    reports:
+      junit:
         Unittests/report.xml
         Unittests/report-customvec.xml
         Unittests/report-doublevec.xml

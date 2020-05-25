@@ -11,11 +11,8 @@ test-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}:
   tags: [Docker]
   dependencies: [build-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}]
   artifacts: 
-     Unittests/report.xml
-     Unittests/report-customvec.xml
-     Unittests/report-doublevec.xml
-  reports:
-     junit:
+    reports:
+      junit:
         Unittests/report.xml
         Unittests/report-customvec.xml
         Unittests/report-doublevec.xml
