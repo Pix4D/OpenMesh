@@ -59,6 +59,16 @@ test-debug-gcc-cpp11:
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
   dependencies: [build-debug-gcc-cpp11]
+  artifacts: 
+     Unittests/report.xml
+     Unittests/report-customvec.xml
+     Unittests/report-doublevec.xml
+  reports:
+     junit:
+        Unittests/report.xml
+        Unittests/report-customvec.xml
+        Unittests/report-doublevec.xml
+
 
 #-----------  Job Informations:
 # Type:       Build: release
@@ -87,6 +97,16 @@ test-release-gcc-cpp11:
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
   dependencies: [build-release-gcc-cpp11]
+  artifacts: 
+     Unittests/report.xml
+     Unittests/report-customvec.xml
+     Unittests/report-doublevec.xml
+  reports:
+     junit:
+        Unittests/report.xml
+        Unittests/report-customvec.xml
+        Unittests/report-doublevec.xml
+
 
 #-----------  Job Informations:
 # Type:       Build: debug
@@ -115,6 +135,16 @@ test-debug-clang-cpp11:
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
   dependencies: [build-debug-clang-cpp11]
+  artifacts: 
+     Unittests/report.xml
+     Unittests/report-customvec.xml
+     Unittests/report-doublevec.xml
+  reports:
+     junit:
+        Unittests/report.xml
+        Unittests/report-customvec.xml
+        Unittests/report-doublevec.xml
+
 
 #-----------  Job Informations:
 # Type:       Build: release
@@ -143,6 +173,16 @@ test-release-clang-cpp11:
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
   dependencies: [build-release-clang-cpp11]
+  artifacts: 
+     Unittests/report.xml
+     Unittests/report-customvec.xml
+     Unittests/report-doublevec.xml
+  reports:
+     junit:
+        Unittests/report.xml
+        Unittests/report-customvec.xml
+        Unittests/report-doublevec.xml
+
 
 #-----------  Job Informations:
 # Type:       Build: debug
@@ -171,6 +211,16 @@ test-debug-gcc-cpp14:
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
   dependencies: [build-debug-gcc-cpp14]
+  artifacts: 
+     Unittests/report.xml
+     Unittests/report-customvec.xml
+     Unittests/report-doublevec.xml
+  reports:
+     junit:
+        Unittests/report.xml
+        Unittests/report-customvec.xml
+        Unittests/report-doublevec.xml
+
 
 #-----------  Job Informations:
 # Type:       Build: release
@@ -199,6 +249,16 @@ test-release-gcc-cpp14:
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
   dependencies: [build-release-gcc-cpp14]
+  artifacts: 
+     Unittests/report.xml
+     Unittests/report-customvec.xml
+     Unittests/report-doublevec.xml
+  reports:
+     junit:
+        Unittests/report.xml
+        Unittests/report-customvec.xml
+        Unittests/report-doublevec.xml
+
 
 #-----------  Job Informations:
 # Type:       Build: debug
@@ -227,6 +287,16 @@ test-debug-clang-cpp14:
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
   dependencies: [build-debug-clang-cpp14]
+  artifacts: 
+     Unittests/report.xml
+     Unittests/report-customvec.xml
+     Unittests/report-doublevec.xml
+  reports:
+     junit:
+        Unittests/report.xml
+        Unittests/report-customvec.xml
+        Unittests/report-doublevec.xml
+
 
 #-----------  Job Informations:
 # Type:       Build: release
@@ -255,6 +325,16 @@ test-release-clang-cpp14:
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
   dependencies: [build-release-clang-cpp14]
+  artifacts: 
+     Unittests/report.xml
+     Unittests/report-customvec.xml
+     Unittests/report-doublevec.xml
+  reports:
+     junit:
+        Unittests/report.xml
+        Unittests/report-customvec.xml
+        Unittests/report-doublevec.xml
+
 
 
 # -----------------
