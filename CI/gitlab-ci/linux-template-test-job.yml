@@ -10,7 +10,8 @@ test-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}:
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
   dependencies: [build-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}]
-  artifacts: 
+  needs: [build-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}]
+  artifacts:
     reports:
       junit:
         report.xml
