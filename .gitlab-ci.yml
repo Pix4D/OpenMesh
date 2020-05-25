@@ -62,9 +62,9 @@ test-debug-gcc-cpp11:
   artifacts: 
     reports:
       junit:
-        Unittests/report.xml
-        Unittests/report-customvec.xml
-        Unittests/report-doublevec.xml
+        report.xml
+        report-customvec.xml
+        report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -97,9 +97,9 @@ test-release-gcc-cpp11:
   artifacts: 
     reports:
       junit:
-        Unittests/report.xml
-        Unittests/report-customvec.xml
-        Unittests/report-doublevec.xml
+        report.xml
+        report-customvec.xml
+        report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -132,9 +132,9 @@ test-debug-clang-cpp11:
   artifacts: 
     reports:
       junit:
-        Unittests/report.xml
-        Unittests/report-customvec.xml
-        Unittests/report-doublevec.xml
+        report.xml
+        report-customvec.xml
+        report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -167,9 +167,9 @@ test-release-clang-cpp11:
   artifacts: 
     reports:
       junit:
-        Unittests/report.xml
-        Unittests/report-customvec.xml
-        Unittests/report-doublevec.xml
+        report.xml
+        report-customvec.xml
+        report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -202,9 +202,9 @@ test-debug-gcc-cpp14:
   artifacts: 
     reports:
       junit:
-        Unittests/report.xml
-        Unittests/report-customvec.xml
-        Unittests/report-doublevec.xml
+        report.xml
+        report-customvec.xml
+        report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -237,9 +237,9 @@ test-release-gcc-cpp14:
   artifacts: 
     reports:
       junit:
-        Unittests/report.xml
-        Unittests/report-customvec.xml
-        Unittests/report-doublevec.xml
+        report.xml
+        report-customvec.xml
+        report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -272,9 +272,9 @@ test-debug-clang-cpp14:
   artifacts: 
     reports:
       junit:
-        Unittests/report.xml
-        Unittests/report-customvec.xml
-        Unittests/report-doublevec.xml
+        report.xml
+        report-customvec.xml
+        report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -307,9 +307,9 @@ test-release-clang-cpp14:
   artifacts: 
     reports:
       junit:
-        Unittests/report.xml
-        Unittests/report-customvec.xml
-        Unittests/report-doublevec.xml
+        report.xml
+        report-customvec.xml
+        report-doublevec.xml
 
 
 
