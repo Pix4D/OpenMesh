@@ -60,17 +60,12 @@ test-debug-gcc-cpp11:
   tags: [Docker]
   dependencies: [build-debug-gcc-cpp11]
   needs: [build-debug-gcc-cpp11]
-  after_script:
-    - echo Debugging
-    - ls -l .
-    - ls -lh build-gcc-cpp11-debug-Vector-Checks
-    - ls -lh build-gcc-cpp11-debug-Vector-Checks/Unittests
   artifacts:
     reports:
       junit:
-        build-gcc-cpp11-debug-Vector-Checks/Unittests/report.xml
-        build-gcc-cpp11-debug-Vector-Checks/Unittests/report-customvec.xml
-        build-gcc-cpp11-debug-Vector-Checks/Unittests/report-doublevec.xml
+        - build-gcc-cpp11-debug-Vector-Checks/Unittests/report.xml
+        - build-gcc-cpp11-debug-Vector-Checks/Unittests/report-customvec.xml
+        - build-gcc-cpp11-debug-Vector-Checks/Unittests/report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -101,17 +96,12 @@ test-release-gcc-cpp11:
   tags: [Docker]
   dependencies: [build-release-gcc-cpp11]
   needs: [build-release-gcc-cpp11]
-  after_script:
-    - echo Debugging
-    - ls -l .
-    - ls -lh build-gcc-cpp11-release-Vector-Checks
-    - ls -lh build-gcc-cpp11-release-Vector-Checks/Unittests
   artifacts:
     reports:
       junit:
-        build-gcc-cpp11-release-Vector-Checks/Unittests/report.xml
-        build-gcc-cpp11-release-Vector-Checks/Unittests/report-customvec.xml
-        build-gcc-cpp11-release-Vector-Checks/Unittests/report-doublevec.xml
+        - build-gcc-cpp11-release-Vector-Checks/Unittests/report.xml
+        - build-gcc-cpp11-release-Vector-Checks/Unittests/report-customvec.xml
+        - build-gcc-cpp11-release-Vector-Checks/Unittests/report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -142,17 +132,12 @@ test-debug-clang-cpp11:
   tags: [Docker]
   dependencies: [build-debug-clang-cpp11]
   needs: [build-debug-clang-cpp11]
-  after_script:
-    - echo Debugging
-    - ls -l .
-    - ls -lh build-clang-cpp11-debug-Vector-Checks
-    - ls -lh build-clang-cpp11-debug-Vector-Checks/Unittests
   artifacts:
     reports:
       junit:
-        build-clang-cpp11-debug-Vector-Checks/Unittests/report.xml
-        build-clang-cpp11-debug-Vector-Checks/Unittests/report-customvec.xml
-        build-clang-cpp11-debug-Vector-Checks/Unittests/report-doublevec.xml
+        - build-clang-cpp11-debug-Vector-Checks/Unittests/report.xml
+        - build-clang-cpp11-debug-Vector-Checks/Unittests/report-customvec.xml
+        - build-clang-cpp11-debug-Vector-Checks/Unittests/report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -183,17 +168,12 @@ test-release-clang-cpp11:
   tags: [Docker]
   dependencies: [build-release-clang-cpp11]
   needs: [build-release-clang-cpp11]
-  after_script:
-    - echo Debugging
-    - ls -l .
-    - ls -lh build-clang-cpp11-release-Vector-Checks
-    - ls -lh build-clang-cpp11-release-Vector-Checks/Unittests
   artifacts:
     reports:
       junit:
-        build-clang-cpp11-release-Vector-Checks/Unittests/report.xml
-        build-clang-cpp11-release-Vector-Checks/Unittests/report-customvec.xml
-        build-clang-cpp11-release-Vector-Checks/Unittests/report-doublevec.xml
+        - build-clang-cpp11-release-Vector-Checks/Unittests/report.xml
+        - build-clang-cpp11-release-Vector-Checks/Unittests/report-customvec.xml
+        - build-clang-cpp11-release-Vector-Checks/Unittests/report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -224,17 +204,12 @@ test-debug-gcc-cpp14:
   tags: [Docker]
   dependencies: [build-debug-gcc-cpp14]
   needs: [build-debug-gcc-cpp14]
-  after_script:
-    - echo Debugging
-    - ls -l .
-    - ls -lh build-gcc-cpp14-debug-Vector-Checks
-    - ls -lh build-gcc-cpp14-debug-Vector-Checks/Unittests
   artifacts:
     reports:
       junit:
-        build-gcc-cpp14-debug-Vector-Checks/Unittests/report.xml
-        build-gcc-cpp14-debug-Vector-Checks/Unittests/report-customvec.xml
-        build-gcc-cpp14-debug-Vector-Checks/Unittests/report-doublevec.xml
+        - build-gcc-cpp14-debug-Vector-Checks/Unittests/report.xml
+        - build-gcc-cpp14-debug-Vector-Checks/Unittests/report-customvec.xml
+        - build-gcc-cpp14-debug-Vector-Checks/Unittests/report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -265,17 +240,12 @@ test-release-gcc-cpp14:
   tags: [Docker]
   dependencies: [build-release-gcc-cpp14]
   needs: [build-release-gcc-cpp14]
-  after_script:
-    - echo Debugging
-    - ls -l .
-    - ls -lh build-gcc-cpp14-release-Vector-Checks
-    - ls -lh build-gcc-cpp14-release-Vector-Checks/Unittests
   artifacts:
     reports:
       junit:
-        build-gcc-cpp14-release-Vector-Checks/Unittests/report.xml
-        build-gcc-cpp14-release-Vector-Checks/Unittests/report-customvec.xml
-        build-gcc-cpp14-release-Vector-Checks/Unittests/report-doublevec.xml
+        - build-gcc-cpp14-release-Vector-Checks/Unittests/report.xml
+        - build-gcc-cpp14-release-Vector-Checks/Unittests/report-customvec.xml
+        - build-gcc-cpp14-release-Vector-Checks/Unittests/report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -306,17 +276,12 @@ test-debug-clang-cpp14:
   tags: [Docker]
   dependencies: [build-debug-clang-cpp14]
   needs: [build-debug-clang-cpp14]
-  after_script:
-    - echo Debugging
-    - ls -l .
-    - ls -lh build-clang-cpp14-debug-Vector-Checks
-    - ls -lh build-clang-cpp14-debug-Vector-Checks/Unittests
   artifacts:
     reports:
       junit:
-        build-clang-cpp14-debug-Vector-Checks/Unittests/report.xml
-        build-clang-cpp14-debug-Vector-Checks/Unittests/report-customvec.xml
-        build-clang-cpp14-debug-Vector-Checks/Unittests/report-doublevec.xml
+        - build-clang-cpp14-debug-Vector-Checks/Unittests/report.xml
+        - build-clang-cpp14-debug-Vector-Checks/Unittests/report-customvec.xml
+        - build-clang-cpp14-debug-Vector-Checks/Unittests/report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -347,17 +312,12 @@ test-release-clang-cpp14:
   tags: [Docker]
   dependencies: [build-release-clang-cpp14]
   needs: [build-release-clang-cpp14]
-  after_script:
-    - echo Debugging
-    - ls -l .
-    - ls -lh build-clang-cpp14-release-Vector-Checks
-    - ls -lh build-clang-cpp14-release-Vector-Checks/Unittests
   artifacts:
     reports:
       junit:
-        build-clang-cpp14-release-Vector-Checks/Unittests/report.xml
-        build-clang-cpp14-release-Vector-Checks/Unittests/report-customvec.xml
-        build-clang-cpp14-release-Vector-Checks/Unittests/report-doublevec.xml
+        - build-clang-cpp14-release-Vector-Checks/Unittests/report.xml
+        - build-clang-cpp14-release-Vector-Checks/Unittests/report-customvec.xml
+        - build-clang-cpp14-release-Vector-Checks/Unittests/report-doublevec.xml
 
 
 
