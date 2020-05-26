@@ -11,6 +11,11 @@ test-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}:
   tags: [Docker]
   dependencies: [build-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}]
   needs: [build-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}]
+  after_script:
+    - echo Debugging
+    - ls -l .
+    - ls -lh build-{{COMPILER}}-{{LANGUAGE}}-{{BUILDTYPE}}-Vector-Checks
+    - ls -lh build-{{COMPILER}}-{{LANGUAGE}}-{{BUILDTYPE}}-Vector-Checks/Unittests
   artifacts:
     reports:
       junit:
