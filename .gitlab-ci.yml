@@ -322,40 +322,91 @@ test-release-clang-cpp14:
 
 
 # -----------------
-# Apple tasks
+# MAC tasks
 # -----------------
 
-macos-cpp11-debug:
-  stage: build
-  script: "CI/ci-mac-build.sh C++11 debug ; CI/ci-mac-test.sh C++11 debug"
-  tags:
-    - Apple
+#-----------  Job Informations:
+# Type:       Build+Test: debug
+# OS:         Mac
+# Language:   cpp11
 
-macos-cpp14-debug:
-  stage: build
-  script: "CI/ci-mac-build.sh C++14 debug ; CI/ci-mac-test.sh C++14 debug"
-  tags:
-    - Apple
+macos-cpp11-debug:
+    stage: build
+    script: "CI/ci-mac-build.sh cpp11 debug ; CI/ci-mac-test.sh cpp11 debug"
+    tags:
+      - Apple
+    artifacts:
+      paths:
+        - build-debug-cpp11/*.dmg
+        - build-debug-cpp11/*.tar.gz
+      reports:
+        junit:
+          - build-debug-cpp11/Unittests/report.xml
+          - build-debug-cpp11/Unittests/report-customvec.xml
+          - build-debug-cpp11/Unittests/report-doublevec.xml
+
+#-----------  Job Informations:
+# Type:       Build+Test: release
+# OS:         Mac
+# Language:   cpp11
 
 macos-cpp11-release:
-  stage: build
-  script: "CI/ci-mac-build.sh C++11 release ; CI/ci-mac-test.sh C++11 release"
-  tags:
-    - Apple
-  artifacts:
-    paths:
-      - build-release-cpp11/*.dmg
-      - build-release-cpp11/*.tar.gz
+    stage: build
+    script: "CI/ci-mac-build.sh cpp11 release ; CI/ci-mac-test.sh cpp11 release"
+    tags:
+      - Apple
+    artifacts:
+      paths:
+        - build-release-cpp11/*.dmg
+        - build-release-cpp11/*.tar.gz
+      reports:
+        junit:
+          - build-release-cpp11/Unittests/report.xml
+          - build-release-cpp11/Unittests/report-customvec.xml
+          - build-release-cpp11/Unittests/report-doublevec.xml
+
+
+#-----------  Job Informations:
+# Type:       Build+Test: debug
+# OS:         Mac
+# Language:   cpp14
+
+macos-cpp14-debug:
+    stage: build
+    script: "CI/ci-mac-build.sh cpp14 debug ; CI/ci-mac-test.sh cpp14 debug"
+    tags:
+      - Apple
+    artifacts:
+      paths:
+        - build-debug-cpp14/*.dmg
+        - build-debug-cpp14/*.tar.gz
+      reports:
+        junit:
+          - build-debug-cpp14/Unittests/report.xml
+          - build-debug-cpp14/Unittests/report-customvec.xml
+          - build-debug-cpp14/Unittests/report-doublevec.xml
+
+#-----------  Job Informations:
+# Type:       Build+Test: release
+# OS:         Mac
+# Language:   cpp14
 
 macos-cpp14-release:
-  stage: build
-  script: "CI/ci-mac-build.sh C++14 release ; CI/ci-mac-test.sh C++14 release"
-  tags:
-    - Apple
-  artifacts:
-    paths:
-      - build-release-cpp14/*.dmg
-      - build-release-cpp14/*.tar.gz
+    stage: build
+    script: "CI/ci-mac-build.sh cpp14 release ; CI/ci-mac-test.sh cpp14 release"
+    tags:
+      - Apple
+    artifacts:
+      paths:
+        - build-release-cpp14/*.dmg
+        - build-release-cpp14/*.tar.gz
+      reports:
+        junit:
+          - build-release-cpp14/Unittests/report.xml
+          - build-release-cpp14/Unittests/report-customvec.xml
+          - build-release-cpp14/Unittests/report-doublevec.xml
+
+
 
 # -----------------
 # Windows tasks
