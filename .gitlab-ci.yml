@@ -59,6 +59,14 @@ test-debug-gcc-cpp11:
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
   dependencies: [build-debug-gcc-cpp11]
+  needs: [build-debug-gcc-cpp11]
+  artifacts:
+    reports:
+      junit:
+        - build-gcc-cpp11-debug-Vector-Checks/Unittests/report.xml
+        - build-gcc-cpp11-debug-Vector-Checks/Unittests/report-customvec.xml
+        - build-gcc-cpp11-debug-Vector-Checks/Unittests/report-doublevec.xml
+
 
 #-----------  Job Informations:
 # Type:       Build: release
@@ -87,6 +95,14 @@ test-release-gcc-cpp11:
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
   dependencies: [build-release-gcc-cpp11]
+  needs: [build-release-gcc-cpp11]
+  artifacts:
+    reports:
+      junit:
+        - build-gcc-cpp11-release-Vector-Checks/Unittests/report.xml
+        - build-gcc-cpp11-release-Vector-Checks/Unittests/report-customvec.xml
+        - build-gcc-cpp11-release-Vector-Checks/Unittests/report-doublevec.xml
+
 
 #-----------  Job Informations:
 # Type:       Build: debug
@@ -115,6 +131,14 @@ test-debug-clang-cpp11:
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
   dependencies: [build-debug-clang-cpp11]
+  needs: [build-debug-clang-cpp11]
+  artifacts:
+    reports:
+      junit:
+        - build-clang-cpp11-debug-Vector-Checks/Unittests/report.xml
+        - build-clang-cpp11-debug-Vector-Checks/Unittests/report-customvec.xml
+        - build-clang-cpp11-debug-Vector-Checks/Unittests/report-doublevec.xml
+
 
 #-----------  Job Informations:
 # Type:       Build: release
@@ -143,6 +167,14 @@ test-release-clang-cpp11:
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
   dependencies: [build-release-clang-cpp11]
+  needs: [build-release-clang-cpp11]
+  artifacts:
+    reports:
+      junit:
+        - build-clang-cpp11-release-Vector-Checks/Unittests/report.xml
+        - build-clang-cpp11-release-Vector-Checks/Unittests/report-customvec.xml
+        - build-clang-cpp11-release-Vector-Checks/Unittests/report-doublevec.xml
+
 
 #-----------  Job Informations:
 # Type:       Build: debug
@@ -171,6 +203,14 @@ test-debug-gcc-cpp14:
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
   dependencies: [build-debug-gcc-cpp14]
+  needs: [build-debug-gcc-cpp14]
+  artifacts:
+    reports:
+      junit:
+        - build-gcc-cpp14-debug-Vector-Checks/Unittests/report.xml
+        - build-gcc-cpp14-debug-Vector-Checks/Unittests/report-customvec.xml
+        - build-gcc-cpp14-debug-Vector-Checks/Unittests/report-doublevec.xml
+
 
 #-----------  Job Informations:
 # Type:       Build: release
@@ -199,6 +239,14 @@ test-release-gcc-cpp14:
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
   dependencies: [build-release-gcc-cpp14]
+  needs: [build-release-gcc-cpp14]
+  artifacts:
+    reports:
+      junit:
+        - build-gcc-cpp14-release-Vector-Checks/Unittests/report.xml
+        - build-gcc-cpp14-release-Vector-Checks/Unittests/report-customvec.xml
+        - build-gcc-cpp14-release-Vector-Checks/Unittests/report-doublevec.xml
+
 
 #-----------  Job Informations:
 # Type:       Build: debug
@@ -227,6 +275,14 @@ test-debug-clang-cpp14:
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
   dependencies: [build-debug-clang-cpp14]
+  needs: [build-debug-clang-cpp14]
+  artifacts:
+    reports:
+      junit:
+        - build-clang-cpp14-debug-Vector-Checks/Unittests/report.xml
+        - build-clang-cpp14-debug-Vector-Checks/Unittests/report-customvec.xml
+        - build-clang-cpp14-debug-Vector-Checks/Unittests/report-doublevec.xml
+
 
 #-----------  Job Informations:
 # Type:       Build: release
@@ -255,43 +311,102 @@ test-release-clang-cpp14:
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
   dependencies: [build-release-clang-cpp14]
+  needs: [build-release-clang-cpp14]
+  artifacts:
+    reports:
+      junit:
+        - build-clang-cpp14-release-Vector-Checks/Unittests/report.xml
+        - build-clang-cpp14-release-Vector-Checks/Unittests/report-customvec.xml
+        - build-clang-cpp14-release-Vector-Checks/Unittests/report-doublevec.xml
+
 
 
 # -----------------
-# Apple tasks
+# MAC tasks
 # -----------------
+
+#-----------  Job Informations:
+# Type:       Build+Test: debug
+# OS:         Mac
+# Language:   cpp11
 
 macos-cpp11-debug:
-  stage: build
-  script: "CI/ci-mac-build.sh C++11 debug ; CI/ci-mac-test.sh C++11 debug"
-  tags:
-    - Apple
+    stage: build
+    script: "CI/ci-mac-build.sh cpp11 debug ; CI/ci-mac-test.sh cpp11 debug"
+    tags:
+      - Apple
+    artifacts:
+      paths:
+        - build-debug-cpp11/*.dmg
+        - build-debug-cpp11/*.tar.gz
+#      reports:
+#        junit:
+#          - build-debug-cpp11/Unittests/report.xml
+#          - build-debug-cpp11/Unittests/report-customvec.xml
+#          - build-debug-cpp11/Unittests/report-doublevec.xml
 
-macos-cpp14-debug:
-  stage: build
-  script: "CI/ci-mac-build.sh C++14 debug ; CI/ci-mac-test.sh C++14 debug"
-  tags:
-    - Apple
+#-----------  Job Informations:
+# Type:       Build+Test: release
+# OS:         Mac
+# Language:   cpp11
 
 macos-cpp11-release:
-  stage: build
-  script: "CI/ci-mac-build.sh C++11 release ; CI/ci-mac-test.sh C++11 release"
-  tags:
-    - Apple
-  artifacts:
-    paths:
-      - build-release-cpp11/*.dmg
-      - build-release-cpp11/*.tar.gz
+    stage: build
+    script: "CI/ci-mac-build.sh cpp11 release ; CI/ci-mac-test.sh cpp11 release"
+    tags:
+      - Apple
+    artifacts:
+      paths:
+        - build-release-cpp11/*.dmg
+        - build-release-cpp11/*.tar.gz
+#      reports:
+#        junit:
+#          - build-release-cpp11/Unittests/report.xml
+#          - build-release-cpp11/Unittests/report-customvec.xml
+#          - build-release-cpp11/Unittests/report-doublevec.xml
+
+
+#-----------  Job Informations:
+# Type:       Build+Test: debug
+# OS:         Mac
+# Language:   cpp14
+
+macos-cpp14-debug:
+    stage: build
+    script: "CI/ci-mac-build.sh cpp14 debug ; CI/ci-mac-test.sh cpp14 debug"
+    tags:
+      - Apple
+    artifacts:
+      paths:
+        - build-debug-cpp14/*.dmg
+        - build-debug-cpp14/*.tar.gz
+#      reports:
+#        junit:
+#          - build-debug-cpp14/Unittests/report.xml
+#          - build-debug-cpp14/Unittests/report-customvec.xml
+#          - build-debug-cpp14/Unittests/report-doublevec.xml
+
+#-----------  Job Informations:
+# Type:       Build+Test: release
+# OS:         Mac
+# Language:   cpp14
 
 macos-cpp14-release:
-  stage: build
-  script: "CI/ci-mac-build.sh C++14 release ; CI/ci-mac-test.sh C++14 release"
-  tags:
-    - Apple
-  artifacts:
-    paths:
-      - build-release-cpp14/*.dmg
-      - build-release-cpp14/*.tar.gz
+    stage: build
+    script: "CI/ci-mac-build.sh cpp14 release ; CI/ci-mac-test.sh cpp14 release"
+    tags:
+      - Apple
+    artifacts:
+      paths:
+        - build-release-cpp14/*.dmg
+        - build-release-cpp14/*.tar.gz
+#      reports:
+#        junit:
+#          - build-release-cpp14/Unittests/report.xml
+#          - build-release-cpp14/Unittests/report-customvec.xml
+#          - build-release-cpp14/Unittests/report-doublevec.xml
+
+
 
 # -----------------
 # Windows tasks

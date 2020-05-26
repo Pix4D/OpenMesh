@@ -14,14 +14,14 @@ OPTIONS=""
 # set GTEST path
 OPTIONS="$OPTIONS -DGTEST_ROOT=~/sw/gtest-1.7.0/"
 
-if [ "$LANGUAGE" == "C++98" ]; then
+if [ "$LANGUAGE" == "cpp98" ]; then
   echo "Building with C++98";
   BUILDPATH="cpp98"
-elif [ "$LANGUAGE" == "C++11" ]; then
+elif [ "$LANGUAGE" == "cpp11" ]; then
   echo "Building with C++11";
   OPTIONS="$OPTIONS -DCMAKE_CXX_FLAGS='-std=c++11' "
   BUILDPATH="cpp11"  
-elif [ "$LANGUAGE" == "C++14" ]; then
+elif [ "$LANGUAGE" == "cpp14" ]; then
   echo "Building with C++14";
   OPTIONS="$OPTIONS -DCMAKE_CXX_FLAGS='-std=c++14' "
   BUILDPATH="cpp14"

@@ -10,3 +10,11 @@ test-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}:
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags: [Docker]
   dependencies: [build-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}]
+  needs: [build-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}]
+  artifacts:
+    reports:
+      junit:
+        - build-{{COMPILER}}-{{LANGUAGE}}-{{BUILDTYPE}}-Vector-Checks/Unittests/report.xml
+        - build-{{COMPILER}}-{{LANGUAGE}}-{{BUILDTYPE}}-Vector-Checks/Unittests/report-customvec.xml
+        - build-{{COMPILER}}-{{LANGUAGE}}-{{BUILDTYPE}}-Vector-Checks/Unittests/report-doublevec.xml
+
