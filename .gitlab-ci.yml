@@ -318,7 +318,12 @@ build-VS2017-x64-shared-TRUE-apps:
     - Qt5101
   artifacts:
     paths:
-      - build-release/*.exe   
+      - build-release/*.exe
+    reports:
+      junit:
+        - build-release/report.xml
+        - build-release/report-customvec.xml
+        - build-release/report-doublevec.xml
 
 build-VS2017-x64-shared-TRUE-no-apps:
   stage: build
@@ -333,6 +338,12 @@ build-VS2017-x64-shared-TRUE-no-apps:
   artifacts:
     paths:
       - build-release/*.exe
+    reports:
+      junit:
+        - build-release/report.xml
+        - build-release/report-customvec.xml
+        - build-release/report-doublevec.xml
+
 #-------------  Job Informations:
 # Type:         Build+Test: Release
 # OS:           Windows
@@ -354,7 +365,12 @@ build-VS2017-x64-shared-FALSE-apps:
     - Qt5101
   artifacts:
     paths:
-      - build-release/*.exe   
+      - build-release/*.exe
+    reports:
+      junit:
+        - build-release/report.xml
+        - build-release/report-customvec.xml
+        - build-release/report-doublevec.xml
 
 build-VS2017-x64-shared-FALSE-no-apps:
   stage: build
@@ -369,6 +385,12 @@ build-VS2017-x64-shared-FALSE-no-apps:
   artifacts:
     paths:
       - build-release/*.exe
+    reports:
+      junit:
+        - build-release/report.xml
+        - build-release/report-customvec.xml
+        - build-release/report-doublevec.xml
+
 
 #-------------  Job Informations:
 # Type:         Build+Test: Release
@@ -391,7 +413,12 @@ build-VS2015-x64-shared-TRUE-apps:
     - Qt5101
   artifacts:
     paths:
-      - build-release/*.exe   
+      - build-release/*.exe
+    reports:
+      junit:
+        - build-release/report.xml
+        - build-release/report-customvec.xml
+        - build-release/report-doublevec.xml
 
 build-VS2015-x64-shared-TRUE-no-apps:
   stage: build
@@ -406,6 +433,12 @@ build-VS2015-x64-shared-TRUE-no-apps:
   artifacts:
     paths:
       - build-release/*.exe
+    reports:
+      junit:
+        - build-release/report.xml
+        - build-release/report-customvec.xml
+        - build-release/report-doublevec.xml
+
 #-------------  Job Informations:
 # Type:         Build+Test: Release
 # OS:           Windows
@@ -427,7 +460,12 @@ build-VS2015-x64-shared-FALSE-apps:
     - Qt5101
   artifacts:
     paths:
-      - build-release/*.exe   
+      - build-release/*.exe
+    reports:
+      junit:
+        - build-release/report.xml
+        - build-release/report-customvec.xml
+        - build-release/report-doublevec.xml
 
 build-VS2015-x64-shared-FALSE-no-apps:
   stage: build
@@ -442,6 +480,12 @@ build-VS2015-x64-shared-FALSE-no-apps:
   artifacts:
     paths:
       - build-release/*.exe
+    reports:
+      junit:
+        - build-release/report.xml
+        - build-release/report-customvec.xml
+        - build-release/report-doublevec.xml
+
 
 Doc-publish:
   stage: deploy

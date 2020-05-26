@@ -40,7 +40,7 @@ echo -e "${NC}"
 cd Unittests
 
 #execute tests
-./unittests --gtest_color=yes --gtest_output=xml
+./unittests --gtest_color=yes --gtest_output=xml:./report.xml
 
 echo -e "${OUTPUT}"
 echo ""
@@ -49,7 +49,7 @@ echo "Running unittests $BUILD_TYPE version with minimal vector type"
 echo "======================================================================"
 echo -e "${NC}"
 
-./unittests_customvec --gtest_color=yes --gtest_output=xml
+./unittests_customvec --gtest_color=yes --gtest_output=xml:./report-customvec.xml
 
 echo -e "${OUTPUT}"
 echo ""
@@ -59,7 +59,7 @@ echo "======================================================================"
 echo -e "${NC}"
 
 #execute tests
-./unittests_doublevec --gtest_color=yes --gtest_output=xml
+./unittests_doublevec --gtest_color=yes --gtest_output=xml:./report-doublevec.xml
 
 cd ..
 cd ..

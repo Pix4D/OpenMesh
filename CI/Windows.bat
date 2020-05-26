@@ -115,11 +115,11 @@ IF %errorlevel% NEQ 0 exit /b %errorlevel%
 
 cd unittests
 
-unittests.exe --gtest_output=xml
+unittests.exe --gtest_output=xml:./report.xml
 
-unittests_customvec.exe --gtest_output=xml
+unittests_customvec.exe --gtest_output=xml:./report-customvec.xml
 
-unittests_doublevec.exe --gtest_output=xml
+unittests_doublevec.exe --gtest_output=xml:./report-doublevec.xml
 
 cd ..
 

@@ -19,7 +19,12 @@ build-{{VSVERSION}}-{{ARCHITECTURE}}-shared-{{SHARED}}-apps:
     - {{QTTAG}}
   artifacts:
     paths:
-      - build-release/*.exe   
+      - build-release/*.exe
+    reports:
+      junit:
+        - build-release/report.xml
+        - build-release/report-customvec.xml
+        - build-release/report-doublevec.xml
 
 build-{{VSVERSION}}-{{ARCHITECTURE}}-shared-{{SHARED}}-no-apps:
   stage: build
@@ -34,3 +39,9 @@ build-{{VSVERSION}}-{{ARCHITECTURE}}-shared-{{SHARED}}-no-apps:
   artifacts:
     paths:
       - build-release/*.exe
+    reports:
+      junit:
+        - build-release/report.xml
+        - build-release/report-customvec.xml
+        - build-release/report-doublevec.xml
+
