@@ -63,9 +63,9 @@ test-debug-gcc-cpp11:
   artifacts:
     reports:
       junit:
-        report.xml
-        report-customvec.xml
-        report-doublevec.xml
+        build-gcc-cpp11-debug-Vector-Checks/Unittests/report.xml
+        build-gcc-cpp11-debug-Vector-Checks/Unittests/report-customvec.xml
+        build-gcc-cpp11-debug-Vector-Checks/Unittests/report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -99,9 +99,9 @@ test-release-gcc-cpp11:
   artifacts:
     reports:
       junit:
-        report.xml
-        report-customvec.xml
-        report-doublevec.xml
+        build-gcc-cpp11-release-Vector-Checks/Unittests/report.xml
+        build-gcc-cpp11-release-Vector-Checks/Unittests/report-customvec.xml
+        build-gcc-cpp11-release-Vector-Checks/Unittests/report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -135,9 +135,9 @@ test-debug-clang-cpp11:
   artifacts:
     reports:
       junit:
-        report.xml
-        report-customvec.xml
-        report-doublevec.xml
+        build-clang-cpp11-debug-Vector-Checks/Unittests/report.xml
+        build-clang-cpp11-debug-Vector-Checks/Unittests/report-customvec.xml
+        build-clang-cpp11-debug-Vector-Checks/Unittests/report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -171,9 +171,9 @@ test-release-clang-cpp11:
   artifacts:
     reports:
       junit:
-        report.xml
-        report-customvec.xml
-        report-doublevec.xml
+        build-clang-cpp11-release-Vector-Checks/Unittests/report.xml
+        build-clang-cpp11-release-Vector-Checks/Unittests/report-customvec.xml
+        build-clang-cpp11-release-Vector-Checks/Unittests/report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -207,9 +207,9 @@ test-debug-gcc-cpp14:
   artifacts:
     reports:
       junit:
-        report.xml
-        report-customvec.xml
-        report-doublevec.xml
+        build-gcc-cpp14-debug-Vector-Checks/Unittests/report.xml
+        build-gcc-cpp14-debug-Vector-Checks/Unittests/report-customvec.xml
+        build-gcc-cpp14-debug-Vector-Checks/Unittests/report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -243,9 +243,9 @@ test-release-gcc-cpp14:
   artifacts:
     reports:
       junit:
-        report.xml
-        report-customvec.xml
-        report-doublevec.xml
+        build-gcc-cpp14-release-Vector-Checks/Unittests/report.xml
+        build-gcc-cpp14-release-Vector-Checks/Unittests/report-customvec.xml
+        build-gcc-cpp14-release-Vector-Checks/Unittests/report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -279,9 +279,9 @@ test-debug-clang-cpp14:
   artifacts:
     reports:
       junit:
-        report.xml
-        report-customvec.xml
-        report-doublevec.xml
+        build-clang-cpp14-debug-Vector-Checks/Unittests/report.xml
+        build-clang-cpp14-debug-Vector-Checks/Unittests/report-customvec.xml
+        build-clang-cpp14-debug-Vector-Checks/Unittests/report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -313,13 +313,11 @@ test-release-clang-cpp14:
   dependencies: [build-release-clang-cpp14]
   needs: [build-release-clang-cpp14]
   artifacts:
-    paths:
-      - ./*
     reports:
       junit:
-        report.xml
-        report-customvec.xml
-        report-doublevec.xml
+        build-clang-cpp14-release-Vector-Checks/Unittests/report.xml
+        build-clang-cpp14-release-Vector-Checks/Unittests/report-customvec.xml
+        build-clang-cpp14-release-Vector-Checks/Unittests/report-doublevec.xml
 
 
 

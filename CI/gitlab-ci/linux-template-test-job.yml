@@ -14,7 +14,7 @@ test-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}:
   artifacts:
     reports:
       junit:
-        */Unittests/report.xml
-        */Unittests/report-customvec.xml
-        */Unittests/report-doublevec.xml
+        build-{{COMPILER}}-{{LANGUAGE}}-{{BUILDTYPE}}-Vector-Checks/Unittests/report.xml
+        build-{{COMPILER}}-{{LANGUAGE}}-{{BUILDTYPE}}-Vector-Checks/Unittests/report-customvec.xml
+        build-{{COMPILER}}-{{LANGUAGE}}-{{BUILDTYPE}}-Vector-Checks/Unittests/report-doublevec.xml
 
