@@ -412,7 +412,15 @@ macos-cpp14-release:
 # Windows tasks
 # -----------------
 
-VS2017-64-bit-shared-apps:
+#-------------  Job Informations:
+# Type:         Build+Test: Release
+# OS:           Windows
+# Architecture: x64
+# Shared:       TRUE
+# VS Version:   VS2017
+# Apps:         {{APPS}}
+
+build-VS2017-x64-shared-TRUE-apps:
   stage: build
   variables:
     BUILD_PLATFORM: "VS2017"
@@ -425,25 +433,14 @@ VS2017-64-bit-shared-apps:
     - Qt5101
   artifacts:
     paths:
-      - build-release/*.exe      
-      
-VS2017-64-bit-static-apps:
-  stage: build
-  variables:
-    BUILD_PLATFORM: "VS2017"
-    ARCHITECTURE:   "x64"
-    SHARED:         "FALSE"
-    APPS:           "ON"
-  script: "CI\\Windows.bat"
-  tags:
-    - VS2017
-    - Qt5101    
-  artifacts:
-    paths:
       - build-release/*.exe
+    reports:
+      junit:
+        - build-release/unittests/report.xml
+        - build-release/unittests/report-customvec.xml
+        - build-release/unittests/report-doublevec.xml
 
-      
-VS2017-64-bit-shared-no-apps:
+build-VS2017-x64-shared-TRUE-no-apps:
   stage: build
   variables:
     BUILD_PLATFORM: "VS2017"
@@ -456,8 +453,41 @@ VS2017-64-bit-shared-no-apps:
   artifacts:
     paths:
       - build-release/*.exe
+    reports:
+      junit:
+        - build-release/unittests/report.xml
+        - build-release/unittests/report-customvec.xml
+        - build-release/unittests/report-doublevec.xml
 
-VS2017-64-bit-static-no-apps:
+#-------------  Job Informations:
+# Type:         Build+Test: Release
+# OS:           Windows
+# Architecture: x64
+# Shared:       FALSE
+# VS Version:   VS2017
+# Apps:         {{APPS}}
+
+build-VS2017-x64-shared-FALSE-apps:
+  stage: build
+  variables:
+    BUILD_PLATFORM: "VS2017"
+    ARCHITECTURE:   "x64"
+    SHARED:         "FALSE"
+    APPS:           "ON"
+  script: "CI\\Windows.bat"
+  tags:
+    - VS2017
+    - Qt5101
+  artifacts:
+    paths:
+      - build-release/*.exe
+    reports:
+      junit:
+        - build-release/unittests/report.xml
+        - build-release/unittests/report-customvec.xml
+        - build-release/unittests/report-doublevec.xml
+
+build-VS2017-x64-shared-FALSE-no-apps:
   stage: build
   variables:
     BUILD_PLATFORM: "VS2017"
@@ -470,8 +500,22 @@ VS2017-64-bit-static-no-apps:
   artifacts:
     paths:
       - build-release/*.exe
+    reports:
+      junit:
+        - build-release/unittests/report.xml
+        - build-release/unittests/report-customvec.xml
+        - build-release/unittests/report-doublevec.xml
 
-VS2015-64-bit-shared-apps:
+
+#-------------  Job Informations:
+# Type:         Build+Test: Release
+# OS:           Windows
+# Architecture: x64
+# Shared:       TRUE
+# VS Version:   VS2015
+# Apps:         {{APPS}}
+
+build-VS2015-x64-shared-TRUE-apps:
   stage: build
   variables:
     BUILD_PLATFORM: "VS2015"
@@ -481,12 +525,17 @@ VS2015-64-bit-shared-apps:
   script: "CI\\Windows.bat"
   tags:
     - VS2015
+    - Qt5101
   artifacts:
     paths:
       - build-release/*.exe
-      
-      
-VS2015-64-bit-shared-no-apps:
+    reports:
+      junit:
+        - build-release/unittests/report.xml
+        - build-release/unittests/report-customvec.xml
+        - build-release/unittests/report-doublevec.xml
+
+build-VS2015-x64-shared-TRUE-no-apps:
   stage: build
   variables:
     BUILD_PLATFORM: "VS2015"
@@ -499,8 +548,21 @@ VS2015-64-bit-shared-no-apps:
   artifacts:
     paths:
       - build-release/*.exe
+    reports:
+      junit:
+        - build-release/unittests/report.xml
+        - build-release/unittests/report-customvec.xml
+        - build-release/unittests/report-doublevec.xml
 
-VS2015-64-bit-static-apps:
+#-------------  Job Informations:
+# Type:         Build+Test: Release
+# OS:           Windows
+# Architecture: x64
+# Shared:       FALSE
+# VS Version:   VS2015
+# Apps:         {{APPS}}
+
+build-VS2015-x64-shared-FALSE-apps:
   stage: build
   variables:
     BUILD_PLATFORM: "VS2015"
@@ -510,11 +572,17 @@ VS2015-64-bit-static-apps:
   script: "CI\\Windows.bat"
   tags:
     - VS2015
+    - Qt5101
   artifacts:
     paths:
       - build-release/*.exe
+    reports:
+      junit:
+        - build-release/unittests/report.xml
+        - build-release/unittests/report-customvec.xml
+        - build-release/unittests/report-doublevec.xml
 
-VS2015-64-bit-static-no-apps:
+build-VS2015-x64-shared-FALSE-no-apps:
   stage: build
   variables:
     BUILD_PLATFORM: "VS2015"
@@ -527,6 +595,12 @@ VS2015-64-bit-static-no-apps:
   artifacts:
     paths:
       - build-release/*.exe
+    reports:
+      junit:
+        - build-release/unittests/report.xml
+        - build-release/unittests/report-customvec.xml
+        - build-release/unittests/report-doublevec.xml
+
 
 Doc-publish:
   stage: deploy
