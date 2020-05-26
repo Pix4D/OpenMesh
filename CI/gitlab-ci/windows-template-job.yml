@@ -22,9 +22,9 @@ build-{{VSVERSION}}-{{ARCHITECTURE}}-shared-{{SHARED}}-apps:
       - build-release/*.exe
     reports:
       junit:
-        - build-release/report.xml
-        - build-release/report-customvec.xml
-        - build-release/report-doublevec.xml
+        - build-release/unittests/report.xml
+        - build-release/unittests/report-customvec.xml
+        - build-release/unittests/report-doublevec.xml
 
 build-{{VSVERSION}}-{{ARCHITECTURE}}-shared-{{SHARED}}-no-apps:
   stage: build
@@ -41,7 +41,7 @@ build-{{VSVERSION}}-{{ARCHITECTURE}}-shared-{{SHARED}}-no-apps:
       - build-release/*.exe
     reports:
       junit:
-        - build-release/report.xml
-        - build-release/report-customvec.xml
-        - build-release/report-doublevec.xml
+        - build-release/unittests/report.xml
+        - build-release/unittests/report-customvec.xml
+        - build-release/unittests/report-doublevec.xml
 
