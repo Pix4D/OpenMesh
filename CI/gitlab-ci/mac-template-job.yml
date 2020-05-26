@@ -12,9 +12,9 @@ macos-{{LANGUAGE}}-{{BUILDTYPE}}:
       paths:
         - build-{{BUILDTYPE}}-{{LANGUAGE}}/*.dmg
         - build-{{BUILDTYPE}}-{{LANGUAGE}}/*.tar.gz
-      reports:
-        junit:
-          - build-{{BUILDTYPE}}-{{LANGUAGE}}/Unittests/report.xml
-          - build-{{BUILDTYPE}}-{{LANGUAGE}}/Unittests/report-customvec.xml
-          - build-{{BUILDTYPE}}-{{LANGUAGE}}/Unittests/report-doublevec.xml
+#      reports:
+#        junit:
+#          - build-{{BUILDTYPE}}-{{LANGUAGE}}/Unittests/report.xml
+#          - build-{{BUILDTYPE}}-{{LANGUAGE}}/Unittests/report-customvec.xml
+#          - build-{{BUILDTYPE}}-{{LANGUAGE}}/Unittests/report-doublevec.xml
 
