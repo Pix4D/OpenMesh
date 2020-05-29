@@ -169,8 +169,8 @@ if(${PROJECT_NAME} MATCHES "OpenMesh")
   # On apple we do a fixbundle, which is only necessary for the apps and not for the libs
   if (APPLE AND BUILD_APPS)
     # prepare bundle generation cmake file and add a build target for it
-    configure_file ("${CMAKE_SOURCE_DIR}/cmake/fixbundle.cmake.in"
-       "${CMAKE_BINARY_DIR}/fixbundle.cmake" @ONLY IMMEDIATE)
+    configure_file ("${CMAKE_CURRENT_SOURCE_DIR}/cmake/fixbundle.cmake.in"
+       "${CMAKE_CURRENT_BINARY_DIR}/fixbundle.cmake" @ONLY IMMEDIATE)
 
     # let bundle generation depend on all targets
     add_dependencies (fixbundle DecimaterGui ProgViewer QtViewer SubdividerGui) 
