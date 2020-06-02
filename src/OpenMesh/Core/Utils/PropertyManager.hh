@@ -56,10 +56,6 @@ namespace OpenMesh {
  * It also defines convenience operators to access the encapsulated
  * property's value.
  *
- * It is recommended to use the factory functions
- * makeTemporaryProperty(), getProperty(), and getOrMakeProperty()
- * to construct a PropertyManager, e.g.
- *
  * Note that the second template parameter is depcretated.
  *
  * \code
