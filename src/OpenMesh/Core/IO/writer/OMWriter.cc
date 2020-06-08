@@ -177,7 +177,8 @@ bool _OMWriter_::write_binary(std::ostream& _os, BaseExporter& _be,
 
   size_t bytes = 0;
 
-  bool swap = _opt.check(Options::Swap) || (Endian::local() == Endian::MSB);
+  const bool swap =
+      _opt.check(Options::Swap) || (Endian::local() == Endian::MSB);
 
   unsigned int i, nV, nF;
   Vec3f v;
@@ -539,48 +540,33 @@ bool _OMWriter_::write_binary(std::ostream& _os, BaseExporter& _be,
   // -------------------- write custom properties
 
 
-  BaseKernel::const_prop_iterator prop;
 
-  for (prop  = _be.kernel()->vprops_begin();
-       prop != _be.kernel()->vprops_end(); ++prop)
+  const auto store_property = [this, &_os, swap, &bytes](
+    const BaseKernel::const_prop_iterator _it_begin, 
+    const BaseKernel::const_prop_iterator _it_end, 
+    const OMFormat::Chunk::Entity _ent)
   {
-    if ( !*prop ) continue;
-    if ( (*prop)->name()[1]==':') continue;
-    bytes += store_binary_custom_chunk(_os, **prop,
-				       OMFormat::Chunk::Entity_Vertex, swap );
-  }
-  for (prop  = _be.kernel()->fprops_begin();
-       prop != _be.kernel()->fprops_end(); ++prop)
-  {
-    if ( !*prop ) continue;
-    if ( (*prop)->name()[1]==':') continue;
-    bytes += store_binary_custom_chunk(_os, **prop,
-				       OMFormat::Chunk::Entity_Face, swap );
-  }
-  for (prop  = _be.kernel()->eprops_begin();
-       prop != _be.kernel()->eprops_end(); ++prop)
-  {
-    if ( !*prop ) continue;
-    if ( (*prop)->name()[1]==':') continue;
-    bytes += store_binary_custom_chunk(_os, **prop,
-				       OMFormat::Chunk::Entity_Edge, swap );
-  }
-  for (prop  = _be.kernel()->hprops_begin();
-       prop != _be.kernel()->hprops_end(); ++prop)
-  {
-    if ( !*prop ) continue;
-    if ( (*prop)->name()[1]==':') continue;
-    bytes += store_binary_custom_chunk(_os, **prop,
-				       OMFormat::Chunk::Entity_Halfedge, swap );
-  }
-  for (prop  = _be.kernel()->mprops_begin();
-       prop != _be.kernel()->mprops_end(); ++prop)
-  {
-    if ( !*prop ) continue;
-    if ( (*prop)->name()[1]==':') continue;
-    bytes += store_binary_custom_chunk(_os, **prop,
-				       OMFormat::Chunk::Entity_Mesh, swap );
-  }
+    for (auto prop = _it_begin; prop != _it_end; ++prop)
+    {
+      if (!*prop || (*prop)->name().empty() ||
+          ((*prop)->name().size() > 1 && (*prop)->name()[1] == ':'))
+      { // skip dead and "private" properties (no name or name matches "?:*")
+        continue;
+      }
+      bytes += store_binary_custom_chunk(_os, **prop, _ent, swap);
+    }
+  };
+
+  store_property(_be.kernel()->vprops_begin(), _be.kernel()->vprops_end(),
+      OMFormat::Chunk::Entity_Vertex);
+  store_property(_be.kernel()->fprops_begin(), _be.kernel()->fprops_end(),
+      OMFormat::Chunk::Entity_Face);
+  store_property(_be.kernel()->eprops_begin(), _be.kernel()->eprops_end(),
+      OMFormat::Chunk::Entity_Edge);
+  store_property(_be.kernel()->hprops_begin(), _be.kernel()->hprops_end(),
+      OMFormat::Chunk::Entity_Halfedge);
+  store_property(_be.kernel()->mprops_begin(), _be.kernel()->mprops_end(),
+      OMFormat::Chunk::Entity_Mesh);
 
   memset(&chunk_header, 0, sizeof(chunk_header));
   chunk_header.name_ = false;
