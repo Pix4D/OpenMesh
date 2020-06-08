@@ -156,8 +156,8 @@ if(${PROJECT_NAME} MATCHES "OpenMesh")
 
   if (WIN32 AND  BUILD_APPS )
     # prepare bundle generation cmake file and add a build target for it
-    configure_file ("${CMAKE_SOURCE_DIR}/cmake/fixbundle.cmake.win.in"
-       "${CMAKE_BINARY_DIR}/fixbundle.win.cmake" @ONLY IMMEDIATE)
+    configure_file ("${CMAKE_CURRENT_SOURCE_DIR}/cmake/fixbundle.cmake.win.in"
+       "${CMAKE_CURRENT_BINARY_DIR}/fixbundle.win.cmake" @ONLY IMMEDIATE)
 
     if ( NOT "${CMAKE_GENERATOR}" MATCHES "MinGW Makefiles" )
       # let bundle generation depend on all targets
