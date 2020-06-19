@@ -121,7 +121,7 @@ public:
   size_t decimate_to( size_t  _n_vertices , bool _only_selected = false)
   {
     return ( (_n_vertices < this->mesh().n_vertices()) ?
-	     decimate( this->mesh().n_vertices() - _n_vertices ) : 0 , _only_selected);
+	     decimate( this->mesh().n_vertices() - _n_vertices , _only_selected ) : 0 );
   }
 
   /**
