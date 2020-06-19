@@ -82,7 +82,7 @@ MixedDecimaterT<Mesh>::~MixedDecimaterT() {
 
 //-----------------------------------------------------------------------------
 template<class Mesh>
-size_t MixedDecimaterT<Mesh>::decimate(const size_t _n_collapses, const float _mc_factor) {
+size_t MixedDecimaterT<Mesh>::decimate(const size_t _n_collapses, const float _mc_factor, bool _only_selected) {
 
   if (_mc_factor > 1.0)
     return 0;
@@ -92,21 +92,21 @@ size_t MixedDecimaterT<Mesh>::decimate(const size_t _n_collapses, const float _m
 
   size_t r_collapses = 0;
   if (_mc_factor > 0.0)
-    r_collapses = McDecimaterT<Mesh>::decimate(n_collapses_mc);
+    r_collapses = McDecimaterT<Mesh>::decimate(n_collapses_mc,_only_selected);
 
   // returns, if the previous steps were aborted by the observer
   if (this->observer() && this->observer()->abort())
       return r_collapses;
 
   if (_mc_factor < 1.0)
-    r_collapses += DecimaterT<Mesh>::decimate(n_collapses_inc);
+    r_collapses += DecimaterT<Mesh>::decimate(n_collapses_inc,_only_selected);
 
   return r_collapses;
 
 }
 
 template<class Mesh>
-size_t MixedDecimaterT<Mesh>::decimate_to_faces(const size_t  _n_vertices,const size_t _n_faces, const float _mc_factor ){
+size_t MixedDecimaterT<Mesh>::decimate_to_faces(const size_t  _n_vertices,const size_t _n_faces, const float _mc_factor , bool _only_selected){
 
   if (_mc_factor > 1.0)
     return 0;
@@ -122,7 +122,7 @@ size_t MixedDecimaterT<Mesh>::decimate_to_faces(const size_t  _n_vertices,const 
       size_t n_vertices_mc = static_cast<size_t>(mesh_vertices - _mc_factor * (mesh_vertices - _n_vertices));
       size_t n_faces_mc = static_cast<size_t>(mesh_faces - _mc_factor * (mesh_faces - _n_faces));
 
-      r_collapses = McDecimaterT<Mesh>::decimate_to_faces(n_vertices_mc, n_faces_mc);
+      r_collapses = McDecimaterT<Mesh>::decimate_to_faces(n_vertices_mc, n_faces_mc,_only_selected);
     } else {
 
       const size_t samples = this->samples();
@@ -145,7 +145,7 @@ size_t MixedDecimaterT<Mesh>::decimate_to_faces(const size_t  _n_vertices,const 
         float decimaterLevel = (float(i + 1)) * _mc_factor / (float(steps) );
 
         this->set_samples(samples);
-        r_collapses += McDecimaterT<Mesh>::decimate_constraints_only(decimaterLevel);
+        r_collapses += McDecimaterT<Mesh>::decimate_constraints_only(decimaterLevel,_only_selected);
       }
     }
   }
@@ -159,7 +159,7 @@ size_t MixedDecimaterT<Mesh>::decimate_to_faces(const size_t  _n_vertices,const 
 
   //reduce the rest of the mesh
   if (_mc_factor < 1.0) {
-    r_collapses += DecimaterT<Mesh>::decimate_to_faces(_n_vertices,_n_faces);
+    r_collapses += DecimaterT<Mesh>::decimate_to_faces(_n_vertices,_n_faces,_only_selected);
   }
 
 
