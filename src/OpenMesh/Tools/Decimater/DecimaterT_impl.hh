@@ -152,7 +152,6 @@ size_t DecimaterT<Mesh>::decimate(size_t _n_collapses, bool _only_selected) {
   if (!this->is_initialized())
     return 0;
 
-  typename Mesh::VertexIter v_it, v_end(mesh_.vertices_end());
   typename Mesh::VertexHandle vp;
   typename Mesh::HalfedgeHandle v0v1;
   typename Mesh::VertexVertexIter vv_it;
@@ -264,7 +263,6 @@ size_t DecimaterT<Mesh>::decimate_to_faces(size_t _nv, size_t _nf, bool _only_se
   if (_nv >= mesh_.n_vertices() || _nf >= mesh_.n_faces())
     return 0;
 
-  typename Mesh::VertexIter v_it, v_end(mesh_.vertices_end());
   typename Mesh::VertexHandle vp;
   typename Mesh::HalfedgeHandle v0v1;
   typename Mesh::VertexVertexIter vv_it;
