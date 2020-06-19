@@ -347,7 +347,8 @@ size_t DecimaterT<Mesh>::decimate_to_faces(size_t _nv, size_t _nf, bool _only_se
     // update heap (former one ring of decimated vertex)
     for (s_it = support.begin(), s_end = support.end(); s_it != s_end; ++s_it) {
       assert(!mesh_.status(*s_it).deleted());
-      heap_vertex(*s_it);
+      if (!_only_selected  || mesh_.status(*s_it).selected() )
+        heap_vertex(*s_it);
     }
 
     // notify observer and stop if the observer requests it
