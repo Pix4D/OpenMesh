@@ -99,7 +99,7 @@ McDecimaterT<Mesh>::~McDecimaterT() {
 
 //-----------------------------------------------------------------------------
 template<class Mesh>
-size_t McDecimaterT<Mesh>::decimate(size_t _n_collapses) {
+size_t McDecimaterT<Mesh>::decimate(size_t _n_collapses, bool _only_selected) {
 
   if (!this->is_initialized())
     return 0;
@@ -142,8 +142,8 @@ size_t McDecimaterT<Mesh>::decimate(size_t _n_collapses) {
       tmpHandle = typename Mesh::HalfedgeHandle( (double(rand()) / double(RAND_MAX) ) * double(mesh_.n_halfedges()-1) );
 #endif
 
-      // if it is not deleted, we analyse it
-      if ( ! mesh_.status(tmpHandle).deleted()  ) {
+      // if it is not deleted, we analyze it
+      if ( ! mesh_.status(tmpHandle).deleted() && (!_only_selected  || mesh_.status(tmpHandle).selected() ) ) {
 
         CollapseInfo ci(mesh_, tmpHandle);
 
@@ -223,7 +223,7 @@ size_t McDecimaterT<Mesh>::decimate(size_t _n_collapses) {
 //-----------------------------------------------------------------------------
 
 template<class Mesh>
-size_t McDecimaterT<Mesh>::decimate_to_faces(size_t _nv, size_t _nf) {
+size_t McDecimaterT<Mesh>::decimate_to_faces(size_t _nv, size_t _nf, bool _only_selected) {
 
   if (!this->is_initialized())
     return 0;
@@ -273,8 +273,8 @@ size_t McDecimaterT<Mesh>::decimate_to_faces(size_t _nv, size_t _nf) {
       tmpHandle = typename Mesh::HalfedgeHandle( ( double(rand()) / double(RAND_MAX) ) * double(mesh_.n_halfedges() - 1));
 #endif
 
-      // if it is not deleted, we analyse it
-      if (!mesh_.status(tmpHandle).deleted()) {
+      // if it is not deleted, we analyze it
+      if ( ! mesh_.status(tmpHandle).deleted() && (!_only_selected  || mesh_.status(tmpHandle).selected() ) ) {
 
         CollapseInfo ci(mesh_, tmpHandle);
 
@@ -366,7 +366,7 @@ size_t McDecimaterT<Mesh>::decimate_to_faces(size_t _nv, size_t _nf) {
 //-----------------------------------------------------------------------------
 
 template<class Mesh>
-size_t McDecimaterT<Mesh>::decimate_constraints_only(float _factor) {
+size_t McDecimaterT<Mesh>::decimate_constraints_only(float _factor, bool _only_selected) {
 
   if (!this->is_initialized())
     return 0;
@@ -419,7 +419,8 @@ size_t McDecimaterT<Mesh>::decimate_constraints_only(float _factor) {
 #endif
 
       // if it is not deleted, we analyze it
-      if (!mesh_.status(mesh_.edge_handle(tmpHandle)).deleted()) {
+      if (!mesh_.status(mesh_.edge_handle(tmpHandle)).deleted() &&
+         (!_only_selected  || ( mesh_.status(mesh_.to_vertex_handle(tmpHandle)).selected() && mesh_.status(mesh_.from_vertex_handle(tmpHandle)).selected() ) )  ) {
 
         CollapseInfo ci(mesh_, tmpHandle);
 

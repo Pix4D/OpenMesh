@@ -147,12 +147,11 @@ void DecimaterT<Mesh>::heap_vertex(VertexHandle _vh) {
 
 //-----------------------------------------------------------------------------
 template<class Mesh>
-size_t DecimaterT<Mesh>::decimate(size_t _n_collapses) {
+size_t DecimaterT<Mesh>::decimate(size_t _n_collapses, bool _only_selected) {
 
   if (!this->is_initialized())
     return 0;
 
-  typename Mesh::VertexIter v_it, v_end(mesh_.vertices_end());
   typename Mesh::VertexHandle vp;
   typename Mesh::HalfedgeHandle v0v1;
   typename Mesh::VertexVertexIter vv_it;
@@ -181,10 +180,15 @@ size_t DecimaterT<Mesh>::decimate(size_t _n_collapses) {
 
   heap_->reserve(mesh_.n_vertices());
 
-  for (v_it = mesh_.vertices_begin(); v_it != v_end; ++v_it) {
-    heap_->reset_heap_position(*v_it);
-    if (!mesh_.status(*v_it).deleted())
-      heap_vertex(*v_it);
+  for ( auto v_it : mesh_.vertices() ) {
+    heap_->reset_heap_position(v_it);
+
+    if (!mesh_.status(v_it).deleted()) {
+      if (!_only_selected  || mesh_.status(v_it).selected() ) {
+        heap_vertex(v_it);
+      }
+    }
+
   }
 
   const bool update_normals = mesh_.has_face_normals();
@@ -231,7 +235,8 @@ size_t DecimaterT<Mesh>::decimate(size_t _n_collapses) {
     // update heap (former one ring of decimated vertex)
     for (s_it = support.begin(), s_end = support.end(); s_it != s_end; ++s_it) {
       assert(!mesh_.status(*s_it).deleted());
-      heap_vertex(*s_it);
+      if (!_only_selected  || mesh_.status(*s_it).selected() )
+        heap_vertex(*s_it);
     }
 
     // notify observer and stop if the observer requests it
@@ -251,7 +256,7 @@ size_t DecimaterT<Mesh>::decimate(size_t _n_collapses) {
 //-----------------------------------------------------------------------------
 
 template<class Mesh>
-size_t DecimaterT<Mesh>::decimate_to_faces(size_t _nv, size_t _nf) {
+size_t DecimaterT<Mesh>::decimate_to_faces(size_t _nv, size_t _nf, bool _only_selected) {
 
   if (!this->is_initialized())
     return 0;
@@ -259,7 +264,6 @@ size_t DecimaterT<Mesh>::decimate_to_faces(size_t _nv, size_t _nf) {
   if (_nv >= mesh_.n_vertices() || _nf >= mesh_.n_faces())
     return 0;
 
-  typename Mesh::VertexIter v_it, v_end(mesh_.vertices_end());
   typename Mesh::VertexHandle vp;
   typename Mesh::HalfedgeHandle v0v1;
   typename Mesh::VertexVertexIter vv_it;
@@ -283,10 +287,13 @@ size_t DecimaterT<Mesh>::decimate_to_faces(size_t _nv, size_t _nf) {
   #endif
   heap_->reserve(mesh_.n_vertices());
 
-  for (v_it = mesh_.vertices_begin(); v_it != v_end; ++v_it) {
-    heap_->reset_heap_position(*v_it);
-    if (!mesh_.status(*v_it).deleted())
-      heap_vertex(*v_it);
+  for ( auto v_it : mesh_.vertices() ) {
+    heap_->reset_heap_position(v_it);
+    if (!mesh_.status(v_it).deleted()) {
+      if (!_only_selected  || mesh_.status(v_it).selected() ) {
+        heap_vertex(v_it);
+      }
+    }
   }
 
   const bool update_normals = mesh_.has_face_normals();
@@ -340,7 +347,8 @@ size_t DecimaterT<Mesh>::decimate_to_faces(size_t _nv, size_t _nf) {
     // update heap (former one ring of decimated vertex)
     for (s_it = support.begin(), s_end = support.end(); s_it != s_end; ++s_it) {
       assert(!mesh_.status(*s_it).deleted());
-      heap_vertex(*s_it);
+      if (!_only_selected  || mesh_.status(*s_it).selected() )
+        heap_vertex(*s_it);
     }
 
     // notify observer and stop if the observer requests it
