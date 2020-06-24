@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 /** \file McDecimaterT.hh
  */
@@ -100,29 +95,56 @@ public: //------------------------------------------------------ public methods
 
 public:
 
-  /** Decimate (perform _n_collapses collapses). Return number of
-      performed collapses. If _n_collapses is not given reduce as
-      much as possible */
-  size_t decimate( size_t _n_collapses );
+  /**
+   * @brief Decimate (perform _n_collapses collapses). Return number of
+   *  performed collapses. If _n_collapses is not given reduce as
+   *  much as possible
+   * @param _n_collapses Desired number of collapses. If zero (default), attempt
+   *                     to do as many collapses as possible.
+   * @param _only_selected  Only consider vertices which are selected for decimation
+   * @return Number of collapses that were actually performed.
+   * @note This operation only marks the removed mesh elements for deletion. In
+   *       order to actually remove the decimated elements from the mesh, a
+   *       subsequent call to ArrayKernel::garbage_collection() is required.
+   */
+  size_t decimate( size_t _n_collapses , bool _only_selected = false);
 
-  /// Decimate to target complexity, returns number of collapses
-  size_t decimate_to( size_t  _n_vertices )
+  /**
+   * @brief Decimate the mesh to a desired target vertex complexity.
+   * @param _n_vertices Target complexity, i.e. desired number of remaining
+   *                    vertices after decimation.
+   * @param _only_selected  Only consider vertices which are selected for decimation
+   * @return Number of collapses that were actually performed.
+   * @note This operation only marks the removed mesh elements for deletion. In
+   *       order to actually remove the decimated elements from the mesh, a
+   *       subsequent call to ArrayKernel::garbage_collection() is required.
+   */
+  size_t decimate_to( size_t  _n_vertices , bool _only_selected = false)
   {
     return ( (_n_vertices < this->mesh().n_vertices()) ?
-	     decimate( this->mesh().n_vertices() - _n_vertices ) : 0 );
+	     decimate( this->mesh().n_vertices() - _n_vertices , _only_selected ) : 0 );
   }
 
-  /** Decimate to target complexity (vertices and faces).
-   *  Stops when the number of vertices or the number of faces is reached.
-   *  Returns number of performed collapses.
+  /**
+   * @brief Attempts to decimate the mesh until a desired vertex or face
+   *        complexity is achieved.
+   * @param _n_vertices Target vertex complexity.
+   * @param _n_faces Target face complexity.
+   * @param _only_selected  Only consider vertices which are selected for decimation
+   * @return Number of collapses that were actually performed.
+   * @note Decimation stops as soon as either one of the two complexity bounds
+   *       is satisfied.
+   * @note This operation only marks the removed mesh elements for deletion. In
+   *       order to actually remove the decimated elements from the mesh, a
+   *       subsequent call to ArrayKernel::garbage_collection() is required.
    */
-  size_t decimate_to_faces( size_t  _n_vertices=0, size_t _n_faces=0 );
+  size_t decimate_to_faces( size_t  _n_vertices=0, size_t _n_faces=0 , bool _only_selected = false);
 
   /**
    * Decimate only with constraints, while _factor gives the
    * percentage of the constraints that should be used
    */
-  size_t decimate_constraints_only(float _factor);
+  size_t decimate_constraints_only(float _factor, bool _only_selected = false);
 
   size_t samples(){return randomSamples_;}
   void set_samples(const size_t _value){randomSamples_ = _value;}
@@ -143,7 +165,7 @@ private: //------------------------------------------------------- private data
 //=============================================================================
 #if defined(OM_INCLUDE_TEMPLATES) && !defined(OPENMESH_MULTIPLE_CHOICE_DECIMATER_DECIMATERT_CC)
 #define OPENMESH_MULTIPLE_CHOICE_DECIMATER_TEMPLATES
-#include "McDecimaterT.cc"
+#include "McDecimaterT_impl.hh"
 #endif
 //=============================================================================
 #endif // OPENMESH_MC_DECIMATER_DECIMATERT_HH defined

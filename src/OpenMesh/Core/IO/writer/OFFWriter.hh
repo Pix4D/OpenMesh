@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 
 //=============================================================================
@@ -102,14 +97,14 @@ public:
 
   virtual ~_OFFWriter_() {};
 
-  std::string get_description() const { return "no description"; }
-  std::string get_extensions() const  { return "off"; }
+  std::string get_description() const override { return "no description"; }
+  std::string get_extensions()  const override  { return "off"; }
 
-  bool write(const std::string&, BaseExporter&, Options, std::streamsize _precision = 6) const;
+  bool write(const std::string&, BaseExporter&, Options, std::streamsize _precision = 6) const override;
 
-  bool write(std::ostream&, BaseExporter&, Options, std::streamsize _precision = 6) const;
+  bool write(std::ostream&, BaseExporter&, Options, std::streamsize _precision = 6) const override;
 
-  size_t binary_size(BaseExporter& _be, Options _opt) const;
+  size_t binary_size(BaseExporter& _be, Options _opt) const override;
 
 
 protected:

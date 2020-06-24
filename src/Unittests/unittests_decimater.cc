@@ -3,6 +3,7 @@
 #include <Unittests/unittests_common.hh>
 #include <OpenMesh/Tools/Decimater/DecimaterT.hh>
 #include <OpenMesh/Tools/Decimater/ModQuadricT.hh>
+#include <OpenMesh/Tools/Decimater/ModNormalDeviationT.hh>
 
 namespace {
 
@@ -49,7 +50,7 @@ TEST_F(OpenMeshDecimater, DecimateMesh) {
   decimaterDBG.initialize();
   size_t removedVertices = 0;
   removedVertices = decimaterDBG.decimate_to(5000);
-                    decimaterDBG.mesh().garbage_collection();
+  decimaterDBG.mesh().garbage_collection();
 
   EXPECT_EQ(2526u, removedVertices)     << "The number of remove vertices is not correct!";
   EXPECT_EQ(5000u, mesh_.n_vertices()) << "The number of vertices after decimation is not correct!";
@@ -72,7 +73,7 @@ TEST_F(OpenMeshDecimater, DecimateMeshToFaceVerticesLimit) {
   decimaterDBG.initialize();
   size_t removedVertices = 0;
   removedVertices = decimaterDBG.decimate_to_faces(5000, 8000);
-                    decimaterDBG.mesh().garbage_collection();
+  decimaterDBG.mesh().garbage_collection();
 
   EXPECT_EQ(2526u, removedVertices) << "The number of remove vertices is not correct!";
   EXPECT_EQ(5000u, mesh_.n_vertices()) << "The number of vertices after decimation is not correct!";
@@ -95,12 +96,40 @@ TEST_F(OpenMeshDecimater, DecimateMeshToFaceFaceLimit) {
   decimaterDBG.initialize();
   size_t removedVertices = 0;
   removedVertices = decimaterDBG.decimate_to_faces(4500, 9996);
-                    decimaterDBG.mesh().garbage_collection();
+  decimaterDBG.mesh().garbage_collection();
 
   EXPECT_EQ(2526u, removedVertices) << "The number of remove vertices is not correct!";
   EXPECT_EQ(5000u, mesh_.n_vertices()) << "The number of vertices after decimation is not correct!";
   EXPECT_EQ(14994u, mesh_.n_edges()) << "The number of edges after decimation is not correct!";
   EXPECT_EQ(9996u, mesh_.n_faces()) << "The number of faces after decimation is not correct!";
+}
+
+
+TEST_F(OpenMeshDecimater, DecimateMeshToVertexLimitWithLowNormalDeviation) {
+
+  bool ok = OpenMesh::IO::read_mesh(mesh_, "cube1.off");
+
+  ASSERT_TRUE(ok);
+
+  typedef OpenMesh::Decimater::DecimaterT< Mesh >  Decimater;
+  typedef OpenMesh::Decimater::ModQuadricT< Mesh >::Handle HModQuadric;
+  typedef OpenMesh::Decimater::ModNormalDeviationT< Mesh >::Handle HModNormalDeviation;
+
+  Decimater decimaterDBG(mesh_);
+  HModQuadric hModQuadricDBG;
+  decimaterDBG.add( hModQuadricDBG );
+  HModNormalDeviation hModNormalDeviation;
+  decimaterDBG.add( hModNormalDeviation );
+  decimaterDBG.module(hModNormalDeviation).set_normal_deviation(15.0);
+  decimaterDBG.initialize();
+  size_t removedVertices = 0;
+  removedVertices = decimaterDBG.decimate_to(8);
+  decimaterDBG.mesh().garbage_collection();
+
+  EXPECT_EQ(6998u, removedVertices)    << "The number of remove vertices is not correct!";
+  EXPECT_EQ( 528u, mesh_.n_vertices()) << "The number of vertices after decimation is not correct!";
+  EXPECT_EQ(1578u, mesh_.n_edges())    << "The number of edges after decimation is not correct!";
+  EXPECT_EQ(1052u, mesh_.n_faces())    << "The number of faces after decimation is not correct!";
 }
 
 TEST_F(OpenMeshDecimater, DecimateMeshExampleFromDoc) {
@@ -121,7 +150,7 @@ TEST_F(OpenMeshDecimater, DecimateMeshExampleFromDoc) {
   decimaterDBG.initialize();
   size_t removedVertices = 0;
   removedVertices = decimaterDBG.decimate_to_faces(4500, 9996);
-                    decimaterDBG.mesh().garbage_collection();
+  decimaterDBG.mesh().garbage_collection();
 
   EXPECT_EQ(2526u, removedVertices) << "The number of remove vertices is not correct!";
   EXPECT_EQ(5000u, mesh_.n_vertices()) << "The number of vertices after decimation is not correct!";
@@ -134,7 +163,7 @@ class UnittestObserver : public OpenMesh::Decimater::Observer
     size_t notifies_;
     size_t all_steps_;
 public:
-    UnittestObserver(size_t _steps) :Observer(_steps), notifies_(0), all_steps_(0) {}
+    explicit UnittestObserver(size_t _steps) :Observer(_steps), notifies_(0), all_steps_(0) {}
 
     void notify(size_t _step)
     {

@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 #if !defined(OM_USE_OSG)
 #  define OM_USE_OSG 0
@@ -221,7 +216,7 @@ decimate(const std::string &_ifname,
    using namespace std;
 
    Mesh                   mesh;   
-   OpenMesh::IO::Options  opt;
+   OpenMesh::IO::Options  readopt;
    OpenMesh::Utils::Timer timer;
 
    // ---------------------------------------- read source mesh
@@ -232,7 +227,7 @@ decimate(const std::string &_ifname,
 
      if (gverbose)
        clog << _ifname << endl;
-     if ( !(rc = OpenMesh::IO::read_mesh(mesh, _ifname, opt)) )
+     if ( !(rc = OpenMesh::IO::read_mesh(mesh, _ifname, readopt)) )
      {
        cerr << "  ERROR: read failed!" << endl;
        return rc;
@@ -243,7 +238,7 @@ decimate(const std::string &_ifname,
    {
      // ---- 0 - For module NormalFlipping one needs face normals
 
-     if ( !opt.check( OpenMesh::IO::Options::FaceNormal ) )
+     if ( !readopt.check( OpenMesh::IO::Options::FaceNormal ) )
      {
        if ( !mesh.has_face_normals() )
          mesh.request_face_normals();
@@ -425,11 +420,11 @@ decimate(const std::string &_ifname,
        ofname.insert(++pos, n  );
      }
 
-     OpenMesh::IO::Options opt;
+     OpenMesh::IO::Options writeopt;
 
      //opt += OpenMesh::IO::Options::Binary;
 
-     if ( !OpenMesh::IO::write_mesh(mesh, ofname, opt ) )
+     if ( !OpenMesh::IO::write_mesh(mesh, ofname, writeopt ) )
      {
        std::cerr << "  Cannot write decimated mesh to file '" 
            << ofname << "'\n";
@@ -464,7 +459,7 @@ int main(int argc, char* argv[])
       {
         case 'D': opt.decorate_name = true;   break;
         case 'd': gdebug            = true;   break;
-        case 'h': usage_and_exit(0);
+        case 'h': usage_and_exit(0); break;
         case 'i': ifname            = optarg; break;
         case 'M': opt.parse_argument( optarg ); break;
         case 'n': opt.n_collapses   = float(atof(optarg)); break;

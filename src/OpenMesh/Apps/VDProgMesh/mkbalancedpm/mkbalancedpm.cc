@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 // -------------------- STL
 #include <iostream>
@@ -89,7 +84,7 @@ public:
 public:
 
    /// Constructor
-  ModBalancerT( D &_dec )
+  explicit ModBalancerT( D &_dec )
     : BaseModQ( _dec ),
       max_level_(0), n_roots_(0), n_vertices_(0)
   {
@@ -112,14 +107,14 @@ public:
 
 public: // inherited
 
-  void initialize(void)
+  void initialize(void) override
   {
     BaseModQ::initialize();
     n_vertices_ = BaseModQ::mesh().n_vertices();
     n_roots_    = calc_bits_for_roots(n_vertices_);
   }
 
-  virtual float collapse_priority(const CollapseInfo& _ci)
+  virtual float collapse_priority(const CollapseInfo& _ci) override
   {
     level_t newlevel = std::max( BaseModQ::mesh().property( level_, _ci.v0 ),
                                  BaseModQ::mesh().property( level_, _ci.v1 ) )+1;
@@ -140,7 +135,7 @@ public: // inherited
   }
 
   /// post-process halfedge collapse (accumulate quadrics)
-  void postprocess_collapse(const CollapseInfo& _ci)
+  void postprocess_collapse(const CollapseInfo& _ci) override
   {
     BaseModQ::postprocess_collapse( _ci );
 
@@ -259,6 +254,7 @@ int main(int argc, char **argv)
       case 'I': enable_modIS = true; break;
       case 'h':
         usage_and_exit(0);
+        break;
       default:
 	usage_and_exit(1);
     }

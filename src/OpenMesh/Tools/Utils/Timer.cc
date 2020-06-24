@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 #ifndef DOXY_IGNORE_THIS
 // ----------------------------------------------------------------------------
@@ -105,11 +100,11 @@ public:
    TimerImplWin32(void);
    ~TimerImplWin32(void) { ; }
 
-   virtual void   reset(void);
-   virtual void   start(void);
-   virtual void   stop(void);
-   virtual void   cont(void);
-   virtual double seconds(void) const;
+   virtual void   reset(void) override;
+   virtual void   start(void) override;
+   virtual void   stop(void) override;
+   virtual void   cont(void) override;
+   virtual double seconds(void) const override;
 };
 
 TimerImplWin32::TimerImplWin32(void)
@@ -188,7 +183,7 @@ protected:
 };
 
 // ----------------------------------------------------------- gettimeofday ----
-#elif (defined(__GNUC__) || (defined(__INTEL_COMPILER) && !defined(WIN32))) && !defined(__MINGW32__)
+#elif (defined(__GNUC__) && !defined(__FreeBSD__) || (defined(__INTEL_COMPILER) && !defined(WIN32))) && !defined(__MINGW32__)
 
 #  include <sys/time.h>
 #  include <sys/resource.h>
@@ -203,10 +198,10 @@ public:
     ~TimerImplGToD()
     { }
 
-    virtual void reset(void) { seconds_ = 0.0; }
-    virtual void start(void) { seconds_ = 0.0; gettimeofday( &start_, &tz_ ); }
+    virtual void reset(void) override { seconds_ = 0.0; }
+    virtual void start(void) override { seconds_ = 0.0; gettimeofday( &start_, &tz_ ); }
 
-    virtual void stop(void)
+    virtual void stop(void) override
     {
       gettimeofday( &stop_, &tz_ );
 
@@ -214,9 +209,9 @@ public:
       seconds_ +=  (double)(stop_.tv_usec- start_.tv_usec)*1e-6;
     }
 
-    virtual void cont(void)  { gettimeofday( &start_, &tz_); }
+    virtual void cont(void) override  { gettimeofday( &start_, &tz_); }
 
-    virtual double seconds() const { return seconds_; }
+    virtual double seconds() const override { return seconds_; }
 
 private:
   
@@ -239,11 +234,11 @@ public:
    TimerImplStd() : freq_(clockticks),count_(0),start_(0) { reset(); }
    ~TimerImplStd() { ; }
 
-   virtual void   reset(void) { count_ = 0; }
-   virtual void   start(void) { count_ = 0; start_ = clock(); }
-   virtual void   stop(void);
-   virtual void   cont(void)  { start_ = clock(); }
-   virtual double seconds(void) const { return (double)count_/(double)freq_; }
+   virtual void   reset(void) override { count_ = 0; }
+   virtual void   start(void) override { count_ = 0; start_ = clock(); }
+   virtual void   stop(void) override;
+   virtual void   cont(void) override  { start_ = clock(); }
+   virtual double seconds(void) const override { return (double)count_/(double)freq_; }
 
 protected:
    unsigned long freq_;
@@ -276,7 +271,7 @@ Timer::Timer(void) :
 #  else
   impl_      = new TimerImplPosix<CLOCK_REALTIME>;
 #  endif
-#elif (defined(__GNUC__) || (defined(__INTEL_COMPILER) && !defined(WIN32)) ) && !defined(__MINGW32__)
+#elif (defined(__GNUC__) && !defined(__FreeBSD__) || (defined(__INTEL_COMPILER) && !defined(WIN32)) ) && !defined(__MINGW32__)
   impl_      = new TimerImplGToD;
 #else
   impl_       = new TimerImplStd;

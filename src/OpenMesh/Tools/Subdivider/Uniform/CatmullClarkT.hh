@@ -39,13 +39,6 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *
- *   $Revision: 520 $                                                         *
- *   $Date: 2012-01-20 15:29:31 +0100 (Fr, 20 Jan 2012) $                   *
- *                                                                           *
-\*===========================================================================*/
-
 /** \file CatmullClarkT.hh
  */
 
@@ -121,15 +114,15 @@ public:
 
 public:
 
-  const char *name() const { return "Uniform CatmullClark"; }
+  const char *name() const override { return "Uniform CatmullClark"; }
 
 protected:
 
   /// Initialize properties and weights
-  virtual bool prepare( MeshType& _m );
+  virtual bool prepare( MeshType& _m ) override;
 
   /// Remove properties and weights
-  virtual bool cleanup( MeshType& _m );
+  virtual bool cleanup( MeshType& _m ) override;
 
   /** \brief Execute n subdivision steps
      *
@@ -138,7 +131,7 @@ protected:
      * @param _update_points Unused here
      * @return successful?
      */
-  virtual bool subdivide( MeshType& _m, size_t _n , const bool _update_points = true);
+  virtual bool subdivide( MeshType& _m, size_t _n , const bool _update_points = true) override;
 
 private:
 
@@ -174,7 +167,7 @@ private:
 //=============================================================================
 #if defined(OM_INCLUDE_TEMPLATES) && !defined(OPENMESH_SUBDIVIDER_UNIFORM_CATMULLCLARK_CC)
 #  define OPENMESH_SUBDIVIDER_TEMPLATES
-#  include "CatmullClarkT.cc"
+#  include "CatmullClarkT_impl.hh"
 #endif
 //=============================================================================
 #endif // OPENMESH_SUBDIVIDER_UNIFORM_CATMULLCLARKT_HH defined

@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 
 //=============================================================================
@@ -101,7 +96,7 @@ struct RuleHandleT : public BaseHandle
   protected:\
     friend class CompositeT<mesh_type>; \
   public: \
-    const char *type() const { return #classname; } \
+    const char *type() const override { return #classname; } \
     typedef classname<mesh_type>     Self;          \
     typedef RuleHandleT< Self >      Handle
 
@@ -123,7 +118,7 @@ public:
 protected:
 
   /// Default constructor
-  RuleInterfaceT(Mesh& _mesh) : mesh_(_mesh) {};
+  RuleInterfaceT(Mesh& _mesh) : mesh_(_mesh),prev_rule_(nullptr),subdiv_rule_(nullptr),subdiv_type_(0),number_(0),n_rules_(0) {};
 
 public:
 
@@ -363,12 +358,12 @@ protected:
   Self* prev_rule() { return prev_rule_; }
 
   void  set_subdiv_rule(Self*& _n) { subdiv_rule_ = _n; }
-  Self* subdiv_rule() { return subdiv_rule_; }
+  Self* subdiv_rule() const { return subdiv_rule_; }
 
   void set_number(int _n) { number_ = _n; }
 
   void set_n_rules(int _n) { n_rules_ = _n; }
-  int  n_rules() { return n_rules_; }
+  int  n_rules() const { return n_rules_; }
 
   void set_subdiv_type(int _n) 
   { assert(_n == 3 || _n == 4); subdiv_type_ = _n; }

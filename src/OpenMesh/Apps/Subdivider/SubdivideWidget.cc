@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 //=============================================================================
 //
@@ -92,7 +87,7 @@ using namespace OpenMesh::Subdivider;
 SubdivideWidget::
 SubdivideWidget(QWidget* _parent, const char* _name)
   : QWidget(_parent),
-    timer_(NULL), animate_step_(0), max_animate_steps_(4), msecs_(0)
+    timer_(nullptr), animate_step_(0), max_animate_steps_(4), msecs_(0)
 {
 
   setWindowTitle( QString(_name) );
@@ -103,7 +98,7 @@ SubdivideWidget(QWidget* _parent, const char* _name)
   // sel_topo_type will be set when adding the radio button.;
 
   // examiner widget
-  viewer_widget_ = new MeshViewerWidget();
+  viewer_widget_ = new MeshViewerWidgetSubdivider();
 
   vbox->addWidget(viewer_widget_);
 

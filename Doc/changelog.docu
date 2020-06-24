@@ -6,11 +6,159 @@
 
 <!-- --------------------------------------------------------------------- -->
 
-<tr valign=top><td><b>7.0</b> (?/?/?)</td><td>
+
+<tr valign=top><td><b>9.0</b> (?/?/?)</td><td>
+
+<b>Breaking Changes</b>
+<ul>
+<li>Dropped 32-bit Windows continuous integration and artifact builds (This does not mean that OpenMesh will not build and work on 32-bit, but we don't explicitly test and guarantee it anymore).</li>
+</ul>
+
+<b>Core</b>
+<ul>
+<li>Add filtered range that stores reference instead of copy if the filter is not an rvalue reference</li>
+</ul>
+
+<b>Build System</b>
+<ul>
+<li>Dropped 32-bit Windows continuous integration and artifact builds.</li>
+</ul>
+
+</tr>
+
+
+<tr valign=top><td><b>8.1</b> (2020/04/23)</td><td>
+
+<b>Breaking Changes</b>
+<ul>
+<li>PropertyManager: PropertyManager only gives const access to the underlying mesh.</li>
+</ul>
+
+
+<b>Core</b>
+<ul>
+<li>Property System: Get rid of the OM_FORCE_STATIC_CAST defines. We use the type ids to check if the cast is valid or not. This will add more type safety. </li>
+<li>Default Traits: Added DefaultTraitsDouble as a version of the default traits that uses double precision for positions and normals as well as float for colors. </li>
+<li>Default Mesh Types: Added typdefs for a Triangle Mesh and a PolyMesh which use DefaultTraitsDouble and can be used as default mesh type be the user. </li>
+<li>Template Programming Convenience: Added n_elements which returns the number of elements corresponding to the handle type given as template argument. Also added elements and all_elements methods returning ranges of the elements corresponding to the handle type given as template argument. See the Smart Handles Section under Tutorials in the Documentation.</li>
+<li>Smart Handles: Most userfacing functions returning handles should now return smart handles instead. Smart handles know their corresponding mesh and give convenient access to mesh navigation methods.
+<li>Smart Ranges: OpenMesh ranges now provide a few methods that simplify a few calculations. See documentation for more details.
+</ul>
+
+
+<b>Tools</b>
+<ul>
+<li>Subdivider: Fixed crash in Loop subdivider</li> 
+<li>Subdivider: Fixed crash in ModifiedButterfly subdivider</li>
+<li>Decimater: Fixed ModNormalDeviationT not working for meshes with Eigen Vectors as vector type</li>
+</ul>
+
+
+<b>Utils</b>
+<ul>
+<li>Change PropertyManager::operator* to access the property value for mesh properties</li>
+<li>PropertyManager: add hasProperty function</li>
+<li>PropertyManager rework: The behavior of the PropertyManager has been changed, hopefully making it more usable. See tutoial.
+</ul>
+
+<b>IO</b>
+<ul>
+<li>PLY Reader: Fix reading doubles from PLY, missing cast (Thanks to Leo Walsh for the patch)</li>
+<li>PLY Reader: Some cleanup (Thanks to Morgan Leborgne for the patch)</li>
+<li>PLY Reader: Support for ushort (Thanks to Morgan Leborgne for the patch)</li>
+<li>OM Reader: Positions with scalar type double will be stored as doubles.</li>
+</ul>
+
+
+<b>Build System</b>
+<ul>
+<li>Generate OpenMeshConfig.cmake (Thanks to Thibault Payet for the patch)</li>
+<li>Support building on FreeBSD (Thanks to Thibault Payet for the patch)</li>
+<li>Fixed Qt App Problems with cmake >= 3.17</li>
+</ul>
+
+</tr>
+
+
+<tr valign=top><td><b>8.0</b> (2019/02/21)</td><td>
+
+<b>Breaking changes:</b>
+<ul>
+<li>Don't run and test on VS2013 anymore. As VS2013 still lacks some C++11 features, we remove it from our list of supported platforms</li>
+<li>(Only internally breaking change:)Get rid of the T.cc naming for template implementations. New names end with T_impl.hh. This avoids all the missing files in the IDE GUIs due to the filtered T.cc files. Also the install targets could be simplified due to this change. For OpenMesh users, this change should be transparent.</li>
+</ul>
+
+<b>Core</b>
+<ul>
+<li>TriConnectivity: Added two functions split_edge and split_edge_copy to mask the PolyConnectivity functions of the same name (Prevents creation of valence 2 vertices on trimeshes)</li>
+<li>PolyConnectivity: Fixed PolyConnectivity is_collapse_ok, missing some configurations (Thanks to Simon Flöry for the patch)</li>
+<li>Connectivity type is now set at compile time</li>
+<li>Added header to interface with Eigen3 vectors as the basic type (Documentation on how to use it is also integrated)</li>
+</ul>
+
+<b>IO</b>
+<ul>
+<li>PLY Reader: Allowing the PLY reader to read custom face ( Thanks to morgan Leborgne for the patch)</li>
+<li>PLY Reader: Fixed endless loop on unknown property list type</li>
+<li>PLY Reader: Fix hang when reading directly from istream (Thanks to Paul Loré for the patch)</li>
+<li>PLY Reader: Fix file load for ASCII PLY without a newline at the end of the file (Thanks to Mathieu Lamarre for the patch )
+<li>PLY Reader/Writer: Support for face colors (Thanks to Steve and Barb Demlow for the patch)</li>
+<li>OM Writer/Reader: Update file format version to 2.0. Older files can still be read, but older OpenMesh versions cannot read new format.</li>
+<li>OM Writer/Reader: Fixed inconsistent writing/reading of edge properties</li>
+<li>OM Writer/Reader: Add option to store status</li>
+<li>OBJ Writer: Use Fixed as stream option in OBJ writer to avoid problems with other programs reading scientific notation</li>
+</ul>
+
+<b>Tools</b>
+<ul>
+<li>SmartTagger: Added the SmartTagger class to tag primitives (O(1) reset )</li>
+</ul>
+
+<b>Apps</b>
+<ul>
+<li>Fixed several warnings with gcc 8</li>
+<li>Removed the glut dependency</li>
+</ul>
+
+<b>Build System</b>
+<ul>
+<li>Rename the DEPRECATED macro into OM_DEPRECATED to prevent a macro clash with Intel MKL (Thanks to Morgan Leborgne for the patch)</li>
+</ul>
+
+
+</tr>
+
+
+<tr valign=top><td><b>7.1</b> (2018/05/29)</td><td>
+
+<b>IO</b>
+<ul>
+<li>OBJ Reader: Fixed slow OBJ reader (Thanks to Etienne Danvoye for the patch) </li>
+</ul>
+
+<b>Documentation</b>
+<ul>
+<li>Updated build instructions.</li>
+</ul>
+
+<b>Build System</b>
+<ul>
+<li>Default to C++11 in cmake files</li>
+<li>Remove old qmake project files. Unmaintained for a very long time</li>
+<li>Replaced Qt finders</li>
+<li>Added VS 2017 to CI builds</li>
+</ul>
+
+</tr>
+
+
+
+<tr valign=top><td><b>7.0</b> (2018/04/19)</td><td>
 
 <b>Breaking changes</b>
 <ul>
 <li>The minimal standard for C++ has been raised to C++11. Compilers not supporting C++11 or higher are no longer supported</li>
+<li>Removed the python bindings from this project. They have migrated to a <a href="https://www.graphics.rwth-aachen.de:9000/OpenMesh/openmesh-python">seperate project</a>.</li>
 </ul>
 
 <b>Core</b>
@@ -19,12 +167,17 @@
 <li>make all negative handles invalid, not just -1</li>
 <li>Several warnings fixed (Including the checked iterators)</li>
 <li>split_copy and split_edge_copy operations now also copy internal properties.</li>
+<li>copy face properties in split_copy(EdgeHandle, VertexHandle)</li>
 <li>fix halfedge indices in OpenMeshTrimeshCirculatorHalfedgeLoop CWAndCCWCheck</li>
 <li>Fix wrong behaviour of HalfedgeLoopIterators by changing the template parameter</li>
 <li>Added 1-4 triangle split funtion(splits all edges at Midpoints)</li>
 <li>Boost range support (Thanks to Bastian Pranzas for the patch)</li>
 <li>Made the face and edge split operations that copy properties also copy builtin properties</li>
 <li>calc_sector_angle: Check for real division by zero not with epsilon that was way to large</li>
+<li>Don't return invalid iterators for empty element ranges</li>
+<li>Mark halfedges as deleted after collapse</li>
+<li>Let default range-based for skip deleted elements and add a version that includes deleted elements</li>
+<li>Moved length() by norm() to external functions. This allows us to support other vector types instead of Vec3d (e.g. via Eigen) </li>
 </ul>
 
 <b>Utils</b>
@@ -56,7 +209,7 @@
 <li>BaseExporter: Added accessor functions for HalfEdgeHandles and faceTexCoords to base exporter and exporter template.</li>
 <li>OBJ Writer: Fail if vertex color export was requested (Thanks to Manuel Massing)</li>
 <li>OBJ Writer: Added functionality to store FaceTexCoords to objwriter</li>
-<li>OBJ Writer: Applied fix for bad or missing vertex tex coords (Thanks to Gero Müller for the patch)</li>>
+<li>OBJ Writer: Applied fix for bad or missing vertex tex coords (Thanks to Gero Müller for the patch)</li>
 <li>OBJ Writer: Fix vertex texture coordinates export in OBJ writer</li>
 <li>OBJ Loader: range check for vertex colors and normals in OBJ loader</li>
 <li>OBJ Loader: fixed handling of negative indices in OBJ loader</li>
@@ -73,14 +226,10 @@
 <li>Added unittest for split_edge_copy operations on Tri and PolyMeshes</li>
 </ul>
 
-<b>Python</b>
-<ul>
-<li>fix the stripping of the python libs version string</li>
-</ul>
-
 <b>General</b>
 <ul>
 <li>Updated Logo</li>
+<li>Only Issue Warning if compile Order for MeshIO.hh is violated. Check will be removed if no errors are reported.</li>
 </ul>
 
 </tr>

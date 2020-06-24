@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 #include <iterator>
 #include <OpenMesh/Apps/VDProgMesh/Streaming/Server/VDPMServerViewerWidget.hh>
@@ -76,7 +71,7 @@ get_vdpm(const char _vdpm_name[256])
     }
   }
 
-  return  NULL;
+  return  nullptr;
 }
 
 void

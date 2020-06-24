@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 // -------------------------------------------------------------- includes ----
 
@@ -170,7 +165,7 @@ int main(int argc, char **argv)
       case 'm': { std::stringstream s; s << optarg; s >> max_nv; } break;
       case 'r': rule_sequence = optarg; break;
       case 'U': uniform = true; break;
-      case 'h': usage_and_exit(argv[0],0);
+      case 'h': usage_and_exit(argv[0],0); break;
       case '?':
       default:  usage_and_exit(argv[0],1);
     }

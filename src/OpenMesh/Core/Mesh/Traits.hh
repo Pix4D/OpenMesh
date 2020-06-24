@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 
 /** \file Core/Mesh/Traits.hh
@@ -155,6 +150,24 @@ struct DefaultTraits
   HalfedgeAttributes(Attributes::PrevHalfedge);
   EdgeAttributes(0);
   FaceAttributes(0);
+};
+
+/** \class DefaultTraitsDouble Traits.hh <OpenMesh/Mesh/Traits.hh>
+
+    Version of Default Traits that uses double precision for points and
+    normals as well as floating point vectors for colors
+
+    \see The Mesh docu section on \ref mesh_type.
+    \see Traits.hh for a list of macros for traits classes.
+*/
+struct DefaultTraitsDouble : public DefaultTraits
+{
+  /// Use double precision points
+  typedef OpenMesh::Vec3d Point;
+  /// Use double precision Normals
+  typedef OpenMesh::Vec3d Normal;
+  /// Use RGBA Color
+  typedef OpenMesh::Vec4f Color;
 };
 
 

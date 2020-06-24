@@ -8,8 +8,16 @@
 
 #include <OpenMesh/Core/IO/MeshIO.hh>
 
+#ifdef TEST_CUSTOM_TRAITS
+#include <Unittests/unittests_common_customtraits.hh>
+#elif defined(TEST_DOUBLE_TRAITS)
+struct CustomTraits : public OpenMesh::DefaultTraitsDouble {
+};
+#else
 struct CustomTraits : public OpenMesh::DefaultTraits {
 };
+#endif
+
 
 typedef OpenMesh::TriMesh_ArrayKernelT<CustomTraits> Mesh;
 

@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 /** \file ModNormalFlippingT.hh
 
@@ -91,7 +86,7 @@ public:
 public:
 
   /// Constructor
-  ModNormalFlippingT( MeshT &_mesh) : Base(_mesh, true)
+  explicit ModNormalFlippingT( MeshT &_mesh) : Base(_mesh, true)
   {
     set_max_normal_deviation( 90.0f );
     const bool mesh_has_normals = _mesh.has_face_normals();
@@ -127,7 +122,7 @@ public:
    *
    *  \see set_max_normal_deviation()
    */
-  float collapse_priority(const CollapseInfo& _ci)
+  float collapse_priority(const CollapseInfo& _ci) override
   {
     // simulate collapse
     Base::mesh().set_point(_ci.v0, _ci.p1);
@@ -159,13 +154,13 @@ public:
   }
 
   /// set the percentage of maximum normal deviation
-  void set_error_tolerance_factor(double _factor) {
+  void set_error_tolerance_factor(double _factor) override {
     if (_factor >= 0.0 && _factor <= 1.0) {
       // the smaller the factor, the smaller max_deviation_ gets
       // thus creating a stricter constraint
       // division by error_tolerance_factor_ is for normalization
-      double max_normal_deviation = (max_deviation_ * 180.0/M_PI) * _factor / this->error_tolerance_factor_;
-      set_max_normal_deviation(max_normal_deviation);
+      double max_normal_deviation_value = (max_deviation_ * 180.0/M_PI) * _factor / this->error_tolerance_factor_;
+      set_max_normal_deviation(max_normal_deviation_value);
       this->error_tolerance_factor_ = _factor;
     }
   }

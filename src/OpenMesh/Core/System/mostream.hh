@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 //=============================================================================
 //
@@ -97,7 +92,7 @@ class multiplex_target : public basic_multiplex_target
 {
 public:
   explicit multiplex_target(T& _t) : target_(_t) {}
-  virtual void operator<<(const std::string& _s) { target_ << _s; }
+  virtual void operator<<(const std::string& _s) override { target_ << _s; }
 private:
   T& target_;
 };
@@ -290,7 +285,7 @@ class mostream : public std::ostream
 public:
 
   /// Explicit constructor
-  explicit mostream() : std::ostream(NULL) { init(&streambuffer_); }
+  explicit mostream() : std::ostream(nullptr) { init(&streambuffer_); }
 
 
   /// Connect target to multiplexer

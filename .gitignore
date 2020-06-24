@@ -3,3 +3,6 @@
 CMakeLists.txt.user
 build*
 *.swp
+.settings
+# ignore mac temporal files
+.DS_Store 

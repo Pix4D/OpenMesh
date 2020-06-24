@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 #ifdef _MSC_VER
 #  pragma warning(disable: 4267 4311)
@@ -57,12 +52,6 @@
 #include <qmessagebox.h>
 
 #include "DecimaterViewerWidget.hh"
-
-#ifdef ARCH_DARWIN
-#include <glut.h>
-#else
-#include <GL/glut.h>
-#endif
 
 void usage_and_exit(int xcode);
 
@@ -77,13 +66,9 @@ int main(int argc, char **argv)
   QApplication::setColorSpec( QApplication::CustomColor );
   QApplication app(argc,argv);
   
-#if !defined(__APPLE__)
-  glutInit(&argc,argv);
-#endif
-
   if ( !QGLFormat::hasOpenGL() ) {
     QString msg = "System has no OpenGL support!";
-    QMessageBox::critical( NULL, "OpenGL", msg + argv[1] );
+    QMessageBox::critical( nullptr, "OpenGL", msg + argv[1] );
     return -1;
   }
 
@@ -98,6 +83,7 @@ int main(int argc, char **argv)
        case 's': opt += OpenMesh::IO::Options::Swap; break;
        case 'h':
           usage_and_exit(0);
+          break;
        default:
           usage_and_exit(1);
      }
@@ -117,7 +103,7 @@ int main(int argc, char **argv)
         QString msg = "Cannot read mesh from file:\n '";
         msg += argv[optind];
         msg += "'";
-        QMessageBox::critical( NULL, w.windowTitle(), msg );
+        QMessageBox::critical( nullptr, w.windowTitle(), msg );
         return 1;
      }
   }
@@ -132,7 +118,7 @@ int main(int argc, char **argv)
         msg += "- Mesh file didn't provide texture coordinates\n";
         msg += "- Texture file does not exist\n";
         msg += "- Texture file is not accessible.\n";
-        QMessageBox::warning( NULL, w.windowTitle(), msg );
+        QMessageBox::warning( nullptr, w.windowTitle(), msg );
      }
   }
 

@@ -5,16 +5,9 @@ include_directories (
   ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-set (targetName commandlineDecimater)
+acg_add_executable (commandlineDecimater ../decimater.cc)
 
-# collect all header and source files
-set (sources
-  ../decimater.cc
-)
-
-acg_add_executable (${targetName} ${sources})
-
-target_link_libraries (${targetName}
+target_link_libraries (commandlineDecimater
   OpenMeshCore
   OpenMeshTools
 )

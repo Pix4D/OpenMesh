@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 /** \file ModProgMeshT.hh
 
@@ -95,7 +90,7 @@ public:
   {
     /// Initializing constructor copies appropriate handles from
     /// collapse information \c _ci.
-    Info( const CollapseInfo& _ci )
+    explicit Info( const CollapseInfo& _ci )
       : v0(_ci.v0), v1(_ci.v1), vl(_ci.vl),vr(_ci.vr)
     {}
 
@@ -113,7 +108,7 @@ public:
 public:
 
    /// Constructor
-  ModProgMeshT( MeshT &_mesh ) : Base(_mesh, true)
+  explicit ModProgMeshT( MeshT &_mesh ) : Base(_mesh, true)
   {
     Base::mesh().add_property( idx_ );
   }
@@ -135,7 +130,7 @@ public: // inherited
 
   /// Stores collapse information in a queue.
   /// \see infolist()
-  void postprocess_collapse(const CollapseInfo& _ci)
+  void postprocess_collapse(const CollapseInfo& _ci) override
   {
     pmi_.push_back( Info( _ci ) );
   }
@@ -190,7 +185,7 @@ private:
 //=============================================================================
 #if defined(OM_INCLUDE_TEMPLATES) && !defined(OPENMESH_DECIMATER_MODPROGMESH_CC)
 #define OSG_MODPROGMESH_TEMPLATES
-#include "ModProgMeshT.cc"
+#include "ModProgMeshT_impl.hh"
 #endif
 //=============================================================================
 #endif // OPENMESH_TOOLS_PROGMESHT_HH defined

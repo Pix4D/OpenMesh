@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 /** \file DecimaterT.hh
  */
@@ -94,7 +89,7 @@ public: //-------------------------------------------------------- public types
 public: //------------------------------------------------------ public methods
 
   /// Constructor
-  DecimaterT( Mesh& _mesh );
+  explicit DecimaterT( Mesh& _mesh );
 
   /// Destructor
   ~DecimaterT();
@@ -105,26 +100,28 @@ public:
    * @brief Perform a number of collapses on the mesh.
    * @param _n_collapses Desired number of collapses. If zero (default), attempt
    *                     to do as many collapses as possible.
+   * @param _only_selected  Only consider vertices which are selected for decimation
    * @return Number of collapses that were actually performed.
    * @note This operation only marks the removed mesh elements for deletion. In
    *       order to actually remove the decimated elements from the mesh, a
    *       subsequent call to ArrayKernel::garbage_collection() is required.
    */
-  size_t decimate( size_t _n_collapses = 0 );
+  size_t decimate( size_t _n_collapses = 0 , bool _only_selected = false);
 
   /**
    * @brief Decimate the mesh to a desired target vertex complexity.
    * @param _n_vertices Target complexity, i.e. desired number of remaining
    *                    vertices after decimation.
+   * @param _only_selected  Only consider vertices which are selected for decimation
    * @return Number of collapses that were actually performed.
    * @note This operation only marks the removed mesh elements for deletion. In
    *       order to actually remove the decimated elements from the mesh, a
    *       subsequent call to ArrayKernel::garbage_collection() is required.
    */
-  size_t decimate_to( size_t  _n_vertices )
+  size_t decimate_to( size_t  _n_vertices , bool _only_selected = false)
   {
     return ( (_n_vertices < this->mesh().n_vertices()) ?
-	     decimate( this->mesh().n_vertices() - _n_vertices ) : 0 );
+	     decimate( this->mesh().n_vertices() - _n_vertices , _only_selected ) : 0 );
   }
 
   /**
@@ -132,6 +129,7 @@ public:
    *        complexity is achieved.
    * @param _n_vertices Target vertex complexity.
    * @param _n_faces Target face complexity.
+   * @param _only_selected  Only consider vertices which are selected for decimation
    * @return Number of collapses that were actually performed.
    * @note Decimation stops as soon as either one of the two complexity bounds
    *       is satisfied.
@@ -139,7 +137,7 @@ public:
    *       order to actually remove the decimated elements from the mesh, a
    *       subsequent call to ArrayKernel::garbage_collection() is required.
    */
-  size_t decimate_to_faces( size_t  _n_vertices=0, size_t _n_faces=0 );
+  size_t decimate_to_faces( size_t  _n_vertices=0, size_t _n_faces=0 , bool _only_selected = false);
 
 public:
 
@@ -214,7 +212,7 @@ private: //------------------------------------------------------- private data
 //=============================================================================
 #if defined(OM_INCLUDE_TEMPLATES) && !defined(OPENMESH_DECIMATER_DECIMATERT_CC)
 #define OPENMESH_DECIMATER_TEMPLATES
-#include "DecimaterT.cc"
+#include "DecimaterT_impl.hh"
 #endif
 //=============================================================================
 #endif // OPENMESH_DECIMATER_DECIMATERT_HH defined

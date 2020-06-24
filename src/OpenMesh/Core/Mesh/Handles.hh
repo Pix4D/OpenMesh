@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 #ifndef OPENMESH_HANDLES_HH
 #define OPENMESH_HANDLES_HH
@@ -64,7 +59,7 @@ namespace OpenMesh {
 
 
 /// Base class for all handle types
-class BaseHandle
+class OPENMESHDLLEXPORT BaseHandle
 { 
 public:
   
@@ -122,31 +117,40 @@ inline std::ostream& operator<<(std::ostream& _os, const BaseHandle& _hnd)
 
 
 /// Handle for a vertex entity
-struct VertexHandle : public BaseHandle
+struct OPENMESHDLLEXPORT VertexHandle : public BaseHandle
 {
   explicit VertexHandle(int _idx=-1) : BaseHandle(_idx) {}
 };
 
 
 /// Handle for a halfedge entity
-struct HalfedgeHandle : public BaseHandle
+struct OPENMESHDLLEXPORT HalfedgeHandle : public BaseHandle
 {
   explicit HalfedgeHandle(int _idx=-1) : BaseHandle(_idx) {}
 };
 
 
 /// Handle for a edge entity
-struct EdgeHandle : public BaseHandle
+struct OPENMESHDLLEXPORT EdgeHandle : public BaseHandle
 {
   explicit EdgeHandle(int _idx=-1) : BaseHandle(_idx) {}
 };
 
 
 /// Handle for a face entity
-struct FaceHandle : public BaseHandle
+struct OPENMESHDLLEXPORT FaceHandle : public BaseHandle
 {
   explicit FaceHandle(int _idx=-1) : BaseHandle(_idx) {}
 };
+
+
+/// Handle type for meshes to simplify some template programming
+struct OPENMESHDLLEXPORT MeshHandle : public BaseHandle
+{
+  explicit MeshHandle(int _idx=-1) : BaseHandle(_idx) {}
+};
+
+
 
 
 //=============================================================================
@@ -165,8 +169,9 @@ namespace std {
 
 template <>
 struct hash<OpenMesh::BaseHandle >
-  : public std::unary_function<OpenMesh::BaseHandle, std::size_t>
 {
+  typedef OpenMesh::BaseHandle argument_type;
+  typedef std::size_t result_type;
 
   std::size_t operator()(const OpenMesh::BaseHandle& h) const
   {
@@ -176,8 +181,9 @@ struct hash<OpenMesh::BaseHandle >
 
 template <>
 struct hash<OpenMesh::VertexHandle >
-  : public std::unary_function<OpenMesh::VertexHandle, std::size_t>
 {
+  typedef OpenMesh::VertexHandle argument_type;
+  typedef std::size_t result_type;
 
   std::size_t operator()(const OpenMesh::VertexHandle& h) const
   {
@@ -187,9 +193,11 @@ struct hash<OpenMesh::VertexHandle >
 
 template <>
 struct hash<OpenMesh::HalfedgeHandle >
-  : public std::unary_function<OpenMesh::HalfedgeHandle, std::size_t>
 {
 
+  typedef OpenMesh::HalfedgeHandle argument_type;
+  typedef std::size_t result_type;
+  
   std::size_t operator()(const OpenMesh::HalfedgeHandle& h) const
   {
     return h.idx();
@@ -198,9 +206,11 @@ struct hash<OpenMesh::HalfedgeHandle >
 
 template <>
 struct hash<OpenMesh::EdgeHandle >
-  : public std::unary_function<OpenMesh::EdgeHandle, std::size_t>
 {
 
+  typedef OpenMesh::EdgeHandle argument_type;
+  typedef std::size_t result_type;
+  
   std::size_t operator()(const OpenMesh::EdgeHandle& h) const
   {
     return h.idx();
@@ -209,9 +219,11 @@ struct hash<OpenMesh::EdgeHandle >
 
 template <>
 struct hash<OpenMesh::FaceHandle >
-  : public std::unary_function<OpenMesh::FaceHandle, std::size_t>
 {
 
+  typedef OpenMesh::FaceHandle argument_type;
+  typedef std::size_t result_type;
+  
   std::size_t operator()(const OpenMesh::FaceHandle& h) const
   {
     return h.idx();

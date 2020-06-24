@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 #ifndef OPENMESH_AutoPropertyHandleT_HH
 #define OPENMESH_AutoPropertyHandleT_HH
@@ -75,7 +70,7 @@ protected:
 
 public:
   AutoPropertyHandleT()
-  : m_(NULL), own_property_(false)
+  : m_(nullptr), own_property_(false)
   {}
   
   AutoPropertyHandleT(const Self& _other)

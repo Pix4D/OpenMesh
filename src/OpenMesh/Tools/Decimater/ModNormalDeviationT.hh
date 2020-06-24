@@ -39,12 +39,6 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *
- *   $Revision$                                                        *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
 
 /** \file ModNormalDeviationT.hh
  */
@@ -103,7 +97,7 @@ public:
   typedef typename Mesh::VertexHandle               VertexHandle;
   typedef typename Mesh::FaceHandle                 FaceHandle;
   typedef typename Mesh::EdgeHandle                 EdgeHandle;
-  typedef NormalConeT<Scalar>                       NormalCone;
+  typedef NormalConeT<Normal>                       NormalCone;
 
 
 
@@ -146,7 +140,7 @@ public:
 
 
   /// Allocate and init normal cones
-  void  initialize() {
+  void  initialize() override {
     if (!normal_cones_.is_valid())
       mesh_.add_property(normal_cones_);
 
@@ -171,7 +165,7 @@ public:
    * @param _ci Collapse info data
    * @return Half of the normal cones size (radius in radians)
    */
-  float collapse_priority(const CollapseInfo& _ci) {
+  float collapse_priority(const CollapseInfo& _ci) override {
     // simulate collapse
     mesh_.set_point(_ci.v0, _ci.p1);
 
@@ -209,20 +203,20 @@ public:
   }
 
   /// set the percentage of normal deviation
-  void set_error_tolerance_factor(double _factor) {
+  void set_error_tolerance_factor(double _factor) override {
     if (_factor >= 0.0 && _factor <= 1.0) {
       // the smaller the factor, the smaller normal_deviation_ gets
       // thus creating a stricter constraint
       // division by error_tolerance_factor_ is for normalization
-      Scalar normal_deviation = normal_deviation_ *  static_cast<Scalar>(  180.0 / M_PI * _factor / this->error_tolerance_factor_);
+      Scalar normal_deviation_value = normal_deviation_ *  static_cast<Scalar>(  180.0 / M_PI * _factor / this->error_tolerance_factor_);
 
-      set_normal_deviation(normal_deviation);
+      set_normal_deviation(normal_deviation_value);
       this->error_tolerance_factor_ = _factor;
     }
   }
 
 
-  void  postprocess_collapse(const CollapseInfo& _ci) {
+  void  postprocess_collapse(const CollapseInfo& _ci) override {
     // account for changed normals
     typename Mesh::VertexFaceIter vf_it(mesh_, _ci.v1);
     for (; vf_it.is_valid(); ++vf_it)

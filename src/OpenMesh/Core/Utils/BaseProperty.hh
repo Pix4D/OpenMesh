@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 #ifndef OPENMESH_BASEPROPERTY_HH
 #define OPENMESH_BASEPROPERTY_HH
@@ -85,13 +80,13 @@ public:
   ///
   /// \param _name Optional textual name for the property.
   ///
-  BaseProperty(const std::string& _name = "<unknown>")
-  : name_(_name), persistent_(false)
+  BaseProperty(const std::string& _name = "<unknown>", const std::string& _internal_type_name = "<unknown>" )
+  : name_(_name), internal_type_name_(_internal_type_name), persistent_(false)
   {}
 
   /// \brief Copy constructor
   BaseProperty(const BaseProperty & _rhs)
-      : name_( _rhs.name_ ), persistent_( _rhs.persistent_ ) {}
+      : name_( _rhs.name_ ), internal_type_name_(_rhs.internal_type_name_), persistent_( _rhs.persistent_ ) {}
 
   /// Destructor.
   virtual ~BaseProperty() {}
@@ -123,6 +118,9 @@ public: // named property interface
 
   /// Return the name of the property
   const std::string& name() const { return name_; }
+
+  /// Return internal type name of the property for type safe casting alternative to runtime information
+  const std::string& internal_type_name() const { return internal_type_name_; }
 
   virtual void stats(std::ostream& _ostr) const;
 
@@ -178,6 +176,7 @@ protected:
 private:
 
   std::string name_;
+  std::string internal_type_name_;
   bool        persistent_;
 };
 

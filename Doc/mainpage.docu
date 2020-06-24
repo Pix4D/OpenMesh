@@ -24,6 +24,10 @@ Here you can find information on how to build projects using the %OpenMesh libra
 as well as further information on mesh handling in %OpenMesh.
 The tutorials explain how to use %OpenMesh by demonstrating real code examples.
 
+\section openmesh-python OpenMesh Python Bindings
+We also provide python bindings for %OpenMesh. You can find them here:<br/>
+<tt>https://www.graphics.rwth-aachen.de:9000/OpenMesh/openmesh-python</tt>
+
 \section iov Building OpenMesh
 In this section all necessary information on how to build projects using %OpenMesh
 is given.
@@ -78,20 +82,14 @@ repeatedly replacing each vertex' position by the center of gravity
 \li \ref tutorial_02
 \li \ref tutorial_03
 \li \ref tutorial_04
+\li \ref tutorial_11
 \li \ref tutorial_05
 \li \ref tutorial_06
 \li \ref tutorial_07
 \li \ref tutorial_07b
 \li \ref tutorial_08
 \li \ref tutorial_09
-
-<br /><br />
-
-\section python_and_om OpenMesh Python interface
-OpenMesh itself is written in C++. We also provide a python interface 
-to use OpenMesh. A detailed description of the interface can be found
-in the following tutorial:
-\li \subpage python_tutorial
+\li \ref tutorial_10
 
 <br /><br />
 
@@ -113,6 +111,7 @@ in the following tutorial:
 \li \subpage mesh_operations
 \li \subpage mesh_hierarchy
 \li \subpage mesh_type
+\li \subpage mesh_eigen
 
 
 \page additional_information Additional Information on OpenMesh

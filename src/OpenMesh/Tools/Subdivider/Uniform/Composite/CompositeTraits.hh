@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 /** \file Uniform/Composite/CompositeTraits.hh
     Mesh traits for uniform composite subdivision.
@@ -91,6 +86,7 @@ struct CompositeTraits : public OpenMesh::DefaultTraits
 
   FaceTraits
   {
+
   private:
     typedef typename Refs::HalfedgeHandle HalfedgeHandle;
     typedef typename Refs::Scalar Scalar;

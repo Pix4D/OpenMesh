@@ -43,7 +43,6 @@ TEST_F(OpenMeshMixedDecimater, DecimateMesh80PercentMc) {
 
   typedef OpenMesh::Decimater::MixedDecimaterT< Mesh >  Decimater;
   typedef OpenMesh::Decimater::ModQuadricT< Mesh >::Handle HModQuadric;
-  typedef OpenMesh::Decimater::ModNormalFlippingT< Mesh >::Handle HModNormal;
 
   Decimater decimaterDBG(mesh_);
   HModQuadric hModQuadricDBG;
@@ -67,7 +66,6 @@ TEST_F(OpenMeshMixedDecimater, DecimateMeshToFaceVerticesLimit) {
 
   typedef OpenMesh::Decimater::MixedDecimaterT< Mesh >  Decimater;
   typedef OpenMesh::Decimater::ModQuadricT< Mesh >::Handle HModQuadric;
-  typedef OpenMesh::Decimater::ModNormalFlippingT< Mesh >::Handle HModNormal;
 
   Decimater decimaterDBG(mesh_);
   HModQuadric hModQuadricDBG;
@@ -91,7 +89,6 @@ TEST_F(OpenMeshMixedDecimater, DecimateMeshToFaceFaceLimit) {
 
   typedef OpenMesh::Decimater::MixedDecimaterT< Mesh >  Decimater;
   typedef OpenMesh::Decimater::ModQuadricT< Mesh >::Handle HModQuadric;
-  typedef OpenMesh::Decimater::ModNormalFlippingT< Mesh >::Handle HModNormal;
 
   Decimater decimaterDBG(mesh_);
   HModQuadric hModQuadricDBG;
@@ -112,7 +109,7 @@ class UnittestObserver : public OpenMesh::Decimater::Observer
     size_t notifies_;
     size_t all_steps_;
 public:
-    UnittestObserver(size_t _steps) :Observer(_steps), notifies_(0), all_steps_(0) {}
+    explicit UnittestObserver(size_t _steps) :Observer(_steps), notifies_(0), all_steps_(0) {}
 
     void notify(size_t _step)
     {

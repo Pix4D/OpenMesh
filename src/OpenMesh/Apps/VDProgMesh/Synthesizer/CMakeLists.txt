@@ -3,44 +3,28 @@ include (ACGCommon)
 include_directories (
   ../../../..
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${GLUT_INCLUDE_DIR}
-  ${QT_INCLUDE_DIR}
 )
 
-set (targetName Synthesizer)
+set (headers
+  VDPMSynthesizerViewerWidget.hh
+)
 
-# collect all header and source files
-acg_append_files (headers "*.hh" .)
-acg_append_files (sources "*.cc" .)
+set (sources
+  ../../QtViewer/QGLViewerWidget.cc
+  vdpmsynthesizer.cc
+  VDPMSynthesizerViewerWidget.cc
+)
 
-list (APPEND sources "../../QtViewer/QGLViewerWidget.cc")
-list (APPEND sources "../../QtViewer/MeshViewerWidgetT.cc")
-
-list (APPEND headers "../../QtViewer/QGLViewerWidget.hh")
-list (APPEND headers "../../QtViewer/MeshViewerWidgetT.hh")
-
-# remove template cc files from source file list
-acg_drop_templates (sources)
-
-# genereate uic and moc targets
-if(QT5_FOUND)
-  acg_qt5_automoc (moc_targets ${headers})
-else()
-  acg_qt4_automoc (moc_targets ${headers})
-endif()
 
 if (WIN32)
-  acg_add_executable (${targetName} WIN32 ${sources} ${headers} ${moc_targets})
-  # link to qtmain library to get WinMain function for a non terminal app
-  target_link_libraries (${targetName} ${QT_QTMAIN_LIBRARY})
+  acg_add_executable (Synthesizer WIN32 ${sources} ${headers})
 else ()
-  acg_add_executable (${targetName} ${sources} ${headers} ${moc_targets})
+  acg_add_executable (Synthesizer ${sources} ${headers})
 endif ()
 
-target_link_libraries (${targetName}
+target_link_libraries (Synthesizer
   OpenMeshCore
   OpenMeshTools
-  ${QT_LIBRARIES}
+  Qt5::OpenGL
   ${OPENGL_LIBRARIES}
-  ${GLUT_LIBRARIES}
 )

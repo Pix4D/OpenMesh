@@ -39,13 +39,6 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
-
 #ifdef _MSC_VER
 #  pragma warning(disable: 4267 4311)
 #endif
@@ -58,12 +51,6 @@
 #include <QMenuBar>
 #include <QFileDialog>
 
-#ifdef ARCH_DARWIN
-#include <glut.h>
-#else
-#include <GL/glut.h>
-#endif
-
 #include "MeshViewerWidget.hh"
 
 
@@ -75,9 +62,6 @@ int main(int argc, char **argv)
   // OpenGL check
   QApplication::setColorSpec( QApplication::CustomColor );
   QApplication app(argc,argv);
-#if !defined(__APPLE__)
-  glutInit(&argc,argv);
-#endif
 
   if ( !QGLFormat::hasOpenGL() ) {
     QString msg = "System has no OpenGL support!";
@@ -95,6 +79,7 @@ int main(int argc, char **argv)
        case 'b': opt += OpenMesh::IO::Options::Binary; break;
        case 'h':
           usage_and_exit(0);
+          break;
        case 's': opt += OpenMesh::IO::Options::Swap; break;
        default:
           usage_and_exit(1);

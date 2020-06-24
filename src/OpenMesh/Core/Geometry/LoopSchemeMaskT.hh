@@ -40,12 +40,7 @@
  * ========================================================================= */
 
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 #ifndef LOOPSCHEMEMASKT_HH
 #define LOOPSCHEMEMASKT_HH
@@ -94,17 +89,17 @@ protected:
 
   inline static Scalar                      compute_limit_weight(uint _valence)
   {
-    double proj_weight = compute_proj_weight(_valence);
-    proj_weight = proj_weight/(proj_weight + _valence);//normalize the proj_weight
-    double weight = (3.0/8.0)/(1.0 - proj_weight + (3.0/8.0));
+    double proj_weight_value = compute_proj_weight(_valence);
+    proj_weight_value = proj_weight_value/(proj_weight_value + _valence);//normalize the proj_weight
+    double weight = (3.0/8.0)/(1.0 - proj_weight_value + (3.0/8.0));
     return (Scalar)weight;
   }
 
   inline static Scalar                      compute_step_weight(uint _valence)
   {
-    double proj_weight = compute_proj_weight(_valence);
-    proj_weight = proj_weight/(proj_weight + _valence);//normalize the proj_weight
-    double weight = proj_weight - (3.0/8.0);
+    double proj_weight_value = compute_proj_weight(_valence);
+    proj_weight_value = proj_weight_value/(proj_weight_value + _valence);//normalize the proj_weight
+    double weight = proj_weight_value - (3.0/8.0);
     return (Scalar)weight;
   }
 

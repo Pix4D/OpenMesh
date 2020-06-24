@@ -39,13 +39,6 @@
  *                                                                           *
  * ========================================================================= */
 
-/*==========================================================================*\
-*                                                                           *             
-*   $Revision: 410 $                                                        *
-*   $Date: 2010-06-17 12:45:58 +0200 (Do, 17. Jun 2010) $                   *
-*                                                                           *
-\*==========================================================================*/
-
 /** \file ModifiedButterFlyT.hh
 
 The modified butterfly scheme of Denis Zorin, Peter Schröder and Wim Sweldens, 
@@ -114,7 +107,7 @@ public:
   { init_weights(); }
 
 
-  ModifiedButterflyT( mesh_t& _m) : parent_t(_m)
+  explicit ModifiedButterflyT( mesh_t& _m) : parent_t(_m)
   { init_weights(); }
 
 
@@ -124,7 +117,7 @@ public:
 public:
 
 
-  const char *name() const { return "Uniform Spectral"; }
+  const char *name() const override { return "Uniform Spectral"; }
 
 
   /// Pre-compute weights
@@ -165,7 +158,7 @@ public:
 protected:
 
 
-  bool prepare( mesh_t& _m )
+  bool prepare( mesh_t& _m ) override
   {
     _m.add_property( vp_pos_ );
     _m.add_property( ep_pos_ );
@@ -173,7 +166,7 @@ protected:
   }
 
 
-  bool cleanup( mesh_t& _m )
+  bool cleanup( mesh_t& _m ) override
   {
     _m.remove_property( vp_pos_ );
     _m.remove_property( ep_pos_ );
@@ -181,14 +174,10 @@ protected:
   }
 
 
-  bool subdivide( MeshType& _m, size_t _n , const bool _update_points = true)
+  bool subdivide( MeshType& _m, size_t _n , const bool _update_points = true) override
   {
 
     ///TODO:Implement fixed positions
-
-    typename mesh_t::FaceIter   fit, f_end;
-    typename mesh_t::EdgeIter   eit, e_end;
-    typename mesh_t::VertexIter vit;
 
     // Do _n subdivisions
     for (size_t i=0; i < _n; ++i)
@@ -196,35 +185,32 @@ protected:
 
       // This is an interpolating scheme, old vertices remain the same.
       typename mesh_t::VertexIter initialVerticesEnd = _m.vertices_end();
-      for ( vit  = _m.vertices_begin(); vit != initialVerticesEnd; ++vit)
-        _m.property( vp_pos_, *vit ) = _m.point(*vit);
+      for ( auto vh : _m.vertices())
+        _m.property( vp_pos_, vh ) = _m.point(vh);
 
       // Compute position for new vertices and store them in the edge property
-      for (eit=_m.edges_begin(); eit != _m.edges_end(); ++eit)
-        compute_midpoint( _m, *eit );
+      for (auto eh : _m.edges())
+        compute_midpoint( _m, eh);
 
 
       // Split each edge at midpoint and store precomputed positions (stored in
       // edge property ep_pos_) in the vertex property vp_pos_;
 
       // Attention! Creating new edges, hence make sure the loop ends correctly.
-      e_end = _m.edges_end();
-      for (eit=_m.edges_begin(); eit != e_end; ++eit)
-        split_edge(_m, *eit );
+      for (auto eh : _m.edges())
+        split_edge(_m, eh );
 
 
       // Commit changes in topology and reconsitute consistency
 
       // Attention! Creating new faces, hence make sure the loop ends correctly.
-      f_end   = _m.faces_end();
-      for (fit = _m.faces_begin(); fit != f_end; ++fit)
-        split_face(_m, *fit );
+      for (auto fh : _m.faces())
+        split_face(_m, fh );
 
 
       // Commit changes in geometry
-      for ( vit  = /*initialVerticesEnd;*/_m.vertices_begin();
-            vit != _m.vertices_end(); ++vit)
-        _m.set_point(*vit, _m.property( vp_pos_, *vit ) );
+      for ( auto vh : _m.vertices())
+        _m.set_point(vh, _m.property( vp_pos_, vh ) );
 
 #if defined(_DEBUG) || defined(DEBUG)
       // Now we have an consistent mesh!
@@ -363,7 +349,11 @@ private: // topological modifiers
 
     _m.set_face_handle( new_heh, _m.face_handle(heh) );
     _m.set_halfedge_handle( vh, new_heh);
-    _m.set_halfedge_handle( _m.face_handle(heh), heh );
+
+    // We cant reconnect a non existing face, so we skip this here if necessary
+    if ( !_m.is_boundary(heh) )
+      _m.set_halfedge_handle( _m.face_handle(heh), heh );
+
     _m.set_halfedge_handle( vh1, opp_new_heh );
 
     // Never forget this, when playing with the topology
@@ -390,7 +380,7 @@ private: // geometry helper
     {
         pos = _m.point(a_0);
         pos += _m.point(a_1);
-        pos *= static_cast<typename mesh_t::Point::value_type>(9.0/16.0);
+        pos *= static_cast<RealType>(9.0/16.0);
         typename mesh_t::Point tpos;
         if(_m.is_boundary(heh))
         {
@@ -403,7 +393,7 @@ private: // geometry helper
             tpos = _m.point(_m.to_vertex_handle(_m.next_halfedge_handle(opp_heh)));
             tpos += _m.point(_m.to_vertex_handle(_m.opposite_halfedge_handle(_m.prev_halfedge_handle(opp_heh))));
         }
-        tpos *= static_cast<typename mesh_t::Point::value_type>(-1.0/16.0);
+        tpos *= static_cast<RealType>(-1.0/16.0);
         pos += tpos;
     }
     else
@@ -506,7 +496,7 @@ private: // geometry helper
         }
         else //at least one endpoint is [irregular and not in boundary]
         {
-            typename mesh_t::Point::value_type normFactor = static_cast<typename mesh_t::Point::value_type>(0.0);
+          RealType normFactor = static_cast<RealType>(0.0);
 
             if(valence_a_0!=6 && !_m.is_boundary(a_0))
             {

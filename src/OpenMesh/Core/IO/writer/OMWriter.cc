@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 
 //== INCLUDES =================================================================
@@ -86,7 +81,7 @@ _OMWriter_& OMWriter() { return __OMWriterInstance; }
 
 
 const OMFormat::uchar _OMWriter_::magic_[3] = "OM";
-const OMFormat::uint8 _OMWriter_::version_  = OMFormat::mk_version(1,2);
+const OMFormat::uint8 _OMWriter_::version_  = OMFormat::mk_version(2,1);
 
 
 _OMWriter_::
@@ -163,7 +158,7 @@ _OMWriter_::write(std::ostream& _os, BaseExporter& _be, Options _opt, std::strea
 #ifndef DOXY_IGNORE_THIS
 template <typename T> struct Enabler
 {
-  Enabler( T& obj ) : obj_(obj)
+  explicit Enabler( T& obj ) : obj_(obj)
   {}
 
   ~Enabler() { obj_.enable(); }
@@ -182,13 +177,13 @@ bool _OMWriter_::write_binary(std::ostream& _os, BaseExporter& _be,
 
   size_t bytes = 0;
 
-  bool swap = _opt.check(Options::Swap) || (Endian::local() == Endian::MSB);
+  const bool swap =
+      _opt.check(Options::Swap) || (Endian::local() == Endian::MSB);
 
   unsigned int i, nV, nF;
   Vec3f v;
+  Vec3d vd;
   Vec2f t;
-  std::vector<VertexHandle> vhandles;
-
 
   // -------------------- write header
   OMFormat::Header header;
@@ -218,14 +213,28 @@ bool _OMWriter_::write_binary(std::ostream& _os, BaseExporter& _be,
     chunk_header.name_     = false;
     chunk_header.entity_   = OMFormat::Chunk::Entity_Vertex;
     chunk_header.type_     = OMFormat::Chunk::Type_Pos;
-    chunk_header.signed_   = OMFormat::is_signed(v[0]);
-    chunk_header.float_    = OMFormat::is_float(v[0]);
-    chunk_header.dim_      = OMFormat::dim(v);
-    chunk_header.bits_     = OMFormat::bits(v[0]);
+    if (_be.is_point_double())
+    {
+      chunk_header.signed_   = OMFormat::is_signed(vd[0]);
+      chunk_header.float_    = OMFormat::is_float(vd[0]);
+      chunk_header.dim_      = OMFormat::dim(vd);
+      chunk_header.bits_     = OMFormat::bits(vd[0]);
+    }
+    else
+    {
+      chunk_header.signed_   = OMFormat::is_signed(v[0]);
+      chunk_header.float_    = OMFormat::is_float(v[0]);
+      chunk_header.dim_      = OMFormat::dim(v);
+      chunk_header.bits_     = OMFormat::bits(v[0]);
+    }
 
     bytes += store( _os, chunk_header, swap );
-    for (i=0, nV=header.n_vertices_; i<nV; ++i)
-      bytes += vector_store( _os, _be.point(VertexHandle(i)), swap );
+    if (_be.is_point_double())
+      for (i=0, nV=header.n_vertices_; i<nV; ++i)
+        bytes += vector_store( _os, _be.pointd(VertexHandle(i)), swap );
+    else
+      for (i=0, nV=header.n_vertices_; i<nV; ++i)
+        bytes += vector_store( _os, _be.point(VertexHandle(i)), swap );
   }
 
 
@@ -233,18 +242,34 @@ bool _OMWriter_::write_binary(std::ostream& _os, BaseExporter& _be,
   if (_be.n_vertices() && _opt.check( Options::VertexNormal ))
   {
     Vec3f n = _be.normal(VertexHandle(0));
+    Vec3d nd = _be.normald(VertexHandle(0));
 
     chunk_header.name_     = false;
     chunk_header.entity_   = OMFormat::Chunk::Entity_Vertex;
     chunk_header.type_     = OMFormat::Chunk::Type_Normal;
-    chunk_header.signed_   = OMFormat::is_signed(n[0]);
-    chunk_header.float_    = OMFormat::is_float(n[0]);
-    chunk_header.dim_      = OMFormat::dim(n);
-    chunk_header.bits_     = OMFormat::bits(n[0]);
+    if (_be.is_normal_double())
+    {
+      chunk_header.signed_   = OMFormat::is_signed(nd[0]);
+      chunk_header.float_    = OMFormat::is_float(nd[0]);
+      chunk_header.dim_      = OMFormat::dim(nd);
+      chunk_header.bits_     = OMFormat::bits(nd[0]);
+    }
+    else
+    {
+      chunk_header.signed_   = OMFormat::is_signed(n[0]);
+      chunk_header.float_    = OMFormat::is_float(n[0]);
+      chunk_header.dim_      = OMFormat::dim(n);
+      chunk_header.bits_     = OMFormat::bits(n[0]);
+    }
 
     bytes += store( _os, chunk_header, swap );
-    for (i=0, nV=header.n_vertices_; i<nV; ++i)
-      bytes += vector_store( _os, _be.normal(VertexHandle(i)), swap );
+    if (_be.is_normal_double())
+      for (i=0, nV=header.n_vertices_; i<nV; ++i)
+        bytes += vector_store( _os, _be.normald(VertexHandle(i)), swap );
+    else
+      for (i=0, nV=header.n_vertices_; i<nV; ++i)
+        bytes += vector_store( _os, _be.normal(VertexHandle(i)), swap );
+
   }
 
   // ---------- write vertex color
@@ -286,6 +311,50 @@ bool _OMWriter_::write_binary(std::ostream& _os, BaseExporter& _be,
 
   }
 
+  // ---------- wirte halfedge data
+  if (_be.n_edges())
+  {
+    chunk_header.reserved_ = 0;
+    chunk_header.name_     = false;
+    chunk_header.entity_   = OMFormat::Chunk::Entity_Halfedge;
+    chunk_header.type_     = OMFormat::Chunk::Type_Topology;
+    chunk_header.signed_   = true;
+    chunk_header.float_    = true; // TODO: is this correct? This causes a scalar size of 1 in OMFormat.hh scalar_size which we need I think?
+    chunk_header.dim_      = OMFormat::Chunk::Dim_3D;
+    chunk_header.bits_     = OMFormat::needed_bits(_be.n_edges()*4); // *2 due to halfedge ids being stored, *2 due to signedness
+
+    bytes += store( _os, chunk_header, swap );
+    auto nE=header.n_edges_*2;
+    for (i=0; i<nE; ++i)
+    {
+      auto next_id      = _be.get_next_halfedge_id(HalfedgeHandle(static_cast<int>(i)));
+      auto to_vertex_id = _be.get_to_vertex_id(HalfedgeHandle(static_cast<int>(i)));
+      auto face_id      = _be.get_face_id(HalfedgeHandle(static_cast<int>(i)));
+
+      bytes += store( _os, next_id,      OMFormat::Chunk::Integer_Size(chunk_header.bits_), swap );
+      bytes += store( _os, to_vertex_id, OMFormat::Chunk::Integer_Size(chunk_header.bits_), swap );
+      bytes += store( _os, face_id,      OMFormat::Chunk::Integer_Size(chunk_header.bits_), swap );
+    }
+  }
+
+  // ---------- write vertex topology (outgoing halfedge)
+  if (_be.n_vertices())
+  {
+    chunk_header.reserved_ = 0;
+    chunk_header.name_     = false;
+    chunk_header.entity_   = OMFormat::Chunk::Entity_Vertex;
+    chunk_header.type_     = OMFormat::Chunk::Type_Topology;
+    chunk_header.signed_   = true;
+    chunk_header.float_    = true; // TODO: is this correct? This causes a scalar size of 1 in OMFormat.hh scalar_size which we need I think?
+    chunk_header.dim_      = OMFormat::Chunk::Dim_1D;
+    chunk_header.bits_     = OMFormat::needed_bits(_be.n_edges()*4); // *2 due to halfedge ids being stored, *2 due to signedness
+
+    bytes += store( _os, chunk_header, swap );
+    for (i=0, nV=header.n_vertices_; i<nV; ++i)
+      bytes += store( _os, _be.get_halfedge_id(VertexHandle(i)), OMFormat::Chunk::Integer_Size(chunk_header.bits_), swap );
+  }
+
+
   // -------------------- write face data
 
   // ---------- write topology
@@ -293,26 +362,17 @@ bool _OMWriter_::write_binary(std::ostream& _os, BaseExporter& _be,
     chunk_header.name_     = false;
     chunk_header.entity_   = OMFormat::Chunk::Entity_Face;
     chunk_header.type_     = OMFormat::Chunk::Type_Topology;
-    chunk_header.signed_   = 0;
-    chunk_header.float_    = 0;
-    chunk_header.dim_      = OMFormat::Chunk::Dim_1D; // ignored
-    chunk_header.bits_     = OMFormat::needed_bits(_be.n_vertices());
+    chunk_header.signed_   = true;
+    chunk_header.float_    = true; // TODO: is this correct? This causes a scalar size of 1 in OMFormat.hh scalar_size which we need I think?
+    chunk_header.dim_      = OMFormat::Chunk::Dim_1D;
+    chunk_header.bits_     = OMFormat::needed_bits(_be.n_edges()*4); // *2 due to halfedge ids being stored, *2 due to signedness
 
     bytes += store( _os, chunk_header, swap );
 
     for (i=0, nF=header.n_faces_; i<nF; ++i)
     {
-      nV = _be.get_vhandles(FaceHandle(i), vhandles);
-      if ( header.mesh_ == 'P' )
-        bytes += store( _os, vhandles.size(), OMFormat::Chunk::Integer_16, swap );
-
-      for (size_t j=0; j < vhandles.size(); ++j)
-      {
-        using namespace OMFormat;
-        using namespace GenProg;
-
-        bytes += store( _os, vhandles[j].idx(), Chunk::Integer_Size(chunk_header.bits_), swap );
-      }
+      auto size = OMFormat::Chunk::Integer_Size(chunk_header.bits_);
+      bytes += store( _os, _be.get_halfedge_id(FaceHandle(i)), size, swap);
     }
   }
 
@@ -328,19 +388,36 @@ bool _OMWriter_::write_binary(std::ostream& _os, BaseExporter& _be,
     {
 #endif
       Vec3f n = _be.normal(FaceHandle(0));
+      Vec3d nd = _be.normald(FaceHandle(0));
 
       chunk_header.name_     = false;
       chunk_header.entity_   = OMFormat::Chunk::Entity_Face;
       chunk_header.type_     = OMFormat::Chunk::Type_Normal;
-      chunk_header.signed_   = OMFormat::is_signed(n[0]);
-      chunk_header.float_    = OMFormat::is_float(n[0]);
-      chunk_header.dim_      = OMFormat::dim(n);
-      chunk_header.bits_     = OMFormat::bits(n[0]);
+
+      if (_be.is_normal_double())
+      {
+        chunk_header.signed_   = OMFormat::is_signed(nd[0]);
+        chunk_header.float_    = OMFormat::is_float(nd[0]);
+        chunk_header.dim_      = OMFormat::dim(nd);
+        chunk_header.bits_     = OMFormat::bits(nd[0]);
+      }
+      else
+      {
+        chunk_header.signed_   = OMFormat::is_signed(n[0]);
+        chunk_header.float_    = OMFormat::is_float(n[0]);
+        chunk_header.dim_      = OMFormat::dim(n);
+        chunk_header.bits_     = OMFormat::bits(n[0]);
+      }
 
       bytes += store( _os, chunk_header, swap );
 #if !NEW_STYLE
-      for (i=0, nF=header.n_faces_; i<nF; ++i)
-        bytes += vector_store( _os, _be.normal(FaceHandle(i)), swap );
+      if (_be.is_normal_double())
+        for (i=0, nF=header.n_faces_; i<nF; ++i)
+          bytes += vector_store( _os, _be.normald(FaceHandle(i)), swap );
+      else
+        for (i=0, nF=header.n_faces_; i<nF; ++i)
+          bytes += vector_store( _os, _be.normal(FaceHandle(i)), swap );
+
 #else
       bytes += bp->store(_os, swap );
     }
@@ -384,51 +461,112 @@ bool _OMWriter_::write_binary(std::ostream& _os, BaseExporter& _be,
 #endif
   }
 
+  // ---------- write vertex status
+  if (_be.n_vertices() && _be.has_vertex_status() && _opt.check(Options::Status))
+  {
+    auto s = _be.status(VertexHandle(0));
+    chunk_header.name_ = false;
+    chunk_header.entity_ = OMFormat::Chunk::Entity_Vertex;
+    chunk_header.type_ = OMFormat::Chunk::Type_Status;
+    chunk_header.signed_ = false;
+    chunk_header.float_ = false;
+    chunk_header.dim_ = OMFormat::Chunk::Dim_1D;
+    chunk_header.bits_ = OMFormat::bits(s);
+
+    // std::clog << chunk_header << std::endl;
+    bytes += store(_os, chunk_header, swap);
+
+    for (i = 0, nV = header.n_vertices_; i < nV; ++i)
+      bytes += store(_os, _be.status(VertexHandle(i)), swap);
+  }
+
+  // ---------- write edge status
+  if (_be.n_edges() && _be.has_edge_status() && _opt.check(Options::Status))
+  {
+    auto s = _be.status(EdgeHandle(0));
+    chunk_header.name_ = false;
+    chunk_header.entity_ = OMFormat::Chunk::Entity_Edge;
+    chunk_header.type_ = OMFormat::Chunk::Type_Status;
+    chunk_header.signed_ = false;
+    chunk_header.float_ = false;
+    chunk_header.dim_ = OMFormat::Chunk::Dim_1D;
+    chunk_header.bits_ = OMFormat::bits(s);
+
+    // std::clog << chunk_header << std::endl;
+    bytes += store(_os, chunk_header, swap);
+
+    for (i = 0, nV = header.n_edges_; i < nV; ++i)
+      bytes += store(_os, _be.status(EdgeHandle(i)), swap);
+  }
+
+  // ---------- write halfedge status
+  if (_be.n_edges() && _be.has_halfedge_status() && _opt.check(Options::Status))
+  {
+    auto s = _be.status(HalfedgeHandle(0));
+    chunk_header.name_ = false;
+    chunk_header.entity_ = OMFormat::Chunk::Entity_Halfedge;
+    chunk_header.type_ = OMFormat::Chunk::Type_Status;
+    chunk_header.signed_ = false;
+    chunk_header.float_ = false;
+    chunk_header.dim_ = OMFormat::Chunk::Dim_1D;
+    chunk_header.bits_ = OMFormat::bits(s);
+
+    // std::clog << chunk_header << std::endl;
+    bytes += store(_os, chunk_header, swap);
+
+    for (i = 0, nV = header.n_edges_ * 2; i < nV; ++i)
+      bytes += store(_os, _be.status(HalfedgeHandle(i)), swap);
+  }
+
+  // ---------- write face status
+  if (_be.n_faces() && _be.has_face_status() && _opt.check(Options::Status))
+  {
+    auto s = _be.status(FaceHandle(0));
+    chunk_header.name_ = false;
+    chunk_header.entity_ = OMFormat::Chunk::Entity_Face;
+    chunk_header.type_ = OMFormat::Chunk::Type_Status;
+    chunk_header.signed_ = false;
+    chunk_header.float_ = false;
+    chunk_header.dim_ = OMFormat::Chunk::Dim_1D;
+    chunk_header.bits_ = OMFormat::bits(s);
+
+    // std::clog << chunk_header << std::endl;
+    bytes += store(_os, chunk_header, swap);
+
+    for (i = 0, nV = header.n_faces_; i < nV; ++i)
+      bytes += store(_os, _be.status(FaceHandle(i)), swap);
+  }
+
   // -------------------- write custom properties
 
 
-  BaseKernel::const_prop_iterator prop;
 
-  for (prop  = _be.kernel()->vprops_begin();
-       prop != _be.kernel()->vprops_end(); ++prop)
+  const auto store_property = [this, &_os, swap, &bytes](
+    const BaseKernel::const_prop_iterator _it_begin, 
+    const BaseKernel::const_prop_iterator _it_end, 
+    const OMFormat::Chunk::Entity _ent)
   {
-    if ( !*prop ) continue;
-    if ( (*prop)->name()[1]==':') continue;
-    bytes += store_binary_custom_chunk(_os, **prop,
-				       OMFormat::Chunk::Entity_Vertex, swap );
-  }
-  for (prop  = _be.kernel()->fprops_begin();
-       prop != _be.kernel()->fprops_end(); ++prop)
-  {
-    if ( !*prop ) continue;
-    if ( (*prop)->name()[1]==':') continue;
-    bytes += store_binary_custom_chunk(_os, **prop,
-				       OMFormat::Chunk::Entity_Face, swap );
-  }
-  for (prop  = _be.kernel()->eprops_begin();
-       prop != _be.kernel()->eprops_end(); ++prop)
-  {
-    if ( !*prop ) continue;
-    if ( (*prop)->name()[1]==':') continue;
-    bytes += store_binary_custom_chunk(_os, **prop,
-				       OMFormat::Chunk::Entity_Edge, swap );
-  }
-  for (prop  = _be.kernel()->hprops_begin();
-       prop != _be.kernel()->hprops_end(); ++prop)
-  {
-    if ( !*prop ) continue;
-    if ( (*prop)->name()[1]==':') continue;
-    bytes += store_binary_custom_chunk(_os, **prop,
-				       OMFormat::Chunk::Entity_Halfedge, swap );
-  }
-  for (prop  = _be.kernel()->mprops_begin();
-       prop != _be.kernel()->mprops_end(); ++prop)
-  {
-    if ( !*prop ) continue;
-    if ( (*prop)->name()[1]==':') continue;
-    bytes += store_binary_custom_chunk(_os, **prop,
-				       OMFormat::Chunk::Entity_Mesh, swap );
-  }
+    for (auto prop = _it_begin; prop != _it_end; ++prop)
+    {
+      if (!*prop || (*prop)->name().empty() ||
+          ((*prop)->name().size() > 1 && (*prop)->name()[1] == ':'))
+      { // skip dead and "private" properties (no name or name matches "?:*")
+        continue;
+      }
+      bytes += store_binary_custom_chunk(_os, **prop, _ent, swap);
+    }
+  };
+
+  store_property(_be.kernel()->vprops_begin(), _be.kernel()->vprops_end(),
+      OMFormat::Chunk::Entity_Vertex);
+  store_property(_be.kernel()->fprops_begin(), _be.kernel()->fprops_end(),
+      OMFormat::Chunk::Entity_Face);
+  store_property(_be.kernel()->eprops_begin(), _be.kernel()->eprops_end(),
+      OMFormat::Chunk::Entity_Edge);
+  store_property(_be.kernel()->hprops_begin(), _be.kernel()->hprops_end(),
+      OMFormat::Chunk::Entity_Halfedge);
+  store_property(_be.kernel()->mprops_begin(), _be.kernel()->mprops_end(),
+      OMFormat::Chunk::Entity_Mesh);
 
   memset(&chunk_header, 0, sizeof(chunk_header));
   chunk_header.name_ = false;

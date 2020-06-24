@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 /** \file Uniform/Composite/CompositeT.hh
     
@@ -101,19 +96,19 @@ public:
 
 public:
 
-  CompositeT(void) : parent_t(), p_mesh_(NULL) {}
-  explicit CompositeT(MeshType& _mesh) : parent_t(_mesh), p_mesh_(NULL) {};
+  CompositeT(void) : parent_t(), p_mesh_(nullptr) {}
+  explicit CompositeT(MeshType& _mesh) : parent_t(_mesh), p_mesh_(nullptr) {};
   virtual ~CompositeT() { }
 
 public: // inherited interface
 
-  virtual const char *name( void ) const = 0;
+  virtual const char *name( void ) const override = 0;
 
 protected: // inherited interface
 
-  bool prepare( MeshType& _m );
+  bool prepare( MeshType& _m ) override;
 
-  bool subdivide( MeshType& _m, size_t _n, const bool _update_points = true  )
+  bool subdivide( MeshType& _m, size_t _n, const bool _update_points = true  ) override
   {
     assert( p_mesh_ == &_m );
 
@@ -127,13 +122,13 @@ protected: // inherited interface
   }
 
 #ifdef NDEBUG
-  bool cleanup( MeshType& ) 
+  bool cleanup( MeshType& ) override
 #else
-  bool cleanup( MeshType& _m ) 
+  bool cleanup( MeshType& _m ) override
 #endif
   { 
     assert( p_mesh_ == &_m );
-    p_mesh_=NULL; 
+    p_mesh_=nullptr; 
     return true; 
   }
 
@@ -243,7 +238,7 @@ private:
 //=============================================================================
 #if defined(OM_INCLUDE_TEMPLATES) && !defined(OPENMESH_SUBDIVIDER_UNIFORM_COMPOSITE_CC)
 #define OPENMESH_SUBDIVIDER_TEMPLATES
-#include "CompositeT.cc"
+#include "CompositeT_impl.hh"
 #endif
 //=============================================================================
 #endif // COMPOSITET_HH defined

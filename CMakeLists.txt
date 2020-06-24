@@ -1,4 +1,9 @@
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
+
+
+# Set and enforce C++-11 flags
+set( CMAKE_CXX_STANDARD_REQUIRED TRUE )
+set( CMAKE_CXX_STANDARD 11 )
 
 enable_testing()
 
@@ -6,6 +11,12 @@ enable_testing()
 if("${PROJECT_NAME}" STREQUAL "")
     project (OpenMesh)
 endif()
+
+# Set AUTO UIC/MOC Policy to new for CMAKE 3.17 or higher
+if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.17")
+    cmake_policy(SET CMP0100 NEW)
+endif()
+
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 	if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "6.0" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "4.9" OR CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL "4.9")
@@ -41,6 +52,7 @@ if(${PROJECT_NAME} MATCHES "OpenMesh")
 endif()
 
 include (ACGOutput)
+include(ACGQt)
 
 # ========================================================================
 # Definitions
@@ -127,13 +139,13 @@ else()
 	set (OPENMESH_LIBRARY_DIR "${_OPENMESH_LIBRARY_DIR}" CACHE PATH "The directory where the OpenMesh libraries can be found.")
 endif()
 
-add_subdirectory (Doc)
+if ( NOT DEFINED OPENMESH_DOCS )
+  set( OPENMESH_DOCS true CACHE BOOL "Enable or disable building of documentation" )
+endif()
 
-# ========================================================================
-# Include Python interface
-# ========================================================================
-
-add_subdirectory (src/Python)
+if (OPENMESH_DOCS)
+  add_subdirectory (Doc)
+endif()
 
 # ========================================================================
 # Bundle generation (Targets exist, now configure them)
@@ -144,8 +156,8 @@ if(${PROJECT_NAME} MATCHES "OpenMesh")
 
   if (WIN32 AND  BUILD_APPS )
     # prepare bundle generation cmake file and add a build target for it
-    configure_file ("${CMAKE_SOURCE_DIR}/cmake/fixbundle.cmake.win.in"
-       "${CMAKE_BINARY_DIR}/fixbundle.win.cmake" @ONLY IMMEDIATE)
+    configure_file ("${CMAKE_CURRENT_SOURCE_DIR}/cmake/fixbundle.cmake.win.in"
+       "${CMAKE_CURRENT_BINARY_DIR}/fixbundle.win.cmake" @ONLY IMMEDIATE)
 
     if ( NOT "${CMAKE_GENERATOR}" MATCHES "MinGW Makefiles" )
       # let bundle generation depend on all targets
@@ -175,6 +187,20 @@ endif()
 
 # ========================================================================
 
+# Generate openmesh.pc file
+
+set(DEST_DIR "${CMAKE_INSTALL_PREFIX}")
+set(PRIVATE_LIBS "-lOpenMeshCore -lOpenMeshTools")
+
+configure_file("openmesh.pc.in" "${CMAKE_CURRENT_BINARY_DIR}/openmesh.pc" @ONLY)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/openmesh.pc DESTINATION libdata/pkgconfig)
+
+# generate target file
+
+install(EXPORT OpenMeshConfig DESTINATION share/OpenMesh/cmake)
+
+export(TARGETS OpenMeshCore OpenMeshTools FILE OpenMeshConfig.cmake)
 
 # display results
 acg_print_configure_header (OPENMESH "OpenMesh")

@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 #ifndef OPENMESH_APP_SERVERSIDEVDPM_HH
 #define OPENMESH_APP_SERVERSIDEVDPM_HH
@@ -76,7 +71,7 @@ private:
 
 public:
 
-  ServerSideVDPM()  { clear(); }
+  ServerSideVDPM(): name_(""),tree_id_bits_(0)  { clear(); }
   void clear();
 
   const char* name() const { return name_; }

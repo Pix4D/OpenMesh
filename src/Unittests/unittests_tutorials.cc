@@ -1,5 +1,6 @@
 
 #include <gtest/gtest.h>
+#include <OpenMesh/Core/Utils/PropertyManager.hh>
 #include <Unittests/unittests_common.hh>
 #include <string>
 #include <map>
@@ -197,7 +198,7 @@ public:
 
 public:
   // construct with a given mesh
-  SmootherT(Mesh& _mesh)
+  explicit SmootherT(Mesh& _mesh)
     : mesh_(_mesh)
   {
     mesh_.add_property( cog_ );
@@ -445,39 +446,34 @@ TEST_F(OpenMeshTutorials, using_iterators_and_circulators) {
 TEST_F(OpenMeshTutorials, using_custom_properties) {
   MyMesh  mesh;
 
-  bool ok = OpenMesh::IO::read_mesh(mesh, "output.off");
-  EXPECT_TRUE(ok) << "Cannot read mesh from file 'output.off'";
+  bool ok = OpenMesh::IO::read_mesh(mesh, "cube_noisy.off");
+  EXPECT_TRUE(ok) << "Cannot read mesh from file 'cube_noisy.off'";
 
-  // this vertex property stores the computed centers of gravity
-  OpenMesh::VPropHandleT<MyMesh::Point> cogs;
-  mesh.add_property(cogs);
+  const int iterations = 100;
 
-  // smoothing mesh N times
-  MyMesh::VertexIter          v_it, v_end(mesh.vertices_end());
-  MyMesh::VertexVertexIter    vv_it;
-  MyMesh::Point               cog;
-  MyMesh::Scalar              valence;
-  unsigned int                i, N(100);
-
-  for (i=0; i < N; ++i)
   {
-    for (v_it = mesh.vertices_begin(); v_it != v_end; ++v_it)
-    {
-      mesh.property(cogs,*v_it).vectorize(0.0f);
-      valence = 0.0;
+    // Add a vertex property storing the computed centers of gravity
+    auto cog = OpenMesh::VProp<MyMesh::Point>(mesh);
 
-      for (vv_it = mesh.vv_iter( *v_it ); vv_it.is_valid(); ++vv_it)
-      {
-        mesh.property(cogs,*v_it) += mesh.point( *vv_it );
-        ++valence;
+    // Smooth the mesh several times
+    for (int i = 0; i < iterations; ++i) {
+      // Iterate over all vertices to compute centers of gravity
+      for (const auto& vh : mesh.vertices()) {
+        cog[vh] = {0,0,0};
+        int valence = 0;
+        // Iterate over all 1-ring vertices around vh
+        for (const auto& vvh : mesh.vv_range(vh)) {
+          cog[vh] += mesh.point(vvh);
+          ++valence;
+        }
+        cog[vh] /= valence;
       }
-      mesh.property(cogs,*v_it) /= valence;
+      // Move all vertices to the previously computed positions
+      for (const auto& vh : mesh.vertices()) {
+        mesh.point(vh) = cog[vh];
+      }
     }
-
-    for (v_it = mesh.vertices_begin(); v_it != v_end; ++v_it)
-      if ( !mesh.is_boundary( *v_it ) )
-        mesh.set_point( *v_it, mesh.property(cogs,*v_it) );
-  }
+  } // The cog vertex property is removed from the mesh at the end of this scope
 
   // write mesh
   ok = OpenMesh::IO::write_mesh(mesh, "smoothed_custom_properties_output.off");
@@ -488,8 +484,8 @@ TEST_F(OpenMeshTutorials, using_custom_properties) {
 TEST_F(OpenMeshTutorials, using_STL_algorithms) {
   MyMeshWithTraits mesh;
 
-  bool ok = OpenMesh::IO::read_mesh(mesh, "output.off");
-  EXPECT_TRUE(ok) << "Cannot read mesh from file 'output.off'";
+  bool ok = OpenMesh::IO::read_mesh(mesh, "cube_noisy.off");
+  EXPECT_TRUE(ok) << "Cannot read mesh from file 'cube_noisy.off'";
 
   SmootherT<MyMeshWithTraits> smoother(mesh);
   smoother.smooth(100);
@@ -619,20 +615,20 @@ TEST_F(OpenMeshTutorials, deleting_geometry_elements) {
   mesh.request_vertex_status();
 
   // generate vertices
-  MyMeshWithStatus::VertexHandle vhandle[8];
-  MyMeshWithStatus::FaceHandle   fhandle[6];
+  Mesh::VertexHandle vhandle[8];
+  Mesh::FaceHandle   fhandle[6];
 
-  vhandle[0] = mesh.add_vertex(MyMesh::Point(-1, -1,  1));
-  vhandle[1] = mesh.add_vertex(MyMesh::Point( 1, -1,  1));
-  vhandle[2] = mesh.add_vertex(MyMesh::Point( 1,  1,  1));
-  vhandle[3] = mesh.add_vertex(MyMesh::Point(-1,  1,  1));
-  vhandle[4] = mesh.add_vertex(MyMesh::Point(-1, -1, -1));
-  vhandle[5] = mesh.add_vertex(MyMesh::Point( 1, -1, -1));
-  vhandle[6] = mesh.add_vertex(MyMesh::Point( 1,  1, -1));
-  vhandle[7] = mesh.add_vertex(MyMesh::Point(-1,  1, -1));
+  vhandle[0] = mesh.add_vertex(Mesh::Point(-1, -1,  1));
+  vhandle[1] = mesh.add_vertex(Mesh::Point( 1, -1,  1));
+  vhandle[2] = mesh.add_vertex(Mesh::Point( 1,  1,  1));
+  vhandle[3] = mesh.add_vertex(Mesh::Point(-1,  1,  1));
+  vhandle[4] = mesh.add_vertex(Mesh::Point(-1, -1, -1));
+  vhandle[5] = mesh.add_vertex(Mesh::Point( 1, -1, -1));
+  vhandle[6] = mesh.add_vertex(Mesh::Point( 1,  1, -1));
+  vhandle[7] = mesh.add_vertex(Mesh::Point(-1,  1, -1));
 
   // generate (quadrilateral) faces
-  std::vector<MyMesh::VertexHandle>  tmp_face_vhandles;
+  std::vector<Mesh::VertexHandle>  tmp_face_vhandles;
   tmp_face_vhandles.clear();
   tmp_face_vhandles.push_back(vhandle[0]);
   tmp_face_vhandles.push_back(vhandle[1]);
@@ -807,10 +803,10 @@ TEST_F(OpenMeshTutorials, flipping_edges) {
   Mesh mesh;
   // Add some vertices
   Mesh::VertexHandle vhandle[4];
-  vhandle[0] = mesh.add_vertex(MyMesh::Point(0, 0, 0));
-  vhandle[1] = mesh.add_vertex(MyMesh::Point(0, 1, 0));
-  vhandle[2] = mesh.add_vertex(MyMesh::Point(1, 1, 0));
-  vhandle[3] = mesh.add_vertex(MyMesh::Point(1, 0, 0));
+  vhandle[0] = mesh.add_vertex(Mesh::Point(0, 0, 0));
+  vhandle[1] = mesh.add_vertex(Mesh::Point(0, 1, 0));
+  vhandle[2] = mesh.add_vertex(Mesh::Point(1, 1, 0));
+  vhandle[3] = mesh.add_vertex(Mesh::Point(1, 0, 0));
   // Add two faces
   std::vector<Mesh::VertexHandle> face_vhandles;
   face_vhandles.push_back(vhandle[2]);
@@ -846,13 +842,13 @@ TEST_F(OpenMeshTutorials, collapsing_edges) {
   mesh.request_edge_status();
   // Add some vertices as in the illustration above
   PolyMesh::VertexHandle vhandle[7];
-  vhandle[0] = mesh.add_vertex(MyMesh::Point(-1, 1, 0));
-  vhandle[1] = mesh.add_vertex(MyMesh::Point(-1, 3, 0));
-  vhandle[2] = mesh.add_vertex(MyMesh::Point(0, 0, 0));
-  vhandle[3] = mesh.add_vertex(MyMesh::Point(0, 2, 0));
-  vhandle[4] = mesh.add_vertex(MyMesh::Point(0, 4, 0));
-  vhandle[5] = mesh.add_vertex(MyMesh::Point(1, 1, 0));
-  vhandle[6] = mesh.add_vertex(MyMesh::Point(1, 3, 0));
+  vhandle[0] = mesh.add_vertex(PolyMesh::Point(-1, 1, 0));
+  vhandle[1] = mesh.add_vertex(PolyMesh::Point(-1, 3, 0));
+  vhandle[2] = mesh.add_vertex(PolyMesh::Point(0, 0, 0));
+  vhandle[3] = mesh.add_vertex(PolyMesh::Point(0, 2, 0));
+  vhandle[4] = mesh.add_vertex(PolyMesh::Point(0, 4, 0));
+  vhandle[5] = mesh.add_vertex(PolyMesh::Point(1, 1, 0));
+  vhandle[6] = mesh.add_vertex(PolyMesh::Point(1, 3, 0));
   // Add three quad faces
   std::vector<PolyMesh::VertexHandle> face_vhandles;
   face_vhandles.push_back(vhandle[1]);
@@ -884,6 +880,46 @@ TEST_F(OpenMeshTutorials, collapsing_edges) {
     }
   }
   // Our mesh now looks like in the illustration above after the collapsing.
+}
+
+TEST_F(OpenMeshTutorials, using_smart_handles_and_smart_ranges) {
+  MyMesh  mesh;
+
+  bool ok = OpenMesh::IO::read_mesh(mesh, "cube_noisy.off");
+  EXPECT_TRUE(ok) << "Cannot read mesh from file 'cube_noisy.off'";
+
+  const int iterations = 100;
+
+  {
+    // Add a vertex property storing the laplace vector
+    auto laplace = OpenMesh::VProp<MyMesh::Point>(mesh);
+
+    // Add a vertex property storing the laplace of the laplace
+    auto bi_laplace = OpenMesh::VProp<MyMesh::Point>(mesh);
+
+    // Get a propertymanager of the points property of the mesh to use as functor
+    auto points = OpenMesh::getPointsProperty(mesh);
+
+    // Smooth the mesh several times
+    for (int i = 0; i < iterations; ++i) {
+      // Iterate over all vertices to compute laplace vector
+      for (const auto& vh : mesh.vertices())
+        laplace(vh) = vh.vertices().avg(points) - points(vh);
+
+      // Iterate over all vertices to compute the laplace vector of the laplace vectors
+      for (const auto& vh : mesh.vertices())
+        bi_laplace(vh) =  (vh.vertices().avg(laplace) - laplace(vh));
+
+      // update points by substracting the bi-laplacian damped by a factor of 0.5
+      for (const auto& vh : mesh.vertices())
+        points(vh) += -0.5 * bi_laplace(vh);
+    }
+  } // The laplace and update properties are removed from the mesh at the end of this scope.
+
+  // write mesh
+  ok = OpenMesh::IO::write_mesh(mesh, "smoothed_smart_output.off");
+
+  EXPECT_TRUE(ok) << "Cannot write mesh to file 'smoothed_smart_output.off'";
 }
 
 }

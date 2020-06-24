@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 
 //=============================================================================
@@ -93,14 +88,14 @@ public:
   /// Destructor
   virtual ~_OBJWriter_() {};
 
-  std::string get_description() const  { return "Alias/Wavefront"; }
-  std::string get_extensions()  const  { return "obj"; }
+  std::string get_description() const override  { return "Alias/Wavefront"; }
+  std::string get_extensions()  const override  { return "obj"; }
 
-  bool write(const std::string&, BaseExporter&, Options, std::streamsize _precision = 6) const;
+  bool write(const std::string&, BaseExporter&, Options, std::streamsize _precision = 6) const override;
 
-  bool write(std::ostream&, BaseExporter&, Options, std::streamsize _precision = 6) const;
+  bool write(std::ostream&, BaseExporter&, Options, std::streamsize _precision = 6) const override;
 
-  size_t binary_size(BaseExporter&, Options) const { return 0; }
+  size_t binary_size(BaseExporter&, Options) const override { return 0; }
 
 private:
 

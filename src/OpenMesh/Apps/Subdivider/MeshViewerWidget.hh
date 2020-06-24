@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 
 #ifndef OPENMESHAPPS_MESHVIEWERWIDGET_HH
@@ -71,21 +66,21 @@ typedef OpenMesh::TriMesh_ArrayKernelT<Traits>         Mesh;
 
 	      
 
-class MeshViewerWidget : public MeshViewerWidgetT<Mesh>
+class MeshViewerWidgetSubdivider : public MeshViewerWidgetT<Mesh>
 {
 public:
    typedef MeshViewerWidgetT<Mesh> Base;
    
   /// default constructor
-  MeshViewerWidget(QWidget* _parent=0)
+  explicit MeshViewerWidgetSubdivider(QWidget* _parent=0)
     : Base(_parent)
   {}
 
   /// destructor
-  ~MeshViewerWidget() {}
+  ~MeshViewerWidgetSubdivider() {}
 
   /// open mesh
-  inline bool open_mesh(const char* _filename, OpenMesh::IO::Options _opt)
+  inline bool open_mesh(const char* _filename, OpenMesh::IO::Options _opt) override
   {
     if ( Base::open_mesh( _filename, _opt ) )
     {

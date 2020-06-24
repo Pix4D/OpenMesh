@@ -1,186 +1,84 @@
-/** \page tutorial_09 Storing custom properties
+/** \page tutorial_09 Using custom properties (old style)
 
-The %OpenMesh' proprietary OM format allows to store and restore
-custom properties along with the standard properties. For it we have
-to use named custom properties like the following one
+This small code example shows how to attach and access additional properties on a mesh.
 
-\dontinclude 09-persistence/persistence.cc
-\skipline VPropHandleT
-\skipline mesh.add_property
+<em>Note that this is an old style of using properties. Nowadays you should use the OpenMesh::PropertyManager instead.</em>
 
-Here we registered a float property for the vertices at the mesh with
-name "vprop_float". The name of a property, that we want to make
-persistent, must follow a few rules
+When you want to add an additional properties you have to attach it to a primitive of the
+mesh. You can attach to verticies, halfedges, edges, faces or to the mesh itself. Use the
+add_property function:
 
--# max. 256 characters long
--# The prefixes \c "v:", \c "h:", \c "e:", \c "f:" and \c "m:" are reserved.
+\code
 
-If we stick to this rules we are fine. Furthermore we have to
-consider, that the names are handled case-sensitive.
+  // for each vertex an extra double value
+  OpenMesh::VPropHandleT< double > vprop_double;
+  mesh.add_property( vprop_double ,"Vertex property name");
 
-To actually make a custom property persistent we have to set the
-persistent flag in the property with
+  // for each halfedge an extra int value
+  OpenMesh::HEPropHandleT< int > heprop_int;
+  mesh.add_property( heprop_int ,"Halfedge property name");
 
-\skipline mesh.property(vprop_float).set_persistent
+  // for each edge an extra float value
+  OpenMesh::EPropHandleT< float > eprop_float;
+  mesh.add_property( eprop_float ,"Edge property name");
 
-Now we can use \c IO::mesh_write() to write the mesh to a file on
-disk.  The custom properties are added after the standard properties
-in the file, with the name and it's binary size. These two pieces of
-information are evaluated when reading the file again. To successfully
-restore the custom properties, the mesh must have registered named
-properties with equal names (case-sensitive compare). Additionally,
-when reading the data, the number of bytes read for a property must
-match the provided number in the file. If the OM reader did not find a
-suitable named property, it will simply skip it. If the number of bytes
-do not match, the complete restore will be terminated and \c
-IO::read_mesh() will return \c false. And if the data cannot be
-restored, because the appropriate restore method is not available the
-exception std::logic_error() will be thrown.
+  // for each face an extra double value
+  OpenMesh::FPropHandleT< double > fprop_double;
+  mesh.add_property( fprop_double ,"Face property name");
 
-Since we now know the behaviour, we need to know what kind of data can
-we store?  Without any further effort, simply using named properties
-and setting the persistent flag, we can store following types
+  // for the mesh an extra string
+  OpenMesh::MPropHandleT< string > mprop_string;
+  mesh.add_property( mprop_string , "Mesh property name ");
 
-- bool, stored as a bitset
-- all other fundamental types except long double, (unsigned) long and size_t
-- std::string, each up to 65536 characters long
-- OpenMesh::Vec[1,2,3,4,6][c,uc,s,us,i,ui,f,d]
+\endcode
 
-For further reading we call these types basic types. Apparently we
-cannot store non-basic types, which are
+Accessing to the property is available via the property function.
+This function gets the property handle (created above) and a
+handle (e.g. to a vertex or a face):
 
-- pointers
-- structs/classes
-- even more complex data structures, like container of containers.
+\code
+  // Write something to a face property:
+  mesh->property( <FaceProperty> , <FaceHandle> ) = <new value>;
 
-However there is a way to store custom types ( else we could not store
-std::string). Let's start with an more simple custom data. For
-instance we have a struct \c MyData like this
+  // E.g.
+  for (f_it=mesh->faces_begin(); f_it!=mesh->faces_end()  ; ++f_it) {
+    mesh->property( fprop_double , *f_it ) = 0.0;
+  }
+\endcode
 
-\dontinclude 09-persistence/persistence.cc
-\skipline struct MyData
-\until vec4fval
-\skipline };
+As you can attach properties to the mesh, you might want to add a property in one 
+function and access it in another, where the handle is not yet available. You can 
+retrieve the required handle in the following way (Note that the handles are accessed by their name and type):
 
-Here we keep an int, bool, double value and a vector of 4 floats, which
-are all basic types. Then we need to specialize the template struct
-OpenMesh::IO::binary<> within the namespace \c OpenMesh::IO
+\code
+    // Specify handle type (Double face handle in this case):
+    OpenMesh::FPropHandleT< double > fprop_double;
 
-\skipline binary<MyData>
+    // Try to get handle with the given name.
+    if ( !mesh_.get_property_handle(fprop_double,"Face property name") )  {
+      std::cerr << "Unable to retrieve property! " << std::endl;
+      return
+    }
 
-Remember not to use long double, (unsigned) long and size_t as basic types
-because of inconsistencies between 32/64bit architectures.
+    // If we reach this point, we have a valid handle.
+\endcode
 
-Herein we have to implement the following set of static member
-variables and functions:
+The properties can be removed by calling remove_property:
 
-\skipline is_streamable
-\skipline size_of
-\skipline size_of
-\skipline store
-\skipline restore
+\code
+  // Remove the property
+  mesh->remove_property(fprop_double);
+\endcode
 
-The flag \c is_streamable has to be set to \c true. Else the data
-cannot be stored at all. 
 
-<h5>\c size_of methods </h5>
 
-Since the size of the custom data can be static, which means we know
-the size at compile time, or the size of it is dynamic, which means me
-the size is known at runtime, we have to provide the two \c size_of()
-methods.
+A useful function to see all properties on the mesh is:
 
-The first declaration is for the static case, while the second for the
-dynamic case. Though the static case is more simple, it is not
-straight forward. We cannot simply use \c sizeof() to determine the
-data size, because it will return the number ob bytes it needs in
-memory (possible 32bit alignment). Instead we need the binary size,
-hence we have to add up the single elements in the struct.
+\code
+  // Print all available properties
+  mesh->property_stats();
+\endcode
 
-\dontinclude 09-persistence/persistence.cc
-\skipline return sizeof
-
-Actually we would need to sum up the single elements of the vector,
-but in this case we know for sure the result (4 floats make 16 bytes,
-which is 32bit aligned therefore \c sizeof() returns the wanted
-size). But keep in mind, that this a potential location for errors,
-when writing custom binary support.  
-
-The second declaration is for the dynamic case, where the custom data
-contains pointers or references. This static member must properly
-count the data, by disolving the pointers/references, if this data has
-to be stored as well. In the dynamic stetting the static variant cannot return
-the size, therefore it must return \c IO::UnknownSize.
-
-In this case the dynamic variant simply returns the size by calling the static
-variant, as the sizes are identical for both cases.
-
-<h5>\c store /  \c restore </h5>
-
-For the dynamic case as for the static case, we have to make up a
-scheme how we would store the data. One option is to store the length
-of the data and then store the data itself. For instance the type \c
-std::string is implemented this way. (We store first the length in a
-16bit word (=> max. length 65536), then the characters follow. Hence
-\c size_of() returns 2 bytes for the length plus the actual length of
-the value \c v.) Since \c MyData contains only basic types we can
-implement the necessary methods \c store and \c restore, by simply
-breaking up the data into the basic types using the pre-defined
-store/restore methods for them:
-
-\skipline static size_t store
-\until }
-\skipline static size_t restore
-\until }
-
-It's very important, that the store/restore methods count the
-written/read bytes correctly and return the value. On error both
-functions must return 0.
-
-A more complex situation is given with the following property
-
-\dontinclude 09-persistence/persistence.cc
-\skipline MyMap
-\skipline mprop_map
-
-In this case the data contains a container, a map from strings to
-integer numbers. If we want to store this as well, we need to make up
-a scheme how the map will be stored in a sequential layout. First we
-store the number of elements in the map. Then, since the map has an
-iterator, we simply iterate over all elements and store each pair
-(key/value). This procedure is equal for the \c size_of(), \c store(), and \c
-restore() methods. For example the \c size_of() methods look like this
-
-\dontinclude 09-persistence/persistence.cc
-\skip binary< MyMap >
-\skipline static size_t size_of
-\skipline static size_t size_of
-\until }
-\until }
-
-The implementation of \c store() and \c restore() follow a similar pattern.
-
-The given example program does the following steps
-
--# Create a mesh and generate a cube
--# Add a few custom properties
--# Fill them with test data
--# Make the properties persistent
--# Store mesh in a file named 'persistent-check.om'
--# Clear the mesh
--# Restore mesh
--# Check the content on equality with the test data.
-
-Since the example is a little bit longer than usual the source is in
-several files. The main program is in \c persistence.cc, the cube
-generator in \c generate_cube.hh, \c stats.hh provides little tools to
-display information about the mesh and the properties, the file \c
-fill_props.hh providing the test data, and \c int2roman.hh/.cc, which
-is used in fill_props.hh.  All necessary parts are in \c
-persistence.cc, which is displayed in full length below. For the other
-files please have a look in the directory \c
-OpenMesh/Doc/Tutorial/09-persistence/.
-
-\include 09-persistence/persistence.cc
+A useful class for handling properties and their lifetime is the OpenMesh::PropertyManager.
 
 */

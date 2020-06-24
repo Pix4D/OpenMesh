@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 #ifdef _MSC_VER
 #  pragma warning(disable: 4267 4311)
@@ -83,7 +78,7 @@ int main(int argc, char **argv)
 
   if ( !QGLFormat::hasOpenGL() ) {
     QString msg = "System has no OpenGL support!";
-    QMessageBox::critical( NULL, "OpenGL", msg + argv[1], 0 );
+    QMessageBox::critical( nullptr, "OpenGL", msg + argv[1], 0 );
     return -1;
   }
 
@@ -120,7 +115,7 @@ int main(int argc, char **argv)
         QString msg = "Cannot read mesh from file:\n '";
         msg += argv[optind];
         msg += "'";
-        QMessageBox::critical( NULL, w->caption(), msg, 0 );
+        QMessageBox::critical( nullptr, w->caption(), msg, 0 );
         return 1;
      }
   }
@@ -135,7 +130,7 @@ int main(int argc, char **argv)
         msg += "- Mesh file didn't provide texture coordinates\n";
         msg += "- Texture file does not exist\n";
         msg += "- Texture file is not accessible.\n";
-        QMessageBox::warning( NULL, w->caption(), msg, 0 );
+        QMessageBox::warning( nullptr, w->caption(), msg, 0 );
      }
   }
 

@@ -51,49 +51,39 @@ protected: // SubdividerT interface
         _m.request_edge_status();
         _m.request_vertex_status();
         _m.request_face_status();
-        PropertyManager<EPropHandleT<typename mesh_t::VertexHandle>, mesh_t> edge_midpoint(_m, "edge_midpoint");
-        PropertyManager<VPropHandleT<bool>, mesh_t> is_original_vertex(_m, "is_original_vertex");
+        PropertyManager<EPropHandleT<typename mesh_t::VertexHandle>> edge_midpoint(_m, "edge_midpoint");
+        PropertyManager<VPropHandleT<bool>> is_original_vertex(_m, "is_original_vertex");
 
         for (size_t iteration = 0; iteration < _n; ++iteration) {
             is_original_vertex.set_range(_m.vertices_begin(), _m.vertices_end(), true);
             // Create vertices on edge midpoints
-            for (typename mesh_t::EdgeIter it = _m.edges_begin(), end = _m.edges_end(); it != end; ++it) {
-                EdgeHandle eh = *it;
+            for (auto eh : _m.edges()) {
                 VertexHandle new_vh = _m.new_vertex(_m.calc_edge_midpoint(eh));
                 edge_midpoint[eh] = new_vh;
                 is_original_vertex[new_vh] = false;
             }
             // Create new faces from original faces
-            for (typename mesh_t::FaceIter it = _m.faces_begin(), end = _m.faces_end(); it != end; ++it) {
-                FaceHandle fh = *it;
+            for (auto fh : _m.faces()) {
                 std::vector<typename mesh_t::VertexHandle> new_corners;
-                for (typename mesh_t::FaceEdgeIter it = _m.fe_begin(fh), end = _m.fe_end(fh); it != end; ++it) {
-                    EdgeHandle eh = *it;
+                for (auto eh : _m.fe_range(fh))
                     new_corners.push_back(edge_midpoint[eh]);
-                }
                 _m.add_face(new_corners);
             }
             // Create new faces from original vertices
-            for (typename mesh_t::VertexIter it = _m.vertices_begin(), end = _m.vertices_end(); it != end; ++it) {
-                VertexHandle vh = *it;
+            for (auto vh : _m.vertices()) {
                 if (is_original_vertex[vh]) {
                     if (!_m.is_boundary(vh)) {
                         std::vector<typename mesh_t::VertexHandle> new_corners;
-                        for (typename mesh_t::VertexEdgeIter it = _m.ve_begin(vh), end = _m.ve_end(vh); it != end; ++it) {
-                            EdgeHandle eh = *it;
+                        for (auto eh : _m.ve_range(vh))
                             new_corners.push_back(edge_midpoint[eh]);
-                        }
                         std::reverse(new_corners.begin(), new_corners.end());
                         _m.add_face(new_corners);
                     }
                 }
             }
-            for (typename mesh_t::VertexIter it = _m.vertices_begin(), end = _m.vertices_end(); it != end; ++it) {
-                VertexHandle vh = *it;
-                if (is_original_vertex[vh]) {
+            for (auto vh : _m.vertices())
+                if (is_original_vertex[vh])
                     _m.delete_vertex(vh);
-                }
-            }
             _m.garbage_collection();
         }
         _m.release_face_status();

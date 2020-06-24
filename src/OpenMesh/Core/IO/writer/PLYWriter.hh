@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 
 //=============================================================================
@@ -87,6 +82,7 @@ namespace IO {
 
     currently supported options:
     - VertexColors
+    - FaceColors
     - Binary
     - Binary -> MSB
 */
@@ -99,14 +95,14 @@ public:
   /// Destructor
   virtual ~_PLYWriter_() {};
 
-  std::string get_description() const { return "PLY polygon file format"; }
-  std::string get_extensions() const  { return "ply"; }
+  std::string get_description() const override { return "PLY polygon file format"; }
+  std::string get_extensions()  const override  { return "ply"; }
 
-  bool write(const std::string&, BaseExporter&, Options, std::streamsize _precision = 6) const;
+  bool write(const std::string&, BaseExporter&, Options, std::streamsize _precision = 6) const override;
 
-  bool write(std::ostream&, BaseExporter&, Options, std::streamsize _precision = 6) const;
+  bool write(std::ostream&, BaseExporter&, Options, std::streamsize _precision = 6) const override;
 
-  size_t binary_size(BaseExporter& _be, Options _opt) const;
+  size_t binary_size(BaseExporter& _be, Options _opt) const override;
 
   enum ValueType {
     Unsupported = 0,
@@ -124,7 +120,7 @@ private:
   {
     ValueType type;
     const BaseProperty*  property;
-    CustomProperty(const BaseProperty* const _p):type(Unsupported),property(_p){}
+    explicit CustomProperty(const BaseProperty* const _p):type(Unsupported),property(_p){}
   };
 
   const char* nameOfType_[12];

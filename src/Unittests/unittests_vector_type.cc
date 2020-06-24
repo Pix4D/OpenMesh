@@ -263,6 +263,23 @@ TEST_F(OpenMeshVectorTest, BasicArithmeticImmutable) {
     EXPECT_NEAR(-2, v2neg[1], epsilon);
     EXPECT_NEAR(-3, v2neg[2], epsilon);
 }
+template <typename V1, typename V2, typename S>
+void test_dot(const V1 &v1, const V2 &v2, const S&s) {
+    EXPECT_NEAR(s, v1 | v2, 1e-6);
+    EXPECT_NEAR(s, v1.dot(v2), 1e-6);
+    EXPECT_NEAR(-s, (-v1) | v2, 1e-6);
+    EXPECT_NEAR(-s, (-v1).dot(v2), 1e-6);
+    EXPECT_NEAR(s, v2 | v1, 1e-6);
+    EXPECT_NEAR(s, v2.dot(v1), 1e-6);
+}
+
+template <typename V1, typename V2, typename V3>
+void test_cross(const V1 &v1, const V2 &v2, const V3 &res) {
+    EXPECT_NEAR(0, (v1.cross(v2) - res).norm(), 1e-6);
+    EXPECT_NEAR(0, (v1 % v2 - res).norm(), 1e-6);
+    EXPECT_NEAR(0, (v2.cross(v1) + res).norm(), 1e-6);
+    EXPECT_NEAR(0, (v2 % v1 + res).norm(), 1e-6);
+}
 
 TEST_F(OpenMeshVectorTest, BasicLinearAlgebra) {
     OpenMesh::Vec3d v(1, 2, 3);
@@ -285,9 +302,15 @@ TEST_F(OpenMeshVectorTest, BasicLinearAlgebra) {
     EXPECT_EQ(1, OpenMesh::Vec3d(1, 3, -4).min_abs());
     EXPECT_EQ(2, OpenMesh::Vec3d(-4, 2, 3).min_abs());
 
-    EXPECT_NEAR(14, OpenMesh::Vec3d(1, 2, 3) | OpenMesh::Vec3d(1, 2, 3), 1e-6);
-    EXPECT_NEAR(-14, OpenMesh::Vec3d(1, 2, 3) | OpenMesh::Vec3d(-1, -2, -3), 1e-6);
-    EXPECT_NEAR(14, OpenMesh::Vec3d(-1, -2, -3) | OpenMesh::Vec3d(-1, -2, -3), 1e-6);
+
+    test_dot(OpenMesh::Vec3d(1, 2, 3), OpenMesh::Vec3d(1, 2, 3), 14.);
+    test_dot(OpenMesh::Vec3d(1, 2, 3), OpenMesh::Vec3d(-1, -2, -3), -14.);
+    test_dot(OpenMesh::Vec3d(1, 2, 3), OpenMesh::Vec3i(1, 2, 3), 14);
+    test_dot(OpenMesh::Vec3i(1, 2, 3), OpenMesh::Vec3i(1, 2, 3), 14);
+
+    test_cross(OpenMesh::Vec3i(2, 0, 0), OpenMesh::Vec3i(0, 3, 0), OpenMesh::Vec3i(0, 0, 6));
+    test_cross(OpenMesh::Vec3d(2, 0, 0), OpenMesh::Vec3d(0, 3, 0), OpenMesh::Vec3d(0, 0, 6));
+    test_cross(OpenMesh::Vec3d(2, 0, 0), OpenMesh::Vec3i(0, 3, 0), OpenMesh::Vec3d(0, 0, 6));
 }
 
 TEST_F(OpenMeshVectorTest, array_init) {
@@ -395,6 +418,21 @@ TEST_F(OpenMeshVectorGCCBugTest, alignment_bug) {
      */
     (*testfn)(*this);
 }
+
+
+TEST_F(OpenMeshVectorTest, Test_simple_0_constructor) {
+
+  // Create a test vector with zeroes from one parameter
+  OpenMesh::Vec3d testVec = OpenMesh::Vec3d(0);
+  
+  EXPECT_EQ(0.0f, testVec[0]) << "Wrong Value after construction!";
+  EXPECT_EQ(0.0f, testVec[1]) << "Wrong Value after construction!";
+  EXPECT_EQ(0.0f, testVec[2]) << "Wrong Value after construction!";
+
+
+
+}
+
 
 
 }

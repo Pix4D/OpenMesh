@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 #ifndef OPENMESH_KERNEL_OSG_PROPERTYT_HH
 #define OPENMESH_KERNEL_OSG_PROPERTYT_HH
@@ -113,7 +108,7 @@ public:
 
   //
   oPropertyT( const std::string& _name = "<unknown>" )
-    : BaseProperty(_name), data_(NULL)
+    : BaseProperty(_name), data_(nullptr)
   {
     data_ = property_t::create();
     

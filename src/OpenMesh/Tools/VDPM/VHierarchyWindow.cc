@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 //=============================================================================
 //
@@ -78,7 +73,7 @@ namespace VDPM {
 
 VHierarchyWindow::
 VHierarchyWindow() :
-  vhierarchy_(NULL), buffer_(NULL),buffer_min_ (0), buffer_max_(0), current_pos_(0) , window_min_(0), window_max_(0),  n_shift_(0)
+  vhierarchy_(nullptr), buffer_(nullptr),buffer_min_ (0), buffer_max_(0), current_pos_(0) , window_min_(0), window_max_(0),  n_shift_(0)
 {
 
 }
@@ -86,7 +81,7 @@ VHierarchyWindow() :
 
 VHierarchyWindow::
 VHierarchyWindow(VHierarchy &_vhierarchy) :
-  vhierarchy_(&_vhierarchy),buffer_(NULL),buffer_min_ (0), buffer_max_(0), current_pos_(0) , window_min_(0), window_max_(0) ,n_shift_(0)
+  vhierarchy_(&_vhierarchy),buffer_(nullptr),buffer_min_ (0), buffer_max_(0), current_pos_(0) , window_min_(0), window_max_(0) ,n_shift_(0)
 {
 }
 
@@ -94,7 +89,7 @@ VHierarchyWindow(VHierarchy &_vhierarchy) :
 VHierarchyWindow::
 ~VHierarchyWindow(void)
 {
-  if (buffer_ != NULL)
+  if (buffer_ != nullptr)
     free(buffer_);
 }
 
@@ -143,7 +138,7 @@ update_buffer(VHierarchyNodeHandle _node_handle)
 void
 VHierarchyWindow::init(VHierarchyNodeHandleContainer &_roots)
 {
-  if (buffer_ != NULL)
+  if (buffer_ != nullptr)
     free(buffer_);
 
   buffer_min_ = 0;

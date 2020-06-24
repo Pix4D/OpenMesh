@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 #include <OpenMesh/Apps/VDProgMesh/Streaming/Server/VDPMServerSession.hh>
 #include <OpenMesh/Apps/VDProgMesh/Streaming/Server/VDPMServerViewerWidget.hh>
@@ -69,7 +64,7 @@ set_vdpm(const char _vdpm_name[256])
   }
 #endif
   vdpm_ = ((VDPMServerViewerWidget *) ((VDPMServerSocket *) parent())->parent())->get_vdpm(_vdpm_name);
-  if (vdpm_ == NULL)
+  if (vdpm_ == nullptr)
     return  false;
 
   vhierarchy_ = &vdpm_->vhierarchy();

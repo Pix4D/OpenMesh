@@ -1,0 +1,18 @@
+# -----------------
+# Linux tasks
+# -----------------
+
+cppcheck:
+  stage: build
+  script: "CI/ci-cppcheck.sh"
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags: [Docker]
+  timeout: 3h
+  artifacts:
+    paths:
+      - cppcheck.log
+
+{linux-template-job.yml, COMPILER=gcc, LANGUAGE=cpp11}
+{linux-template-job.yml, COMPILER=clang, LANGUAGE=cpp11}
+{linux-template-job.yml, COMPILER=gcc, LANGUAGE=cpp14}
+{linux-template-job.yml, COMPILER=clang, LANGUAGE=cpp14}

@@ -39,13 +39,6 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
- \*===========================================================================*/
-
 /** \file ModQuadricT.hh
 
  */
@@ -79,12 +72,12 @@ class ModIndependentSetsT: public ModBaseT<MeshT> {
     ;
 
     /// Constructor
-    ModIndependentSetsT(MeshT &_mesh) :
+    explicit ModIndependentSetsT(MeshT &_mesh) :
         Base(_mesh, true) {
     }
 
     /// override
-    void postprocess_collapse(const CollapseInfo& _ci) {
+    void postprocess_collapse(const CollapseInfo& _ci) override {
       typename Mesh::VertexVertexIter vv_it;
 
       Base::mesh().status(_ci.v1).set_locked(true);

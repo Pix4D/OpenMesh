@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 #ifndef OPENMESH_ATTRIBKERNEL_HH
 #define OPENMESH_ATTRIBKERNEL_HH
@@ -110,10 +105,26 @@ public:
     FAttribs = MeshItems::FAttribs
   };
 
-  typedef VPropHandleT<VertexData>              DataVPropHandle;
-  typedef HPropHandleT<HalfedgeData>            DataHPropHandle;
-  typedef EPropHandleT<EdgeData>                DataEPropHandle;
-  typedef FPropHandleT<FaceData>                DataFPropHandle;
+  typedef VPropHandleT<VertexData>          DataVPropHandle;
+  typedef HPropHandleT<HalfedgeData>        DataHPropHandle;
+  typedef EPropHandleT<EdgeData>            DataEPropHandle;
+  typedef FPropHandleT<FaceData>            DataFPropHandle;
+
+  typedef VPropHandleT<Point>               PointsPropertyHandle;
+  typedef VPropHandleT<Normal>              VertexNormalsPropertyHandle;
+  typedef VPropHandleT<Color>               VertexColorsPropertyHandle;
+  typedef VPropHandleT<TexCoord1D>          VertexTexCoords1DPropertyHandle;
+  typedef VPropHandleT<TexCoord2D>          VertexTexCoords2DPropertyHandle;
+  typedef VPropHandleT<TexCoord3D>          VertexTexCoords3DPropertyHandle;
+  typedef HPropHandleT<TexCoord1D>          HalfedgeTexCoords1DPropertyHandle;
+  typedef HPropHandleT<TexCoord2D>          HalfedgeTexCoords2DPropertyHandle;
+  typedef HPropHandleT<TexCoord3D>          HalfedgeTexCoords3DPropertyHandle;
+  typedef EPropHandleT<Color>               EdgeColorsPropertyHandle;
+  typedef HPropHandleT<Normal>              HalfedgeNormalsPropertyHandle;
+  typedef HPropHandleT<Color>               HalfedgeColorsPropertyHandle;
+  typedef FPropHandleT<Normal>              FaceNormalsPropertyHandle;
+  typedef FPropHandleT<Color>               FaceColorsPropertyHandle;
+  typedef FPropHandleT<TextureIndex>        FaceTextureIndexPropertyHandle;
 
 public:
 
@@ -244,6 +255,9 @@ public:
 
   void set_point(VertexHandle _vh, const Point& _p)
   { this->property(points_, _vh) = _p; }
+
+  const PointsPropertyHandle& points_property_handle() const
+  { return points_; }
 
 
   //------------------------------------------------------------ vertex normals
@@ -598,24 +612,6 @@ public:
   bool has_face_texture_index()   const { return face_texture_index_.is_valid();  }
 
 public:
-
-  typedef VPropHandleT<Point>               PointsPropertyHandle;
-  typedef VPropHandleT<Normal>              VertexNormalsPropertyHandle;
-  typedef VPropHandleT<Color>               VertexColorsPropertyHandle;
-  typedef VPropHandleT<TexCoord1D>          VertexTexCoords1DPropertyHandle;
-  typedef VPropHandleT<TexCoord2D>          VertexTexCoords2DPropertyHandle;
-  typedef VPropHandleT<TexCoord3D>          VertexTexCoords3DPropertyHandle;
-  typedef HPropHandleT<TexCoord1D>          HalfedgeTexCoords1DPropertyHandle;
-  typedef HPropHandleT<TexCoord2D>          HalfedgeTexCoords2DPropertyHandle;
-  typedef HPropHandleT<TexCoord3D>          HalfedgeTexCoords3DPropertyHandle;
-  typedef EPropHandleT<Color>               EdgeColorsPropertyHandle;
-  typedef HPropHandleT<Normal>              HalfedgeNormalsPropertyHandle;
-  typedef HPropHandleT<Color>               HalfedgeColorsPropertyHandle;
-  typedef FPropHandleT<Normal>              FaceNormalsPropertyHandle;
-  typedef FPropHandleT<Color>               FaceColorsPropertyHandle;
-  typedef FPropHandleT<TextureIndex>        FaceTextureIndexPropertyHandle;
-
-public:
   //standard vertex properties
   PointsPropertyHandle                      points_pph() const
   { return points_; }
@@ -744,48 +740,34 @@ private:
       {
           //mesh has no points?
       }
-      if(this->get_property_handle(vertex_normals_,
-               "v:normals"))
-          refcount_vnormals_ = 1;
-      if(this->get_property_handle(vertex_colors_,
-               "v:colors"))
-          refcount_vcolors_ = 1;
-      if(this->get_property_handle(vertex_texcoords1D_,
-               "v:texcoords1D"))
-          refcount_vtexcoords1D_ = 1;
-      if(this->get_property_handle(vertex_texcoords2D_,
-               "v:texcoords2D"))
-          refcount_vtexcoords2D_ = 1;
-      if(this->get_property_handle(vertex_texcoords3D_,
-               "v:texcoords3D"))
-          refcount_vtexcoords3D_ = 1;
-      if(this->get_property_handle(halfedge_texcoords1D_,
-               "h:texcoords1D"))
-          refcount_htexcoords1D_ = 1;
-      if(this->get_property_handle(halfedge_texcoords2D_,
-               "h:texcoords2D"))
-          refcount_htexcoords2D_ = 1;
-      if(this->get_property_handle(halfedge_texcoords3D_,
-               "h:texcoords3D"))
-          refcount_htexcoords3D_ = 1;
-      if(this->get_property_handle(halfedge_normals_,
-               "h:normals"))
-          refcount_henormals_ = 1;
-      if(this->get_property_handle(halfedge_colors_,
-               "h:colors"))
-          refcount_hecolors_ = 1;
-      if(this->get_property_handle(edge_colors_,
-               "e:colors"))
-          refcount_ecolors_ = 1;
-      if(this->get_property_handle(face_normals_,
-               "f:normals"))
-          refcount_fnormals_ = 1;
-      if(this->get_property_handle(face_colors_,
-               "f:colors"))
-          refcount_fcolors_ = 1;
-      if(this->get_property_handle(face_texture_index_,
-               "f:textureindex"))
-          refcount_ftextureIndex_ = 1;
+      refcount_vnormals_ = this->get_property_handle(vertex_normals_,
+          "v:normals") ? 1 : 0 ;
+      refcount_vcolors_ = this->get_property_handle(vertex_colors_,
+          "v:colors") ? 1 : 0 ;
+      refcount_vtexcoords1D_ = this->get_property_handle(vertex_texcoords1D_,
+          "v:texcoords1D") ? 1 : 0 ;
+      refcount_vtexcoords2D_ = this->get_property_handle(vertex_texcoords2D_,
+          "v:texcoords2D") ? 1 : 0 ;
+      refcount_vtexcoords3D_ = this->get_property_handle(vertex_texcoords3D_,
+          "v:texcoords3D") ? 1 : 0 ;
+      refcount_htexcoords1D_ = this->get_property_handle(halfedge_texcoords1D_,
+          "h:texcoords1D") ? 1 : 0 ;
+      refcount_htexcoords2D_ = this->get_property_handle(halfedge_texcoords2D_,
+          "h:texcoords2D") ? 1 : 0 ;
+      refcount_htexcoords3D_ = this->get_property_handle(halfedge_texcoords3D_,
+          "h:texcoords3D") ? 1 : 0 ;
+      refcount_henormals_ = this->get_property_handle(halfedge_normals_,
+          "h:normals") ? 1 : 0 ;
+      refcount_hecolors_ = this->get_property_handle(halfedge_colors_,
+          "h:colors") ? 1 : 0 ;
+      refcount_ecolors_ = this->get_property_handle(edge_colors_,
+          "e:colors") ? 1 : 0 ;
+      refcount_fnormals_ = this->get_property_handle(face_normals_,
+          "f:normals") ? 1 : 0 ;
+      refcount_fcolors_ = this->get_property_handle(face_colors_,
+          "f:colors") ? 1 : 0 ;
+      refcount_ftextureIndex_ = this->get_property_handle(face_texture_index_,
+          "f:textureindex") ? 1 : 0 ;
   }
 };
 

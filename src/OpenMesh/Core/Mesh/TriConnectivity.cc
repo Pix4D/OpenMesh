@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 
 //  CLASS TriMeshT - IMPLEMENTATION
@@ -54,11 +49,11 @@
 namespace OpenMesh
 {
 
-TriConnectivity::FaceHandle
+SmartFaceHandle
 TriConnectivity::add_face(const VertexHandle* _vertex_handles, size_t _vhs_size)
 {
   // need at least 3 vertices
-  if (_vhs_size < 3) return InvalidFaceHandle;
+  if (_vhs_size < 3) return make_smart(InvalidFaceHandle, this);
 
   /// face is triangle -> ok
   if (_vhs_size == 3)
@@ -83,21 +78,29 @@ TriConnectivity::add_face(const VertexHandle* _vertex_handles, size_t _vhs_size)
       fh = PolyConnectivity::add_face(vhandles, 3);
     }
 
-    return fh;
+    return make_smart(fh, this);
   }
 }
 
 //-----------------------------------------------------------------------------
 
-FaceHandle TriConnectivity::add_face(const std::vector<VertexHandle>& _vhandles)
+SmartFaceHandle TriConnectivity::add_face(const std::vector<VertexHandle>& _vhandles)
 {
   return add_face(&_vhandles.front(), _vhandles.size());
 }
 
 //-----------------------------------------------------------------------------
 
+SmartFaceHandle TriConnectivity::add_face(const std::vector<SmartVertexHandle>& _vhandles)
+{
+  std::vector<VertexHandle> vhandles(_vhandles.begin(), _vhandles.end());
+  return add_face(&vhandles.front(), vhandles.size());
+}
 
-FaceHandle TriConnectivity::add_face(VertexHandle _vh0, VertexHandle _vh1, VertexHandle _vh2)
+//-----------------------------------------------------------------------------
+
+
+SmartFaceHandle TriConnectivity::add_face(VertexHandle _vh0, VertexHandle _vh1, VertexHandle _vh2)
 {
   VertexHandle vhs[3] = { _vh0, _vh1, _vh2 };
   return PolyConnectivity::add_face(vhs, 3);
@@ -488,6 +491,11 @@ void TriConnectivity::split(EdgeHandle _eh, VertexHandle _vh)
 
 void TriConnectivity::split_copy(EdgeHandle _eh, VertexHandle _vh)
 {
+  const VertexHandle v0 = to_vertex_handle(halfedge_handle(_eh, 0));
+  const VertexHandle v1 = to_vertex_handle(halfedge_handle(_eh, 1));
+
+  const size_t nf = n_faces();
+
   // Split the halfedge ( handle will be preserved)
   split(_eh, _vh);
 
@@ -495,6 +503,22 @@ void TriConnectivity::split_copy(EdgeHandle _eh, VertexHandle _vh)
   // have been created
   for(VEIter ve_it = ve_iter(_vh); ve_it.is_valid(); ++ve_it)
     copy_all_properties(_eh, *ve_it, true);
+
+  for (auto vh : {v0, v1})
+  {
+    // get the halfedge pointing from new vertex to old vertex
+    const HalfedgeHandle h = find_halfedge(_vh, vh);
+    if (!is_boundary(h)) // for boundaries there are no faces whose properties need to be copied
+    {
+      FaceHandle fh0 = face_handle(h);
+      FaceHandle fh1 = face_handle(opposite_halfedge_handle(prev_halfedge_handle(h)));
+      if (static_cast<size_t>(fh0.idx()) >= nf) // is fh0 the new face?
+        std::swap(fh0, fh1);
+
+      // copy properties from old face to new face
+      copy_all_properties(fh0, fh1, true);
+    }
+  }
 }
 
 }// namespace OpenMesh

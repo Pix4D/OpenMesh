@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 /** \file ModBaseT.hh
     Base class for all decimation modules.
@@ -95,14 +90,14 @@ public:
 public:
 
   /// Default constructor
-  ModHandleT() : mod_(NULL) {}
+  ModHandleT() : mod_(nullptr) {}
 
   /// Destructor
   ~ModHandleT() { /* don't delete mod_, since handle is not owner! */ }
 
   /// Check handle status
   /// \return \c true, if handle is valid, else \c false.
-  bool is_valid() const { return mod_ != NULL; }
+  bool is_valid() const { return mod_ != nullptr; }
 
 private:
 
@@ -112,7 +107,7 @@ private:
   template <typename Mesh> friend class BaseDecimaterT;
 #endif
 
-  void     clear()           { mod_ = NULL; }
+  void     clear()           { mod_ = nullptr; }
   void     init(Module* _m)  { mod_ = _m;   }
   Module*  module()          { return mod_; }
 
@@ -133,7 +128,7 @@ private:
 /// Macro that sets up the name() function
 /// \internal
 #define DECIMATER_MODNAME(_mod_name) \
- virtual const std::string& name() const { \
+ virtual const std::string& name() const override { \
   static std::string _s_modname_(#_mod_name); return _s_modname_; \
 }
 
@@ -217,8 +212,8 @@ public:
   /// Virtual desctructor
   virtual ~ModBaseT() { }
 
-  /// Set module's name (using DECIMATER_MODNAME macro)
-  DECIMATER_MODNAME(ModBase);
+  /// Set module's name
+  virtual const std::string& name() const { static std::string _s_modname_("ModBase"); return _s_modname_; }
 
 
   /// Returns true if criteria returns a binary value.

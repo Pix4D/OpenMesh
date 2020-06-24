@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 #ifdef _MSC_VER
 #  pragma warning(disable: 4267 4311)
@@ -57,21 +52,12 @@
 
 #include "VDPMSynthesizerViewerWidget.hh"
 
-#ifdef ARCH_DARWIN
- #include <glut.h>
-#else
- #include <GL/glut.h>
-#endif
-
 int main(int argc, char **argv)
 {
   // OpenGL check
   QApplication::setColorSpec( QApplication::CustomColor );
   QApplication app(argc,argv);
 
-#if !defined(__APPLE__)
-  glutInit(&argc,argv);
-#endif
 
   if ( !QGLFormat::hasOpenGL() ) {
     std::cerr << "This system has no OpenGL support.\n";

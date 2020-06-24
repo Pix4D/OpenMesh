@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 //=============================================================================
 //
@@ -93,7 +88,7 @@ public:
 
 
   /// Default constructor
-  StripifierT(Mesh& _mesh);
+  explicit StripifierT(Mesh& _mesh);
 
   /// Destructor
   ~StripifierT();
@@ -151,7 +146,7 @@ private:
 //=============================================================================
 #if defined(OM_INCLUDE_TEMPLATES) && !defined(OPENMESH_STRIPIFIERT_C)
 #define OPENMESH_STRIPIFIERT_TEMPLATES
-#include "StripifierT.cc"
+#include "StripifierT_impl.hh"
 #endif
 //=============================================================================
 #endif // OPENMESH_STRIPIFIERT_HH defined

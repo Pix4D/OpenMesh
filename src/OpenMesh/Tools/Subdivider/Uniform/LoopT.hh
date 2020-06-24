@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 /** \file LoopT.hh
 
@@ -111,7 +106,7 @@ public:
   { init_weights(); }
 
 
-  LoopT( mesh_t& _m ) : parent_t(_m), _1over8( 1.0/8.0 ), _3over8( 3.0/8.0 )
+  explicit LoopT( mesh_t& _m ) : parent_t(_m), _1over8( 1.0/8.0 ), _3over8( 3.0/8.0 )
   { init_weights(); }
 
 
@@ -121,7 +116,7 @@ public:
 public:
 
 
-  const char *name() const { return "Uniform Loop"; }
+  const char *name() const override { return "Uniform Loop"; }
 
 
   /// Pre-compute weights
@@ -135,7 +130,7 @@ public:
 protected:
 
 
-  bool prepare( mesh_t& _m )
+  bool prepare( mesh_t& _m ) override
   {
     _m.add_property( vp_pos_ );
     _m.add_property( ep_pos_ );
@@ -143,7 +138,7 @@ protected:
   }
 
 
-  bool cleanup( mesh_t& _m )
+  bool cleanup( mesh_t& _m ) override
   {
     _m.remove_property( vp_pos_ );
     _m.remove_property( ep_pos_ );
@@ -151,7 +146,7 @@ protected:
   }
 
 
-  bool subdivide( mesh_t& _m, size_t _n, const bool _update_points = true)
+  bool subdivide( mesh_t& _m, size_t _n, const bool _update_points = true) override
   {
 
     ///TODO:Implement fixed positions
@@ -179,17 +174,15 @@ protected:
       // edge property ep_pos_) in the vertex property vp_pos_;
 
       // Attention! Creating new edges, hence make sure the loop ends correctly.
-      e_end = _m.edges_end();
-      for (eit=_m.edges_begin(); eit != e_end; ++eit)
-        split_edge(_m, *eit );
+      for (auto eh : _m.edges())
+        split_edge(_m, eh );
 
 
       // Commit changes in topology and reconsitute consistency
 
       // Attention! Creating new faces, hence make sure the loop ends correctly.
-      f_end   = _m.faces_end();
-      for (fit = _m.faces_begin(); fit != f_end; ++fit)
-        split_face(_m, *fit );
+      for (auto fh : _m.faces())
+        split_face(_m, fh );
 
       if(_update_points) {
         // Commit changes in geometry
@@ -326,7 +319,7 @@ private: // topological modifiers
     typename mesh_t::VertexHandle   vh1(_m.to_vertex_handle(heh));
     typename mesh_t::Point          midP(_m.point(_m.to_vertex_handle(heh)));
     midP += _m.point(_m.to_vertex_handle(opp_heh));
-    midP *= static_cast<typename mesh_t::Point::value_type>(0.5);
+    midP *= static_cast<RealType>(0.5);
 
     // new vertex
     vh                = _m.new_vertex( midP );
@@ -368,7 +361,11 @@ private: // topological modifiers
 
     _m.set_face_handle( new_heh, _m.face_handle(heh) );
     _m.set_halfedge_handle( vh, new_heh);
-    _m.set_halfedge_handle( _m.face_handle(heh), heh );
+
+    // We cant reconnect a non existing face, so we skip this here if necessary
+    if ( !_m.is_boundary(heh) )
+      _m.set_halfedge_handle( _m.face_handle(heh), heh );
+
     _m.set_halfedge_handle( vh1, opp_new_heh );
 
     // Never forget this, when playing with the topology
@@ -394,7 +391,7 @@ private: // geometry helper
     // boundary edge: just average vertex positions
     if (_m.is_boundary(_eh) )
     {
-      pos *= static_cast<typename MeshType::Point::value_type>(0.5);
+      pos *= static_cast<RealType>(0.5);
     }
     else // inner edge: add neighbouring Vertices to sum
     {

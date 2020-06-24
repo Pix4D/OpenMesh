@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 //=============================================================================
 //
@@ -127,7 +122,7 @@ private:
 
 public:
   VHierarchyWindow();
-  VHierarchyWindow(VHierarchy &_vhierarchy);
+  explicit VHierarchyWindow(VHierarchy &_vhierarchy);
   ~VHierarchyWindow(void);
   
   void set_vertex_hierarchy(VHierarchy &_vhierarchy)

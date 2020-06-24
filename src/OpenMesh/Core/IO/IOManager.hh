@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 //=============================================================================
 //
@@ -152,7 +147,7 @@ public:
   bool write(const std::string& _filename,
 	     BaseExporter& _be,
 	     Options _opt=Options::Default,
-             std::streamsize _precision = 6);
+       std::streamsize _precision = 6);
 
 /** Write a mesh to open std::ostream _os. The source data structure is specified
       by the given BaseExporter. The \c save method consecutively queries all
@@ -164,7 +159,7 @@ public:
 	     const std::string& _ext,
 	     BaseExporter& _be,
 	     Options _opt=Options::Default,
-             std::streamsize _precision = 6);
+       std::streamsize _precision = 6);
 
 
   /// Returns true if the format is supported by one of the reader modules.

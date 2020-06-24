@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 
 //=============================================================================
@@ -103,17 +98,17 @@ public:
   /// Destructor
   virtual ~_OMWriter_() {};
 
-  std::string get_description() const
+  std::string get_description() const override
   { return "OpenMesh Format"; }
 
-  std::string get_extensions() const
+  std::string get_extensions() const override
   { return "om"; }
 
-  bool write(std::ostream&, BaseExporter&, Options, std::streamsize _precision = 6) const;
+  bool write(std::ostream&, BaseExporter&, Options, std::streamsize _precision = 6) const override;
 
+  size_t binary_size(BaseExporter& _be, Options _opt) const override;
 
-
-  size_t binary_size(BaseExporter& _be, Options _opt) const;
+  static OMFormat::uint8 get_version() { return version_; }
 
 
 protected:
@@ -121,7 +116,7 @@ protected:
   static const OMFormat::uchar magic_[3];
   static const OMFormat::uint8 version_;
 
-  bool write(const std::string&, BaseExporter&, Options, std::streamsize _precision = 6) const;
+  bool write(const std::string&, BaseExporter&, Options, std::streamsize _precision = 6) const override;
 
   bool write_binary(std::ostream&, BaseExporter&, Options) const;
 

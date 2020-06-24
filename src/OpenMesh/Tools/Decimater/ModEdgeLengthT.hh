@@ -39,12 +39,6 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *
- *   $Revision$                                                        *
- *   $Date$                   *
- *                                                                           *
- \*===========================================================================*/
 
 /** \file ModEdgeLengthT.hh
  */
@@ -104,10 +98,10 @@ class ModEdgeLengthT: public ModBaseT<MeshT> {
      Cont. mode:  Collapse smallest edge first, but
      don't collapse edges longer as edge_length_
      */
-    float collapse_priority(const CollapseInfo& _ci);
+    float collapse_priority(const CollapseInfo& _ci) override;
 
     /// set the percentage of edge length
-    void set_error_tolerance_factor(double _factor);
+    void set_error_tolerance_factor(double _factor) override;
 
   private:
 
@@ -121,7 +115,7 @@ class ModEdgeLengthT: public ModBaseT<MeshT> {
 //=============================================================================
 #if defined(OM_INCLUDE_TEMPLATES) && !defined(OPENMESH_DECIMATER_MODEDGELENGTHT_C)
 #define MODEDGELENGTHT_TEMPLATES
-#include "ModEdgeLengthT.cc"
+#include "ModEdgeLengthT_impl.hh"
 #endif
 //=============================================================================
 #endif // OPENMESH_DECIMATER_MODEDGELENGTHT_HH defined

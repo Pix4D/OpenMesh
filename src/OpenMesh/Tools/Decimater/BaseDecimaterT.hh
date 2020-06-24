@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 /** \file BaseDecimaterT.hh
  */
@@ -99,7 +94,7 @@ public: //-------------------------------------------------------- public types
   typedef typename ModuleList::iterator ModuleListIterator;
 
 public: //------------------------------------------------------ public methods
-  BaseDecimaterT(Mesh& _mesh);
+  explicit BaseDecimaterT(Mesh& _mesh);
   virtual ~BaseDecimaterT();
 
   /** Initialize decimater and decimating modules.
@@ -282,7 +277,7 @@ private: //------------------------------------------------------- private data
 //=============================================================================
 #if defined(OM_INCLUDE_TEMPLATES) && !defined(OPENMESH_BASE_DECIMATER_DECIMATERT_CC)
 #define OPENMESH_BASE_DECIMATER_TEMPLATES
-#include "BaseDecimaterT.cc"
+#include "BaseDecimaterT_impl.hh"
 #endif
 //=============================================================================
 #endif // OPENMESH_BASE_DECIMATER_DECIMATERT_HH defined

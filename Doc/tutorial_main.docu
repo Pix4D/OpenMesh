@@ -33,12 +33,14 @@ repeatedly replacing each vertex' position by the center of gravity
 <li> \subpage tutorial_02
 <li> \subpage tutorial_03
 <li> \subpage tutorial_04
+<li> \subpage tutorial_11
 <li> \subpage tutorial_05
 <li> \subpage tutorial_06
 <li> \subpage tutorial_07
 <li> \subpage tutorial_07b
 <li> \subpage tutorial_08
 <li> \subpage tutorial_09
+<li> \subpage tutorial_10
 </ol>
 
 */

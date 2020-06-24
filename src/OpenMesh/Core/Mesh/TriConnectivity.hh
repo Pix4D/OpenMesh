@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 #ifndef OPENMESH_TRICONNECTIVITY_HH
 #define OPENMESH_TRICONNECTIVITY_HH
@@ -90,8 +85,8 @@ public:
    *
    *
    * */
-  FaceHandle add_face(const VertexHandle* _vhandles, size_t _vhs_size);
-  
+  SmartFaceHandle add_face(const VertexHandle* _vhandles, size_t _vhs_size);
+
   /** \brief Add a face with arbitrary valence to the triangle mesh
      *
      * Override OpenMesh::Mesh::PolyMeshT::add_face(). Faces that aren't
@@ -100,7 +95,17 @@ public:
      *
      *
      * */
-  FaceHandle add_face(const std::vector<VertexHandle>& _vhandles);
+  SmartFaceHandle add_face(const std::vector<VertexHandle>& _vhandles);
+
+  /** \brief Add a face with arbitrary valence to the triangle mesh
+     *
+     * Override OpenMesh::Mesh::PolyMeshT::add_face(). Faces that aren't
+     * triangles will be triangulated and added. In this case an
+     * invalid face handle will be returned.
+     *
+     *
+     * */
+  SmartFaceHandle add_face(const std::vector<SmartVertexHandle>& _vhandles);
 
   /** \brief Add a face to the mesh (triangle)
    *
@@ -112,7 +117,7 @@ public:
    * @param _vh2 VertexHandle 3
    * @return FaceHandle of the added face (invalid, if the operation failed)
    */
-  FaceHandle add_face(VertexHandle _vh0, VertexHandle _vh1, VertexHandle _vh2);
+  SmartFaceHandle add_face(VertexHandle _vh0, VertexHandle _vh1, VertexHandle _vh2);
   
   //@}
 
@@ -162,27 +167,63 @@ public:
    *
    * \note The properties of the new edges, halfedges, and faces will be undefined!
    *
-   * @param _eh Edge handle that should be splitted
+   * @param _eh Edge handle that should be split
    * @param _vh Vertex handle that will be inserted at the edge
    */
   void split(EdgeHandle _eh, VertexHandle _vh);
+
+  /** \brief Edge split (= 2-to-4 split)
+     *
+     *
+     * The function will introduce two new faces ( non-boundary case) or
+     * one additional face (if edge is boundary)
+     *
+     * \note The properties of the new edges, halfedges, and faces will be undefined!
+     *
+     * \note This is an override to prevent a direct call to PolyConnectivity split_edge,
+     *       which would introduce a singular vertex with valence 2 which is not allowed
+     *       on TriMeshes
+     *
+     * @param _eh Edge handle that should be split
+     * @param _vh Vertex handle that will be inserted at the edge
+     */
+  inline void split_edge(EdgeHandle _eh, VertexHandle _vh) { TriConnectivity::split(_eh, _vh); }
 
   /** \brief Edge split (= 2-to-4 split)
    *
    * The function will introduce two new faces ( non-boundary case) or
    * one additional face (if edge is boundary)
    *
-   * \note The properties of the new edges will be adjusted to the properties of the original edge
-   * \note The properties of the new faces and halfedges will be undefined
+   * \note The properties of the new edges and faces will be adjusted to the
+   *       properties of the original edge and face
+   * \note The properties of the new halfedges will be undefined
    *
-   * @param _eh Edge handle that should be splitted
+   * @param _eh Edge handle that should be split
    * @param _vh Vertex handle that will be inserted at the edge
    */
   void split_copy(EdgeHandle _eh, VertexHandle _vh);
 
+  /** \brief Edge split (= 2-to-4 split)
+   *
+   * The function will introduce two new faces ( non-boundary case) or
+   * one additional face (if edge is boundary)
+   *
+   * \note The properties of the new edges and faces will be adjusted to the
+   *       properties of the original edge and face
+   * \note The properties of the new halfedges will be undefined
+   *
+   * \note This is an override to prevent a direct call to PolyConnectivity split_edge_copy,
+   *       which would introduce a singular vertex with valence 2 which is not allowed
+   *       on TriMeshes
+   *
+   * @param _eh Edge handle that should be split
+   * @param _vh Vertex handle that will be inserted at the edge
+   */
+  inline void split_edge_copy(EdgeHandle _eh, VertexHandle _vh) { TriConnectivity::split_copy(_eh, _vh); }
+
   /** \brief Face split (= 1-to-3) split, calls corresponding PolyMeshT function).
    *
-   * @param _fh Face handle that should be splitted
+   * @param _fh Face handle that should be split
    * @param _vh Vertex handle that will be inserted at the face
    */
   inline void split(FaceHandle _fh, VertexHandle _vh)
@@ -190,7 +231,7 @@ public:
 
   /** \brief Face split (= 1-to-3) split, calls corresponding PolyMeshT function).
    *
-   * @param _fh Face handle that should be splitted
+   * @param _fh Face handle that should be split
    * @param _vh Vertex handle that will be inserted at the face
    */
   inline void split_copy(FaceHandle _fh, VertexHandle _vh)

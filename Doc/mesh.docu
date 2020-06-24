@@ -555,6 +555,45 @@ curvature, i.e. vertex color.
 
 That's it.
 
+//-----------------------------------------------------------------------------
+
+/** \page mesh_eigen Specifying an OpenMesh using Eigen3 vectors
+
+This section will show how to build your own custom mesh type using
+Eigen3 vectors for points, normals or other entities.
+
+First of all you need to include the Eigen header shipped with OpenMesh:
+\code
+#include <OpenMesh/Core/Geometry/EigenVectorT.hh>
+\endcode
+
+This header contains the external functions and vector traits used by
+OpenMesh. 
+
+Afterwards you can specify your mesh:
+
+\code
+struct EigenTraits : OpenMesh::DefaultTraits {
+    using Point = Eigen::Vector3d;
+    using Normal = Eigen::Vector3d;
+
+    using TexCoord2D = Eigen::Vector2d;
+};
+
+using EigenTriMesh = OpenMesh::TriMesh_ArrayKernelT<EigenTraits>;
+
+EigenTriMesh mesh;
+
+\endcode
+
+Now you can use mesh as any other OpenMesh while using Eigen vectors
+as the underlying data type.
+
+\note OpenMesh uses stl vectors for storing its data. This might lead to errors
+      regarding memory alignment with sse instructions:
+      http://eigen.tuxfamily.org/dox/group__TopicStlContainers.html
+      You might need to define -DEIGEN_DONT_VECTORIZE  
+
 */
 
 

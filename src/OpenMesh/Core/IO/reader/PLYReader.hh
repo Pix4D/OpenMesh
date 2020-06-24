@@ -39,12 +39,7 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
+
 
 
 //=============================================================================
@@ -102,19 +97,19 @@ public:
 
   _PLYReader_();
 
-  std::string get_description() const { return "PLY polygon file format"; }
-  std::string get_extensions()  const { return "ply"; }
-  std::string get_magic()       const { return "PLY"; }
+  std::string get_description() const override { return "PLY polygon file format"; }
+  std::string get_extensions()  const override { return "ply"; }
+  std::string get_magic()       const override { return "PLY"; }
 
   bool read(const std::string& _filename,
         BaseImporter& _bi,
-        Options& _opt);
+        Options& _opt) override;
 
   bool read(std::istream& _is,
             BaseImporter& _bi,
-            Options& _opt);
+            Options& _opt) override;
 
-  bool can_u_read(const std::string& _filename) const;
+  bool can_u_read(const std::string& _filename) const override;
 
   enum ValueType {
     Unsupported,
@@ -135,8 +130,6 @@ private:
   bool read_ascii(std::istream& _in, BaseImporter& _bi, const Options& _opt) const;
   bool read_binary(std::istream& _in, BaseImporter& _bi, bool swap, const Options& _opt) const;
 
-  float readToFloatValue(ValueType _type , std::fstream& _in) const;
-
   void readValue(ValueType _type , std::istream& _in, float& _value) const;
   void readValue(ValueType _type , std::istream& _in, double& _value) const;
   void readValue(ValueType _type , std::istream& _in, unsigned int& _value) const;
@@ -146,8 +139,8 @@ private:
   void readValue(ValueType _type , std::istream& _in, short& _value) const;
   void readValue(ValueType _type , std::istream& _in, signed char& _value) const;
 
-  void readInteger(ValueType _type, std::istream& _in, int& _value) const;
-  void readInteger(ValueType _type, std::istream& _in, unsigned int& _value) const;
+  template<typename T>
+  void readInteger(ValueType _type, std::istream& _in, T& _value) const;
 
   /// Read unsupported properties in PLY file
   void consume_input(std::istream& _in, int _count) const {
@@ -215,6 +208,18 @@ private:
 
   template<typename T>
   inline void read(_PLYReader_::ValueType _type, std::istream& _in, T& _value, OpenMesh::GenProg::FalseType /*_binary*/) const
+  {
+    _in >> _value;
+  }
+
+  template<typename T>
+  inline void readInteger(_PLYReader_::ValueType _type, std::istream& _in, T& _value, OpenMesh::GenProg::TrueType /*_binary*/) const
+  {
+    readInteger(_type, _in, _value);
+  }
+
+  template<typename T>
+  inline void readInteger(_PLYReader_::ValueType _type, std::istream& _in, T& _value, OpenMesh::GenProg::FalseType /*_binary*/) const
   {
     _in >> _value;
   }

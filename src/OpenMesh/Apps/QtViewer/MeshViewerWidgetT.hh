@@ -39,16 +39,10 @@
  *                                                                           *
  * ========================================================================= */
 
-/*===========================================================================*\
- *                                                                           *             
- *   $Revision$                                                         *
- *   $Date$                   *
- *                                                                           *
-\*===========================================================================*/
 
 
-#ifndef OPENMESHAPPS_MESHVIEWERWIDGETT_HH
-#define OPENMESHAPPS_MESHVIEWERWIDGETT_HH
+
+#pragma once
 
 
 //== INCLUDES =================================================================
@@ -75,6 +69,7 @@ class QImage;
 template <typename M>
 class MeshViewerWidgetT : public QGLViewerWidget
 {
+
 public:
 
   typedef M                             Mesh;
@@ -82,7 +77,7 @@ public:
 public:
 
   /// default constructor
-  MeshViewerWidgetT(QWidget* _parent=0)
+  explicit MeshViewerWidgetT(QWidget* _parent=0)
     : QGLViewerWidget(_parent),
       f_strips_(false), 
       tex_id_(0),
@@ -90,7 +85,8 @@ public:
       strips_(mesh_),
       use_color_(true),
       show_vnormals_(false),
-      show_fnormals_(false)
+      show_fnormals_(false),
+      normal_scale_(1.0)
   {
     add_draw_mode("Points");
     add_draw_mode("Hidden-Line");
@@ -121,7 +117,7 @@ public:
 protected:
   
   /// inherited drawing method
-  virtual void draw_scene(const std::string& _draw_mode);
+  virtual void draw_scene(const std::string& _draw_mode) override;
   
 protected:
   
@@ -175,7 +171,7 @@ protected: // Strip support
 
 protected: // inherited
    
-  virtual void keyPressEvent( QKeyEvent* _event);
+  virtual void keyPressEvent( QKeyEvent* _event) override;
 
 protected:
    
@@ -195,11 +191,9 @@ protected:
 
 
 //=============================================================================
-#if defined(OM_INCLUDE_TEMPLATES) && !defined(OPENMESHAPPS_MESHVIEWERWIDGET_CC)
+#if defined(OM_INCLUDE_TEMPLATES)
 #  define OPENMESH_MESHVIEWERWIDGET_TEMPLATES
-#  include "MeshViewerWidgetT.cc"
+#  include "MeshViewerWidgetT_impl.hh"
 #endif
-//=============================================================================
-#endif // OPENMESHAPPS_MESHVIEWERWIDGETT_HH defined
 //=============================================================================
 
