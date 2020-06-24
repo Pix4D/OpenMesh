@@ -2,10 +2,11 @@
 #define INCLUDE_UNITTESTS_COMMON_HH
 
 #include <gtest/gtest.h>
-#include <OpenMesh/Core/IO/MeshIO.hh>
 
 #include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
+
+#include <OpenMesh/Core/IO/MeshIO.hh>
 
 #ifdef TEST_CUSTOM_TRAITS
 #include <Unittests/unittests_common_customtraits.hh>
