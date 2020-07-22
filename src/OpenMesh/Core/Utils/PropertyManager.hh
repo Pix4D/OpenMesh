@@ -110,10 +110,10 @@ class PropertyManager {
         // definition for other Mesh Properties
         template <typename PropertyManager2, typename PropHandleT>
         struct StorageT {
-          static void copy(const PropertyManager<PROPTYPE, MeshT>& from, PropertyManager2& to) {
+          static void copy(const PropertyManager& from, PropertyManager2& to) {
             from.copy_to(from.mesh_.template all_elements<Handle>(), to, to.mesh_.template all_elements<Handle>());
           }
-          static void swap(PropertyManager<PROPTYPE, MeshT>& lhs, PropertyManager2& rhs) {
+          static void swap(PropertyManager& lhs, PropertyManager2& rhs) {
             std::swap(lhs.mesh().property(lhs.prop_).data_vector(), rhs.mesh().property(rhs.prop_).data_vector());
             // resize the property to the correct size
             lhs.mesh().property(lhs.prop_).resize(lhs.mesh().template n_elements<Handle>());
@@ -538,22 +538,22 @@ class PropertyManager {
          * @param dst_end End iterator. (Exclusive.)
          * Will be used with dst_propmanager. Used to double check the bounds.
          */
-        template<typename HandleTypeIterator, typename PROPTYPE_2,
-                 typename HandleTypeIterator_2>
+        template<typename HandleTypeIterator, typename PropertyManager2,
+                 typename HandleTypeIterator2>
         void copy_to(HandleTypeIterator begin, HandleTypeIterator end,
-                PropertyManager<PROPTYPE_2> &dst_propmanager,
-                HandleTypeIterator_2 dst_begin, HandleTypeIterator_2 dst_end) const {
+                PropertyManager2 &dst_propmanager,
+                HandleTypeIterator2 dst_begin, HandleTypeIterator2 dst_end) const {
 
             for (; begin != end && dst_begin != dst_end; ++begin, ++dst_begin) {
                 dst_propmanager[*dst_begin] = (*this)[*begin];
             }
         }
 
-        template<typename RangeType, typename PROPTYPE_2,
-                 typename RangeType_2>
+        template<typename RangeType, typename PropertyManager2,
+                 typename RangeType2>
         void copy_to(const RangeType &range,
-                PropertyManager<PROPTYPE_2> &dst_propmanager,
-                const RangeType_2 &dst_range) const {
+                PropertyManager2 &dst_propmanager,
+                const RangeType2 &dst_range) const {
             copy_to(range.begin(), range.end(), dst_propmanager,
                     dst_range.begin(), dst_range.end());
         }
@@ -573,10 +573,10 @@ class PropertyManager {
          * @param dst_mesh Destination mesh on which to copy.
          * @param dst_range Destination range.
          */
-        template<typename RangeType, typename RangeType_2>
+        template<typename RangeType, typename RangeType2>
         static void copy(const char *prop_name,
                 PolyConnectivity &src_mesh, const RangeType &src_range,
-                PolyConnectivity &dst_mesh, const RangeType_2 &dst_range) {
+                PolyConnectivity &dst_mesh, const RangeType2 &dst_range) {
 
             typedef OpenMesh::PropertyManager<PROPTYPE> DstPM;
             DstPM dst(DstPM::createIfNotExists(dst_mesh, prop_name));
