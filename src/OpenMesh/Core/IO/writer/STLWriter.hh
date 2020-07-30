@@ -102,6 +102,8 @@ private:
   bool write_stla(std::ostream&, BaseExporter&, Options, std::streamsize _precision = 6) const;
   bool write_stlb(const std::string&, BaseExporter&, Options) const;
   bool write_stlb(std::ostream&, BaseExporter&, Options, std::streamsize _precision = 6) const;
+
+  bool isDegeneratedTriangle(Vec3f& a, Vec3f& b, Vec3f& c) const;
 };
 
 

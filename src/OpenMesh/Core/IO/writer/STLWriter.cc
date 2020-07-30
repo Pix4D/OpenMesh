@@ -134,6 +134,19 @@ write(std::ostream& _os, BaseExporter& _be, Options _opt, std::streamsize _preci
 
 //-----------------------------------------------------------------------------
 
+bool
+_STLWriter_::
+isDegeneratedTriangle(Vec3f& a, Vec3f& b, Vec3f& c) const {
+  Vec3f c1, c2;
+  for (int i=0;i<3;i++) {
+    if (i==0)      { c1=a; c2=b; }
+    else if (i==1) { c1=c;       }
+    else if (i==2) {       c2=a; }
+
+    if (c1[0] == c2[0] && c1[1] == c2[1] && c1[2] == c2[2]) return true;
+  }
+  return false;
+}
 
 bool
 _STLWriter_::
@@ -177,6 +190,11 @@ write_stla(const std::string& _filename, BaseExporter& _be, Options /* _opt */) 
       n = (_be.has_face_normals() ?
      _be.normal(fh) :
      ((c-b) % (a-b)).normalize());
+
+     if (isDegeneratedTriangle(a,b,c)) {
+       omlog() << "[STLWriter] : omitting degenerated triangle\n";
+       continue;
+     }
 
       fprintf(out, "facet normal %f %f %f\nouter loop\n", n[0], n[1], n[2]);
       fprintf(out, "vertex %.10f %.10f %.10f\n", a[0], a[1], a[2]);
