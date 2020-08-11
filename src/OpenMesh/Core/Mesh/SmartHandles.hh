@@ -123,6 +123,9 @@ struct OPENMESHDLLEXPORT SmartHalfedgeHandle : public SmartBaseHandle, HalfedgeH
   /// Returns incident face of halfedge
   SmartFaceHandle     face() const;
 
+  /// Returns a range of halfedges in the face of the halfedge (or along the boundary) (PolyConnectivity::hl_range())
+  PolyConnectivity::ConstHalfedgeLoopRange loop() const;
+
   /// Returns true iff the halfedge is on the boundary (i.e. it has no corresponding face)
   bool is_boundary() const;
 };

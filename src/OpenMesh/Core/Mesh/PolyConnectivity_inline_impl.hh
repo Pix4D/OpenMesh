@@ -164,6 +164,11 @@ inline PolyConnectivity::ConstFaceFaceRange PolyConnectivity::ff_range(FaceHandl
     return ConstFaceFaceRange(*this, _fh);
 }
 
+inline PolyConnectivity::ConstHalfedgeLoopRange PolyConnectivity::hl_range(HalfedgeHandle _heh) const {
+    return ConstHalfedgeLoopRange(*this, _heh);
+}
+
+
 
 
 inline PolyConnectivity::VertexIter PolyConnectivity::vertices_begin()
@@ -803,6 +808,14 @@ SmartVertexHandle::outgoing_halfedges() const
   assert(mesh() != nullptr);
   return mesh()->voh_range(*this);
 }
+
+inline PolyConnectivity::ConstHalfedgeLoopRange
+SmartHalfedgeHandle::loop() const
+{
+  assert(mesh() != nullptr);
+  return mesh()->hl_range(*this);
+}
+
 
 inline PolyConnectivity::ConstFaceVertexRange SmartFaceHandle::vertices() const
 {
