@@ -17,6 +17,7 @@
 <b>Core</b>
 <ul>
 <li>Add filtered range that stores reference instead of copy if the filter is not an rvalue reference</li>
+<li>Add halfedge loop range corresponding to hl_iter()</li>
 </ul>
 
 <b>Build System</b>
