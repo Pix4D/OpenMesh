@@ -441,6 +441,13 @@ struct FilteredSmartRangeT : public SmartRangeT<FilteredSmartRangeT<RangeT, Hand
         operator++();
     }
 
+    FilteredIterator& operator=(const FilteredIterator& other)
+    {
+      BaseIterator::operator=(other);
+      end_ = other.end_;
+      return *this;
+    }
+
     FilteredIterator& operator++()
     {
       if (BaseIterator::operator==(end_)) // don't go past end
