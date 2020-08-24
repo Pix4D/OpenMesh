@@ -124,6 +124,34 @@ struct SmartRangeT
     return (1.0 / n_elements) * result;
   }
 
+  /** @brief Computes the weighted average of elements.
+   *
+   * Computes the weighted average of all elements in the range after applying the functor \p f.
+   *
+   *  @param f Functor that is applied to all elements before computing the average.
+   *  @param w Functor returning element weight.
+   */
+  template <typename Functor, typename WeightFunctor>
+  auto avg(Functor&& f, WeightFunctor&& w) -> typename std::decay<decltype ((1.0/(w(std::declval<HandleT>())+w(std::declval<HandleT>())))*f(std::declval<HandleT>()))>::type
+  {
+    auto range = static_cast<const RangeT*>(this);
+    auto begin = range->begin();
+    auto end   = range->end();
+    assert(begin != end);
+    typename std::decay<decltype (w(*begin))>::type weight = w(*begin);
+    typename std::decay<decltype (w(*begin)*f(*begin))>::type result = weight * f(*begin);
+    typename std::decay<decltype (w(*begin)+w(*begin))>::type weight_sum = weight;
+    auto it = begin;
+    ++it;
+    for (; it != end; ++it)
+    {
+      weight = w(*it);
+      result += weight*f(*it);
+      weight_sum += weight;
+    }
+    return (1.0 / weight_sum) * result;
+  }
+
   /** @brief Check if any element fulfils condition.
   *
   * Checks if functor \p f returns true for any of the elements in the range.
