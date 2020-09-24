@@ -55,7 +55,6 @@
 int main(int argc, char **argv)
 {
   // OpenGL check
-  QApplication::setColorSpec( QApplication::CustomColor );
   QApplication app(argc,argv);
 
   if ( !QGLFormat::hasOpenGL() ) {
@@ -66,7 +65,7 @@ int main(int argc, char **argv)
 
     
   // create widget
-  SubdivideWidget* w = new SubdivideWidget(0, "Subdivider");  
+  SubdivideWidget* w = new SubdivideWidget(nullptr, "Subdivider");
 
   w->resize(400, 400);
   w->show();
