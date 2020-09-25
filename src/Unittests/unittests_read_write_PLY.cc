@@ -996,21 +996,21 @@ TEST_F(OpenMeshReadWritePLY, LoadSimplePLYWithFaceColors) {
     EXPECT_EQ(12u, mesh_.n_faces())    << "The number of loaded faces is not correct!";
 
 #ifdef TEST_DOUBLE_TRAITS
-    EXPECT_DOUBLE_EQ(107/255.0, mesh_.color(mesh_.face_handle(0))[0] ) << "Wrong face color at face 0";
-    EXPECT_DOUBLE_EQ(117/255.0, mesh_.color(mesh_.face_handle(0))[1] ) << "Wrong face color at face 0";
-    EXPECT_DOUBLE_EQ(177/255.0, mesh_.color(mesh_.face_handle(0))[2] ) << "Wrong face color at face 0";
+    EXPECT_FLOAT_EQ(107/255.0, mesh_.color(mesh_.face_handle(0))[0] ) << "Wrong face color at face 0";
+    EXPECT_FLOAT_EQ(117/255.0, mesh_.color(mesh_.face_handle(0))[1] ) << "Wrong face color at face 0";
+    EXPECT_FLOAT_EQ(177/255.0, mesh_.color(mesh_.face_handle(0))[2] ) << "Wrong face color at face 0";
 
-    EXPECT_DOUBLE_EQ(107/255.0, mesh_.color(mesh_.face_handle(3))[0] ) << "Wrong face color at face 3";
-    EXPECT_DOUBLE_EQ(255/255.0, mesh_.color(mesh_.face_handle(3))[1] ) << "Wrong face color at face 3";
-    EXPECT_DOUBLE_EQ(135/255.0, mesh_.color(mesh_.face_handle(3))[2] ) << "Wrong face color at face 3";
+    EXPECT_FLOAT_EQ(107/255.0, mesh_.color(mesh_.face_handle(3))[0] ) << "Wrong face color at face 3";
+    EXPECT_FLOAT_EQ(255/255.0, mesh_.color(mesh_.face_handle(3))[1] ) << "Wrong face color at face 3";
+    EXPECT_FLOAT_EQ(135/255.0, mesh_.color(mesh_.face_handle(3))[2] ) << "Wrong face color at face 3";
 
-    EXPECT_DOUBLE_EQ(163/255.0, mesh_.color(mesh_.face_handle(4))[0] ) << "Wrong face color at face 4";
-    EXPECT_DOUBLE_EQ(107/255.0, mesh_.color(mesh_.face_handle(4))[1] ) << "Wrong face color at face 4";
-    EXPECT_DOUBLE_EQ(177/255.0, mesh_.color(mesh_.face_handle(4))[2] ) << "Wrong face color at face 4";
+    EXPECT_FLOAT_EQ(163/255.0, mesh_.color(mesh_.face_handle(4))[0] ) << "Wrong face color at face 4";
+    EXPECT_FLOAT_EQ(107/255.0, mesh_.color(mesh_.face_handle(4))[1] ) << "Wrong face color at face 4";
+    EXPECT_FLOAT_EQ(177/255.0, mesh_.color(mesh_.face_handle(4))[2] ) << "Wrong face color at face 4";
 
-    EXPECT_DOUBLE_EQ(255/255.0, mesh_.color(mesh_.face_handle(7))[0] ) << "Wrong face color at face 7";
-    EXPECT_DOUBLE_EQ(140/255.0, mesh_.color(mesh_.face_handle(7))[1] ) << "Wrong face color at face 7";
-    EXPECT_DOUBLE_EQ(107/255.0, mesh_.color(mesh_.face_handle(7))[2] ) << "Wrong face color at face 7";
+    EXPECT_FLOAT_EQ(255/255.0, mesh_.color(mesh_.face_handle(7))[0] ) << "Wrong face color at face 7";
+    EXPECT_FLOAT_EQ(140/255.0, mesh_.color(mesh_.face_handle(7))[1] ) << "Wrong face color at face 7";
+    EXPECT_FLOAT_EQ(107/255.0, mesh_.color(mesh_.face_handle(7))[2] ) << "Wrong face color at face 7";
 #else
     EXPECT_EQ(107, mesh_.color(mesh_.face_handle(0))[0] ) << "Wrong face color at face 0";
     EXPECT_EQ(117, mesh_.color(mesh_.face_handle(0))[1] ) << "Wrong face color at face 0";
@@ -1104,21 +1104,21 @@ TEST_F(OpenMeshReadWritePLY, WriteAndReadPLYWithFaceColors) {
         EXPECT_EQ(12u, mesh_.n_faces())    << "The number of loaded faces is not correct: " << outFileName;
 
 #ifdef TEST_DOUBLE_TRAITS
-        EXPECT_DOUBLE_EQ(107/255.0, mesh_.color(mesh_.face_handle(0))[0] ) << "Wrong face color at face 0";
-        EXPECT_DOUBLE_EQ(117/255.0, mesh_.color(mesh_.face_handle(0))[1] ) << "Wrong face color at face 0";
-        EXPECT_DOUBLE_EQ(177/255.0, mesh_.color(mesh_.face_handle(0))[2] ) << "Wrong face color at face 0";
+        EXPECT_FLOAT_EQ(107/255.0, mesh_.color(mesh_.face_handle(0))[0] ) << "Wrong face color at face 0";
+        EXPECT_FLOAT_EQ(117/255.0, mesh_.color(mesh_.face_handle(0))[1] ) << "Wrong face color at face 0";
+        EXPECT_FLOAT_EQ(177/255.0, mesh_.color(mesh_.face_handle(0))[2] ) << "Wrong face color at face 0";
 
-        EXPECT_DOUBLE_EQ(107/255.0, mesh_.color(mesh_.face_handle(3))[0] ) << "Wrong face color at face 3";
-        EXPECT_DOUBLE_EQ(255/255.0, mesh_.color(mesh_.face_handle(3))[1] ) << "Wrong face color at face 3";
-        EXPECT_DOUBLE_EQ(135/255.0, mesh_.color(mesh_.face_handle(3))[2] ) << "Wrong face color at face 3";
+        EXPECT_FLOAT_EQ(107/255.0, mesh_.color(mesh_.face_handle(3))[0] ) << "Wrong face color at face 3";
+        EXPECT_FLOAT_EQ(255/255.0, mesh_.color(mesh_.face_handle(3))[1] ) << "Wrong face color at face 3";
+        EXPECT_FLOAT_EQ(135/255.0, mesh_.color(mesh_.face_handle(3))[2] ) << "Wrong face color at face 3";
 
-        EXPECT_DOUBLE_EQ(163/255.0, mesh_.color(mesh_.face_handle(4))[0] ) << "Wrong face color at face 4";
-        EXPECT_DOUBLE_EQ(107/255.0, mesh_.color(mesh_.face_handle(4))[1] ) << "Wrong face color at face 4";
-        EXPECT_DOUBLE_EQ(177/255.0, mesh_.color(mesh_.face_handle(4))[2] ) << "Wrong face color at face 4";
+        EXPECT_FLOAT_EQ(163/255.0, mesh_.color(mesh_.face_handle(4))[0] ) << "Wrong face color at face 4";
+        EXPECT_FLOAT_EQ(107/255.0, mesh_.color(mesh_.face_handle(4))[1] ) << "Wrong face color at face 4";
+        EXPECT_FLOAT_EQ(177/255.0, mesh_.color(mesh_.face_handle(4))[2] ) << "Wrong face color at face 4";
 
-        EXPECT_DOUBLE_EQ(255/255.0, mesh_.color(mesh_.face_handle(7))[0] ) << "Wrong face color at face 7";
-        EXPECT_DOUBLE_EQ(140/255.0, mesh_.color(mesh_.face_handle(7))[1] ) << "Wrong face color at face 7";
-        EXPECT_DOUBLE_EQ(107/255.0, mesh_.color(mesh_.face_handle(7))[2] ) << "Wrong face color at face 7";
+        EXPECT_FLOAT_EQ(255/255.0, mesh_.color(mesh_.face_handle(7))[0] ) << "Wrong face color at face 7";
+        EXPECT_FLOAT_EQ(140/255.0, mesh_.color(mesh_.face_handle(7))[1] ) << "Wrong face color at face 7";
+        EXPECT_FLOAT_EQ(107/255.0, mesh_.color(mesh_.face_handle(7))[2] ) << "Wrong face color at face 7";
 #else
         EXPECT_EQ(107, mesh_.color(mesh_.face_handle(0))[0] ) << "Wrong face color at face 0";
         EXPECT_EQ(117, mesh_.color(mesh_.face_handle(0))[1] ) << "Wrong face color at face 0";
