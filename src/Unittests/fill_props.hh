@@ -99,7 +99,7 @@ fill_props( Mesh& _m, OpenMesh::MPropHandleT<T> _ph, bool _check=false)
 {
   for( typename Mesh::FaceIter it=_m.faces_begin(); it != _m.faces_end(); ++it)
   {
-    const size_t idx = it->idx();
+    const unsigned int idx = it->idx();
     if ( _check && _m.property( _ph )[int2roman(idx+1)] != idx )
       return false;
     else
