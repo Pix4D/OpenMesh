@@ -204,7 +204,7 @@ TEST_F(OpenMeshSmartRanges, PropertyManagerAsFunctor)
   Mesh::Point cog(0,0,0);
   for (auto vh : mesh_.vertices())
     cog += mesh_.point(vh);
-  cog /= mesh_.n_vertices();
+  cog /= static_cast<float>(mesh_.n_vertices());
 
   auto cog2 = mesh_.vertices().avg(myPos);
 
@@ -394,7 +394,7 @@ TEST_F(OpenMeshSmartRanges, Avg)
   Mesh::Point cog(0,0,0);
   for (auto vh : mesh_.vertices())
     cog += mesh_.point(vh);
-  cog /= mesh_.n_vertices();
+  cog /= static_cast<float>(mesh_.n_vertices());
 
   auto points = OpenMesh::getPointsProperty(mesh_);
   auto cog2 = mesh_.vertices().avg(points);
@@ -409,7 +409,7 @@ TEST_F(OpenMeshSmartRanges, WeightedAvg)
   Mesh::Point cog(0,0,0);
   for (auto fh : mesh_.faces())
     cog += mesh_.calc_face_centroid(fh);
-  cog /= mesh_.n_faces();
+  cog /= static_cast<float>(mesh_.n_faces());
 
   OpenMesh::FProp<float> area(mesh_);
   for (auto fh : mesh_.faces())
