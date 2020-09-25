@@ -912,7 +912,7 @@ TEST_F(OpenMeshTutorials, using_smart_handles_and_smart_ranges) {
 
       // update points by substracting the bi-laplacian damped by a factor of 0.5
       for (const auto& vh : mesh.vertices())
-        points(vh) += -0.5 * bi_laplace(vh);
+        points(vh) += -0.5f * bi_laplace(vh);
     }
   } // The laplace and update properties are removed from the mesh at the end of this scope.
 
