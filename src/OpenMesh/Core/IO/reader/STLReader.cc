@@ -451,32 +451,7 @@ _STLReader_::
 check_stl_type(const std::string& _filename) const
 {
 
-   // open file
-   std::ifstream ifs (_filename.c_str(), std::ifstream::binary);
-   if(!ifs.good())
-   {
-     omerr() << "could not open file" << _filename << std::endl;
-     return NONE;
-   }
-
-   //find first non whitespace character
-   std::string line = "";
-   std::size_t firstChar;
-   while(line.empty() && ifs.good())
-   {
-     std::getline(ifs,line);
-     firstChar = line.find_first_not_of("\t ");
-   }
-
-   //check for ascii keyword solid
-   if(strnicmp("solid",&line[firstChar],5) == 0)
-   {
-     return STLA;
-   }
-   ifs.close();
-
-   //if the file does not start with solid it is probably STLB
-   //check the file size to verify it.
+   // Check the file size if it matches the binary value given after the header.
 
    //open the file
    FILE* in = fopen(_filename.c_str(), "rb");
@@ -504,8 +479,8 @@ check_stl_type(const std::string& _filename) const
      file_size += fread(dummy, 1, 100, in);
    fclose(in);
 
-   // if sizes match -> it's STLB
-      return (binary_size == file_size ? STLB : NONE);
+   // if sizes match -> it's STLB otherwise STLA is assumed
+   return (binary_size == file_size ? STLB : STLA);
 }
 
 
