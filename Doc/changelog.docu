@@ -20,6 +20,11 @@
 <li>Add halfedge loop range corresponding to hl_iter()</li>
 </ul>
 
+<b>IO</b>
+<ul>
+<li>STL Reader: Change stl reader behaviour on extension .stl , Don't check for the solid keyword explicitly</li>
+</ul>
+
 <b>Build System</b>
 <ul>
 <li>Dropped 32-bit Windows continuous integration and artifact builds.</li>
