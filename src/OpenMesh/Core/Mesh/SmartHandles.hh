@@ -43,6 +43,8 @@
 #error Do not include this directly, include instead PolyConnectivity.hh
 #endif//OPENMESH_POLYCONNECTIVITY_INTERFACE_INCLUDE
 
+#include <OpenMesh/Core/Mesh/PolyConnectivity.hh>
+
 //== NAMESPACES ===============================================================
 
 namespace OpenMesh {
@@ -73,8 +75,29 @@ private:
 
 };
 
+/// Base class for all smart handle types that contains status related methods
+template <typename HandleType>
+class SmartBaseHandleStatus
+{
+public:
+  /// Returns true iff the handle is marked as feature
+  bool feature() const;
+  /// Returns true iff the handle is marked as selected
+  bool selected() const;
+  /// Returns true iff the handle is marked as tagged
+  bool tagged() const;
+  /// Returns true iff the handle is marked as tagged2
+  bool tagged2() const;
+  /// Returns true iff the handle is marked as locked
+  bool locked() const;
+  /// Returns true iff the handle is marked as hidden
+  bool hidden() const;
+  /// Returns true iff the handle is marked as deleted
+  bool deleted() const;
+};
+
 /// Smart version of VertexHandle contains a pointer to the corresponding mesh and allows easier access to navigation methods
-struct OPENMESHDLLEXPORT SmartVertexHandle : public SmartBaseHandle, VertexHandle
+struct OPENMESHDLLEXPORT SmartVertexHandle : public SmartBaseHandle, VertexHandle, SmartBaseHandleStatus<SmartVertexHandle>
 {
   explicit SmartVertexHandle(int _idx=-1, const PolyConnectivity* _mesh = nullptr) : SmartBaseHandle(_mesh), VertexHandle(_idx) {}
 
@@ -104,7 +127,7 @@ struct OPENMESHDLLEXPORT SmartVertexHandle : public SmartBaseHandle, VertexHandl
   bool is_manifold() const;
 };
 
-struct OPENMESHDLLEXPORT SmartHalfedgeHandle : public SmartBaseHandle, HalfedgeHandle
+struct OPENMESHDLLEXPORT SmartHalfedgeHandle : public SmartBaseHandle, HalfedgeHandle, SmartBaseHandleStatus<SmartHalfedgeHandle>
 {
   explicit SmartHalfedgeHandle(int _idx=-1, const PolyConnectivity* _mesh = nullptr) : SmartBaseHandle(_mesh), HalfedgeHandle(_idx) {}
 
@@ -130,7 +153,7 @@ struct OPENMESHDLLEXPORT SmartHalfedgeHandle : public SmartBaseHandle, HalfedgeH
   bool is_boundary() const;
 };
 
-struct OPENMESHDLLEXPORT SmartEdgeHandle : public SmartBaseHandle, EdgeHandle
+struct OPENMESHDLLEXPORT SmartEdgeHandle : public SmartBaseHandle, EdgeHandle, SmartBaseHandleStatus<SmartEdgeHandle>
 {
   explicit SmartEdgeHandle(int _idx=-1, const PolyConnectivity* _mesh = nullptr) : SmartBaseHandle(_mesh), EdgeHandle(_idx) {}
 
@@ -155,7 +178,7 @@ struct OPENMESHDLLEXPORT SmartEdgeHandle : public SmartBaseHandle, EdgeHandle
   bool is_boundary() const;
 };
 
-struct OPENMESHDLLEXPORT SmartFaceHandle : public SmartBaseHandle, FaceHandle
+struct OPENMESHDLLEXPORT SmartFaceHandle : public SmartBaseHandle, FaceHandle, SmartBaseHandleStatus<SmartFaceHandle>
 {
   explicit SmartFaceHandle(int _idx=-1, const PolyConnectivity* _mesh = nullptr) : SmartBaseHandle(_mesh), FaceHandle(_idx) {}
 
@@ -206,6 +229,62 @@ template <> struct SmartHandle<HalfedgeHandle> { using type = SmartHalfedgeHandl
 template <> struct SmartHandle<EdgeHandle>     { using type = SmartEdgeHandle;     };
 template <> struct SmartHandle<FaceHandle>     { using type = SmartFaceHandle;     };
 
+
+template <typename HandleType>
+inline bool SmartBaseHandleStatus<HandleType>::feature() const
+{
+  const auto& handle = static_cast<const HandleType&>(*this);
+  assert(handle.mesh() != nullptr);
+  return handle.mesh()->status(handle).feature();
+}
+
+template <typename HandleType>
+inline bool SmartBaseHandleStatus<HandleType>::selected() const
+{
+  const auto& handle = static_cast<const HandleType&>(*this);
+  assert(handle.mesh() != nullptr);
+  return handle.mesh()->status(handle).selected();
+}
+
+template <typename HandleType>
+inline bool SmartBaseHandleStatus<HandleType>::tagged() const
+{
+  const auto& handle = static_cast<const HandleType&>(*this);
+  assert(handle.mesh() != nullptr);
+  return handle.mesh()->status(handle).tagged();
+}
+
+template <typename HandleType>
+inline bool SmartBaseHandleStatus<HandleType>::tagged2() const
+{
+  const auto& handle = static_cast<const HandleType&>(*this);
+  assert(handle.mesh() != nullptr);
+  return handle.mesh()->status(handle).tagged2();
+}
+
+template <typename HandleType>
+inline bool SmartBaseHandleStatus<HandleType>::locked() const
+{
+  const auto& handle = static_cast<const HandleType&>(*this);
+  assert(handle.mesh() != nullptr);
+  return handle.mesh()->status(handle).locked();
+}
+
+template <typename HandleType>
+inline bool SmartBaseHandleStatus<HandleType>::hidden() const
+{
+  const auto& handle = static_cast<const HandleType&>(*this);
+  assert(handle.mesh() != nullptr);
+  return handle.mesh()->status(handle).hidden();
+}
+
+template <typename HandleType>
+inline bool SmartBaseHandleStatus<HandleType>::deleted() const
+{
+  const auto& handle = static_cast<const HandleType&>(*this);
+  assert(handle.mesh() != nullptr);
+  return handle.mesh()->status(handle).deleted();
+}
 
 inline SmartHalfedgeHandle SmartVertexHandle::out() const
 {
