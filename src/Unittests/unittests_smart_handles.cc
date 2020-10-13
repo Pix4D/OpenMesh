@@ -560,6 +560,60 @@ TEST(OpenMeshSmartHandlesNoFixture, SplitTriMesh)
 }
 
 
+template <typename MeshT, typename RangeT>
+void test_status_fields(MeshT& _mesh, const RangeT& _range)
+{
+  for (auto el : _range)
+    _mesh.status(el).set_selected(el.idx() % 3 == 0);
+  for (auto el : _range)
+    EXPECT_EQ(_mesh.status(el).selected(), el.selected());
+
+  for (auto el : _range)
+    _mesh.status(el).set_feature(el.idx() % 3 == 0);
+  for (auto el : _range)
+    EXPECT_EQ(_mesh.status(el).feature(), el.feature());
+
+  for (auto el : _range)
+    _mesh.status(el).set_tagged(el.idx() % 3 == 0);
+  for (auto el : _range)
+    EXPECT_EQ(_mesh.status(el).tagged(), el.tagged());
+
+  for (auto el : _range)
+    _mesh.status(el).set_tagged2(el.idx() % 3 == 0);
+  for (auto el : _range)
+    EXPECT_EQ(_mesh.status(el).tagged2(), el.tagged2());
+
+  for (auto el : _range)
+    _mesh.status(el).set_hidden(el.idx() % 3 == 0);
+  for (auto el : _range)
+    EXPECT_EQ(_mesh.status(el).hidden(), el.hidden());
+
+  for (auto el : _range)
+    _mesh.status(el).set_locked(el.idx() % 3 == 0);
+  for (auto el : _range)
+    EXPECT_EQ(_mesh.status(el).locked(), el.locked());
+
+  for (auto el : _range)
+    _mesh.status(el).set_deleted(el.idx() % 3 == 0);
+  for (auto el : _range)
+    EXPECT_EQ(_mesh.status(el).deleted(), el.deleted());
+  }
+
+TEST_F(OpenMeshSmartHandles, StatusAccess)
+{
+  ASSERT_TRUE(mesh_.n_vertices() > 0) << "Mesh is empty";
+
+  mesh_.request_vertex_status();
+  mesh_.request_halfedge_status();
+  mesh_.request_edge_status();
+  mesh_.request_face_status();
+
+  test_status_fields(mesh_, mesh_.vertices());
+  test_status_fields(mesh_, mesh_.edges());
+  test_status_fields(mesh_, mesh_.halfedges());
+  test_status_fields(mesh_, mesh_.faces());
+}
+
 
 
 
