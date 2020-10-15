@@ -71,7 +71,7 @@ Similarily we compute the update vector as the laplace of the freshly computed l
 
 Finally, we apply the update after damping it by a factor of -0.5.
 
-\skipline udpate points
+\skipline update points
 \until bi_laplace
 
 Below is the complete source code:
