@@ -3,7 +3,7 @@
 
 #include <OpenMesh/Core/Mesh/PolyConnectivity.hh>
 #include <OpenMesh/Core/Utils/PropertyManager.hh>
-#include <OpenMesh/Core/Mesh/SmartRangePredicates.hh>
+#include <OpenMesh/Core/Utils/Predicates.hh>
 
 #include <iostream>
 #include <chrono>
@@ -812,7 +812,7 @@ void test_make_predicate(Mesh& _mesh)
     for (auto el : set2)
       _mesh.status(el).set_selected(true);
 
-    auto set  = _mesh.elements<HandleT>().filtered(Selected() || make_predicate(&test_func<HandleT>)).to_vector();
+    auto set  = _mesh.elements<HandleT>().filtered(Selected() || make_predicate(test_func<HandleT>)).to_vector();
 
     std::vector<HandleT> union_set;
     std::set_union(set1.begin(), set1.end(), set2.begin(), set2.end(), std::back_inserter(union_set));
