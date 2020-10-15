@@ -19,6 +19,8 @@
 <li>Add filtered range that stores reference instead of copy if the filter is not an rvalue reference</li>
 <li>Add halfedge loop range corresponding to hl_iter()</li>
 <li>Smart handles now give read access to status fields (feature(), selected(), deleted(), tagged(), tagged2(), hidden(), locked()</li>
+<li>Add predicates that can be used as smart range filters. There are default predicates to test the status fields and whether an elements is boundary. Predicates can be composed via operators ||, && and !</li>
+<li>Add make_predicate to create a predicate from anything containing a bool operator(T), e.g. a PropertyManager, a lambda, or a function pointer.</li>
 </ul>
 
 <b>IO</b>
