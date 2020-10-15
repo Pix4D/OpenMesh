@@ -608,10 +608,10 @@ TEST_F(OpenMeshSmartHandles, StatusAccess)
   mesh_.request_edge_status();
   mesh_.request_face_status();
 
-  test_status_fields(mesh_, mesh_.vertices());
-  test_status_fields(mesh_, mesh_.edges());
-  test_status_fields(mesh_, mesh_.halfedges());
-  test_status_fields(mesh_, mesh_.faces());
+  test_status_fields(mesh_, mesh_.all_vertices());
+  test_status_fields(mesh_, mesh_.all_edges());
+  test_status_fields(mesh_, mesh_.all_halfedges());
+  test_status_fields(mesh_, mesh_.all_faces());
 }
 
 
