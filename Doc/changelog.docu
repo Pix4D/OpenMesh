@@ -18,6 +18,7 @@
 <ul>
 <li>Add filtered range that stores reference instead of copy if the filter is not an rvalue reference</li>
 <li>Add halfedge loop range corresponding to hl_iter()</li>
+<li>Smart handles now give read access to status fields (feature(), selected(), deleted(), tagged(), tagged2(), hidden(), locked()</li>
 </ul>
 
 <b>IO</b>
