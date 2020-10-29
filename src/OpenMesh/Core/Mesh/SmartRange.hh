@@ -428,27 +428,10 @@ struct SmartRangeT
    * @param f Functor that needs to be evaluated to true if the element should not be skipped.
    */
   template <typename Functor>
-  auto filtered(Functor&& f) -> FilteredSmartRangeT<SmartRange, Handle, typename std::decay<Functor>::type>
+  auto filtered(Functor&& f) -> FilteredSmartRangeT<SmartRange, Handle, Functor>
   {
     auto range = static_cast<const RangeT*>(this);
-    auto b = (*range).begin();
-    auto e = (*range).end();
-    return FilteredSmartRangeT<SmartRange, Handle, typename std::decay<Functor>::type>(f, b, e);
-  }
-
-  /** @brief Only iterate over a subset of elements
-   *
-   * Returns a smart range which skips all elements that do not satisfy functor \p f
-   *
-   * @param f Functor that needs to be evaluated to true if the element should not be skipped.
-   */
-  template <typename Functor>
-  auto filtered(Functor& f) -> FilteredSmartRangeT<SmartRange, Handle, const typename std::decay<Functor>::type&>
-  {
-    auto range = static_cast<const RangeT*>(this);
-    auto b = (*range).begin();
-    auto e = (*range).end();
-    return FilteredSmartRangeT<SmartRange, Handle, const typename std::decay<Functor>::type&>(f, b, e);
+    return FilteredSmartRangeT<SmartRange, Handle, Functor>(std::forward<Functor>(f), (*range).begin(), (*range).end());
   }
 };
 
@@ -488,11 +471,12 @@ struct FilteredSmartRangeT : public SmartRangeT<FilteredSmartRangeT<RangeT, Hand
       return *this;
     }
 
-    Functor f_;
+    Functor f_;        // Should iterators always get a reference to filter stored in range?
+                       // Should iterators stay valid after range goes out of scope?
     BaseIterator end_;
   };
 
-  FilteredSmartRangeT(Functor f, BaseIterator begin, BaseIterator end) : f_(f), begin_(begin), end_(end){}
+  FilteredSmartRangeT(Functor&& f, BaseIterator begin, BaseIterator end) : f_(std::forward<Functor>(f)), begin_(std::move(begin)), end_(std::move(end)){}
   FilteredIterator begin() const { return FilteredIterator(f_, begin_, end_); }
   FilteredIterator end()   const { return FilteredIterator(f_, end_, end_); }
 
