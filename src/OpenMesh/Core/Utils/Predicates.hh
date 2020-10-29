@@ -49,6 +49,7 @@
 #include <array>
 #include <vector>
 #include <set>
+#include <type_traits>
 
 //== NAMESPACES ===============================================================
 
@@ -248,6 +249,39 @@ struct Regular: public PredicateBase<Regular<inner_reg, boundary_reg>>
 
 using RegularQuad = Regular<4,3>;
 using RegularTri  = Regular<6,4>;
+
+
+/// Wrapper object to hold an object and a member function pointer,
+/// and provides operator() to call that member function for that object with one argument
+template <typename T, typename MF>
+struct MemberFunctionWrapper
+{
+  T t_;    // Objects whose member function we want to call
+  MF mf_;  // pointer to member function
+
+  MemberFunctionWrapper(T _t, MF _mf)
+    :
+      t_(_t),
+      mf_(_mf)
+  {}
+
+  template <typename O>
+  auto operator()(const O& _o) -> decltype ((t_.*mf_)(_o))
+  {
+    return (t_.*mf_)(_o);
+  }
+};
+
+/// Helper to create a MemberFunctionWrapper without explicitely naming the types
+template <typename T, typename MF>
+MemberFunctionWrapper<T,MF> make_member_function_wrapper(T&& _t, MF _mf)
+{
+  return MemberFunctionWrapper<T,MF>(std::forward<T>(_t), _mf);
+}
+
+/// Convenience macro to create a MemberFunctionWrapper for *this object
+#define OM_MFW(member_function) OpenMesh::Predicates::make_member_function_wrapper(*this, &std::decay<decltype(*this)>::type::member_function)
+
 
 
 //=============================================================================

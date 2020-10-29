@@ -856,5 +856,59 @@ TEST_F(OpenMeshSmartRanges, Predicate)
   test_make_predicate<FaceHandle>(mesh_);
 }
 
+struct MemberFunctionWrapperTestStruct
+{
+  MemberFunctionWrapperTestStruct(int _i)
+    :
+      i_(_i)
+  {
+  }
+
+  int get_i(const OpenMesh::SmartEdgeHandle& /*_eh*/) const
+  {
+    return i_;
+  }
+
+  bool id_divisible_by_2(const OpenMesh::SmartEdgeHandle& _eh) const
+  {
+    return _eh.idx() % 2 == 0;
+  }
+
+  int valence_times_i(const OpenMesh::SmartVertexHandle& vh)
+  {
+   return vh.edges().sum(OM_MFW(get_i));
+  }
+
+  int i_;
+};
+
+TEST_F(OpenMeshSmartRanges, MemberFunctionFunctor)
+{
+  using namespace OpenMesh::Predicates;
+
+  EXPECT_TRUE(mesh_.n_vertices() > 0) << "Mesh has no vertices";
+  EXPECT_TRUE(mesh_.n_edges() > 0) << "Mesh has no edges";
+
+  int factor = 3;
+  MemberFunctionWrapperTestStruct test_object(factor);
+
+  // Test using a MemberFunctionWrapper as Functor
+  EXPECT_EQ(mesh_.n_edges() / 2, mesh_.edges().count_if(make_member_function_wrapper(test_object, &MemberFunctionWrapperTestStruct::id_divisible_by_2)));
+
+
+  // Test using a MemberFunctionWrapper as Functor that is created using the convenience macro from inside the struct
+  for (auto vh : mesh_.vertices())
+    EXPECT_EQ(test_object.valence_times_i(vh), vh.valence() * factor);
+
+  factor = 4;
+  test_object.i_ = factor;
+  for (auto vh : mesh_.vertices())
+  {
+    EXPECT_EQ(test_object.valence_times_i(vh), vh.valence() * factor);
+  }
+
+
+
+}
 
 }
