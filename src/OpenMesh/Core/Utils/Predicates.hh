@@ -49,6 +49,7 @@
 #include <array>
 #include <vector>
 #include <set>
+#include <type_traits>
 
 //== NAMESPACES ===============================================================
 
