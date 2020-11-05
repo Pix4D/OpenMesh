@@ -121,8 +121,8 @@ protected:
   bool write_binary(std::ostream&, BaseExporter&, Options) const;
 
 
-  size_t store_binary_custom_chunk( std::ostream&, const BaseProperty&,
-				    OMFormat::Chunk::Entity, bool) const;
+  size_t store_binary_custom_chunk(std::ostream&, BaseProperty&,
+            OMFormat::Chunk::Entity, bool) const;
 };
 
 
