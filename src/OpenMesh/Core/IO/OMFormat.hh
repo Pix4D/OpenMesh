@@ -278,17 +278,18 @@ namespace OMFormat {
  //-----------------------------------------------------------------------------------------------------------------------------------
  //this enum stores the type of the property so that it can be recovered
     enum PropertyType {
-      BoolType = 0x00,
-      UCharType= 0x01,
-      CharType = 0x02,
-      ShortType = 0x03,
-      UIntType = 0x04,
-      IntType = 0x05,
-      ULongType = 0x06,
-      LongType = 0x07,
-      FloatType = 0x08,
-      DoubleType = 0x09,
-      VecDoubleType = 0x0a
+      UnknownType = 0x00,
+      BoolType = 0x01,
+      UCharType= 0x02,
+      CharType = 0x03,
+      ShortType = 0x04,
+      UIntType = 0x05,
+      IntType = 0x06,
+      ULongType = 0x07,
+      LongType = 0x08,
+      FloatType = 0x09,
+      DoubleType = 0x0a,
+      VecDoubleType = 0x0b
     };
 //-----------------------------------------------------------------------------------------------------------------------------------
 
