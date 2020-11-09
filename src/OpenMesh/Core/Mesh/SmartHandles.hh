@@ -43,6 +43,8 @@
 #error Do not include this directly, include instead PolyConnectivity.hh
 #endif//OPENMESH_POLYCONNECTIVITY_INTERFACE_INCLUDE
 
+#include <OpenMesh/Core/Mesh/PolyConnectivity.hh>
+
 //== NAMESPACES ===============================================================
 
 namespace OpenMesh {
@@ -73,8 +75,38 @@ private:
 
 };
 
+/// Base class for all smart handle types that contains status related methods
+template <typename HandleType>
+class SmartHandleStatusPredicates
+{
+public:
+  /// Returns true iff the handle is marked as feature
+  bool feature() const;
+  /// Returns true iff the handle is marked as selected
+  bool selected() const;
+  /// Returns true iff the handle is marked as tagged
+  bool tagged() const;
+  /// Returns true iff the handle is marked as tagged2
+  bool tagged2() const;
+  /// Returns true iff the handle is marked as locked
+  bool locked() const;
+  /// Returns true iff the handle is marked as hidden
+  bool hidden() const;
+  /// Returns true iff the handle is marked as deleted
+  bool deleted() const;
+};
+
+/// Base class for all smart handle types that contains status related methods
+template <typename HandleType>
+class SmartHandleBoundaryPredicate
+{
+public:
+  /// Returns true iff the handle is boundary
+  bool is_boundary() const;
+};
+
 /// Smart version of VertexHandle contains a pointer to the corresponding mesh and allows easier access to navigation methods
-struct OPENMESHDLLEXPORT SmartVertexHandle : public SmartBaseHandle, VertexHandle
+struct OPENMESHDLLEXPORT SmartVertexHandle : public SmartBaseHandle, VertexHandle, SmartHandleStatusPredicates<SmartVertexHandle>, SmartHandleBoundaryPredicate<SmartVertexHandle>
 {
   explicit SmartVertexHandle(int _idx=-1, const PolyConnectivity* _mesh = nullptr) : SmartBaseHandle(_mesh), VertexHandle(_idx) {}
 
@@ -98,13 +130,11 @@ struct OPENMESHDLLEXPORT SmartVertexHandle : public SmartBaseHandle, VertexHandl
 
   /// Returns valence of the vertex
   uint valence()     const;
-  /// Returns true iff the vertex is incident to a boundary halfedge
-  bool is_boundary() const;
   /// Returns true iff (the mesh at) the vertex is two-manifold ?
   bool is_manifold() const;
 };
 
-struct OPENMESHDLLEXPORT SmartHalfedgeHandle : public SmartBaseHandle, HalfedgeHandle
+struct OPENMESHDLLEXPORT SmartHalfedgeHandle : public SmartBaseHandle, HalfedgeHandle, SmartHandleStatusPredicates<SmartHalfedgeHandle>, SmartHandleBoundaryPredicate<SmartHalfedgeHandle>
 {
   explicit SmartHalfedgeHandle(int _idx=-1, const PolyConnectivity* _mesh = nullptr) : SmartBaseHandle(_mesh), HalfedgeHandle(_idx) {}
 
@@ -125,12 +155,9 @@ struct OPENMESHDLLEXPORT SmartHalfedgeHandle : public SmartBaseHandle, HalfedgeH
 
   /// Returns a range of halfedges in the face of the halfedge (or along the boundary) (PolyConnectivity::hl_range())
   PolyConnectivity::ConstHalfedgeLoopRange loop() const;
-
-  /// Returns true iff the halfedge is on the boundary (i.e. it has no corresponding face)
-  bool is_boundary() const;
 };
 
-struct OPENMESHDLLEXPORT SmartEdgeHandle : public SmartBaseHandle, EdgeHandle
+struct OPENMESHDLLEXPORT SmartEdgeHandle : public SmartBaseHandle, EdgeHandle, SmartHandleStatusPredicates<SmartEdgeHandle>, SmartHandleBoundaryPredicate<SmartEdgeHandle>
 {
   explicit SmartEdgeHandle(int _idx=-1, const PolyConnectivity* _mesh = nullptr) : SmartBaseHandle(_mesh), EdgeHandle(_idx) {}
 
@@ -150,12 +177,9 @@ struct OPENMESHDLLEXPORT SmartEdgeHandle : public SmartBaseHandle, EdgeHandle
   SmartVertexHandle   v0()                      const;
   /// Shorthand for vertex(1)
   SmartVertexHandle   v1()                      const;
-
-  /// Returns true iff the edge lies on the boundary (i.e. one of the halfedges is boundary)
-  bool is_boundary() const;
 };
 
-struct OPENMESHDLLEXPORT SmartFaceHandle : public SmartBaseHandle, FaceHandle
+struct OPENMESHDLLEXPORT SmartFaceHandle : public SmartBaseHandle, FaceHandle, SmartHandleStatusPredicates<SmartFaceHandle>, SmartHandleBoundaryPredicate<SmartFaceHandle>
 {
   explicit SmartFaceHandle(int _idx=-1, const PolyConnectivity* _mesh = nullptr) : SmartBaseHandle(_mesh), FaceHandle(_idx) {}
 
@@ -173,8 +197,6 @@ struct OPENMESHDLLEXPORT SmartFaceHandle : public SmartBaseHandle, FaceHandle
 
   /// Returns the valence of the face
   uint valence()     const;
-  /// Returns true iff the face lies at the boundary (i.e. one of the edges is boundary)
-  bool is_boundary() const;
 };
 
 
@@ -207,6 +229,70 @@ template <> struct SmartHandle<EdgeHandle>     { using type = SmartEdgeHandle;  
 template <> struct SmartHandle<FaceHandle>     { using type = SmartFaceHandle;     };
 
 
+template <typename HandleType>
+inline bool SmartHandleStatusPredicates<HandleType>::feature() const
+{
+  const auto& handle = static_cast<const HandleType&>(*this);
+  assert(handle.mesh() != nullptr);
+  return handle.mesh()->status(handle).feature();
+}
+
+template <typename HandleType>
+inline bool SmartHandleStatusPredicates<HandleType>::selected() const
+{
+  const auto& handle = static_cast<const HandleType&>(*this);
+  assert(handle.mesh() != nullptr);
+  return handle.mesh()->status(handle).selected();
+}
+
+template <typename HandleType>
+inline bool SmartHandleStatusPredicates<HandleType>::tagged() const
+{
+  const auto& handle = static_cast<const HandleType&>(*this);
+  assert(handle.mesh() != nullptr);
+  return handle.mesh()->status(handle).tagged();
+}
+
+template <typename HandleType>
+inline bool SmartHandleStatusPredicates<HandleType>::tagged2() const
+{
+  const auto& handle = static_cast<const HandleType&>(*this);
+  assert(handle.mesh() != nullptr);
+  return handle.mesh()->status(handle).tagged2();
+}
+
+template <typename HandleType>
+inline bool SmartHandleStatusPredicates<HandleType>::locked() const
+{
+  const auto& handle = static_cast<const HandleType&>(*this);
+  assert(handle.mesh() != nullptr);
+  return handle.mesh()->status(handle).locked();
+}
+
+template <typename HandleType>
+inline bool SmartHandleStatusPredicates<HandleType>::hidden() const
+{
+  const auto& handle = static_cast<const HandleType&>(*this);
+  assert(handle.mesh() != nullptr);
+  return handle.mesh()->status(handle).hidden();
+}
+
+template <typename HandleType>
+inline bool SmartHandleStatusPredicates<HandleType>::deleted() const
+{
+  const auto& handle = static_cast<const HandleType&>(*this);
+  assert(handle.mesh() != nullptr);
+  return handle.mesh()->status(handle).deleted();
+}
+
+template <typename HandleType>
+inline bool SmartHandleBoundaryPredicate<HandleType>::is_boundary() const
+{
+  const auto& handle = static_cast<const HandleType&>(*this);
+  assert(handle.mesh() != nullptr);
+  return handle.mesh()->is_boundary(handle);
+}
+
 inline SmartHalfedgeHandle SmartVertexHandle::out() const
 {
   assert(mesh() != nullptr);
@@ -227,12 +313,6 @@ inline uint SmartVertexHandle::valence() const
 {
   assert(mesh() != nullptr);
   return mesh()->valence(*this);
-}
-
-inline bool SmartVertexHandle::is_boundary() const
-{
-  assert(mesh() != nullptr);
-  return mesh()->is_boundary(*this);
 }
 
 inline bool SmartVertexHandle::is_manifold() const
@@ -283,12 +363,6 @@ inline SmartFaceHandle SmartHalfedgeHandle::face() const
   return make_smart(mesh()->face_handle(*this), mesh());
 }
 
-inline bool SmartHalfedgeHandle::is_boundary() const
-{
-  assert(mesh() != nullptr);
-  return mesh()->is_boundary(*this);
-}
-
 inline SmartHalfedgeHandle SmartEdgeHandle::halfedge(unsigned int _i) const
 {
   assert(mesh() != nullptr);
@@ -330,12 +404,6 @@ inline SmartVertexHandle SmartEdgeHandle::v1() const
   return v(1);
 }
 
-inline bool SmartEdgeHandle::is_boundary() const
-{
-  assert(mesh() != nullptr);
-  return mesh()->is_boundary(*this);
-}
-
 inline SmartHalfedgeHandle SmartFaceHandle::halfedge() const
 {
   assert(mesh() != nullptr);
@@ -348,11 +416,6 @@ inline uint SmartFaceHandle::valence() const
   return mesh()->valence(*this);
 }
 
-inline bool SmartFaceHandle::is_boundary() const
-{
-  assert(mesh() != nullptr);
-  return mesh()->is_boundary(*this);
-}
 //=============================================================================
 } // namespace OpenMesh
 //=============================================================================

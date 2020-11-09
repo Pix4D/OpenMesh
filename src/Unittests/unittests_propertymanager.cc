@@ -870,5 +870,12 @@ TEST_F(OpenMeshPropertyManager, return_property_from_function) {
 }
 
 
+TEST_F(OpenMeshPropertyManager, mesh_property_initialization) {
+
+  OpenMesh::MProp<int> mesh_id(13, mesh_);
+  ASSERT_EQ(mesh_id(), 13);
+}
+
+
 
 }

@@ -85,14 +85,17 @@ class PropertyManager {
 
     private:
         // Mesh properties (MPropHandleT<...>) are stored differently than the other properties.
-        // This class implements different behavior when copying or swapping data from one
-        // property manager to a another one.
+        // This class implements different behavior when initializing a property or when
+        // copying or swapping data from one property manager to a another one.
         template <typename PropertyManager2, typename PropHandleT>
         struct StorageT;
 
         // specialization for Mesh Properties
         template <typename PropertyManager2>
         struct StorageT<PropertyManager2, MPropHandleT<Value>> {
+          static void initialize(PropertyManager<PROPTYPE, MeshT>& pm, const Value& initial_value ) {
+            pm() = initial_value;
+          }
           static void copy(const PropertyManager<PROPTYPE, MeshT>& from, PropertyManager2& to) {
             *to = *from;
           }
@@ -110,6 +113,9 @@ class PropertyManager {
         // definition for other Mesh Properties
         template <typename PropertyManager2, typename PropHandleT>
         struct StorageT {
+          static void initialize(PropertyManager<PROPTYPE, MeshT>& pm, const Value& initial_value ) {
+            pm.set_range(pm.mesh_.template all_elements<Handle>(), initial_value);
+          }
           static void copy(const PropertyManager& from, PropertyManager2& to) {
             from.copy_to(from.mesh_.template all_elements<Handle>(), to, to.mesh_.template all_elements<Handle>());
           }
@@ -190,7 +196,7 @@ class PropertyManager {
         PropertyManager(const Value& initial_value, PolyConnectivity& mesh, const char *propname) : mesh_(mesh), retain_(true), name_(propname) {
             if (!mesh_.get_property_handle(prop_, propname)) {
               PropertyManager::mesh().add_property(prop_, propname);
-              set_range(mesh_.all_elements<Handle>(), initial_value);
+              Storage::initialize(*this, initial_value);
             }
         }
 
@@ -215,7 +221,7 @@ class PropertyManager {
          */
         PropertyManager(const Value& initial_value, const PolyConnectivity& mesh) : mesh_(mesh), retain_(false), name_("") {
             PropertyManager::mesh().add_property(prop_, name_);
-            set_range(mesh_.all_elements<Handle>(), initial_value);
+            Storage::initialize(*this, initial_value);
         }
 
         /**

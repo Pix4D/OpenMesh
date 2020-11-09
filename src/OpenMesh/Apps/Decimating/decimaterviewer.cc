@@ -63,7 +63,6 @@ int main(int argc, char **argv)
 #endif
   
   // OpenGL check
-  QApplication::setColorSpec( QApplication::CustomColor );
   QApplication app(argc,argv);
   
   if ( !QGLFormat::hasOpenGL() ) {

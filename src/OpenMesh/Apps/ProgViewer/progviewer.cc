@@ -57,7 +57,6 @@
 int main(int argc, char **argv)
 {
   // OpenGL check
-  QApplication::setColorSpec( QApplication::CustomColor );
   QApplication app(argc,argv);
 
   if ( !QGLFormat::hasOpenGL() ) {
@@ -67,7 +66,7 @@ int main(int argc, char **argv)
 
     
   // create widget
-  ProgViewerWidget w(0);
+  ProgViewerWidget w(nullptr);
   w.resize(400, 400);
   w.show();
   
