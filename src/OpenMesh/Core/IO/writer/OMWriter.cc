@@ -623,17 +623,17 @@ size_t _OMWriter_::store_binary_custom_chunk(std::ostream& _os,
   // 3. data type
   OMFormat::Chunk::PropertyType type = OMFormat::Chunk::PropertyType::UnknownType;
 
-  OpenMesh::PropertyT<int>& bp_bool  = dynamic_cast<OpenMesh::PropertyT<int>&>(_bp);
-  OpenMesh::PropertyT<int>& bp_char  = dynamic_cast<OpenMesh::PropertyT<int>&>(_bp);
-  OpenMesh::PropertyT<int>& bp_double  = dynamic_cast<OpenMesh::PropertyT<int>&>(_bp);
-  OpenMesh::PropertyT<int>& bp_float  = dynamic_cast<OpenMesh::PropertyT<int>&>(_bp);
-  OpenMesh::PropertyT<int>& bp_int  = dynamic_cast<OpenMesh::PropertyT<int>&>(_bp);
-  OpenMesh::PropertyT<int>& bp_long  = dynamic_cast<OpenMesh::PropertyT<int>&>(_bp);
-  OpenMesh::PropertyT<int>& bp_short  = dynamic_cast<OpenMesh::PropertyT<int>&>(_bp);
-  OpenMesh::PropertyT<int>& bp_uchar  = dynamic_cast<OpenMesh::PropertyT<int>&>(_bp);
-  OpenMesh::PropertyT<int>& bp_uint  = dynamic_cast<OpenMesh::PropertyT<int>&>(_bp);
-  OpenMesh::PropertyT<int>& bp_ulong  = dynamic_cast<OpenMesh::PropertyT<int>&>(_bp);
-  OpenMesh::PropertyT<int>& bp_vecdouble  = dynamic_cast<OpenMesh::PropertyT<int>&>(_bp);
+  OpenMesh::PropertyT<int>* bp_bool       = dynamic_cast<OpenMesh::PropertyT<int>*>(&_bp);
+  OpenMesh::PropertyT<int>* bp_char       = dynamic_cast<OpenMesh::PropertyT<int>*>(&_bp);
+  OpenMesh::PropertyT<int>* bp_double     = dynamic_cast<OpenMesh::PropertyT<int>*>(&_bp);
+  OpenMesh::PropertyT<int>* bp_float      = dynamic_cast<OpenMesh::PropertyT<int>*>(&_bp);
+  OpenMesh::PropertyT<int>* bp_int        = dynamic_cast<OpenMesh::PropertyT<int>*>(&_bp);
+  OpenMesh::PropertyT<int>* bp_long       = dynamic_cast<OpenMesh::PropertyT<int>*>(&_bp);
+  OpenMesh::PropertyT<int>* bp_short      = dynamic_cast<OpenMesh::PropertyT<int>*>(&_bp);
+  OpenMesh::PropertyT<int>* bp_uchar      = dynamic_cast<OpenMesh::PropertyT<int>*>(&_bp);
+  OpenMesh::PropertyT<int>* bp_uint       = dynamic_cast<OpenMesh::PropertyT<int>*>(&_bp);
+  OpenMesh::PropertyT<int>* bp_ulong      = dynamic_cast<OpenMesh::PropertyT<int>*>(&_bp);
+  OpenMesh::PropertyT<int>* bp_vecdouble  = dynamic_cast<OpenMesh::PropertyT<int>*>(&_bp);
 
   if(_bp.internal_type_name() == get_type_name<bool>())
     type = OMFormat::Chunk::PropertyType::BoolType;
