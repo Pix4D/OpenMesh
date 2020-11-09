@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <Unittests/unittests_common.hh>
 
+#include <OpenMesh/Core/Utils/PropertyManager.hh>
 
 namespace {
 
@@ -1457,6 +1458,195 @@ TEST_F(OpenMeshReadWriteOM, LoadPolyMeshVersion_2_0) {
   EXPECT_EQ(24u , mesh.n_halfedges())  << "The number of loaded halfedges is not correct!";
 }
 
+
+
+std::string get_type_string(OpenMesh::FaceHandle)     { return "Face";     }
+std::string get_type_string(OpenMesh::EdgeHandle)     { return "Edge";     }
+std::string get_type_string(OpenMesh::HalfedgeHandle) { return "Halfedge"; }
+std::string get_type_string(OpenMesh::VertexHandle)   { return "Vertex";   }
+
+std::string get_type_string(char)                     { return "char";            }
+std::string get_type_string(double)                   { return "double";          }
+std::string get_type_string(float)                    { return "float";           }
+std::string get_type_string(int)                      { return "int";             }
+std::string get_type_string(short)                    { return "short";           }
+std::string get_type_string(unsigned char)            { return "unsigned char";   }
+std::string get_type_string(unsigned int)             { return "unsigned int";    }
+std::string get_type_string(unsigned short)           { return "unsigned short";  }
+std::string get_type_string(bool)                     { return "bool";            }
+
+template <typename T>
+std::string get_type_string(std::vector<T>)            { return "std::vector of " + get_type_string(T()); }
+
+template <typename T, int Dim>
+std::string get_type_string(OpenMesh::VectorT<T, Dim>) { return "OM vector of dimension " + std::to_string(Dim) + " of type " + get_type_string(T()); }
+
+
+template <typename T>
+T get_value(int seed, T, int seed2 = 0)
+{
+  return (seed * 3 + seed2) % 20;
+}
+
+template <typename T>
+std::vector<T> get_value(int seed, const std::vector<T>&)
+{
+  int size = get_value(seed, 3);
+  std::vector<T> res(size);
+  for (int i = 0; i < size; ++i)
+    res[i] = get_value(seed, T(), i);
+  return res;
+}
+
+template <typename T, int Dim>
+OpenMesh::VectorT<T, Dim> get_value(int seed, const OpenMesh::VectorT<T, Dim>&)
+{
+  OpenMesh::VectorT<T, Dim> res;
+  for (int i = 0; i < Dim; ++i)
+    res[i] = get_value(seed, T(), i);
+  return res;
+}
+
+template <typename MeshT, typename HandleT,  typename T>
+OpenMesh::Prop<HandleT, T> add_property(MeshT& _mesh)
+{
+  std::string name = get_type_string(HandleT()) + ": " + get_type_string(T());
+  OpenMesh::Prop<HandleT, T> prop(_mesh, name.c_str());
+  _mesh.property(prop.getRawProperty()).set_persistent(true);
+  for (auto e : _mesh.template elements<HandleT>())
+    prop[e] = get_value(e.idx(), T());
+
+  return prop;
+}
+
+template <typename MeshT, typename HandleT,  typename T>
+void check_property(MeshT& _mesh)
+{
+  std::string name = get_type_string(HandleT()) + ": " + get_type_string(T());
+  bool has_prop = OpenMesh::hasProperty<HandleT, T>(_mesh, name.c_str());
+  EXPECT_TRUE(has_prop) << "Property " << name << " is not available";
+  if (!has_prop)
+    return;
+  OpenMesh::Prop<HandleT, T> prop(_mesh, name.c_str());
+  for (auto e : _mesh.template elements<HandleT>())
+    EXPECT_EQ(prop[e], get_value(e.idx(), T())) << "For property " << name;
+}
+
+template <typename MeshT, typename HandleT,  typename T>
+void request_property(MeshT& _mesh)
+{
+  std::string name = get_type_string(HandleT()) + ": " + get_type_string(T());
+  OpenMesh::Prop<HandleT, T> prop(_mesh, name.c_str());
+}
+
+
+enum class PropertyAction
+{
+  Add, Check, Request
+};
+
+
+template <typename MeshT, typename HandleT,  typename T>
+void do_property(MeshT& _mesh, PropertyAction action)
+{
+  switch (action)
+  {
+  case PropertyAction::Add:
+    add_property<MeshT, HandleT, T>(_mesh);
+    break;
+  case PropertyAction::Check:
+    check_property<MeshT, HandleT, T>(_mesh);
+    break;
+  case PropertyAction::Request:
+    request_property<MeshT, HandleT, T>(_mesh);
+    break;
+  }
+}
+
+
+
+template <typename MeshT, typename HandleT>
+void do_all_property_types(MeshT& _mesh, PropertyAction action)
+{
+  // TODO: add support for commented out types
+  do_property<MeshT, HandleT, int>                (_mesh, action);
+  do_property<MeshT, HandleT, double>             (_mesh, action);
+  do_property<MeshT, HandleT, float>              (_mesh, action);
+  do_property<MeshT, HandleT, char>               (_mesh, action);
+//  do_property<MeshT, HandleT, bool>               (_mesh, action);
+//  do_property<MeshT, HandleT, std::vector<int>>   (_mesh, action);
+//  do_property<MeshT, HandleT, std::vector<double>>(_mesh, action);
+//  do_property<MeshT, HandleT, std::vector<float>> (_mesh, action);
+//  do_property<MeshT, HandleT, std::vector<char>>  (_mesh, action);
+//  do_property<MeshT, HandleT, std::vector<bool>>  (_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::Vec1c>    (_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::Vec1d>    (_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::Vec1f>    (_mesh, action);
+//  do_property<MeshT, HandleT, OpenMesh::Vec1i>    (_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::Vec1s>    (_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::Vec1uc>   (_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::Vec1ui>   (_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::Vec1us>   (_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::Vec2c>    (_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::Vec2d>    (_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::Vec2f>    (_mesh, action);
+//  do_property<MeshT, HandleT, OpenMesh::Vec2i>    (_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::Vec2s>    (_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::Vec2uc>   (_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::Vec2ui>   (_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::Vec2us>   (_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::Vec3c>    (_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::Vec3d>    (_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::Vec3f>    (_mesh, action);
+//  do_property<MeshT, HandleT, OpenMesh::Vec3i>    (_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::Vec3s>    (_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::Vec3uc>   (_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::Vec3ui>   (_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::Vec3us>   (_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::Vec4c>    (_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::Vec4d>    (_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::Vec4f>    (_mesh, action);
+//  do_property<MeshT, HandleT, OpenMesh::Vec4i>    (_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::Vec4s>    (_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::Vec4uc>   (_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::Vec4ui>   (_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::Vec4us>   (_mesh, action);
+}
+
+template <typename MeshT>
+void do_all_properties(MeshT& _mesh, PropertyAction action)
+{
+  do_all_property_types<MeshT,OpenMesh::FaceHandle>    (_mesh, action);
+  do_all_property_types<MeshT,OpenMesh::EdgeHandle>    (_mesh, action);
+  do_all_property_types<MeshT,OpenMesh::HalfedgeHandle>(_mesh, action);
+  do_all_property_types<MeshT,OpenMesh::VertexHandle>  (_mesh, action);
+}
+
+template <typename MeshT> void add_all_properties(MeshT& _mesh)     { do_all_properties(_mesh, PropertyAction::Add    ); }
+template <typename MeshT> void check_all_properties(MeshT& _mesh)   { do_all_properties(_mesh, PropertyAction::Check  ); }
+template <typename MeshT> void request_all_properties(MeshT& _mesh) { do_all_properties(_mesh, PropertyAction::Request); }
+
+/*
+ * Load a triangle mesh from an om file of version 2.1 with properties
+ */
+TEST_F(OpenMeshReadWriteOM, LoadTriangleMeshWithPropertiesVersion_2_1) {
+
+  mesh_.clear();
+
+  std::string file_name = "cube_tri_with_properties_2_1.om";
+
+  request_all_properties(mesh_);
+  bool ok = OpenMesh::IO::read_mesh(mesh_, file_name);
+
+  ASSERT_TRUE(ok) << file_name;
+
+  ASSERT_EQ(8u  , mesh_.n_vertices())  << "The number of loaded vertices is not correct!";
+  ASSERT_EQ(18u , mesh_.n_edges())     << "The number of loaded edges is not correct!";
+  ASSERT_EQ(12u , mesh_.n_faces())     << "The number of loaded faces is not correct!";
+  ASSERT_EQ(36u , mesh_.n_halfedges()) << "The number of loaded halfedges is not correct!";
+
+  check_all_properties(mesh_);
+}
 
 /*
  * Try to load mesh from om file with a version that is not yet supported
