@@ -1563,54 +1563,43 @@ void do_property(MeshT& _mesh, PropertyAction action)
   }
 }
 
+template <typename MeshT, typename HandleT, int Dim>
+void do_all_property_types_vec(MeshT& _mesh, PropertyAction action)
+{
+  do_property<MeshT, HandleT, OpenMesh::VectorT<signed char   , Dim>>(_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::VectorT<double        , Dim>>(_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::VectorT<float         , Dim>>(_mesh, action);
+//  do_property<MeshT, HandleT, OpenMesh::VectorT<int           , Dim>>(_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::VectorT<short         , Dim>>(_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::VectorT<unsigned char , Dim>>(_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::VectorT<unsigned int  , Dim>>(_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::VectorT<unsigned short, Dim>>(_mesh, action);
+}
 
+template <typename MeshT, typename HandleT>
+void do_all_property_types_vec_all_dim(MeshT& _mesh, PropertyAction action)
+{
+  do_all_property_types_vec<MeshT, HandleT, 1>(_mesh, action);
+  do_all_property_types_vec<MeshT, HandleT, 2>(_mesh, action);
+  do_all_property_types_vec<MeshT, HandleT, 3>(_mesh, action);
+  do_all_property_types_vec<MeshT, HandleT, 4>(_mesh, action);
+}
 
 template <typename MeshT, typename HandleT>
 void do_all_property_types(MeshT& _mesh, PropertyAction action)
 {
   // TODO: add support for commented out types
-  do_property<MeshT, HandleT, int>                (_mesh, action);
-  do_property<MeshT, HandleT, double>             (_mesh, action);
-  do_property<MeshT, HandleT, float>              (_mesh, action);
-  do_property<MeshT, HandleT, char>               (_mesh, action);
-//  do_property<MeshT, HandleT, bool>               (_mesh, action);
-//  do_property<MeshT, HandleT, std::vector<int>>   (_mesh, action);
-//  do_property<MeshT, HandleT, std::vector<double>>(_mesh, action);
-//  do_property<MeshT, HandleT, std::vector<float>> (_mesh, action);
-//  do_property<MeshT, HandleT, std::vector<char>>  (_mesh, action);
-//  do_property<MeshT, HandleT, std::vector<bool>>  (_mesh, action);
-  do_property<MeshT, HandleT, OpenMesh::Vec1c>    (_mesh, action);
-  do_property<MeshT, HandleT, OpenMesh::Vec1d>    (_mesh, action);
-  do_property<MeshT, HandleT, OpenMesh::Vec1f>    (_mesh, action);
-//  do_property<MeshT, HandleT, OpenMesh::Vec1i>    (_mesh, action);
-  do_property<MeshT, HandleT, OpenMesh::Vec1s>    (_mesh, action);
-  do_property<MeshT, HandleT, OpenMesh::Vec1uc>   (_mesh, action);
-  do_property<MeshT, HandleT, OpenMesh::Vec1ui>   (_mesh, action);
-  do_property<MeshT, HandleT, OpenMesh::Vec1us>   (_mesh, action);
-  do_property<MeshT, HandleT, OpenMesh::Vec2c>    (_mesh, action);
-  do_property<MeshT, HandleT, OpenMesh::Vec2d>    (_mesh, action);
-  do_property<MeshT, HandleT, OpenMesh::Vec2f>    (_mesh, action);
-//  do_property<MeshT, HandleT, OpenMesh::Vec2i>    (_mesh, action);
-  do_property<MeshT, HandleT, OpenMesh::Vec2s>    (_mesh, action);
-  do_property<MeshT, HandleT, OpenMesh::Vec2uc>   (_mesh, action);
-  do_property<MeshT, HandleT, OpenMesh::Vec2ui>   (_mesh, action);
-  do_property<MeshT, HandleT, OpenMesh::Vec2us>   (_mesh, action);
-  do_property<MeshT, HandleT, OpenMesh::Vec3c>    (_mesh, action);
-  do_property<MeshT, HandleT, OpenMesh::Vec3d>    (_mesh, action);
-  do_property<MeshT, HandleT, OpenMesh::Vec3f>    (_mesh, action);
-//  do_property<MeshT, HandleT, OpenMesh::Vec3i>    (_mesh, action);
-  do_property<MeshT, HandleT, OpenMesh::Vec3s>    (_mesh, action);
-  do_property<MeshT, HandleT, OpenMesh::Vec3uc>   (_mesh, action);
-  do_property<MeshT, HandleT, OpenMesh::Vec3ui>   (_mesh, action);
-  do_property<MeshT, HandleT, OpenMesh::Vec3us>   (_mesh, action);
-  do_property<MeshT, HandleT, OpenMesh::Vec4c>    (_mesh, action);
-  do_property<MeshT, HandleT, OpenMesh::Vec4d>    (_mesh, action);
-  do_property<MeshT, HandleT, OpenMesh::Vec4f>    (_mesh, action);
-//  do_property<MeshT, HandleT, OpenMesh::Vec4i>    (_mesh, action);
-  do_property<MeshT, HandleT, OpenMesh::Vec4s>    (_mesh, action);
-  do_property<MeshT, HandleT, OpenMesh::Vec4uc>   (_mesh, action);
-  do_property<MeshT, HandleT, OpenMesh::Vec4ui>   (_mesh, action);
-  do_property<MeshT, HandleT, OpenMesh::Vec4us>   (_mesh, action);
+  do_property<MeshT, HandleT, int>                 (_mesh, action);
+  do_property<MeshT, HandleT, double>              (_mesh, action);
+  do_property<MeshT, HandleT, float>               (_mesh, action);
+  do_property<MeshT, HandleT, char>                (_mesh, action);
+//  do_property<MeshT, HandleT, bool>                (_mesh, action);
+//  do_property<MeshT, HandleT, std::vector<int>>    (_mesh, action);
+//  do_property<MeshT, HandleT, std::vector<double>> (_mesh, action);
+//  do_property<MeshT, HandleT, std::vector<float>>  (_mesh, action);
+//  do_property<MeshT, HandleT, std::vector<char>>   (_mesh, action);
+//  do_property<MeshT, HandleT, std::vector<bool>>   (_mesh, action);
+  do_all_property_types_vec_all_dim<MeshT, HandleT>(_mesh, action);
 }
 
 template <typename MeshT>
