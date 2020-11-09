@@ -1649,6 +1649,39 @@ TEST_F(OpenMeshReadWriteOM, LoadTriangleMeshWithPropertiesVersion_2_1) {
 }
 
 /*
+ * store and load a triangle mesh from an om file of the current version with properties
+ */
+TEST_F(OpenMeshReadWriteOM, LoadTriangleMeshWithPropertiesCurrentVersion) {
+
+  // TODO: create a LoadTriangleMeshWithPropertiesVersion_2_2 unittest from the file resulting from this test
+  // so we will keep testing version 2.2 in the future.
+
+  mesh_.clear();
+
+  std::string file_name = "cube_tri_version_2_0.om";
+
+  bool ok = OpenMesh::IO::read_mesh(mesh_, file_name);
+
+  ASSERT_TRUE(ok) << file_name;
+  ASSERT_EQ(8u  , mesh_.n_vertices())  << "The number of loaded vertices is not correct!";
+  ASSERT_EQ(18u , mesh_.n_edges())     << "The number of loaded edges is not correct!";
+  ASSERT_EQ(12u , mesh_.n_faces())     << "The number of loaded faces is not correct!";
+  ASSERT_EQ(36u , mesh_.n_halfedges()) << "The number of loaded halfedges is not correct!";
+
+  add_all_properties(mesh_);
+
+  std::string file_name_2_2 = "cube_tri_with_properties_2_2.om";
+  OpenMesh::IO::Options ops(OpenMesh::IO::Options::Custom);
+  OpenMesh::IO::write_mesh(mesh_, file_name_2_2, ops);
+
+  Mesh new_mesh;
+
+  OpenMesh::IO::read_mesh(new_mesh, file_name_2_2, ops);
+
+  check_all_properties(new_mesh);
+}
+
+/*
  * Try to load mesh from om file with a version that is not yet supported
  */
 TEST_F(OpenMeshReadWriteOM, LoadTriMeshVersion_7_5) {
