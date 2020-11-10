@@ -623,39 +623,42 @@ size_t _OMWriter_::store_binary_custom_chunk(std::ostream& _os,
   // 3. data type
   OMFormat::Chunk::PropertyType type = OMFormat::Chunk::PropertyType::UnknownType;
 
-  OpenMesh::PropertyT<int>& bp_bool  = dynamic_cast<OpenMesh::PropertyT<int>&>(_bp);
-  OpenMesh::PropertyT<int>& bp_char  = dynamic_cast<OpenMesh::PropertyT<int>&>(_bp);
-  OpenMesh::PropertyT<int>& bp_double  = dynamic_cast<OpenMesh::PropertyT<int>&>(_bp);
-  OpenMesh::PropertyT<int>& bp_float  = dynamic_cast<OpenMesh::PropertyT<int>&>(_bp);
-  OpenMesh::PropertyT<int>& bp_int  = dynamic_cast<OpenMesh::PropertyT<int>&>(_bp);
-  OpenMesh::PropertyT<int>& bp_long  = dynamic_cast<OpenMesh::PropertyT<int>&>(_bp);
-  OpenMesh::PropertyT<int>& bp_short  = dynamic_cast<OpenMesh::PropertyT<int>&>(_bp);
-  OpenMesh::PropertyT<int>& bp_uchar  = dynamic_cast<OpenMesh::PropertyT<int>&>(_bp);
-  OpenMesh::PropertyT<int>& bp_uint  = dynamic_cast<OpenMesh::PropertyT<int>&>(_bp);
-  OpenMesh::PropertyT<int>& bp_ulong  = dynamic_cast<OpenMesh::PropertyT<int>&>(_bp);
-  OpenMesh::PropertyT<int>& bp_vecdouble  = dynamic_cast<OpenMesh::PropertyT<int>&>(_bp);
 
-  if(_bp.internal_type_name() == get_type_name<bool>())
+  OpenMesh::PropertyT<bool>* bp_bool  = dynamic_cast<OpenMesh::PropertyT<bool>*>(&_bp);
+  OpenMesh::PropertyT<char>* bp_char  = dynamic_cast<OpenMesh::PropertyT<char>* >(&_bp);
+  OpenMesh::PropertyT<double>* bp_double  = dynamic_cast<OpenMesh::PropertyT<double>* >(&_bp);
+  OpenMesh::PropertyT<float>* bp_float  = dynamic_cast<OpenMesh::PropertyT<float>* >(&_bp);
+  OpenMesh::PropertyT<int>* bp_int  = dynamic_cast<OpenMesh::PropertyT<int>* >(&_bp);
+  OpenMesh::PropertyT<long>* bp_long  = dynamic_cast<OpenMesh::PropertyT<long>* >(&_bp);
+  OpenMesh::PropertyT<short>* bp_short  = dynamic_cast<OpenMesh::PropertyT<short>* >(&_bp);
+  OpenMesh::PropertyT<uchar>* bp_uchar  = dynamic_cast<OpenMesh::PropertyT<uchar>* >(&_bp);
+  OpenMesh::PropertyT<uint>* bp_uint  = dynamic_cast<OpenMesh::PropertyT<uint>* >(&_bp);
+  OpenMesh::PropertyT<ulong>* bp_ulong  = dynamic_cast<OpenMesh::PropertyT<ulong>* >(&_bp);
+  OpenMesh::PropertyT<std::vector<double>>* bp_vecdouble  = dynamic_cast<OpenMesh::PropertyT<std::vector<double>>* >(&_bp);
+
+
+  //choose one of both tests
+  if(_bp.internal_type_name() == get_type_name<bool>()                      || bp_bool != nullptr)
     type = OMFormat::Chunk::PropertyType::BoolType;
-  else if(_bp.internal_type_name() == get_type_name<char>())
+  else if(_bp.internal_type_name() == get_type_name<char>()                 || bp_char != nullptr)
     type = OMFormat::Chunk::PropertyType::CharType;
-  else if(_bp.internal_type_name() == get_type_name<double>())
+  else if(_bp.internal_type_name() == get_type_name<double>()               || bp_double != nullptr)
     type = OMFormat::Chunk::PropertyType::DoubleType;
-  else if(_bp.internal_type_name() == get_type_name<float>())
+  else if(_bp.internal_type_name() == get_type_name<float>()                || bp_float != nullptr)
     type = OMFormat::Chunk::PropertyType::FloatType;
-  else if(_bp.internal_type_name() == get_type_name<int>())
+  else if(_bp.internal_type_name() == get_type_name<int>()                  || bp_int != nullptr)
     type = OMFormat::Chunk::PropertyType::IntType;
-  else if(_bp.internal_type_name() == get_type_name<long>())
+  else if(_bp.internal_type_name() == get_type_name<long>()                 || bp_long != nullptr)
     type = OMFormat::Chunk::PropertyType::LongType;
-  else if(_bp.internal_type_name() == get_type_name<short>())
+  else if(_bp.internal_type_name() == get_type_name<short>()                || bp_short != nullptr)
     type = OMFormat::Chunk::PropertyType::ShortType;
-  else if(_bp.internal_type_name() == get_type_name<uchar>())
+  else if(_bp.internal_type_name() == get_type_name<uchar>()                || bp_uchar != nullptr)
     type = OMFormat::Chunk::PropertyType::UCharType;
-  else if(_bp.internal_type_name() == get_type_name<uint>())
+  else if(_bp.internal_type_name() == get_type_name<uint>()                 || bp_uint != nullptr)
     type = OMFormat::Chunk::PropertyType::UIntType;
-  else if(_bp.internal_type_name() == get_type_name<ulong>())
+  else if(_bp.internal_type_name() == get_type_name<ulong>()                || bp_ulong != nullptr)
     type = OMFormat::Chunk::PropertyType::ULongType;
-  else if(_bp.internal_type_name() == get_type_name<std::vector<double>>())
+  else if(_bp.internal_type_name() == get_type_name<std::vector<double>>()  || bp_vecdouble != nullptr)
     type = OMFormat::Chunk::PropertyType::VecDoubleType;
 
   bytes += store(_os, type, _swap);
