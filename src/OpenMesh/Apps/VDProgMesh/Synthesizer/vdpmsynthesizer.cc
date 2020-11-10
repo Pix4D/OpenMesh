@@ -55,7 +55,6 @@
 int main(int argc, char **argv)
 {
   // OpenGL check
-  QApplication::setColorSpec( QApplication::CustomColor );
   QApplication app(argc,argv);
 
 
@@ -66,7 +65,7 @@ int main(int argc, char **argv)
 
   // create widget
   VDPMSynthesizerViewerWidget* 
-    w = new VDPMSynthesizerViewerWidget(0, "VDPMSynthesizerViewer");
+  w = new VDPMSynthesizerViewerWidget(nullptr, "VDPMSynthesizerViewer");
 
   w->resize(400, 400);
   w->show();

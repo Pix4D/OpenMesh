@@ -60,12 +60,11 @@ void usage_and_exit(int xcode);
 int main(int argc, char **argv)
 {
   // OpenGL check
-  QApplication::setColorSpec( QApplication::CustomColor );
   QApplication app(argc,argv);
 
   if ( !QGLFormat::hasOpenGL() ) {
     QString msg = "System has no OpenGL support!";
-    QMessageBox::critical( 0, QString("OpenGL"), msg + QString(argv[1]) );
+    QMessageBox::critical( nullptr, QString("OpenGL"), msg + QString(argv[1]) );
     return -1;
   }
 

@@ -623,7 +623,6 @@ size_t _OMWriter_::store_binary_custom_chunk(std::ostream& _os,
   // 3. data type
   OMFormat::Chunk::PropertyType type = OMFormat::Chunk::PropertyType::UnknownType;
 
-
   OpenMesh::PropertyT<bool>* bp_bool  = dynamic_cast<OpenMesh::PropertyT<bool>*>(&_bp);
   OpenMesh::PropertyT<char>* bp_char  = dynamic_cast<OpenMesh::PropertyT<char>* >(&_bp);
   OpenMesh::PropertyT<double>* bp_double  = dynamic_cast<OpenMesh::PropertyT<double>* >(&_bp);
@@ -635,7 +634,6 @@ size_t _OMWriter_::store_binary_custom_chunk(std::ostream& _os,
   OpenMesh::PropertyT<uint>* bp_uint  = dynamic_cast<OpenMesh::PropertyT<uint>* >(&_bp);
   OpenMesh::PropertyT<ulong>* bp_ulong  = dynamic_cast<OpenMesh::PropertyT<ulong>* >(&_bp);
   OpenMesh::PropertyT<std::vector<double>>* bp_vecdouble  = dynamic_cast<OpenMesh::PropertyT<std::vector<double>>* >(&_bp);
-
 
   //choose one of both tests
   if(_bp.internal_type_name() == get_type_name<bool>()                      || bp_bool != nullptr)
