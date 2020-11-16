@@ -3,6 +3,7 @@
 
 #include <OpenMesh/Core/Mesh/PolyConnectivity.hh>
 #include <OpenMesh/Core/Utils/PropertyManager.hh>
+#include <OpenMesh/Core/Utils/Predicates.hh>
 
 #include <iostream>
 #include <chrono>
@@ -258,7 +259,7 @@ TEST_F(OpenMeshSmartRanges, BoundingBox)
   // Thus we convert here.
   OpenMesh::VProp<OpenMesh::Vec3f> myPos(mesh_);
   for (auto vh : mesh_.vertices())
-    for (size_t i = 0; i < 3; ++i)
+    for (int i = 0; i < 3; ++i)
       myPos(vh)[i] = mesh_.point(vh)[i];
 
   auto bb_min = mesh_.vertices().min(myPos);
@@ -420,5 +421,494 @@ TEST_F(OpenMeshSmartRanges, WeightedAvg)
   EXPECT_LT(norm(cog - cog2), 0.00001) << "Computed area weighted center of gravities are significantly different.";
 }
 
+
+template <typename HandleT>
+void test_range_predicates(Mesh& _mesh)
+{
+  using namespace OpenMesh::Predicates;
+
+  auto get_random_set = [&](int n)
+  {
+    auto max = _mesh.n_elements<HandleT>();
+    std::vector<HandleT> set;
+    set.push_back(HandleT(0));
+    for (int i = 0; i < n; ++i)
+      set.push_back(HandleT(rand() % max));
+    std::sort(set.begin(), set.end());
+    set.erase(std::unique(set.begin(), set.end()), set.end());
+    return set;
+  };
+
+  // Feature
+  {
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_feature(false);
+    auto set = get_random_set(4);
+    for (auto el : set)
+      _mesh.status(el).set_feature(true);
+
+    auto set2 = _mesh.elements<HandleT>().filtered(Feature()).to_vector();
+
+    EXPECT_EQ(set.size(), set2.size()) << "Set sizes differ";
+    for (size_t i = 0; i < std::min(set.size(), set2.size()); ++i)
+      EXPECT_EQ(set[i], set2[i]) << "Sets differ at position " << i;
+
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_feature(false);
+  }
+
+  // Selected
+  {
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_selected(false);
+    auto set = get_random_set(4);
+    for (auto el : set)
+      _mesh.status(el).set_selected(true);
+
+    auto set2 = _mesh.elements<HandleT>().filtered(Selected()).to_vector();
+
+    EXPECT_EQ(set.size(), set2.size()) << "Set sizes differ";
+    for (size_t i = 0; i < std::min(set.size(), set2.size()); ++i)
+      EXPECT_EQ(set[i], set2[i]) << "Sets differ at position " << i;
+
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_selected(false);
+  }
+
+  // Tagged
+  {
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_tagged(false);
+    auto set = get_random_set(4);
+    for (auto el : set)
+      _mesh.status(el).set_tagged(true);
+
+    auto set2 = _mesh.elements<HandleT>().filtered(Tagged()).to_vector();
+
+    EXPECT_EQ(set.size(), set2.size()) << "Set sizes differ";
+    for (size_t i = 0; i < std::min(set.size(), set2.size()); ++i)
+      EXPECT_EQ(set[i], set2[i]) << "Sets differ at position " << i;
+
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_tagged(false);
+  }
+
+  // Tagged2
+  {
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_tagged2(false);
+    auto set = get_random_set(4);
+    for (auto el : set)
+      _mesh.status(el).set_tagged2(true);
+
+    auto set2 = _mesh.elements<HandleT>().filtered(Tagged2()).to_vector();
+
+    EXPECT_EQ(set.size(), set2.size()) << "Set sizes differ";
+    for (size_t i = 0; i < std::min(set.size(), set2.size()); ++i)
+      EXPECT_EQ(set[i], set2[i]) << "Sets differ at position " << i;
+
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_tagged2(false);
+  }
+
+  // Locked
+  {
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_locked(false);
+    auto set = get_random_set(4);
+    for (auto el : set)
+      _mesh.status(el).set_locked(true);
+
+    auto set2 = _mesh.elements<HandleT>().filtered(Locked()).to_vector();
+
+    EXPECT_EQ(set.size(), set2.size()) << "Set sizes differ";
+    for (size_t i = 0; i < std::min(set.size(), set2.size()); ++i)
+      EXPECT_EQ(set[i], set2[i]) << "Sets differ at position " << i;
+
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_locked(false);
+  }
+
+  // Hidden
+  {
+    for (auto el : _mesh.all_elements<HandleT>())
+      _mesh.status(el).set_hidden(false);
+    auto set = get_random_set(4);
+    for (auto el : set)
+      _mesh.status(el).set_hidden(true);
+
+    auto set2 = _mesh.all_elements<HandleT>().filtered(Hidden()).to_vector();
+
+    EXPECT_EQ(set.size(), set2.size()) << "Set sizes differ";
+    for (size_t i = 0; i < std::min(set.size(), set2.size()); ++i)
+      EXPECT_EQ(set[i], set2[i]) << "Sets differ at position " << i;
+
+    for (auto el : _mesh.all_elements<HandleT>())
+      _mesh.status(el).set_hidden(false);
+  }
+
+  // Deleted
+  {
+    for (auto el : _mesh.all_elements<HandleT>())
+      _mesh.status(el).set_deleted(false);
+    auto set = get_random_set(4);
+    for (auto el : set)
+      _mesh.status(el).set_deleted(true);
+
+    auto set2 = _mesh.all_elements<HandleT>().filtered(Deleted()).to_vector();
+
+    EXPECT_EQ(set.size(), set2.size()) << "Set sizes differ";
+    for (size_t i = 0; i < std::min(set.size(), set2.size()); ++i)
+      EXPECT_EQ(set[i], set2[i]) << "Sets differ at position " << i;
+
+    for (auto el : _mesh.all_elements<HandleT>())
+      _mesh.status(el).set_deleted(false);
+  }
+
+  // Custom property
+  {
+    OpenMesh::PropertyManager<typename OpenMesh::PropHandle<HandleT>::template type<bool>> prop(false, _mesh);
+    auto set = get_random_set(4);
+    for (auto el : set)
+      prop[el] = true;
+
+    auto set2 = _mesh.elements<HandleT>().filtered(prop).to_vector();
+
+    EXPECT_EQ(set.size(), set2.size()) << "Set sizes differ";
+    for (size_t i = 0; i < std::min(set.size(), set2.size()); ++i)
+      EXPECT_EQ(set[i], set2[i]) << "Sets differ at position " << i;
+  }
+
+  // boundary
+  {
+    for (auto el : _mesh.elements<HandleT>().filtered(Boundary()))
+      EXPECT_TRUE(el.is_boundary());
+    int n_boundary1 = 0.0;
+    for (auto el : _mesh.elements<HandleT>())
+      if (el.is_boundary())
+        n_boundary1 += 1;
+    int n_boundary2 = _mesh.elements<HandleT>().count_if(Boundary());
+    EXPECT_EQ(n_boundary1, n_boundary2);
+  }
+}
+
+template <typename HandleT>
+void test_range_predicate_combinations(Mesh& _mesh)
+{
+  using namespace OpenMesh::Predicates;
+
+  auto n_elements = _mesh.n_elements<HandleT>();
+  auto get_random_set = [&](int n)
+  {
+    std::vector<HandleT> set;
+    for (int i = 0; i < n; ++i)
+      set.push_back(HandleT(rand() % n_elements));
+    std::sort(set.begin(), set.end());
+    set.erase(std::unique(set.begin(), set.end()), set.end());
+    return set;
+  };
+
+  // negation
+  {
+    auto set = get_random_set(4);
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_selected(false);
+    for (auto el : set)
+      _mesh.status(el).set_selected(true);
+
+    auto true_set  = _mesh.elements<HandleT>().filtered(Selected()).to_vector();
+    auto false_set = _mesh.elements<HandleT>().filtered(!Selected()).to_vector();
+
+    std::vector<HandleT> intersection;
+    std::set_intersection(true_set.begin(), true_set.end(), false_set.begin(), false_set.end(), std::back_inserter(intersection));
+
+    EXPECT_TRUE(intersection.empty());
+    EXPECT_EQ(true_set.size() + false_set.size(), n_elements);
+
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_selected(false);
+  }
+
+  // conjunction
+  {
+    auto set1 = get_random_set(4);
+    auto set2 = get_random_set(4);
+    // make sure there is some overlap
+    {
+      auto set3 = get_random_set(3);
+      set1.insert(set1.end(), set3.begin(), set3.end());
+      set2.insert(set2.end(), set3.begin(), set3.end());
+      std::sort(set1.begin(), set1.end());
+      std::sort(set2.begin(), set2.end());
+      set1.erase(std::unique(set1.begin(), set1.end()), set1.end());
+      set2.erase(std::unique(set2.begin(), set2.end()), set2.end());
+    }
+
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_selected(false);
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_tagged(false);
+    for (auto el : set1)
+      _mesh.status(el).set_selected(true);
+    for (auto el : set2)
+      _mesh.status(el).set_tagged(true);
+
+    auto set  = _mesh.elements<HandleT>().filtered(Selected() && Tagged()).to_vector();
+
+    std::vector<HandleT> intersection;
+    std::set_intersection(set1.begin(), set1.end(), set2.begin(), set2.end(), std::back_inserter(intersection));
+
+    EXPECT_EQ(intersection.size(), set.size());
+    for (size_t i = 0; i < std::min(intersection.size(), set.size()); ++i)
+      EXPECT_EQ(intersection[i], set[i]) << "Sets differ at position " << i;
+
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_selected(false);
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_tagged(false);
+  }
+
+  // Disjunction
+  {
+    auto set1 = get_random_set(4);
+    auto set2 = get_random_set(4);
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_selected(false);
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_tagged(false);
+    for (auto el : set1)
+      _mesh.status(el).set_selected(true);
+    for (auto el : set2)
+      _mesh.status(el).set_tagged(true);
+
+    auto set  = _mesh.elements<HandleT>().filtered(Selected() || Tagged()).to_vector();
+
+    std::vector<HandleT> union_set;
+    std::set_union(set1.begin(), set1.end(), set2.begin(), set2.end(), std::back_inserter(union_set));
+
+    EXPECT_EQ(union_set.size(), set.size());
+    for (size_t i = 0; i < std::min(union_set.size(), set.size()); ++i)
+      EXPECT_EQ(union_set[i], set[i]) << "Sets differ at position " << i;
+
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_selected(false);
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_tagged(false);
+  }
+
+}
+
+template <typename HandleT>
+bool test_func(HandleT _h)
+{
+  return _h.idx() % 3 == 0;
+}
+
+template <typename HandleT>
+void test_make_predicate(Mesh& _mesh)
+{
+  using namespace OpenMesh::Predicates;
+
+  auto n_elements = _mesh.n_elements<HandleT>();
+  auto get_random_set = [&](int n)
+  {
+    std::vector<HandleT> set;
+    for (int i = 0; i < n; ++i)
+      set.push_back(HandleT(rand() % n_elements));
+    std::sort(set.begin(), set.end());
+    set.erase(std::unique(set.begin(), set.end()), set.end());
+    return set;
+  };
+
+  // custom property
+  {
+    OpenMesh::PropertyManager<typename OpenMesh::PropHandle<HandleT>::template type<bool>> prop(false, _mesh);
+    auto set1 = get_random_set(4);
+    auto set2 = get_random_set(4);
+    for (auto el : set1)
+      prop[el] = true;
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_selected(false);
+    for (auto el : set2)
+      _mesh.status(el).set_selected(true);
+
+    auto set  = _mesh.elements<HandleT>().filtered(Selected() || make_predicate(prop)).to_vector();
+
+    std::vector<HandleT> union_set;
+    std::set_union(set1.begin(), set1.end(), set2.begin(), set2.end(), std::back_inserter(union_set));
+
+    EXPECT_EQ(union_set.size(), set.size());
+    for (size_t i = 0; i < std::min(union_set.size(), set.size()); ++i)
+      EXPECT_EQ(union_set[i], set[i]) << "Sets differ at position " << i;
+
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_selected(false);
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_tagged(false);
+  }
+
+  // lambda
+  {
+    OpenMesh::PropertyManager<typename OpenMesh::PropHandle<HandleT>::template type<bool>> prop(false, _mesh);
+    auto set1 = get_random_set(4);
+    auto set2 = get_random_set(4);
+    for (auto el : set1)
+      prop[el] = true;
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_selected(false);
+    for (auto el : set2)
+      _mesh.status(el).set_selected(true);
+
+    auto test = [&](HandleT h) { return prop(h); };
+
+    auto set  = _mesh.elements<HandleT>().filtered(Selected() || make_predicate(test)).to_vector();
+
+    std::vector<HandleT> union_set;
+    std::set_union(set1.begin(), set1.end(), set2.begin(), set2.end(), std::back_inserter(union_set));
+
+    EXPECT_EQ(union_set.size(), set.size());
+    for (size_t i = 0; i < std::min(union_set.size(), set.size()); ++i)
+      EXPECT_EQ(union_set[i], set[i]) << "Sets differ at position " << i;
+
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_selected(false);
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_tagged(false);
+  }
+
+  // r value lambda
+  {
+    OpenMesh::PropertyManager<typename OpenMesh::PropHandle<HandleT>::template type<bool>> prop(false, _mesh);
+    auto set1 = get_random_set(4);
+    auto set2 = get_random_set(4);
+    for (auto el : set1)
+      prop[el] = true;
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_selected(false);
+    for (auto el : set2)
+      _mesh.status(el).set_selected(true);
+
+    auto set  = _mesh.elements<HandleT>().filtered(Selected() || make_predicate([&](HandleT h) { return prop(h); })).to_vector();
+
+    std::vector<HandleT> union_set;
+    std::set_union(set1.begin(), set1.end(), set2.begin(), set2.end(), std::back_inserter(union_set));
+
+    EXPECT_EQ(union_set.size(), set.size());
+    for (size_t i = 0; i < std::min(union_set.size(), set.size()); ++i)
+      EXPECT_EQ(union_set[i], set[i]) << "Sets differ at position " << i;
+
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_selected(false);
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_tagged(false);
+  }
+
+  // function pointer
+  {
+    auto set1 = _mesh.elements<HandleT>().filtered([&](const HandleT& h) { return test_func(h); }).to_vector();
+    auto set2 = get_random_set(4);
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_selected(false);
+    for (auto el : set2)
+      _mesh.status(el).set_selected(true);
+
+    auto set  = _mesh.elements<HandleT>().filtered(Selected() || make_predicate(test_func<HandleT>)).to_vector();
+
+    std::vector<HandleT> union_set;
+    std::set_union(set1.begin(), set1.end(), set2.begin(), set2.end(), std::back_inserter(union_set));
+
+    EXPECT_EQ(union_set.size(), set.size());
+    for (size_t i = 0; i < std::min(union_set.size(), set.size()); ++i)
+      EXPECT_EQ(union_set[i], set[i]) << "Sets differ at position " << i;
+
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_selected(false);
+    for (auto el : _mesh.elements<HandleT>())
+      _mesh.status(el).set_tagged(false);
+  }
+}
+
+TEST_F(OpenMeshSmartRanges, Predicate)
+{
+  using namespace OpenMesh;
+
+  mesh_.request_vertex_status();
+  mesh_.request_halfedge_status();
+  mesh_.request_edge_status();
+  mesh_.request_face_status();
+
+  mesh_.delete_face(FaceHandle(0)); // ensure there is a boundary
+  mesh_.garbage_collection();
+
+  test_range_predicates<VertexHandle>(mesh_);
+  test_range_predicates<HalfedgeHandle>(mesh_);
+  test_range_predicates<EdgeHandle>(mesh_);
+  test_range_predicates<FaceHandle>(mesh_);
+
+  test_range_predicate_combinations<VertexHandle>(mesh_);
+  test_range_predicate_combinations<HalfedgeHandle>(mesh_);
+  test_range_predicate_combinations<EdgeHandle>(mesh_);
+  test_range_predicate_combinations<FaceHandle>(mesh_);
+
+  test_make_predicate<VertexHandle>(mesh_);
+  test_make_predicate<HalfedgeHandle>(mesh_);
+  test_make_predicate<EdgeHandle>(mesh_);
+  test_make_predicate<FaceHandle>(mesh_);
+}
+
+struct MemberFunctionWrapperTestStruct
+{
+  MemberFunctionWrapperTestStruct(int _i)
+    :
+      i_(_i)
+  {
+  }
+
+  int get_i(const OpenMesh::SmartEdgeHandle& /*_eh*/) const
+  {
+    return i_;
+  }
+
+  bool id_divisible_by_2(const OpenMesh::SmartEdgeHandle& _eh) const
+  {
+    return _eh.idx() % 2 == 0;
+  }
+
+  int valence_times_i(const OpenMesh::SmartVertexHandle& vh)
+  {
+   return vh.edges().sum(OM_MFW(get_i));
+  }
+
+  int i_;
+};
+
+TEST_F(OpenMeshSmartRanges, MemberFunctionFunctor)
+{
+  using namespace OpenMesh::Predicates;
+
+  EXPECT_TRUE(mesh_.n_vertices() > 0) << "Mesh has no vertices";
+  EXPECT_TRUE(mesh_.n_edges() > 0) << "Mesh has no edges";
+
+  int factor = 3;
+  MemberFunctionWrapperTestStruct test_object(factor);
+
+  // Test using a MemberFunctionWrapper as Functor
+  EXPECT_EQ(mesh_.n_edges() / 2, mesh_.edges().count_if(make_member_function_wrapper(test_object, &MemberFunctionWrapperTestStruct::id_divisible_by_2)));
+
+
+  // Test using a MemberFunctionWrapper as Functor that is created using the convenience macro from inside the struct
+  for (auto vh : mesh_.vertices())
+    EXPECT_EQ(test_object.valence_times_i(vh), vh.valence() * factor);
+
+  factor = 4;
+  test_object.i_ = factor;
+  for (auto vh : mesh_.vertices())
+  {
+    EXPECT_EQ(test_object.valence_times_i(vh), vh.valence() * factor);
+  }
+
+
+
+}
 
 }
