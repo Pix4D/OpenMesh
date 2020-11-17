@@ -54,6 +54,7 @@
 #include <OpenMesh/Core/Utils/GenProg.hh>
 #include <OpenMesh/Core/Utils/Endian.hh>
 #include <OpenMesh/Core/Utils/vector_traits.hh>
+#include <OpenMesh/Core/Mesh/Handles.hh>
 // --------------------
 #include <iostream>
 #if defined(OM_CC_GCC) && (OM_GCC_VERSION < 30000)
@@ -275,27 +276,32 @@ namespace OMFormat {
 
     };
 
- //-----------------------------------------------------------------------------------------------------------------------------------
- //this enum stores the type of the property so that it can be recovered
-    enum PropertyType {
-      UnknownType = 0x00,
-      BoolType = 0x01,
-      UCharType= 0x02,
-      CharType = 0x03,
-      ShortType = 0x04,
-      UIntType = 0x05,
-      IntType = 0x06,
-      ULongType = 0x07,
-      LongType = 0x08,
-      FloatType = 0x09,
-      DoubleType = 0x0a,
-      VecDoubleType = 0x0b
-    };
-//-----------------------------------------------------------------------------------------------------------------------------------
-
   }; // Chunk
 
   // ------------------------------------------------------------ Helper
+  //----------------------get string for type recognition
+
+  template <typename T> std::string  get_type_string(){ return "unknown";}
+
+  template <> inline std::string  get_type_string<OpenMesh::FaceHandle>(){ return "facehandle";}
+  template <> inline std::string  get_type_string<OpenMesh::EdgeHandle>(){ return "edgehandle";}
+  template <> inline std::string  get_type_string<OpenMesh::HalfedgeHandle>(){ return "halfedgehandle";}
+  template <> inline std::string  get_type_string<OpenMesh::VertexHandle>(){ return "vertexhandle";}
+
+  template <> inline std::string  get_type_string<bool>(){ return "bool";}
+  template <> inline std::string  get_type_string<char>(){ return "char";}
+  template <> inline std::string  get_type_string<double>(){ return "double";}
+  template <> inline std::string  get_type_string<float>(){ return "float";}
+  template <> inline std::string  get_type_string<int>(){ return "int";}
+  template <> inline std::string  get_type_string<unsigned char>(){ return "uchar";}
+  template <> inline std::string  get_type_string<unsigned int>(){ return "uint";}
+  template <> inline std::string  get_type_string<unsigned short>(){ return "ushort";}
+
+  template <typename T> std::string get_type_string(std::vector<T>)
+    { return "std::vector of " + get_type_string(T());}
+
+  template <typename T, int Dim> std::string get_type_string(OpenMesh::VectorT<T, Dim>)
+    { return "OM vector of dimension " + std::to_string(Dim) + " of type " + get_type_string(T()); }
 
   // -------------------- get size information
 
