@@ -400,10 +400,15 @@ bool _OMReader_::read_binary_vertex_chunk(std::istream &_is, BaseImporter &_bi, 
     }
 
     case Chunk::Type_Custom:
+    {
+      Chunk::PropertyName property_type;
+      bytes_ += restore(_is, property_type, _swap);
+      add_generic_property(property_type, _bi);
 
       bytes_ += restore_binary_custom_data(_is, _bi.kernel()->_get_vprop(property_name_), header_.n_vertices_, _swap);
 
       vidx = header_.n_vertices_;
+    }
 
       break;
 
@@ -550,12 +555,17 @@ bool _OMReader_::read_binary_face_chunk(std::istream &_is, BaseImporter &_bi, Op
     }
 
     case Chunk::Type_Custom:
+    {
+      Chunk::PropertyName property_type;
+      bytes_ += restore(_is, property_type, _swap);
+      add_generic_property(property_type, _bi);
 
       bytes_ += restore_binary_custom_data(_is, _bi.kernel()->_get_fprop(property_name_), header_.n_faces_, _swap);
 
       fidx = header_.n_faces_;
 
       break;
+    }
 
     default: // skip unknown chunks
     {
@@ -583,11 +593,15 @@ bool _OMReader_::read_binary_edge_chunk(std::istream &_is, BaseImporter &_bi, Op
 
   switch (chunk_header_.type_) {
     case Chunk::Type_Custom:
+    {
+      Chunk::PropertyName property_type;
+      bytes_ += restore(_is, property_type, _swap);
+      add_generic_property(property_type, _bi);
 
       bytes_ += restore_binary_custom_data(_is, _bi.kernel()->_get_eprop(property_name_), header_.n_edges_, _swap);
 
       break;
-
+    }
     case Chunk::Type_Status:
     {
       assert( OMFormat::dimensions(chunk_header_) == 1);
@@ -626,10 +640,15 @@ bool _OMReader_::read_binary_halfedge_chunk(std::istream &_is, BaseImporter &_bi
 
   switch (chunk_header_.type_) {
     case Chunk::Type_Custom:
+    {
+      Chunk::PropertyName property_type;
+      bytes_ += restore(_is, property_type, _swap);
+
+      add_generic_property(property_type, _bi);
 
       bytes_ += restore_binary_custom_data(_is, _bi.kernel()->_get_hprop(property_name_), 2 * header_.n_edges_, _swap);
       break;
-
+    }
     case Chunk::Type_Topology:
     {
       std::vector<HalfedgeHandle> next_halfedges;
@@ -703,11 +722,15 @@ bool _OMReader_::read_binary_mesh_chunk(std::istream &_is, BaseImporter &_bi, Op
 
   switch (chunk_header_.type_) {
     case Chunk::Type_Custom:
+    {
+      Chunk::PropertyName property_type;
+      bytes_ += restore(_is, property_type, _swap);
+      add_generic_property(property_type, _bi);
 
       bytes_ += restore_binary_custom_data(_is, _bi.kernel()->_get_mprop(property_name_), 1, _swap);
 
       break;
-
+    }
     default:
       // skip unknown chunk
       size_t chunk_size = OMFormat::chunk_data_size(header_, chunk_header_);
@@ -731,9 +754,7 @@ size_t _OMReader_::restore_binary_custom_data(std::istream& _is, BaseProperty* _
   size_t bytes = 0;
   Chunk::esize_t block_size;
   Chunk::PropertyName custom_prop;
-  Chunk::PropertyType property_type;
 
-  bytes += restore(_is, property_type, _swap);
   bytes += restore(_is, block_size, OMFormat::Chunk::Integer_32, _swap);
 
   if (_bp) {
@@ -766,6 +787,100 @@ size_t _OMReader_::restore_binary_custom_data(std::istream& _is, BaseProperty* _
   }
 
   return bytes;
+}
+
+
+//--------------------------------helper
+void _OMReader_:: add_generic_property(OMFormat::Chunk::PropertyName& _property_type, BaseImporter& _bi) const
+{
+  if(_property_type == OMFormat::Chunk::PropertyName(OMFormat::get_type_string<bool>()))
+  {
+    add_generic_property_aux<bool>(_bi);
+  }
+  else if(_property_type == OMFormat::Chunk::PropertyName(OMFormat::get_type_string<char>()))
+  {
+    add_generic_property_aux<char>(_bi);
+  }
+  else if(_property_type == OMFormat::Chunk::PropertyName(OMFormat::get_type_string<double>()))
+  {
+    add_generic_property_aux<double>(_bi);
+  }
+  else if(_property_type == OMFormat::Chunk::PropertyName(OMFormat::get_type_string<float>()))
+  {
+    add_generic_property_aux<float>(_bi);
+  }
+  else if(_property_type == OMFormat::Chunk::PropertyName(OMFormat::get_type_string<int>()))
+  {
+    add_generic_property_aux<int>(_bi);
+  }
+  else if(_property_type == OMFormat::Chunk::PropertyName(OMFormat::get_type_string<long>()) )
+  {
+    add_generic_property_aux<long>(_bi);
+  }
+  else if(_property_type == OMFormat::Chunk::PropertyName(OMFormat::get_type_string<short>()) )
+  {
+    add_generic_property_aux<short>(_bi);
+  }
+  else if(_property_type == OMFormat::Chunk::PropertyName(OMFormat::get_type_string<uchar>()) )
+  {
+   add_generic_property_aux<uchar>(_bi);
+  }
+  else if(_property_type == OMFormat::Chunk::PropertyName(OMFormat::get_type_string<uint>()) )
+  {
+    add_generic_property_aux<uint>(_bi);
+  }
+  else if(_property_type == OMFormat::Chunk::PropertyName(OMFormat::get_type_string<ulong>()) )
+  {
+    add_generic_property_aux<ulong>(_bi);
+  }
+  else if(_property_type == OMFormat::Chunk::PropertyName(OMFormat::get_type_string<std::vector<double>>()) )
+  {
+    add_generic_property_aux<std::vector<double>>(_bi);
+  }
+}
+
+template<typename T>
+void _OMReader_::add_generic_property_aux(BaseImporter& _bi) const
+{
+
+  switch (chunk_header_.entity_)
+  {
+  case OMFormat::Chunk::Entity_Vertex:
+  {
+    VPropHandleT<T> prop;
+    _bi.kernel()->add_property(prop, property_name_);
+    break;
+  }
+  case OMFormat::Chunk::Entity_Face:
+  {
+    FPropHandleT<T> prop;
+    _bi.kernel()->add_property(prop, property_name_);
+    break;
+  }
+  case OMFormat::Chunk::Entity_Edge:
+  {
+    EPropHandleT<T> prop;
+    _bi.kernel()->add_property(prop, property_name_);
+    break;
+  }
+  case OMFormat::Chunk::Entity_Halfedge:
+  {
+    HPropHandleT<T> prop;
+    _bi.kernel()->add_property(prop, property_name_);
+    break;
+  }
+  case OMFormat::Chunk::Entity_Mesh:
+  {
+    MPropHandleT<T> prop;
+    _bi.kernel()->add_property(prop, property_name_);
+    break;
+  }
+  case OMFormat::Chunk::Entity_Sentinel:
+    ;
+  break;
+  default:
+    ;
+  }
 }
 
 
