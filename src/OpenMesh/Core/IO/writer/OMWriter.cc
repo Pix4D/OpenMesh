@@ -81,7 +81,7 @@ _OMWriter_& OMWriter() { return __OMWriterInstance; }
 
 
 const OMFormat::uchar _OMWriter_::magic_[3] = "OM";
-const OMFormat::uint8 _OMWriter_::version_  = OMFormat::mk_version(2,1);
+const OMFormat::uint8 _OMWriter_::version_  = OMFormat::mk_version(2,2);
 
 
 _OMWriter_::
@@ -621,45 +621,16 @@ size_t _OMWriter_::store_binary_custom_chunk(std::ostream& _os,
   bytes += store( _os, OMFormat::Chunk::PropertyName(_bp.name()), _swap );
 
   // 3. data type
-  OMFormat::Chunk::PropertyName type = OMFormat::Chunk::PropertyName("unknown");
 
-  OpenMesh::PropertyT<bool>* bp_bool  = dynamic_cast<OpenMesh::PropertyT<bool>*>(&_bp);
-  OpenMesh::PropertyT<char>* bp_char  = dynamic_cast<OpenMesh::PropertyT<char>* >(&_bp);
-  OpenMesh::PropertyT<double>* bp_double  = dynamic_cast<OpenMesh::PropertyT<double>* >(&_bp);
-  OpenMesh::PropertyT<float>* bp_float  = dynamic_cast<OpenMesh::PropertyT<float>* >(&_bp);
-  OpenMesh::PropertyT<int>* bp_int  = dynamic_cast<OpenMesh::PropertyT<int>* >(&_bp);
-  OpenMesh::PropertyT<long>* bp_long  = dynamic_cast<OpenMesh::PropertyT<long>* >(&_bp);
-  OpenMesh::PropertyT<short>* bp_short  = dynamic_cast<OpenMesh::PropertyT<short>* >(&_bp);
-  OpenMesh::PropertyT<uchar>* bp_uchar  = dynamic_cast<OpenMesh::PropertyT<uchar>* >(&_bp);
-  OpenMesh::PropertyT<uint>* bp_uint  = dynamic_cast<OpenMesh::PropertyT<uint>* >(&_bp);
-  OpenMesh::PropertyT<ulong>* bp_ulong  = dynamic_cast<OpenMesh::PropertyT<ulong>* >(&_bp);
-  OpenMesh::PropertyT<std::vector<double>>* bp_vecdouble  = dynamic_cast<OpenMesh::PropertyT<std::vector<double>>* >(&_bp);
+  if(_OMWriter_::version_ > OMFormat::mk_version(2,1))
+  {
+    OMFormat::Chunk::PropertyName type = OMFormat::Chunk::PropertyName(_bp.get_storage_name());
+    bytes += store(_os, type, _swap);
+  }
 
-  //choose one of both tests
-  if(_bp.internal_type_name() == get_type_name<bool>()                      || bp_bool != nullptr)
-    type = OMFormat::Chunk::PropertyName(OMFormat::get_type_string<bool>());
-  else if(_bp.internal_type_name() == get_type_name<char>()                 || bp_char != nullptr)
-    type = OMFormat::Chunk::PropertyName(OMFormat::get_type_string<char>());
-  else if(_bp.internal_type_name() == get_type_name<double>()               || bp_double != nullptr)
-    type = OMFormat::Chunk::PropertyName(OMFormat::get_type_string<double>());
-  else if(_bp.internal_type_name() == get_type_name<float>()                || bp_float != nullptr)
-    type = OMFormat::Chunk::PropertyName(OMFormat::get_type_string<float>());
-  else if(_bp.internal_type_name() == get_type_name<int>()                  || bp_int != nullptr)
-    type = OMFormat::Chunk::PropertyName(OMFormat::get_type_string<int>());
-  else if(_bp.internal_type_name() == get_type_name<long>()                 || bp_long != nullptr)
-    type = OMFormat::Chunk::PropertyName(OMFormat::get_type_string<long>());
-  else if(_bp.internal_type_name() == get_type_name<short>()                || bp_short != nullptr)
-    type = OMFormat::Chunk::PropertyName(OMFormat::get_type_string<short>());
-  else if(_bp.internal_type_name() == get_type_name<uchar>()                || bp_uchar != nullptr)
-    type = OMFormat::Chunk::PropertyName(OMFormat::get_type_string<uchar>());
-  else if(_bp.internal_type_name() == get_type_name<uint>()                 || bp_uint != nullptr)
-    type = OMFormat::Chunk::PropertyName(OMFormat::get_type_string<uint>());
-  else if(_bp.internal_type_name() == get_type_name<ulong>()                || bp_ulong != nullptr)
-    type = OMFormat::Chunk::PropertyName(OMFormat::get_type_string<ulong>());
-  else if(_bp.internal_type_name() == get_type_name<std::vector<double>>()  || bp_vecdouble != nullptr)
-    type = OMFormat::Chunk::PropertyName(OMFormat::get_type_string<std::vector<double>>());
-
-  bytes += store(_os, type, _swap);
+  //DEBUGG
+      //std::cout << "the property type of prop: " << _bp.name() << " is " << _bp.get_storage_name() << std::endl;
+  //END
 
   // 4. block size
   bytes += store( _os, _bp.size_of(), OMFormat::Chunk::Integer_32, _swap );
