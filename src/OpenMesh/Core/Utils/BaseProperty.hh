@@ -133,6 +133,9 @@ public: // I/O support
   /// persistency.
   virtual void set_persistent( bool _yn ) = 0;
 
+  ///returns a unique string for the type of the elements
+  virtual std::string get_storage_name() const = 0;
+
   /// Number of elements in property
   virtual size_t       n_elements() const = 0;
 

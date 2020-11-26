@@ -54,6 +54,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <OpenMesh/Core/Utils/typename.hh>
 
 
 //== NAMESPACES ===============================================================
@@ -207,6 +208,10 @@ public: // data access interface
     return p;
   }
 
+  std::string get_storage_name() const override
+  {
+    return get_string_for_type(T());
+  }
 
 private:
 
@@ -371,6 +376,11 @@ public:
     return p;
   }
 
+    std::string get_storage_name() const override
+    {
+      return get_string_for_type(bool());
+    }
+
 
 private:
 
@@ -456,6 +466,11 @@ public:
   PropertyT<value_type>* clone() const override {
     PropertyT<value_type>* p = new PropertyT<value_type>( *this );
     return p;
+  }
+
+  std::string get_storage_name() const override
+  {
+    return get_string_for_type(std::string());
   }
 private:
 
