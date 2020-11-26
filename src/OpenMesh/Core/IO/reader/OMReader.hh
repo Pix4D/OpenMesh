@@ -155,9 +155,10 @@ private:
              bool _swap) const;
 
   //------------------helper
+private:
+
   void add_generic_property(OMFormat::Chunk::PropertyName& _property_type, BaseImporter& _bi) const;
   template <typename T> void add_generic_property_aux(BaseImporter& _bi) const;
-
 };
 
 

@@ -57,6 +57,12 @@
 #include <OpenMesh/Core/IO/OMFormat.hh>
 #include <OpenMesh/Core/IO/reader/OMReader.hh>
 #include <OpenMesh/Core/IO/writer/OMWriter.hh>
+#include <OpenMesh/Core/Utils/typename.hh>
+
+
+//DEBUGG
+#include <iostream>
+//END
 
 
 //=== NAMESPACES ==============================================================
@@ -192,6 +198,11 @@ bool _OMReader_::read_binary(std::istream& _is, BaseImporter& _bi, Options& _opt
       OMFormat::Chunk::PropertyName pn;
       bytes_ += restore(_is, property_name_, swap);
     }
+
+    //DEBUGG
+        //std::cout << "the property name is : " << property_name_ << std::endl;
+        //std::cout << "the header version is : " << OMFormat::as_string(header_.version_) << std::endl;
+    //END
 
     // Read in the property data. If it is an anonymous or unknown named
     // property, then skip data.
@@ -401,12 +412,14 @@ bool _OMReader_::read_binary_vertex_chunk(std::istream &_is, BaseImporter &_bi, 
 
     case Chunk::Type_Custom:
     {
-      Chunk::PropertyName property_type;
-      bytes_ += restore(_is, property_type, _swap);
-      add_generic_property(property_type, _bi);
+      if(header_.version_ > OMFormat::mk_version(2,1))
+      {
+        Chunk::PropertyName property_type;
+        bytes_ += restore(_is, property_type, _swap);
+        add_generic_property(property_type, _bi);
+      }
 
       bytes_ += restore_binary_custom_data(_is, _bi.kernel()->_get_vprop(property_name_), header_.n_vertices_, _swap);
-
       vidx = header_.n_vertices_;
     }
 
@@ -556,9 +569,13 @@ bool _OMReader_::read_binary_face_chunk(std::istream &_is, BaseImporter &_bi, Op
 
     case Chunk::Type_Custom:
     {
-      Chunk::PropertyName property_type;
-      bytes_ += restore(_is, property_type, _swap);
-      add_generic_property(property_type, _bi);
+      if(header_.version_ > OMFormat::mk_version(2,1))
+      {
+        Chunk::PropertyName property_type;
+        bytes_ += restore(_is, property_type, _swap);
+
+        add_generic_property(property_type, _bi);
+      }
 
       bytes_ += restore_binary_custom_data(_is, _bi.kernel()->_get_fprop(property_name_), header_.n_faces_, _swap);
 
@@ -594,9 +611,12 @@ bool _OMReader_::read_binary_edge_chunk(std::istream &_is, BaseImporter &_bi, Op
   switch (chunk_header_.type_) {
     case Chunk::Type_Custom:
     {
-      Chunk::PropertyName property_type;
-      bytes_ += restore(_is, property_type, _swap);
-      add_generic_property(property_type, _bi);
+      if(header_.version_ > OMFormat::mk_version(2,1))
+      {
+        Chunk::PropertyName property_type;
+        bytes_ += restore(_is, property_type, _swap);
+        add_generic_property(property_type, _bi);
+      }
 
       bytes_ += restore_binary_custom_data(_is, _bi.kernel()->_get_eprop(property_name_), header_.n_edges_, _swap);
 
@@ -641,10 +661,12 @@ bool _OMReader_::read_binary_halfedge_chunk(std::istream &_is, BaseImporter &_bi
   switch (chunk_header_.type_) {
     case Chunk::Type_Custom:
     {
-      Chunk::PropertyName property_type;
-      bytes_ += restore(_is, property_type, _swap);
-
-      add_generic_property(property_type, _bi);
+      if(header_.version_ > OMFormat::mk_version(2,1))
+      {
+        Chunk::PropertyName property_type;
+        bytes_ += restore(_is, property_type, _swap);
+        add_generic_property(property_type, _bi);
+      }
 
       bytes_ += restore_binary_custom_data(_is, _bi.kernel()->_get_hprop(property_name_), 2 * header_.n_edges_, _swap);
       break;
@@ -723,9 +745,13 @@ bool _OMReader_::read_binary_mesh_chunk(std::istream &_is, BaseImporter &_bi, Op
   switch (chunk_header_.type_) {
     case Chunk::Type_Custom:
     {
-      Chunk::PropertyName property_type;
-      bytes_ += restore(_is, property_type, _swap);
-      add_generic_property(property_type, _bi);
+      if(header_.version_ > OMFormat::mk_version(2,1))
+      {
+        Chunk::PropertyName property_type;
+        bytes_ += restore(_is, property_type, _swap);
+
+        add_generic_property(property_type, _bi);
+      }
 
       bytes_ += restore_binary_custom_data(_is, _bi.kernel()->_get_mprop(property_name_), 1, _swap);
 
@@ -793,56 +819,56 @@ size_t _OMReader_::restore_binary_custom_data(std::istream& _is, BaseProperty* _
 //--------------------------------helper
 void _OMReader_:: add_generic_property(OMFormat::Chunk::PropertyName& _property_type, BaseImporter& _bi) const
 {
-  if(_property_type == OMFormat::Chunk::PropertyName(OMFormat::get_type_string<bool>()))
+  //DEBUGG
+      std::cout << "the property name is : " << property_name_ << std::endl;
+      std::cout << "the property type is : " << _property_type << std::endl;
+  //END
+
+  if(_property_type == get_string_for_type(bool()))
   {
     add_generic_property_aux<bool>(_bi);
   }
-  else if(_property_type == OMFormat::Chunk::PropertyName(OMFormat::get_type_string<char>()))
+  else if(_property_type == get_string_for_type(char()))
   {
     add_generic_property_aux<char>(_bi);
   }
-  else if(_property_type == OMFormat::Chunk::PropertyName(OMFormat::get_type_string<double>()))
+  else if(_property_type == get_string_for_type(double()))
   {
     add_generic_property_aux<double>(_bi);
   }
-  else if(_property_type == OMFormat::Chunk::PropertyName(OMFormat::get_type_string<float>()))
+  else if(_property_type == get_string_for_type(float()))
   {
     add_generic_property_aux<float>(_bi);
   }
-  else if(_property_type == OMFormat::Chunk::PropertyName(OMFormat::get_type_string<int>()))
+  else if(_property_type == get_string_for_type(int()))
   {
     add_generic_property_aux<int>(_bi);
   }
-  else if(_property_type == OMFormat::Chunk::PropertyName(OMFormat::get_type_string<long>()) )
+  else if(_property_type == get_string_for_type(long()))
   {
     add_generic_property_aux<long>(_bi);
   }
-  else if(_property_type == OMFormat::Chunk::PropertyName(OMFormat::get_type_string<short>()) )
+  else if(_property_type == get_string_for_type(short()))
   {
     add_generic_property_aux<short>(_bi);
   }
-  else if(_property_type == OMFormat::Chunk::PropertyName(OMFormat::get_type_string<uchar>()) )
+  else if(_property_type == get_string_for_type(uchar()))
   {
    add_generic_property_aux<uchar>(_bi);
   }
-  else if(_property_type == OMFormat::Chunk::PropertyName(OMFormat::get_type_string<uint>()) )
+  else if(_property_type == get_string_for_type(uint()))
   {
     add_generic_property_aux<uint>(_bi);
   }
-  else if(_property_type == OMFormat::Chunk::PropertyName(OMFormat::get_type_string<ulong>()) )
+  else if(_property_type == get_string_for_type(ulong()))
   {
     add_generic_property_aux<ulong>(_bi);
-  }
-  else if(_property_type == OMFormat::Chunk::PropertyName(OMFormat::get_type_string<std::vector<double>>()) )
-  {
-    add_generic_property_aux<std::vector<double>>(_bi);
   }
 }
 
 template<typename T>
 void _OMReader_::add_generic_property_aux(BaseImporter& _bi) const
 {
-
   switch (chunk_header_.entity_)
   {
   case OMFormat::Chunk::Entity_Vertex:
