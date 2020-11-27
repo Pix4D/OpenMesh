@@ -9,6 +9,7 @@
 #include <typeinfo>
 #include <vector>
 #include <OpenMesh/Core/Mesh/Handles.hh>
+#include <OpenMesh/Core/Geometry/Vector11T.hh>
 
 namespace OpenMesh {
 
@@ -38,6 +39,8 @@ inline std::string  get_string_for_type(char){ return "char";}
 inline std::string  get_string_for_type(double){ return "double";}
 inline std::string  get_string_for_type(float){ return "float";}
 inline std::string  get_string_for_type(int){ return "int";}
+inline std::string  get_string_for_type(short){ return "short";}
+
 inline std::string  get_string_for_type(unsigned char){ return "uchar";}
 inline std::string  get_string_for_type(unsigned int){ return "uint";}
 inline std::string  get_string_for_type(unsigned short){ return "ushort";}
@@ -45,8 +48,7 @@ inline std::string  get_string_for_type(unsigned short){ return "ushort";}
 template <typename T> std::string  get_string_for_type(T){return "unknown";}
 template <typename T> std::string  get_string_for_type(std::vector<T>){ return "std::vector<" + get_string_for_type(T()) + ">";}
 
+template <typename T, int Dim> std::string get_string_for_type(OpenMesh::VectorT<T, Dim>)
+{ return "VectorT<" + get_string_for_type(T()) + ", " + std::to_string(Dim) + ">";}
 
-//template <typename T, int Dim> std::string get_string_for_type(OpenMesh::VectorT<T, Dim>)
-//  { return "VectorT<"+ get_string_for_type(T(),"+std::to_string(Dim)+">";}
-
-}
+}//namespace OpenMesh
