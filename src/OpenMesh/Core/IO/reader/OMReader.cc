@@ -59,12 +59,6 @@
 #include <OpenMesh/Core/IO/writer/OMWriter.hh>
 #include <OpenMesh/Core/Utils/typename.hh>
 
-
-//DEBUGG
-#include <iostream>
-//END
-
-
 //=== NAMESPACES ==============================================================
 
 
@@ -198,11 +192,6 @@ bool _OMReader_::read_binary(std::istream& _is, BaseImporter& _bi, Options& _opt
       OMFormat::Chunk::PropertyName pn;
       bytes_ += restore(_is, property_name_, swap);
     }
-
-    //DEBUGG
-        //std::cout << "the property name is : " << property_name_ << std::endl;
-        //std::cout << "the header version is : " << OMFormat::as_string(header_.version_) << std::endl;
-    //END
 
     // Read in the property data. If it is an anonymous or unknown named
     // property, then skip data.
@@ -819,11 +808,6 @@ size_t _OMReader_::restore_binary_custom_data(std::istream& _is, BaseProperty* _
 //--------------------------------helper
 void _OMReader_:: add_generic_property(OMFormat::Chunk::PropertyName& _property_type, BaseImporter& _bi) const
 {
-  //DEBUGG
-      std::cout << "the property name is : " << property_name_ << std::endl;
-      std::cout << "the property type is : " << _property_type << std::endl;
-  //END
-
   if(_property_type == get_string_for_type(bool()))
   {
     add_generic_property_aux<bool>(_bi);

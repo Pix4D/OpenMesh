@@ -628,10 +628,6 @@ size_t _OMWriter_::store_binary_custom_chunk(std::ostream& _os,
     bytes += store(_os, type, _swap);
   }
 
-  //DEBUGG
-      //std::cout << "the property type of prop: " << _bp.name() << " is " << _bp.get_storage_name() << std::endl;
-  //END
-
   // 4. block size
   bytes += store( _os, _bp.size_of(), OMFormat::Chunk::Integer_32, _swap );
   //omlog() << "  n_bytes = " << _bp.size_of() << std::endl;
