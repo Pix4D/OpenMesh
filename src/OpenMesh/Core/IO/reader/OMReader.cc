@@ -848,6 +848,116 @@ void _OMReader_:: add_generic_property(OMFormat::Chunk::PropertyName& _property_
   {
     add_generic_property_aux<ulong>(_bi);
   }
+  else
+  {
+    check_all_vector_types(_property_type, _bi);
+  }
+}
+
+void _OMReader_::check_all_vector_types(OMFormat::Chunk::PropertyName& _property_type, BaseImporter& _bi) const
+{
+    check_all_vector_types_aux<1>(_property_type, _bi);
+    check_all_vector_types_aux<2>(_property_type, _bi);
+    check_all_vector_types_aux<3>(_property_type, _bi);
+    check_all_vector_types_aux<4>(_property_type, _bi);
+    check_all_std_vector_types_aux(_property_type, _bi);
+}
+
+void _OMReader_::check_all_std_vector_types_aux(OMFormat::Chunk::PropertyName& _property_type, BaseImporter& _bi) const
+{
+  if(_property_type == get_string_for_type(std::vector<bool>()))
+  {
+    add_generic_property_aux<std::vector<bool>>(_bi);
+  }
+  else if(_property_type == get_string_for_type(std::vector<char>()))
+  {
+    add_generic_property_aux<std::vector<char>>(_bi);
+  }
+  else if(_property_type == get_string_for_type(std::vector<double>()))
+  {
+    add_generic_property_aux<std::vector<double>>(_bi);
+  }
+  else if(_property_type == get_string_for_type(std::vector<float>()))
+  {
+    add_generic_property_aux<std::vector<float>>(_bi);
+  }
+  else if(_property_type == get_string_for_type(std::vector<int>()))
+  {
+    add_generic_property_aux<std::vector<int>>(_bi);
+  }
+  else if(_property_type == get_string_for_type(std::vector<long>()))
+  {
+    add_generic_property_aux<std::vector<long>>(_bi);
+  }
+  else if(_property_type == get_string_for_type(std::vector<short>()))
+  {
+    add_generic_property_aux<std::vector<short>>(_bi);
+  }
+  else if(_property_type == get_string_for_type(std::vector<uchar>()))
+  {
+   add_generic_property_aux<std::vector<uchar>>(_bi);
+  }
+  else if(_property_type == get_string_for_type(std::vector<uint>()))
+  {
+    add_generic_property_aux<std::vector<uint>>(_bi);
+  }
+  else if(_property_type == get_string_for_type(std::vector<ulong>()))
+  {
+    add_generic_property_aux<std::vector<ulong>>(_bi);
+  }
+  else if(_property_type == get_string_for_type(std::vector<ushort>()))
+  {
+    add_generic_property_aux<std::vector<ushort>>(_bi);
+  }
+}
+
+template<int Dim>
+void _OMReader_::check_all_vector_types_aux(OMFormat::Chunk::PropertyName& _property_type, BaseImporter& _bi) const
+{
+  if(_property_type == get_string_for_type(OpenMesh::VectorT<bool, Dim>()))
+  {
+    add_generic_property_aux<OpenMesh::VectorT<bool, Dim>>(_bi);
+  }
+  else if(_property_type == get_string_for_type(OpenMesh::VectorT<char, Dim>()))
+  {
+    add_generic_property_aux<OpenMesh::VectorT<char, Dim>>(_bi);
+  }
+  else if(_property_type == get_string_for_type(OpenMesh::VectorT<double, Dim>()))
+  {
+    add_generic_property_aux<OpenMesh::VectorT<double, Dim>>(_bi);
+  }
+  else if(_property_type == get_string_for_type(OpenMesh::VectorT<float, Dim>()))
+  {
+    add_generic_property_aux<OpenMesh::VectorT<float, Dim>>(_bi);
+  }
+  else if(_property_type == get_string_for_type(OpenMesh::VectorT<int, Dim>()))
+  {
+    add_generic_property_aux<OpenMesh::VectorT<int, Dim>>(_bi);
+  }
+  else if(_property_type == get_string_for_type(OpenMesh::VectorT<long, Dim>()))
+  {
+    add_generic_property_aux<OpenMesh::VectorT<long, Dim>>(_bi);
+  }
+  else if(_property_type == get_string_for_type(OpenMesh::VectorT<short, Dim>()))
+  {
+    add_generic_property_aux<OpenMesh::VectorT<short, Dim>>(_bi);
+  }
+  else if(_property_type == get_string_for_type(OpenMesh::VectorT<uchar, Dim>()))
+  {
+   add_generic_property_aux<OpenMesh::VectorT<uchar, Dim>>(_bi);
+  }
+  else if(_property_type == get_string_for_type(OpenMesh::VectorT<uint, Dim>()))
+  {
+    add_generic_property_aux<OpenMesh::VectorT<uint, Dim>>(_bi);
+  }
+  else if(_property_type == get_string_for_type(OpenMesh::VectorT<ulong, Dim>()))
+  {
+    add_generic_property_aux<OpenMesh::VectorT<ulong, Dim>>(_bi);
+  }
+  else if(_property_type == get_string_for_type(OpenMesh::VectorT<ushort, Dim>()))
+  {
+    add_generic_property_aux<OpenMesh::VectorT<ushort, Dim>>(_bi);
+  }
 }
 
 template<typename T>

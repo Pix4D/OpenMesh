@@ -156,9 +156,12 @@ private:
 
   //------------------helper
 private:
-
   void add_generic_property(OMFormat::Chunk::PropertyName& _property_type, BaseImporter& _bi) const;
   template <typename T> void add_generic_property_aux(BaseImporter& _bi) const;
+
+  void check_all_vector_types(OMFormat::Chunk::PropertyName& _property_type, BaseImporter& _bi) const;
+  template<int Dim> void check_all_vector_types_aux(OMFormat::Chunk::PropertyName& _property_type, BaseImporter& _bi) const;
+  void check_all_std_vector_types_aux(OMFormat::Chunk::PropertyName& _property_type, BaseImporter& _bi) const;
 };
 
 
