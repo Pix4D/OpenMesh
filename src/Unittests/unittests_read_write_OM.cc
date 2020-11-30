@@ -2,6 +2,7 @@
 #include <Unittests/unittests_common.hh>
 
 #include <OpenMesh/Core/Utils/PropertyManager.hh>
+#include <OpenMesh/Core/Utils/PropertyCreator.hh>
 
 namespace {
 
@@ -1722,4 +1723,36 @@ TEST_F(OpenMeshReadWriteOM, WriteAndLoadDoubles) {
   EXPECT_EQ(mesh.normal(OpenMesh::FaceHandle(0)), mesh2.normal(OpenMesh::FaceHandle(0)));
 }
 
+
+
+/*
+ * Create Property from String
+ */
+TEST_F(OpenMeshReadWriteOM, PropertyFromString)
+{
+  {
+    std::string  int_prop_name = "my int prop";
+    OpenMesh::create_property_from_string<OpenMesh::VertexHandle>(mesh_, "int", int_prop_name);
+    bool has_int_prop = OpenMesh::hasProperty<OpenMesh::VertexHandle, int>(mesh_, int_prop_name.c_str());
+    EXPECT_TRUE(has_int_prop);
+  }
+
+  {
+    std::string  double_prop_name = "my double prop";
+    OpenMesh::create_property_from_string<OpenMesh::VertexHandle>(mesh_, "double", double_prop_name);
+    bool has_double_prop = OpenMesh::hasProperty<OpenMesh::VertexHandle, double>(mesh_, double_prop_name.c_str());
+    EXPECT_TRUE(has_double_prop);
+  }
+
+  {
+    std::string  vec_float_prop_name = "my vector of floats prop";
+    OpenMesh::create_property_from_string<OpenMesh::VertexHandle>(mesh_, "std::vector<float>", vec_float_prop_name);
+    bool has_vec_float_prop = OpenMesh::hasProperty<OpenMesh::VertexHandle, std::vector<float>>(mesh_, vec_float_prop_name.c_str());
+    EXPECT_TRUE(has_vec_float_prop);
+  }
 }
+
+}
+
+OM_REGISTER_PROPERTY_TYPE(double, "double")
+OM_REGISTER_PROPERTY_TYPE(std::vector<float>, "std::vector<float>")
