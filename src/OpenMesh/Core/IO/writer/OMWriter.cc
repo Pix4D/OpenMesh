@@ -573,7 +573,7 @@ bool _OMWriter_::write_binary(std::ostream& _os, BaseExporter& _be,
   chunk_header.entity_ = OMFormat::Chunk::Entity_Sentinel;
   bytes += store(_os, chunk_header, swap);
 
-  std::clog << "#bytes written: " << bytes << std::endl;
+  omlog() << "#bytes written: " << bytes << std::endl;
 
   return true;
 }
