@@ -792,7 +792,7 @@ size_t _OMReader_::restore_binary_custom_data(std::istream& _is, BaseProperty* _
 
       block_size = 0;
     } else {
-      omerr() << "Warning! Property " << _bp->name() << " not loaded: " << "Mismatching data sizes!n";
+      omerr() << "Warning! Property " << _bp->name() << " not loaded: " << "Mismatching data sizes!" << std::endl;
     }
   }
 
