@@ -873,6 +873,10 @@ void _OMReader_::check_all_std_vector_types_aux(OMFormat::Chunk::PropertyName& _
   {
     add_generic_property_aux<std::vector<char>>(_bi);
   }
+  else if(_property_type == get_string_for_type(std::vector<signed char>()))
+  {
+    add_generic_property_aux<std::vector<signed char>>(_bi);
+  }
   else if(_property_type == get_string_for_type(std::vector<double>()))
   {
     add_generic_property_aux<std::vector<double>>(_bi);
@@ -921,6 +925,10 @@ void _OMReader_::check_all_vector_types_aux(OMFormat::Chunk::PropertyName& _prop
   else if(_property_type == get_string_for_type(OpenMesh::VectorT<char, Dim>()))
   {
     add_generic_property_aux<OpenMesh::VectorT<char, Dim>>(_bi);
+  }
+  else if(_property_type == get_string_for_type(OpenMesh::VectorT<signed char, Dim>()))
+  {
+    add_generic_property_aux<OpenMesh::VectorT<signed char, Dim>>(_bi);
   }
   else if(_property_type == get_string_for_type(OpenMesh::VectorT<double, Dim>()))
   {

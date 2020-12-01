@@ -1467,7 +1467,7 @@ std::string get_type_string(OpenMesh::HalfedgeHandle) { return "Halfedge"; }
 std::string get_type_string(OpenMesh::VertexHandle)   { return "Vertex";   }
 
 std::string get_type_string(char)                     { return "char";            }
-std::string get_type_string(signed char)              { return "signed char";            }
+std::string get_type_string(signed char)              { return "signed char";     }
 std::string get_type_string(double)                   { return "double";          }
 std::string get_type_string(float)                    { return "float";           }
 std::string get_type_string(int)                      { return "int";             }
@@ -1568,10 +1568,10 @@ void do_property(MeshT& _mesh, PropertyAction action)
 template <typename MeshT, typename HandleT, int Dim>
 void do_all_property_types_vec(MeshT& _mesh, PropertyAction action)
 {
-  //do_property<MeshT, HandleT, OpenMesh::VectorT<signed char   , Dim>>(_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::VectorT<signed char   , Dim>>(_mesh, action);
   do_property<MeshT, HandleT, OpenMesh::VectorT<double        , Dim>>(_mesh, action);
   do_property<MeshT, HandleT, OpenMesh::VectorT<float         , Dim>>(_mesh, action);
-  //do_property<MeshT, HandleT, OpenMesh::VectorT<int           , Dim>>(_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::VectorT<int           , Dim>>(_mesh, action);
   do_property<MeshT, HandleT, OpenMesh::VectorT<short         , Dim>>(_mesh, action);
   do_property<MeshT, HandleT, OpenMesh::VectorT<unsigned char , Dim>>(_mesh, action);
   do_property<MeshT, HandleT, OpenMesh::VectorT<unsigned int  , Dim>>(_mesh, action);
