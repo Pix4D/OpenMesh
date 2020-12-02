@@ -44,7 +44,7 @@ if ( BUILD_APPS )
     if (NOT QT5_FOUND)
       set(QT5_REQUIRED_PACKAGES
         Qt5Core
-        Qt5Widget
+        Qt5Widgets
         Qt5OpenGL
         Qt5Gui
         )
