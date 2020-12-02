@@ -42,7 +42,14 @@ if ( BUILD_APPS )
 
     # For the apps, we need qt and opengl to build them
     if (NOT QT5_FOUND)
+      set(QT5_REQUIRED_PACKAGES
+        Qt5Core
+        Qt5Widget
+        Qt5OpenGL
+        Qt5Gui
+        )
       acg_qt5 ()
+      set(CMAKE_AUTOMOC ON)
     endif()
 
     if ("${CMAKE_GENERATOR}" MATCHES "MinGW Makefiles")
