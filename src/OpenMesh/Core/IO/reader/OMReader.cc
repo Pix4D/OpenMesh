@@ -562,7 +562,6 @@ bool _OMReader_::read_binary_face_chunk(std::istream &_is, BaseImporter &_bi, Op
       {
         Chunk::PropertyName property_type;
         bytes_ += restore(_is, property_type, _swap);
-
         add_generic_property(property_type, _bi);
       }
 
@@ -738,7 +737,6 @@ bool _OMReader_::read_binary_mesh_chunk(std::istream &_is, BaseImporter &_bi, Op
       {
         Chunk::PropertyName property_type;
         bytes_ += restore(_is, property_type, _swap);
-
         add_generic_property(property_type, _bi);
       }
 

@@ -620,8 +620,7 @@ size_t _OMWriter_::store_binary_custom_chunk(std::ostream& _os,
   // 2. property name
   bytes += store( _os, OMFormat::Chunk::PropertyName(_bp.name()), _swap );
 
-  // 3. data type
-
+  // 3. data type needed to add property automatically, supported by version 2.1 or later
   if(_OMWriter_::version_ > OMFormat::mk_version(2,1))
   {
     OMFormat::Chunk::PropertyName type = OMFormat::Chunk::PropertyName(_bp.get_storage_name());
