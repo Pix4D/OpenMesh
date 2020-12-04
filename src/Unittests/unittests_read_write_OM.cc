@@ -1595,7 +1595,7 @@ void do_all_property_types(MeshT& _mesh, PropertyAction action)
   do_property<MeshT, HandleT, double>              (_mesh, action);
   do_property<MeshT, HandleT, float>               (_mesh, action);
   do_property<MeshT, HandleT, char>                (_mesh, action);
-//  do_property<MeshT, HandleT, bool>                (_mesh, action);
+  do_property<MeshT, HandleT, bool>                (_mesh, action);
 //  do_property<MeshT, HandleT, std::vector<int>>    (_mesh, action);
 //  do_property<MeshT, HandleT, std::vector<double>> (_mesh, action);
 //  do_property<MeshT, HandleT, std::vector<float>>  (_mesh, action);
