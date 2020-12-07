@@ -154,7 +154,7 @@ endif()
 # Only call fixbundle, when we are building OpenMesh standalone
 if(${PROJECT_NAME} MATCHES "OpenMesh")
 
-  if (WIN32 AND  BUILD_APPS AND QT5_FOUND)
+  if (WIN32 AND  BUILD_APPS)
     # prepare bundle generation cmake file and add a build target for it
     configure_file ("${CMAKE_CURRENT_SOURCE_DIR}/cmake/fixbundle.cmake.win.in"
        "${CMAKE_CURRENT_BINARY_DIR}/fixbundle.win.cmake" @ONLY IMMEDIATE)
@@ -167,7 +167,7 @@ if(${PROJECT_NAME} MATCHES "OpenMesh")
   endif()
  
   # On apple we do a fixbundle, which is only necessary for the apps and not for the libs
-  if (APPLE AND BUILD_APPS AND QT5_FOUND)
+  if (APPLE AND BUILD_APPS)
     # prepare bundle generation cmake file and add a build target for it
     configure_file ("${CMAKE_SOURCE_DIR}/cmake/fixbundle.cmake.in"
        "${CMAKE_BINARY_DIR}/fixbundle.cmake" @ONLY IMMEDIATE)
