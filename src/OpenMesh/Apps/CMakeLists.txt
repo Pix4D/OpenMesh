@@ -1,4 +1,4 @@
-include (ACGCommon)
+include (VCICommon)
 
 if ( NOT DEFINED BUILD_APPS )
   set( BUILD_APPS true CACHE BOOL "Enable or disable building of apps" )
@@ -48,7 +48,7 @@ if ( BUILD_APPS )
         Qt5OpenGL
         Qt5Gui
         )
-      acg_qt5 ()
+      vci_qt5 ()
       set(CMAKE_AUTOMOC ON)
     endif()
 

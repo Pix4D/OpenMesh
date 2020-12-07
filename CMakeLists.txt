@@ -41,9 +41,9 @@ set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_CU
 set (CMAKE_DEBUG_POSTFIX "d")
 
 # include our cmake files
-include (ACGCommon)
+include (VCICommon)
 
-acg_get_version ()
+vci_get_version ()
 
 
 # Disable package building when built as an external library
@@ -51,8 +51,8 @@ if(${PROJECT_NAME} MATCHES "OpenMesh")
     include(OpenMeshPackage)
 endif()
 
-include (ACGOutput)
-include(ACGQt)
+include (VCIOutput)
+include(VCIQt)
 
 # ========================================================================
 # Definitions
@@ -203,4 +203,4 @@ install(EXPORT OpenMeshConfig DESTINATION share/OpenMesh/cmake)
 export(TARGETS OpenMeshCore OpenMeshTools FILE OpenMeshConfig.cmake)
 
 # display results
-acg_print_configure_header (OPENMESH "OpenMesh")
+vci_print_configure_header (OPENMESH "OpenMesh")

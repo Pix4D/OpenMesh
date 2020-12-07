@@ -1,4 +1,4 @@
-include (ACGCommon)
+include (VCICommon)
 
 include_directories (
   ..
@@ -39,13 +39,13 @@ if ( OPENMESH_BUILD_UNIT_TESTS )
     # Create new target named unittests_hexmeshing
     FILE(GLOB UNITTEST_SRC *.cc)
     # Create unittest executable
-    acg_add_executable(unittests ${UNITTEST_SRC})
-    acg_add_executable(unittests_customvec ${UNITTEST_SRC})
-    acg_add_executable(unittests_doublevec ${UNITTEST_SRC})
+    vci_add_executable(unittests ${UNITTEST_SRC})
+    vci_add_executable(unittests_customvec ${UNITTEST_SRC})
+    vci_add_executable(unittests_doublevec ${UNITTEST_SRC})
     target_compile_definitions(unittests_customvec PRIVATE TEST_CUSTOM_TRAITS)
     target_compile_definitions(unittests_doublevec PRIVATE TEST_DOUBLE_TRAITS)
  
-    # For the unittest we don't want the install rpath as set by acg_add_executable 
+    # For the unittest we don't want the install rpath as set by vci_add_executable 
     set_target_properties ( unittests PROPERTIES  BUILD_WITH_INSTALL_RPATH 0 )
     set_target_properties ( unittests_customvec PROPERTIES  BUILD_WITH_INSTALL_RPATH 0 )
     set_target_properties ( unittests_doublevec PROPERTIES  BUILD_WITH_INSTALL_RPATH 0 )

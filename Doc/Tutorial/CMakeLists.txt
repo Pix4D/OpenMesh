@@ -1,4 +1,4 @@
-include (ACGCommon)
+include (VCICommon)
 
 include_directories (
   ../../..
@@ -11,7 +11,7 @@ set (targetName MyOwnProject)
 acg_append_files (headers "*.hh" .)
 acg_append_files (sources "*.cc" .)
 
-acg_add_executable (${targetName} ${headers} ${sources})
+vci_add_executable (${targetName} ${headers} ${sources})
 
 target_link_libraries (${targetName}
   OpenMeshCore
