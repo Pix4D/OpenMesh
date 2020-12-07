@@ -8,8 +8,8 @@ include_directories (
 set (targetName MyOwnProject)
 
 # collect all header and source files
-acg_append_files (headers "*.hh" .)
-acg_append_files (sources "*.cc" .)
+vci_append_files (headers "*.hh" .)
+vci_append_files (sources "*.cc" .)
 
 vci_add_executable (${targetName} ${headers} ${sources})
 
