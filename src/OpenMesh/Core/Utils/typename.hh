@@ -9,7 +9,7 @@
 #include <typeinfo>
 #include <vector>
 #include <OpenMesh/Core/Mesh/Handles.hh>
-#include <OpenMesh/Core/Geometry/Vector11T.hh>
+#include <OpenMesh/Core/Geometry/VectorT.hh>
 
 namespace OpenMesh {
 

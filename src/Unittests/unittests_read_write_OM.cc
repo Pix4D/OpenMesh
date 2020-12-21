@@ -1601,7 +1601,7 @@ void do_all_property_types(MeshT& _mesh, PropertyAction action)
 //  do_property<MeshT, HandleT, std::vector<float>>  (_mesh, action);
 //  do_property<MeshT, HandleT, std::vector<char>>   (_mesh, action);
 //  do_property<MeshT, HandleT, std::vector<bool>>   (_mesh, action);
-    do_all_property_types_vec_all_dim<MeshT, HandleT>(_mesh, action);
+  do_all_property_types_vec_all_dim<MeshT, HandleT>(_mesh, action);
 }
 
 template <typename MeshT>
@@ -1754,5 +1754,5 @@ TEST_F(OpenMeshReadWriteOM, PropertyFromString)
 
 }
 
-OM_REGISTER_PROPERTY_TYPE(double, "double")
+//OM_REGISTER_PROPERTY_TYPE(double, "double")
 OM_REGISTER_PROPERTY_TYPE(std::vector<float>, "std::vector<float>")

@@ -59,6 +59,8 @@
 #include <OpenMesh/Core/IO/writer/OMWriter.hh>
 #include <OpenMesh/Core/Utils/typename.hh>
 
+#include <OpenMesh/Core/Utils/PropertyCreator.hh>
+
 //=== NAMESPACES ==============================================================
 
 
@@ -806,50 +808,86 @@ size_t _OMReader_::restore_binary_custom_data(std::istream& _is, BaseProperty* _
 //--------------------------------helper
 void _OMReader_:: add_generic_property(OMFormat::Chunk::PropertyName& _property_type, BaseImporter& _bi) const
 {
-  if(_property_type == get_string_for_type(bool()))
+  PropertyCreationManager& manager = PropertyCreationManager::instance();
+  switch (chunk_header_.entity_)
   {
-    add_generic_property_aux<bool>(_bi);
-  }
-  else if(_property_type == get_string_for_type(char()))
+  case OMFormat::Chunk::Entity_Vertex:
   {
-    add_generic_property_aux<char>(_bi);
+    manager.create_property<OpenMesh::VertexHandle>(*_bi.kernel(), _property_type, property_name_);
+    break;
   }
-  else if(_property_type == get_string_for_type(double()))
+  case OMFormat::Chunk::Entity_Face:
   {
-    add_generic_property_aux<double>(_bi);
+    manager.create_property<OpenMesh::FaceHandle>(*_bi.kernel(), _property_type, property_name_);
+    break;
   }
-  else if(_property_type == get_string_for_type(float()))
+  case OMFormat::Chunk::Entity_Edge:
   {
-    add_generic_property_aux<float>(_bi);
+    manager.create_property<OpenMesh::EdgeHandle>(*_bi.kernel(), _property_type, property_name_);
+    break;
   }
-  else if(_property_type == get_string_for_type(int()))
+  case OMFormat::Chunk::Entity_Halfedge:
   {
-    add_generic_property_aux<int>(_bi);
+    manager.create_property<OpenMesh::HalfedgeHandle>(*_bi.kernel(), _property_type, property_name_);
+    break;
   }
-  else if(_property_type == get_string_for_type(long()))
+  case OMFormat::Chunk::Entity_Mesh:
   {
-    add_generic_property_aux<long>(_bi);
+    manager.create_property<OpenMesh::MeshHandle>(*_bi.kernel(), _property_type, property_name_);
+    break;
   }
-  else if(_property_type == get_string_for_type(short()))
-  {
-    add_generic_property_aux<short>(_bi);
+  case OMFormat::Chunk::Entity_Sentinel:
+    ;
+  break;
+  default:
+    ;
   }
-  else if(_property_type == get_string_for_type(uchar()))
-  {
-   add_generic_property_aux<uchar>(_bi);
-  }
-  else if(_property_type == get_string_for_type(uint()))
-  {
-    add_generic_property_aux<uint>(_bi);
-  }
-  else if(_property_type == get_string_for_type(ulong()))
-  {
-    add_generic_property_aux<ulong>(_bi);
-  }
-  else
-  {
-    check_all_vector_types(_property_type, _bi);
-  }
+ 
+  
+//  if(_property_type == get_string_for_type(bool()))
+//  {
+//    add_generic_property_aux<bool>(_bi);
+//  }
+//  else if(_property_type == get_string_for_type(char()))
+//  {
+//    add_generic_property_aux<char>(_bi);
+//  }
+//  else if(_property_type == get_string_for_type(double()))
+//  {
+//    add_generic_property_aux<double>(_bi);
+//  }
+//  else if(_property_type == get_string_for_type(float()))
+//  {
+//    add_generic_property_aux<float>(_bi);
+//  }
+//  else if(_property_type == get_string_for_type(int()))
+//  {
+//    add_generic_property_aux<int>(_bi);
+//  }
+//  else if(_property_type == get_string_for_type(long()))
+//  {
+//    add_generic_property_aux<long>(_bi);
+//  }
+//  else if(_property_type == get_string_for_type(short()))
+//  {
+//    add_generic_property_aux<short>(_bi);
+//  }
+//  else if(_property_type == get_string_for_type(uchar()))
+//  {
+//   add_generic_property_aux<uchar>(_bi);
+//  }
+//  else if(_property_type == get_string_for_type(uint()))
+//  {
+//    add_generic_property_aux<uint>(_bi);
+//  }
+//  else if(_property_type == get_string_for_type(ulong()))
+//  {
+//    add_generic_property_aux<ulong>(_bi);
+//  }
+//  else
+//  {
+//    check_all_vector_types(_property_type, _bi);
+//  }
 }
 
 void _OMReader_::check_all_vector_types(OMFormat::Chunk::PropertyName& _property_type, BaseImporter& _bi) const

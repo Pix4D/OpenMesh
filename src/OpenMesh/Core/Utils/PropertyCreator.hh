@@ -50,6 +50,13 @@
 #include <string>
 #include <memory>
 
+#include <OpenMesh/Core/IO/importer/BaseImporter.hh>
+#include <OpenMesh/Core/Mesh/Handles.hh>
+#include <OpenMesh/Core/Geometry/VectorT.hh>
+#include <OpenMesh/Core/Utils/typename.hh>
+#include <vector>
+
+
 namespace OpenMesh {
 
 #define OM_CONCAT_IMPL(a, b) a##b
@@ -74,24 +81,24 @@ public:
   bool can_you_create(const std::string &_type_name);
 
   /// Create a vertex property on _mesh with name _property_name
-  virtual void create_vertex_property  (PolyConnectivity& _mesh, const std::string& _property_name) = 0;
+  virtual void create_vertex_property  (BaseKernel& _mesh, const std::string& _property_name) = 0;
 
   /// Create a halfedge property on _mesh with name _property_name
-  virtual void create_halfedge_property(PolyConnectivity& _mesh, const std::string& _property_name) = 0;
+  virtual void create_halfedge_property(BaseKernel& _mesh, const std::string& _property_name) = 0;
 
   /// Create an edge property on _mesh with name _property_name
-  virtual void create_edge_property    (PolyConnectivity& _mesh, const std::string& _property_name) = 0;
+  virtual void create_edge_property    (BaseKernel& _mesh, const std::string& _property_name) = 0;
 
   /// Create a face property on _mesh with name _property_name
-  virtual void create_face_property    (PolyConnectivity& _mesh, const std::string& _property_name) = 0;
+  virtual void create_face_property    (BaseKernel& _mesh, const std::string& _property_name) = 0;
 
   /// Create a mesh property on _mesh with name _property_name
-  virtual void create_mesh_property    (PolyConnectivity& _mesh, const std::string& _property_name) = 0;
+  virtual void create_mesh_property    (BaseKernel& _mesh, const std::string& _property_name) = 0;
 
 
   /// Create a property for the element of type HandleT on _mesh with name _property_name
   template <typename HandleT>
-  void create_property(PolyConnectivity& _mesh, const std::string& _property_name);
+  void create_property(BaseKernel& _mesh, const std::string& _property_name);
 
   virtual ~PropertyCreator() {}
 
@@ -100,11 +107,11 @@ protected:
 
 };
 
-template <> inline void PropertyCreator::create_property<VertexHandle>  (PolyConnectivity& _mesh, const std::string& _property_name) { create_vertex_property  (_mesh, _property_name); }
-template <> inline void PropertyCreator::create_property<HalfedgeHandle>(PolyConnectivity& _mesh, const std::string& _property_name) { create_halfedge_property(_mesh, _property_name); }
-template <> inline void PropertyCreator::create_property<EdgeHandle>    (PolyConnectivity& _mesh, const std::string& _property_name) { create_edge_property    (_mesh, _property_name); }
-template <> inline void PropertyCreator::create_property<FaceHandle>    (PolyConnectivity& _mesh, const std::string& _property_name) { create_face_property    (_mesh, _property_name); }
-template <> inline void PropertyCreator::create_property<MeshHandle>    (PolyConnectivity& _mesh, const std::string& _property_name) { create_mesh_property    (_mesh, _property_name); }
+template <> inline void PropertyCreator::create_property<VertexHandle>  (BaseKernel& _mesh, const std::string& _property_name) { create_vertex_property  (_mesh, _property_name); }
+template <> inline void PropertyCreator::create_property<HalfedgeHandle>(BaseKernel& _mesh, const std::string& _property_name) { create_halfedge_property(_mesh, _property_name); }
+template <> inline void PropertyCreator::create_property<EdgeHandle>    (BaseKernel& _mesh, const std::string& _property_name) { create_edge_property    (_mesh, _property_name); }
+template <> inline void PropertyCreator::create_property<FaceHandle>    (BaseKernel& _mesh, const std::string& _property_name) { create_face_property    (_mesh, _property_name); }
+template <> inline void PropertyCreator::create_property<MeshHandle>    (BaseKernel& _mesh, const std::string& _property_name) { create_mesh_property    (_mesh, _property_name); }
 
 /// Helper class that contains the implementation of the create_<HandleT>_property methods.
 /// Implementation is injected into PropertyCreatorT.
@@ -113,11 +120,16 @@ class PropertyCreatorImpl : public PropertyCreator
 {
 public:
   std::string type_id_string() override { return get_type_name<typename PropertyCreatorT::type>(); }
-  void create_vertex_property  (PolyConnectivity& _mesh, const std::string& _property_name) override { VProp<typename PropertyCreatorT::type> prop(_mesh, _property_name.c_str()); }
-  void create_halfedge_property(PolyConnectivity& _mesh, const std::string& _property_name) override { HProp<typename PropertyCreatorT::type> prop(_mesh, _property_name.c_str()); }
-  void create_edge_property    (PolyConnectivity& _mesh, const std::string& _property_name) override { EProp<typename PropertyCreatorT::type> prop(_mesh, _property_name.c_str()); }
-  void create_face_property    (PolyConnectivity& _mesh, const std::string& _property_name) override { FProp<typename PropertyCreatorT::type> prop(_mesh, _property_name.c_str()); }
-  void create_mesh_property    (PolyConnectivity& _mesh, const std::string& _property_name) override { MProp<typename PropertyCreatorT::type> prop(_mesh, _property_name.c_str()); }
+  void create_vertex_property  (BaseKernel& _mesh, const std::string& _property_name) override {  VPropHandleT<typename PropertyCreatorT::type> prop;
+                                                                                                  _mesh.add_property(prop, _property_name); }
+  void create_halfedge_property(BaseKernel& _mesh, const std::string& _property_name) override {  HPropHandleT<typename PropertyCreatorT::type> prop;
+                                                                                                  _mesh.add_property(prop, _property_name);  }
+  void create_edge_property    (BaseKernel& _mesh, const std::string& _property_name) override {  EPropHandleT<typename PropertyCreatorT::type> prop;
+                                                                                                  _mesh.add_property(prop, _property_name);  }
+  void create_face_property    (BaseKernel& _mesh, const std::string& _property_name) override {  FPropHandleT<typename PropertyCreatorT::type> prop;
+                                                                                                  _mesh.add_property(prop, _property_name); }
+  void create_mesh_property    (BaseKernel& _mesh, const std::string& _property_name) override {  MPropHandleT<typename PropertyCreatorT::type> prop;
+                                                                                                  _mesh.add_property(prop, _property_name); }
 
   ~PropertyCreatorImpl() override {}
 protected:
@@ -132,9 +144,12 @@ class PropertyCreatorT : public PropertyCreatorImpl<PropertyCreatorT<T>>
 };
 }
 
+///used to register custom type, where typename.hh does NOT provide a string for type recognition
 
 #define OM_REGISTER_PROPERTY_TYPE(ClassName, TypeString)                                       \
 namespace OpenMesh {                                                                           \
+inline std::string get_string_for_type(ClassName){ return TypeString;}                         \
+                                                                                               \
 namespace  {  /* ensure internal linkage of class */                                           \
 template <>                                                                                    \
 class PropertyCreatorT<ClassName> : public PropertyCreatorImpl<PropertyCreatorT<ClassName>>    \
@@ -154,6 +169,31 @@ public:                                                                         
 static PropertyCreatorT<ClassName> OM_CONCAT(property_creator_registration_object_, __LINE__); \
 }                                                                                              \
 
+
+
+///used to register custom type, where typename.hh does provide a string for type recognition
+///
+#define OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(ClassName)                              \
+namespace OpenMesh {                                                                           \
+namespace  {  /* ensure internal linkage of class */                                           \
+template <>                                                                                    \
+class PropertyCreatorT<ClassName> : public PropertyCreatorImpl<PropertyCreatorT<ClassName>>    \
+{                                                                                              \
+public:                                                                                        \
+  using type = ClassName;                                                                      \
+  std::string type_string() override { return OpenMesh::get_string_for_type(type()); }             \
+                                                                                               \
+  PropertyCreatorT()                                                                           \
+  {                                                                                            \
+    PropertyCreationManager::instance().register_property_creator(this);                       \
+  }                                                                                            \
+  ~PropertyCreatorT() override {}                                                              \
+};                                                                                             \
+}                                                                                              \
+/* static to ensure internal linkage of object */                                              \
+static PropertyCreatorT<ClassName> OM_CONCAT(property_creator_registration_object_, __LINE__); \
+}
+
 /** \brief Class for adding properties based on strings
  *
  * The PropertyCreationManager holds all PropertyCreators and dispatches the property creation
@@ -170,7 +210,7 @@ public:
   static PropertyCreationManager& instance();
 
   template <typename HandleT>
-  void create_property(PolyConnectivity& _mesh, const std::string& _type_name, const std::string& _property_name)
+  void create_property(BaseKernel& _mesh, const std::string& _type_name, const std::string& _property_name)
   {
     for (const auto& pc : property_creators_)
       if (pc->can_you_create(_type_name))
@@ -214,13 +254,84 @@ private:
  *  For user defined types you need to register the type using OM_REGISTER_PROPERTY_TYPE(ClassName, TypeString)
  * */
 template <typename HandleT>
-void create_property_from_string(PolyConnectivity& _mesh, const std::string& _type_name, const std::string& _property_name)
+void create_property_from_string(BaseKernel& _mesh, const std::string& _type_name, const std::string& _property_name)
 {
   PropertyCreationManager::instance().create_property<HandleT>(_mesh, _type_name, _property_name);
 }
 
-
-
 } /* namespace OpenMesh */
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(OpenMesh::FaceHandle)
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(OpenMesh::EdgeHandle)
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(OpenMesh::HalfedgeHandle)
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(OpenMesh::VertexHandle)
 
-OM_REGISTER_PROPERTY_TYPE(int, "int");
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(bool)
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(char)
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(signed char)
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(double)
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(float)
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(int)
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(short)
+
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(unsigned char);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(unsigned int);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(unsigned short);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(unsigned long);
+
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec1c);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec1uc);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec1s);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec1us);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec1i);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec1ui);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec1f);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec1d);
+
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec2c);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec2uc);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec2s);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec2us);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec2i);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec2ui);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec2f);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec2d);
+
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec3c);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec3uc);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec3s);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec3us);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec3i);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec3ui);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec3f);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec3d);
+
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec4c);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec4uc);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec4s);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec4us);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec4i);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec4ui);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec4f);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec4d);
+
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec5c);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec5uc);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec5s);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec5us);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec5i);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec5ui);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec5f);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec5d);
+
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec6c);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec6uc);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec6s);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec6us);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec6i);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec6ui);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec6f);
+OM_REGISTER_PROPERTY_TYPE_USING_DEFAULT_STRING(Vec6d);
+
+
+
+
