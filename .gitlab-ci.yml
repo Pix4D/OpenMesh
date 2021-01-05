@@ -38,7 +38,7 @@ cppcheck:
 # Compiler:   gcc
 # Language:   cpp11
 
-build-debug-gcc-cpp11:
+iwyu-debug-gcc-cpp11:
   stage: build
   script: "CI/ci-linux-build.sh gcc cpp11 debug"
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
@@ -74,7 +74,7 @@ test-debug-gcc-cpp11:
 # Compiler:   gcc
 # Language:   cpp11
 
-build-release-gcc-cpp11:
+iwyu-release-gcc-cpp11:
   stage: build
   script: "CI/ci-linux-build.sh gcc cpp11 release"
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
@@ -110,7 +110,7 @@ test-release-gcc-cpp11:
 # Compiler:   clang
 # Language:   cpp11
 
-build-debug-clang-cpp11:
+iwyu-debug-clang-cpp11:
   stage: build
   script: "CI/ci-linux-build.sh clang cpp11 debug"
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
@@ -146,7 +146,7 @@ test-debug-clang-cpp11:
 # Compiler:   clang
 # Language:   cpp11
 
-build-release-clang-cpp11:
+iwyu-release-clang-cpp11:
   stage: build
   script: "CI/ci-linux-build.sh clang cpp11 release"
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
@@ -182,7 +182,7 @@ test-release-clang-cpp11:
 # Compiler:   gcc
 # Language:   cpp14
 
-build-debug-gcc-cpp14:
+iwyu-debug-gcc-cpp14:
   stage: build
   script: "CI/ci-linux-build.sh gcc cpp14 debug"
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
@@ -218,7 +218,7 @@ test-debug-gcc-cpp14:
 # Compiler:   gcc
 # Language:   cpp14
 
-build-release-gcc-cpp14:
+iwyu-release-gcc-cpp14:
   stage: build
   script: "CI/ci-linux-build.sh gcc cpp14 release"
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
@@ -254,7 +254,7 @@ test-release-gcc-cpp14:
 # Compiler:   clang
 # Language:   cpp14
 
-build-debug-clang-cpp14:
+iwyu-debug-clang-cpp14:
   stage: build
   script: "CI/ci-linux-build.sh clang cpp14 debug"
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
@@ -290,7 +290,7 @@ test-debug-clang-cpp14:
 # Compiler:   clang
 # Language:   cpp14
 
-build-release-clang-cpp14:
+iwyu-release-clang-cpp14:
   stage: build
   script: "CI/ci-linux-build.sh clang cpp14 release"
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
