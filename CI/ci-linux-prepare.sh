@@ -3,6 +3,7 @@
 COMPILER=$1
 LANGUAGE=$2
 BUILD_TYPE=$3
+IWYU=$4
 
 # Exit script on any error
 set -e 
@@ -56,4 +57,10 @@ if [ "$BUILD_TYPE" == "release" ]; then
 else
     export BUILD_TYPE=debug
     BUILDPATH="$BUILDPATH-debug"  
+fi
+
+if [ "$IWYU" == "IWYU" ]; then
+  echo "Include what you use enabled.";
+  BUILDPATH="$BUILDPATH-iwyu"
+  OPTIONS="$OPTIONS -DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
 fi

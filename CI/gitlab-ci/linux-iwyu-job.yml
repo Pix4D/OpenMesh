@@ -1,0 +1,15 @@
+#-----------  Job Informations:
+# Type:       Build: {{BUILDTYPE}}
+# OS:         Linux
+# Compiler:   {{COMPILER}}
+# Language:   {{LANGUAGE}}
+
+build-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}:
+  stage: build
+  script: "CI/ci-linux-build.sh {{COMPILER}} {{LANGUAGE}} {{BUILDTYPE}} IWYU"
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags: [Docker]
+  artifacts:
+    paths:
+    - build-{{COMPILER}}-{{LANGUAGE}}-{{BUILDTYPE}}-Vector-Checks/compile_commands.json
+    - build-{{COMPILER}}-{{LANGUAGE}}-{{BUILDTYPE}}-Vector-Checks/iwyu.dump

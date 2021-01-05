@@ -16,3 +16,5 @@ cppcheck:
 {linux-template-job.yml, COMPILER=clang, LANGUAGE=cpp11}
 {linux-template-job.yml, COMPILER=gcc, LANGUAGE=cpp14}
 {linux-template-job.yml, COMPILER=clang, LANGUAGE=cpp14}
+
+{linux-iwyu-job.yml, BUILDTYPE=release, COMPILER=clang, LANGUAGE=cpp14}
