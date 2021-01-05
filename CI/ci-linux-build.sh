@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+set -o pipefail
 source CI/ci-linux-prepare.sh
 
 echo -e "${OUTPUT}"
