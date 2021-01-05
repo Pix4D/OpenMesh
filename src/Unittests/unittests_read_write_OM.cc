@@ -4,6 +4,58 @@
 #include <OpenMesh/Core/Utils/PropertyManager.hh>
 #include <OpenMesh/Core/Utils/PropertyCreator.hh>
 
+
+struct MyData_test{
+  int               ival;
+  double            dval;
+  bool              bval;
+  OpenMesh::Vec4f   vec4fval;
+
+};
+
+namespace OpenMesh
+{
+namespace IO
+{
+  template <> struct binary<MyData_test>
+  {
+  typedef MyData_test value_type;
+  static const bool is_streamable = true;
+  // return binary size of the value
+  static size_t size_of(void)
+  {
+    return sizeof(int)+sizeof(double)+sizeof(bool)+sizeof(OpenMesh::Vec4f);
+  }
+  static size_t size_of(const value_type&)
+  {
+    return size_of();
+  }
+  static std::string string_for_value_type(void)
+  {
+    return "MyData_test";
+  }
+  static size_t store(std::ostream& _os, const value_type& _v, bool _swap=false)
+  {
+    size_t bytes;
+    bytes  = IO::store( _os, _v.ival, _swap );
+    bytes += IO::store( _os, _v.dval, _swap );
+    bytes += IO::store( _os, _v.bval, _swap );
+    bytes += IO::store( _os, _v.vec4fval, _swap );
+    return _os.good() ? bytes : 0;
+  }
+  static size_t restore( std::istream& _is, value_type& _v, bool _swap=false)
+  {
+    size_t bytes;
+    bytes  = IO::restore( _is, _v.ival, _swap );
+    bytes += IO::restore( _is, _v.dval, _swap );
+    bytes += IO::restore( _is, _v.bval, _swap );
+    bytes += IO::restore( _is, _v.vec4fval, _swap );
+    return _is.good() ? bytes : 0;
+  }
+  };
+}
+}
+
 namespace {
 
 class OpenMeshReadWriteOM : public OpenMeshBase {
@@ -1723,8 +1775,6 @@ TEST_F(OpenMeshReadWriteOM, WriteAndLoadDoubles) {
   EXPECT_EQ(mesh.normal(OpenMesh::FaceHandle(0)), mesh2.normal(OpenMesh::FaceHandle(0)));
 }
 
-
-
 /*
  * Create Property from String
  */
@@ -1750,9 +1800,16 @@ TEST_F(OpenMeshReadWriteOM, PropertyFromString)
     bool has_vec_float_prop = OpenMesh::hasProperty<OpenMesh::VertexHandle, std::vector<float>>(mesh_, vec_float_prop_name.c_str());
     EXPECT_TRUE(has_vec_float_prop);
   }
+
+  {
+    std::string  MyData_prop_name = "my MyData prop";
+    OpenMesh::create_property_from_string<OpenMesh::VertexHandle>(mesh_, "MyData_test", MyData_prop_name);
+    bool has_myData_prop = OpenMesh::hasProperty<OpenMesh::VertexHandle, MyData_test>(mesh_, MyData_prop_name.c_str());
+    EXPECT_TRUE(has_myData_prop);
+  }
 }
 
 }
 
-//OM_REGISTER_PROPERTY_TYPE(double, "double")
-OM_REGISTER_PROPERTY_TYPE(std::vector<float>, "std::vector<float>")
+OM_REGISTER_PROPERTY_TYPE(std::vector<float>)
+OM_REGISTER_PROPERTY_TYPE(MyData_test)
