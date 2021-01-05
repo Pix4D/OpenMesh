@@ -334,8 +334,8 @@ iwyu-release-clang-cpp14:
   tags: [Docker]
   artifacts:
     paths:
-    - build-clang-cpp14-release-Vector-Checks/compile_commands.json
-    - build-clang-cpp14-release-Vector-Checks/iwyu.dump
+    - build-clang-cpp14-release-iwyu-Vector-Checks/compile_commands.json
+    - build-clang-cpp14-release-iwyu-Vector-Checks/iwyu.dump
 
 # -----------------
 # MAC tasks
