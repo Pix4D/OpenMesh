@@ -41,9 +41,9 @@
 
 
 
-#ifndef OPENMESH_PROPERTY_HH
-#define OPENMESH_PROPERTY_HH
-
+//#ifndef OPENMESH_PROPERTY_HH
+//#define OPENMESH_PROPERTY_HH
+#pragma once
 
 //== INCLUDES =================================================================
 
@@ -54,7 +54,8 @@
 #include <vector>
 #include <string>
 #include <algorithm>
-#include <OpenMesh/Core/Utils/typename.hh>
+
+#include <OpenMesh/Core/IO/SR_store.hh>
 
 
 //== NAMESPACES ===============================================================
@@ -210,7 +211,7 @@ public: // data access interface
 
   std::string get_storage_name() const override
   {
-    return get_string_for_type(T());
+    return OpenMesh::IO::binary<T>::string_for_value_type();
   }
 
 private:
@@ -378,7 +379,7 @@ public:
 
     std::string get_storage_name() const override
     {
-      return get_string_for_type(bool());
+      return OpenMesh::IO::binary<bool>::string_for_value_type();
     }
 
 
@@ -470,7 +471,7 @@ public:
 
   std::string get_storage_name() const override
   {
-    return get_string_for_type(std::string());
+    return OpenMesh::IO::binary<std::string>::string_for_value_type();
   }
 private:
 
@@ -595,5 +596,5 @@ struct PropHandle<FaceHandle> {
 
 } // namespace OpenMesh
 //=============================================================================
-#endif // OPENMESH_PROPERTY_HH defined
+//#endif // OPENMESH_PROPERTY_HH defined
 //=============================================================================
