@@ -11,5 +11,5 @@ iwyu-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}:
   tags: [Docker]
   artifacts:
     paths:
-    - build-{{COMPILER}}-{{LANGUAGE}}-{{BUILDTYPE}}-Vector-Checks/compile_commands.json
-    - build-{{COMPILER}}-{{LANGUAGE}}-{{BUILDTYPE}}-Vector-Checks/iwyu.dump
+    - build-{{COMPILER}}-{{LANGUAGE}}-{{BUILDTYPE}}-iwyu-Vector-Checks/compile_commands.json
+    - build-{{COMPILER}}-{{LANGUAGE}}-{{BUILDTYPE}}-iwyu-Vector-Checks/iwyu.dump
