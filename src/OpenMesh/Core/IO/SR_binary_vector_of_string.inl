@@ -23,6 +23,7 @@ template <> struct binary< std::vector< std::string > >
   static size_t size_of(const value_type& _v)
   { return std::accumulate( _v.begin(), _v.end(), size_t(0), Sum() ); }
 
+  static std::string string_for_value_type(void) { return get_string_for_type(value_type()); }
   static 
   size_t store(std::ostream& _os, const value_type& _v, bool _swap=false)
   {

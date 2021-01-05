@@ -106,6 +106,8 @@ template < typename T > struct binary
   static size_t size_of(void) { return UnknownSize; }
   static size_t size_of(const value_type&) { return UnknownSize; }
 
+  static std::string string_for_value_type (void) { return "UnknownType"; }
+
   static 
   size_t store( std::ostream& /* _os */,
 		const value_type& /* _v */,

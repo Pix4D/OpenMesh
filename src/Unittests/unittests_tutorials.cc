@@ -79,6 +79,7 @@ namespace OpenMesh {
         return size_of();
       }
 
+      static std::string string_for_value_type(void) { return "MyData"; }
       static size_t store(std::ostream& _os, const value_type& _v, bool _swap=false)
       {
         size_t bytes;
@@ -125,6 +126,7 @@ namespace OpenMesh {
         return bytes;
       }
 
+      static std::string string_for_value_type(void) { return "MyMap"; }
       static
       size_t store(std::ostream& _os, const value_type& _v, bool _swap=false)
       {

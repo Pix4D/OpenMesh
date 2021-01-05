@@ -12,7 +12,7 @@ template <> struct binary< std::vector<bool> >
   {
     return _v.size() / 8 + ((_v.size() % 8)!=0); 
   }
-
+  static std::string string_for_value_type(void) { return get_string_for_type(value_type()); }
   static
   size_t store( std::ostream& _ostr, const value_type& _v, bool ) 
   {

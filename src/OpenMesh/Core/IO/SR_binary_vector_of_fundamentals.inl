@@ -11,7 +11,7 @@ template <> struct binary< std::vector< T > > {                 \
                                                                 \
   static size_t size_of(const value_type& _v)                   \
   { return sizeof(elem_type)*_v.size(); }                       \
-                                                                \
+  static std::string string_for_value_type(void) { return get_string_for_type(value_type()); }\
   static                                                        \
   size_t store(std::ostream& _os, const value_type& _v, bool _swap=false) { \
     size_t bytes=0;                                             \
