@@ -130,6 +130,13 @@ SIMPLE_BINARY(uint16_t);
 SIMPLE_BINARY(uint32_t);
 SIMPLE_BINARY(uint64_t);
 
+//handles
+SIMPLE_BINARY(OpenMesh::FaceHandle);
+SIMPLE_BINARY(OpenMesh::EdgeHandle);
+SIMPLE_BINARY(OpenMesh::HalfedgeHandle);
+SIMPLE_BINARY(OpenMesh::VertexHandle);
+SIMPLE_BINARY(OpenMesh::MeshHandle);
+
 #undef SIMPLE_BINARY
 
 // For unsigned long which is of size 64 bit on 64 bit
@@ -258,7 +265,6 @@ template <> struct binary< std::string > {
     return _is.good() ? (len+bytes) : 0;
   }
 };
-
 
 template <> struct binary<OpenMesh::Attributes::StatusInfo>
 {

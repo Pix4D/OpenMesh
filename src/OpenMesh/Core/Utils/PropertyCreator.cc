@@ -62,10 +62,11 @@ bool PropertyCreator::can_you_create(const std::string& _type_name)
 
 } /* namespace OpenMesh */
 
-//OM_REGISTER_PROPERTY_TYPE(OpenMesh::FaceHandle)
-//OM_REGISTER_PROPERTY_TYPE(OpenMesh::EdgeHandle)
-//OM_REGISTER_PROPERTY_TYPE(OpenMesh::HalfedgeHandle)
-//OM_REGISTER_PROPERTY_TYPE(OpenMesh::VertexHandle)
+OM_REGISTER_PROPERTY_TYPE(OpenMesh::FaceHandle)
+OM_REGISTER_PROPERTY_TYPE(OpenMesh::EdgeHandle)
+OM_REGISTER_PROPERTY_TYPE(OpenMesh::HalfedgeHandle)
+OM_REGISTER_PROPERTY_TYPE(OpenMesh::VertexHandle)
+OM_REGISTER_PROPERTY_TYPE(OpenMesh::MeshHandle)
 
 OM_REGISTER_PROPERTY_TYPE(bool)
 OM_REGISTER_PROPERTY_TYPE(char)

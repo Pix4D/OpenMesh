@@ -30,9 +30,9 @@ std::string get_type_name()
 
 inline std::string get_string_for_type(OpenMesh::FaceHandle){ return "facehandle";}
 inline std::string get_string_for_type(OpenMesh::EdgeHandle){ return "edgehandle";}
-
 inline std::string  get_string_for_type(OpenMesh::HalfedgeHandle){ return "halfedgehandle";}
 inline std::string  get_string_for_type(OpenMesh::VertexHandle){ return "vertexhandle";}
+inline std::string  get_string_for_type(OpenMesh::MeshHandle){ return "meshhandle";}
 
 inline std::string  get_string_for_type(bool){ return "bool";}
 inline std::string  get_string_for_type(char){ return "char";}
