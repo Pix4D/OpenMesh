@@ -4,8 +4,7 @@
 #include <OpenMesh/Core/Utils/PropertyManager.hh>
 #include <OpenMesh/Core/Utils/PropertyCreator.hh>
 
-
-struct MyData_test{
+struct RegisteredDataType{
   int               ival;
   double            dval;
   bool              bval;
@@ -17,9 +16,9 @@ namespace OpenMesh
 {
 namespace IO
 {
-  template <> struct binary<MyData_test>
+  template <> struct binary<RegisteredDataType>
   {
-  typedef MyData_test value_type;
+  typedef RegisteredDataType value_type;
   static const bool is_streamable = true;
   // return binary size of the value
   static size_t size_of(void)
@@ -32,7 +31,7 @@ namespace IO
   }
   static std::string string_for_value_type(void)
   {
-    return "MyData_test";
+    return "RegisteredDataType";
   }
   static size_t store(std::ostream& _os, const value_type& _v, bool _swap=false)
   {
@@ -1535,7 +1534,6 @@ std::string get_type_string(std::vector<T>)            { return "std::vector of 
 template <typename T, int Dim>
 std::string get_type_string(OpenMesh::VectorT<T, Dim>) { return "OM vector of dimension " + std::to_string(Dim) + " of type " + get_type_string(T()); }
 
-
 template <typename T>
 T get_value(int seed, T, int seed2 = 0)
 {
@@ -1803,8 +1801,8 @@ TEST_F(OpenMeshReadWriteOM, PropertyFromString)
 
   {
     std::string  MyData_prop_name = "my MyData prop";
-    OpenMesh::create_property_from_string<OpenMesh::VertexHandle>(mesh_, "MyData_test", MyData_prop_name);
-    bool has_myData_prop = OpenMesh::hasProperty<OpenMesh::VertexHandle, MyData_test>(mesh_, MyData_prop_name.c_str());
+    OpenMesh::create_property_from_string<OpenMesh::VertexHandle>(mesh_, "RegisteredDataType", MyData_prop_name);
+    bool has_myData_prop = OpenMesh::hasProperty<OpenMesh::VertexHandle, RegisteredDataType>(mesh_, MyData_prop_name.c_str());
     EXPECT_TRUE(has_myData_prop);
   }
 }
@@ -1812,4 +1810,4 @@ TEST_F(OpenMeshReadWriteOM, PropertyFromString)
 }
 
 OM_REGISTER_PROPERTY_TYPE(std::vector<float>)
-OM_REGISTER_PROPERTY_TYPE(MyData_test)
+OM_REGISTER_PROPERTY_TYPE(RegisteredDataType)
