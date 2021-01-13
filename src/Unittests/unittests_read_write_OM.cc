@@ -1710,19 +1710,15 @@ TEST_F(OpenMeshReadWriteOM, LoadTriangleMeshWithPropertiesCurrentVersion) {
   ASSERT_EQ(36u , mesh_.n_halfedges()) << "The number of loaded halfedges is not correct!";
 
   add_all_properties(mesh_);
-
   mesh_.request_halfedge_texcoords2D();
 
   std::string file_name_2_2 = "cube_tri_with_properties_2_2.om";
   OpenMesh::IO::Options ops(OpenMesh::IO::Options::Custom);
   ops += OpenMesh::IO::Options::FaceTexCoord;
 
-  std::cout << "ops has facetexcoords: " << ops.face_has_texcoord() << std::endl;
-
   OpenMesh::IO::write_mesh(mesh_, file_name_2_2, ops);
 
   Mesh new_mesh;
-
   OpenMesh::IO::read_mesh(new_mesh, file_name_2_2, ops);
 
   check_all_properties(new_mesh);
