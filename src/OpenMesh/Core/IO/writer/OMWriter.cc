@@ -303,7 +303,6 @@ bool _OMWriter_::write_binary(std::ostream& _os, BaseExporter& _be,
     chunk_header.dim_ = OMFormat::dim(t);
     chunk_header.bits_ = OMFormat::bits(t[0]);
 
-    // std::clog << chunk_header << std::endl;
     bytes += store(_os, chunk_header, swap);
 
     for (i = 0, nV = header.n_vertices_; i < nV; ++i)
@@ -336,6 +335,30 @@ bool _OMWriter_::write_binary(std::ostream& _os, BaseExporter& _be,
       bytes += store( _os, face_id,      OMFormat::Chunk::Integer_Size(chunk_header.bits_), swap );
     }
   }
+
+
+  // ---------- write face texture coords
+  if (_OMWriter_::version_ > OMFormat::mk_version(2,1) && _be.n_edges() && _opt.check(Options::FaceTexCoord))
+  {
+
+    t = _be.texcoord(HalfedgeHandle(0));
+
+    chunk_header.name_ = false;
+    chunk_header.entity_ = OMFormat::Chunk::Entity_Halfedge;
+    chunk_header.type_ = OMFormat::Chunk::Type_Texcoord;
+    chunk_header.signed_ = OMFormat::is_signed(t[0]);
+    chunk_header.float_ = OMFormat::is_float(t[0]);
+    chunk_header.dim_ = OMFormat::dim(t);
+    chunk_header.bits_ = OMFormat::bits(t[0]);
+
+    bytes += store(_os, chunk_header, swap);
+
+    int nHE;
+    for (i = 0, nHE = header.n_edges_*2; i < nHE; ++i)
+      bytes += vector_store(_os, _be.texcoord(HalfedgeHandle(i)), swap);
+
+  }
+  //---------------------------------------------------------------
 
   // ---------- write vertex topology (outgoing halfedge)
   if (_be.n_vertices())

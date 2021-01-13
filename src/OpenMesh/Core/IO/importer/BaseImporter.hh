@@ -152,6 +152,9 @@ public:
   // set incident face handle for given halfedge
   virtual void set_face(HalfedgeHandle _heh, FaceHandle _fh) = 0;
 
+  // request texture coordinate property
+  virtual void request_face_texcoords2D() = 0;
+
   // set vertex texture coordinate
   virtual void set_texcoord(HalfedgeHandle _heh, const Vec2f& _texcoord) = 0;
 

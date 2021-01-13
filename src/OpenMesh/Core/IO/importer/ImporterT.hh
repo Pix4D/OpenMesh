@@ -285,9 +285,14 @@ public:
     mesh_.set_face_handle(_heh, _fh);
   }
 
+  virtual void request_face_texcoords2D() override
+  {
+    if(!mesh_.has_halfedge_texcoords2D())
+      mesh_.request_halfedge_texcoords2D();
+  }
 
   virtual void set_texcoord(HalfedgeHandle _heh, const Vec2f& _texcoord) override
-  {
+  { 
     if (mesh_.has_halfedge_texcoords2D())
       mesh_.set_texcoord2D(_heh, vector_cast<TexCoord2D>(_texcoord));
   }
