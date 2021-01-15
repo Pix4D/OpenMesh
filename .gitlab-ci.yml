@@ -417,19 +417,19 @@ macos-cpp14-release:
 # OS:           Windows
 # Architecture: x64
 # Shared:       TRUE
-# VS Version:   VS2017
+# VS Version:   VS2019
 # Apps:         {{APPS}}
 
-build-VS2017-x64-shared-TRUE-apps:
+build-VS2019-x64-shared-TRUE-apps:
   stage: build
   variables:
-    BUILD_PLATFORM: "VS2017"
+    BUILD_PLATFORM: "VS2019"
     ARCHITECTURE:   "x64"
     SHARED:         "TRUE"
     APPS:           "ON"
   script: "CI\\Windows.bat"
   tags:
-    - VS2017
+    - VS2019
     - Qt5150
   artifacts:
     paths:
@@ -440,16 +440,16 @@ build-VS2017-x64-shared-TRUE-apps:
         - build-release/unittests/report-customvec.xml
         - build-release/unittests/report-doublevec.xml
 
-build-VS2017-x64-shared-TRUE-no-apps:
+build-VS2019-x64-shared-TRUE-no-apps:
   stage: build
   variables:
-    BUILD_PLATFORM: "VS2017"
+    BUILD_PLATFORM: "VS2019"
     ARCHITECTURE:   "x64"
     SHARED:         "TRUE"
     APPS:           "OFF"
   script: "CI\\Windows.bat"
   tags:
-    - VS2017
+    - VS2019
   artifacts:
     paths:
       - build-release/*.exe
@@ -464,19 +464,19 @@ build-VS2017-x64-shared-TRUE-no-apps:
 # OS:           Windows
 # Architecture: x64
 # Shared:       FALSE
-# VS Version:   VS2017
+# VS Version:   VS2019
 # Apps:         {{APPS}}
 
-build-VS2017-x64-shared-FALSE-apps:
+build-VS2019-x64-shared-FALSE-apps:
   stage: build
   variables:
-    BUILD_PLATFORM: "VS2017"
+    BUILD_PLATFORM: "VS2019"
     ARCHITECTURE:   "x64"
     SHARED:         "FALSE"
     APPS:           "ON"
   script: "CI\\Windows.bat"
   tags:
-    - VS2017
+    - VS2019
     - Qt5150
   artifacts:
     paths:
@@ -487,16 +487,16 @@ build-VS2017-x64-shared-FALSE-apps:
         - build-release/unittests/report-customvec.xml
         - build-release/unittests/report-doublevec.xml
 
-build-VS2017-x64-shared-FALSE-no-apps:
+build-VS2019-x64-shared-FALSE-no-apps:
   stage: build
   variables:
-    BUILD_PLATFORM: "VS2017"
+    BUILD_PLATFORM: "VS2019"
     ARCHITECTURE:   "x64"
     SHARED:         "FALSE"
     APPS:           "OFF"
   script: "CI\\Windows.bat"
   tags:
-    - VS2017
+    - VS2019
   artifacts:
     paths:
       - build-release/*.exe
