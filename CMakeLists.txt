@@ -37,13 +37,13 @@ if (NOT WIN32 AND NOT CMAKE_BUILD_TYPE)
 endif()
 
 # add our macro directory to cmake search path
-set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_CURRENT_SOURCE_DIR}/cmake-library/finders ${CMAKE_CURRENT_SOURCE_DIR}/cmake-library/VCI )
 set (CMAKE_DEBUG_POSTFIX "d")
 
 # include our cmake files
-include (ACGCommon)
+include (VCICommon)
 
-acg_get_version ()
+vci_get_version ()
 
 
 # Disable package building when built as an external library
@@ -51,8 +51,8 @@ if(${PROJECT_NAME} MATCHES "OpenMesh")
     include(OpenMeshPackage)
 endif()
 
-include (ACGOutput)
-include(ACGQt)
+include (VCIOutput)
+include(VCIQt)
 
 # ========================================================================
 # Definitions
@@ -154,7 +154,7 @@ endif()
 # Only call fixbundle, when we are building OpenMesh standalone
 if(${PROJECT_NAME} MATCHES "OpenMesh")
 
-  if (WIN32 AND  BUILD_APPS )
+  if (WIN32 AND  BUILD_APPS)
     # prepare bundle generation cmake file and add a build target for it
     configure_file ("${CMAKE_CURRENT_SOURCE_DIR}/cmake/fixbundle.cmake.win.in"
        "${CMAKE_CURRENT_BINARY_DIR}/fixbundle.win.cmake" @ONLY IMMEDIATE)
@@ -203,4 +203,4 @@ install(EXPORT OpenMeshConfig DESTINATION share/OpenMesh/cmake)
 export(TARGETS OpenMeshCore OpenMeshTools FILE OpenMeshConfig.cmake)
 
 # display results
-acg_print_configure_header (OPENMESH "OpenMesh")
+vci_print_configure_header (OPENMESH "OpenMesh")

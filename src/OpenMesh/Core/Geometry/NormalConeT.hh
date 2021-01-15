@@ -72,7 +72,7 @@ namespace OpenMesh {
 //== CLASS DEFINITION =========================================================
 
 
-/** /class NormalCone NormalCone.hh <ACG/Geometry/Types/NormalCone.hh>
+/** /class NormalCone NormalCone.hh <OpenMesh/Core/Geometry/NormalConeT.hh>
 
     NormalCone that can be merged with other normal cones. Provides
     the center normal and the opening angle.

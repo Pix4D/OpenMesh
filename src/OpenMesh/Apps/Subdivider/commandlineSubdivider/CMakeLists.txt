@@ -1,11 +1,11 @@
-include (ACGCommon)
+include (VCICommon)
 
 include_directories (
   ../../../..
   ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-acg_add_executable (commandlineSubdivider ../subdivider.cc)
+vci_add_executable (commandlineSubdivider ../subdivider.cc)
 
 target_link_libraries (commandlineSubdivider
   OpenMeshCore

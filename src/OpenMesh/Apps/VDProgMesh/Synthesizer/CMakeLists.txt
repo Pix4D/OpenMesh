@@ -1,4 +1,4 @@
-include (ACGCommon)
+include (VCICommon)
 
 include_directories (
   ../../../..
@@ -17,9 +17,9 @@ set (sources
 
 
 if (WIN32)
-  acg_add_executable (Synthesizer WIN32 ${sources} ${headers})
+  vci_add_executable (Synthesizer WIN32 ${sources} ${headers})
 else ()
-  acg_add_executable (Synthesizer ${sources} ${headers})
+  vci_add_executable (Synthesizer ${sources} ${headers})
 endif ()
 
 target_link_libraries (Synthesizer

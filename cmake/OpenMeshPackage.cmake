@@ -7,7 +7,7 @@ option (
 
 # set name
 set (CPACK_PACKAGE_NAME "OpenMesh")
-set (CPACK_PACKAGE_VENDOR "ACG")
+set (CPACK_PACKAGE_VENDOR "VCI")
 
 # set version
 set (CPACK_PACKAGE_VERSION_MAJOR "${OPENMESH_VERSION_MAJOR}")
@@ -46,9 +46,6 @@ list (APPEND CPACK_SOURCE_IGNORE_FILES "/tmp/")
 
 list (APPEND CPACK_SOURCE_IGNORE_FILES "/.*\\\\.kdevelop")
 list (APPEND CPACK_SOURCE_IGNORE_FILES "/.*\\\\.kdevses")
-
-list (APPEND CPACK_SOURCE_IGNORE_FILES "/ACG/lib/")
-list (APPEND CPACK_SOURCE_IGNORE_FILES "/ACG/include/")
 
 if (DISABLE_QMAKE_BUILD)
   list (APPEND CPACK_SOURCE_IGNORE_FILES "/.*\\\\.pro")
@@ -123,7 +120,7 @@ endif ()
 if (WIN32)
   set (CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_SKIP "true")
 #  include (InstallRequiredSystemLibraries)
-  install (PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION ${ACG_PROJECT_BINDIR})
+  install (PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION ${VCI_PROJECT_BINDIR})
 else ()
   include (InstallRequiredSystemLibraries)
 endif ()
