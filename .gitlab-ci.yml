@@ -430,6 +430,101 @@ build-VS2017-x64-shared-TRUE-apps:
   script: "CI\\Windows.bat"
   tags:
     - VS2017
+    - Qt5150
+  artifacts:
+    paths:
+      - build-release/*.exe
+    reports:
+      junit:
+        - build-release/unittests/report.xml
+        - build-release/unittests/report-customvec.xml
+        - build-release/unittests/report-doublevec.xml
+
+build-VS2017-x64-shared-TRUE-no-apps:
+  stage: build
+  variables:
+    BUILD_PLATFORM: "VS2017"
+    ARCHITECTURE:   "x64"
+    SHARED:         "TRUE"
+    APPS:           "OFF"
+  script: "CI\\Windows.bat"
+  tags:
+    - VS2017
+  artifacts:
+    paths:
+      - build-release/*.exe
+    reports:
+      junit:
+        - build-release/unittests/report.xml
+        - build-release/unittests/report-customvec.xml
+        - build-release/unittests/report-doublevec.xml
+
+#-------------  Job Informations:
+# Type:         Build+Test: Release
+# OS:           Windows
+# Architecture: x64
+# Shared:       FALSE
+# VS Version:   VS2017
+# Apps:         {{APPS}}
+
+build-VS2017-x64-shared-FALSE-apps:
+  stage: build
+  variables:
+    BUILD_PLATFORM: "VS2017"
+    ARCHITECTURE:   "x64"
+    SHARED:         "FALSE"
+    APPS:           "ON"
+  script: "CI\\Windows.bat"
+  tags:
+    - VS2017
+    - Qt5150
+  artifacts:
+    paths:
+      - build-release/*.exe
+    reports:
+      junit:
+        - build-release/unittests/report.xml
+        - build-release/unittests/report-customvec.xml
+        - build-release/unittests/report-doublevec.xml
+
+build-VS2017-x64-shared-FALSE-no-apps:
+  stage: build
+  variables:
+    BUILD_PLATFORM: "VS2017"
+    ARCHITECTURE:   "x64"
+    SHARED:         "FALSE"
+    APPS:           "OFF"
+  script: "CI\\Windows.bat"
+  tags:
+    - VS2017
+  artifacts:
+    paths:
+      - build-release/*.exe
+    reports:
+      junit:
+        - build-release/unittests/report.xml
+        - build-release/unittests/report-customvec.xml
+        - build-release/unittests/report-doublevec.xml
+
+
+#-------------  Job Informations:
+# Type:         Build+Test: Release
+# OS:           Windows
+# Architecture: x64
+# Shared:       TRUE
+# VS Version:   VS2017
+# Apps:         {{APPS}}
+
+build-VS2017-x64-shared-TRUE-apps:
+  stage: build
+  variables:
+    BUILD_PLATFORM: "VS2017"
+    ARCHITECTURE:   "x64"
+    SHARED:         "TRUE"
+    APPS:           "ON"
+  script: "CI\\Windows.bat"
+  tags:
+    - VS2017
     - Qt5101
   artifacts:
     paths:
