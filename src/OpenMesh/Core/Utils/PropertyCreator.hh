@@ -64,7 +64,7 @@ namespace OpenMesh {
  * The type of the property is specified in the classes derived from this class.
  *
  * */
-class PropertyCreator
+class OPENMESHDLLEXPORT PropertyCreator
 {
 public:
 
@@ -112,7 +112,7 @@ template <> inline void PropertyCreator::create_property<MeshHandle>    (BaseKer
 /// Helper class that contains the implementation of the create_<HandleT>_property methods.
 /// Implementation is injected into PropertyCreatorT.
 template <typename PropertyCreatorT>
-class PropertyCreatorImpl : public PropertyCreator
+class OPENMESHDLLEXPORT PropertyCreatorImpl : public PropertyCreator
 {
 public:
   std::string type_id_string() override { return get_type_name<typename PropertyCreatorT::type>(); }
@@ -135,7 +135,7 @@ protected:
 /// Actual PropertyCreators specialize this class in order to add properties of type T
 namespace  {
 template <typename T>
-class PropertyCreatorT : public PropertyCreatorImpl<PropertyCreatorT<T>>
+class OPENMESHDLLEXPORT PropertyCreatorT : public PropertyCreatorImpl<PropertyCreatorT<T>>
 {
 };
 }
@@ -172,7 +172,7 @@ static PropertyCreatorT<ClassName> OM_CONCAT(property_creator_registration_objec
  * them without manually adding the property yourself you can register your type by calling the
  * OM_REGISTER_PROPERTY_TYPE(ClassName, TypeString)
  * */
-class PropertyCreationManager
+class OPENMESHDLLEXPORT PropertyCreationManager
 {
 public:
 
