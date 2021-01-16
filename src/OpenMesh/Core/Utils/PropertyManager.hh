@@ -619,7 +619,7 @@ public:
   using value_type = typename PropertyT::value_type;
   using Handle     = typename PropertyT::Handle;
 
-  ConstPropertyViewer(const PolyConnectivity& mesh, PropertyT property_handle)
+  ConstPropertyViewer(const PolyConnectivity& mesh, const PropertyT& property_handle)
     :
       mesh_(mesh),
       prop_(property_handle)
