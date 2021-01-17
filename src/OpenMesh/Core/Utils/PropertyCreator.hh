@@ -181,12 +181,29 @@ public:
   template <typename HandleT>
   void create_property(BaseKernel& _mesh, const std::string& _type_name, const std::string& _property_name)
   {
-    for (const auto& pc : property_creators_)
-      if (pc->can_you_create(_type_name))
-      {
-        pc->create_property<HandleT>(_mesh, _property_name);
-        return;
-      }
+
+    auto can_create = [_type_name](OpenMesh::PropertyCreator* pc){
+      return pc->can_you_create(_type_name);
+    };
+
+    std::vector<OpenMesh::PropertyCreator*>::iterator pc_iter = std::find_if(property_creators_.begin(),
+                                                                        property_creators_.end(), can_create);
+    if (pc_iter != property_creators_.end())
+    {
+      const auto& pc = *pc_iter;
+      pc->create_property<HandleT>(_mesh, _property_name);
+      return;
+    }
+
+    //----------------------------------------------------
+//    for (const auto& pc : property_creators_)
+//      if (pc->can_you_create(_type_name))
+//      {
+//        pc->create_property<HandleT>(_mesh, _property_name);
+//        return;
+//      }
+    //------------------------------------------------------
+
     omerr() << "No property creator registered that can create a property of type " << _type_name << std::endl;
     omerr() << "You need to register your custom type using OM_REGISTER_PROPERTY_TYPE(ClassName) and declare the struct binary<ClassName>.\
                 See documentation for more details." << std::endl;
