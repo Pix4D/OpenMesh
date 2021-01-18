@@ -353,7 +353,7 @@ bool _OMWriter_::write_binary(std::ostream& _os, BaseExporter& _be,
 
     bytes += store(_os, chunk_header, swap);
 
-    int nHE;
+    unsigned int nHE;
     for (i = 0, nHE = header.n_edges_*2; i < nHE; ++i)
       bytes += vector_store(_os, _be.texcoord(HalfedgeHandle(i)), swap);
 

@@ -112,7 +112,7 @@ template <> inline void PropertyCreator::create_property<MeshHandle>    (BaseKer
 /// Helper class that contains the implementation of the create_<HandleT>_property methods.
 /// Implementation is injected into PropertyCreatorT.
 template <typename PropertyCreatorT>
-class OPENMESHDLLEXPORT PropertyCreatorImpl : public PropertyCreator
+class PropertyCreatorImpl : public PropertyCreator
 {
 public:
   std::string type_id_string() override { return get_type_name<typename PropertyCreatorT::type>(); }
@@ -135,7 +135,7 @@ protected:
 /// Actual PropertyCreators specialize this class in order to add properties of type T
 namespace  {
 template <typename T>
-class OPENMESHDLLEXPORT PropertyCreatorT : public PropertyCreatorImpl<PropertyCreatorT<T>>
+class PropertyCreatorT : public PropertyCreatorImpl<PropertyCreatorT<T>>
 {
 };
 }
@@ -194,15 +194,6 @@ public:
       pc->create_property<HandleT>(_mesh, _property_name);
       return;
     }
-
-    //----------------------------------------------------
-//    for (const auto& pc : property_creators_)
-//      if (pc->can_you_create(_type_name))
-//      {
-//        pc->create_property<HandleT>(_mesh, _property_name);
-//        return;
-//      }
-    //------------------------------------------------------
 
     omerr() << "No property creator registered that can create a property of type " << _type_name << std::endl;
     omerr() << "You need to register your custom type using OM_REGISTER_PROPERTY_TYPE(ClassName) and declare the struct binary<ClassName>.\
