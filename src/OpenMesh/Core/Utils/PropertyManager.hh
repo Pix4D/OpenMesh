@@ -593,6 +593,17 @@ class PropertyManager {
             src.copy_to(src_range, dst, dst_range);
         }
 
+        /**
+         * Mark whether this property should be stored when mesh is written
+         * to a file
+         *
+         * @param _persistence Property will be stored iff _persistence is true
+         */
+        void set_persistent(bool _persistence = true)
+        {
+          mesh().property(getRawProperty()).set_persistent(_persistence);
+        }
+
     private:
         void deleteProperty() {
             if (!retain_ && prop_.is_valid())
