@@ -1,4 +1,4 @@
-include (ACGCommon)
+include (VCICommon)
 
 include_directories (
   ../..
@@ -19,16 +19,16 @@ set (directories
 )
 
 # collect all header and source files
-acg_append_files (headers "*.hh" ${directories})
-acg_append_files (sources "*.cc" ${directories})
+vci_append_files (headers "*.hh" ${directories})
+vci_append_files (sources "*.cc" ${directories})
 
 IF(WIN32 AND NOT MINGW)
-  acg_append_files (sources "*.c" ${directories})
+  vci_append_files (sources "*.c" ${directories})
 ENDIF(WIN32 AND NOT MINGW)
 
 # Disable Library installation when not building OpenMesh on its own but as part of another project!
 if ( NOT ${PROJECT_NAME} MATCHES "OpenMesh")
-  set(ACG_NO_LIBRARY_INSTALL true)
+  set(VCI_NO_LIBRARY_INSTALL true)
 endif()
 
 
@@ -36,14 +36,14 @@ if (WIN32)
 
   if ( OPENMESH_BUILD_SHARED )
     add_definitions( -DOPENMESHDLL -DBUILDOPENMESHDLL)
-    acg_add_library (OpenMeshTools SHARED ${sources} ${headers})
+    vci_add_library (OpenMeshTools SHARED ${sources} ${headers})
   else()
     # OpenMesh has no dll exports so we have to build a static library on windows
-    acg_add_library (OpenMeshTools STATIC ${sources} ${headers})
+    vci_add_library (OpenMeshTools STATIC ${sources} ${headers})
   endif()
 
 else ()
-  acg_add_library (OpenMeshTools SHAREDANDSTATIC ${sources} ${headers})
+  vci_add_library (OpenMeshTools SHAREDANDSTATIC ${sources} ${headers})
   set_target_properties (OpenMeshTools PROPERTIES VERSION ${OPENMESH_VERSION_MAJOR}.${OPENMESH_VERSION_MINOR}
                                                 SOVERSION ${OPENMESH_VERSION_MAJOR}.${OPENMESH_VERSION_MINOR} )
 endif ()
@@ -74,7 +74,7 @@ endif()
 
 
 # Install Header Files (Apple)
-if ( NOT ACG_PROJECT_MACOS_BUNDLE AND APPLE )
+if ( NOT VCI_PROJECT_MACOS_BUNDLE AND APPLE )
  FILE(GLOB files_install_Decimater                       "${CMAKE_CURRENT_SOURCE_DIR}/Decimater/*.hh" )
  FILE(GLOB files_install_Dualizer                        "${CMAKE_CURRENT_SOURCE_DIR}/Dualizer/*.hh" )
  FILE(GLOB files_install_KERNEL_OSG                      "${CMAKE_CURRENT_SOURCE_DIR}/Kernel_OSG/*.hh" )
@@ -120,7 +120,7 @@ target_include_directories(OpenMeshTools PUBLIC
   $<INSTALL_INTERFACE:include>)
 
 install(TARGETS OpenMeshTools EXPORT OpenMeshConfig
-  ARCHIVE DESTINATION ${ACG_PROJECT_LIBDIR}
-  LIBRARY DESTINATION ${ACG_PROJECT_LIBDIR} 
-  RUNTIME DESTINATION ${ACG_PROJECT_BINDIR})
+  ARCHIVE DESTINATION ${VCI_PROJECT_LIBDIR}
+  LIBRARY DESTINATION ${VCI_PROJECT_LIBDIR}
+  RUNTIME DESTINATION ${VCI_PROJECT_BINDIR})
 

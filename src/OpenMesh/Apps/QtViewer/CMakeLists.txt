@@ -1,4 +1,4 @@
-include (ACGCommon)
+include (VCICommon)
 
 include_directories (
   ../../..
@@ -22,9 +22,9 @@ set (headers
 )
 
 if (WIN32)
-  acg_add_executable (QtViewer WIN32 ${sources} ${headers})
+  vci_add_executable (QtViewer WIN32 ${sources} ${headers})
 else ()
-  acg_add_executable (QtViewer ${sources} ${headers})
+  vci_add_executable (QtViewer ${sources} ${headers})
 endif ()
 
 target_link_libraries (QtViewer

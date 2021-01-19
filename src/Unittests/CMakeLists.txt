@@ -1,4 +1,4 @@
-include (ACGCommon)
+include (VCICommon)
 
 include_directories (
   ..
@@ -17,7 +17,7 @@ if ( OPENMESH_BUILD_UNIT_TESTS )
 
     enable_testing()
    
-    find_package(EIGEN3)
+    find_package(Eigen3)
 
     # Set correct include paths so that the compiler can find the headers
     include_directories(${GTEST_INCLUDE_DIRS} )
@@ -27,9 +27,11 @@ if ( OPENMESH_BUILD_UNIT_TESTS )
     link_directories(${GTEST_LIBRARY_DIR} )
 
     
-    if (EIGEN3_FOUND)
+    if (TARGET Eigen3::Eigen)
       add_definitions( -DENABLE_EIGEN3_TEST ) 
-      include_directories(${EIGEN3_INCLUDE_DIR})
+      link_libraries(Eigen3::Eigen)
+    else()
+      message(WARNING "Eigen3 not found! This will skip the Eigen3 Unittests. You can point cmake to Eigen3 by setting Eigen3_DIR to the cmake files of Eigen3")
     endif()
 
     if ( CMAKE_GENERATOR MATCHES "^Visual Studio 11.*" ) 
@@ -39,13 +41,13 @@ if ( OPENMESH_BUILD_UNIT_TESTS )
     # Create new target named unittests_hexmeshing
     FILE(GLOB UNITTEST_SRC *.cc)
     # Create unittest executable
-    acg_add_executable(unittests ${UNITTEST_SRC})
-    acg_add_executable(unittests_customvec ${UNITTEST_SRC})
-    acg_add_executable(unittests_doublevec ${UNITTEST_SRC})
+    vci_add_executable(unittests ${UNITTEST_SRC})
+    vci_add_executable(unittests_customvec ${UNITTEST_SRC})
+    vci_add_executable(unittests_doublevec ${UNITTEST_SRC})
     target_compile_definitions(unittests_customvec PRIVATE TEST_CUSTOM_TRAITS)
     target_compile_definitions(unittests_doublevec PRIVATE TEST_DOUBLE_TRAITS)
  
-    # For the unittest we don't want the install rpath as set by acg_add_executable 
+    # For the unittest we don't want the install rpath as set by vci_add_executable 
     set_target_properties ( unittests PROPERTIES  BUILD_WITH_INSTALL_RPATH 0 )
     set_target_properties ( unittests_customvec PROPERTIES  BUILD_WITH_INSTALL_RPATH 0 )
     set_target_properties ( unittests_doublevec PROPERTIES  BUILD_WITH_INSTALL_RPATH 0 )
@@ -120,9 +122,9 @@ if ( OPENMESH_BUILD_UNIT_TESTS )
        endforeach(TAR)
      endif()
 	
-    acg_copy_after_build(unittests ${CMAKE_CURRENT_SOURCE_DIR}/TestFiles ${CMAKE_BINARY_DIR}/Unittests/)
-    acg_copy_after_build(unittests_customvec ${CMAKE_CURRENT_SOURCE_DIR}/TestFiles ${CMAKE_BINARY_DIR}/Unittests/)
-    acg_copy_after_build(unittests_doublevec ${CMAKE_CURRENT_SOURCE_DIR}/TestFiles ${CMAKE_BINARY_DIR}/Unittests/)
+    vci_copy_after_build(unittests ${CMAKE_CURRENT_SOURCE_DIR}/TestFiles ${CMAKE_BINARY_DIR}/Unittests/)
+    vci_copy_after_build(unittests_customvec ${CMAKE_CURRENT_SOURCE_DIR}/TestFiles ${CMAKE_BINARY_DIR}/Unittests/)
+    vci_copy_after_build(unittests_doublevec ${CMAKE_CURRENT_SOURCE_DIR}/TestFiles ${CMAKE_BINARY_DIR}/Unittests/)
 
     add_test(NAME AllTestsIn_OpenMesh_tests WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/Unittests" COMMAND "${CMAKE_BINARY_DIR}/Unittests/unittests")
     add_test(NAME AllTestsIn_OpenMesh_tests_with_minimal_vector WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/Unittests" COMMAND "${CMAKE_BINARY_DIR}/Unittests/unittests_customvec")

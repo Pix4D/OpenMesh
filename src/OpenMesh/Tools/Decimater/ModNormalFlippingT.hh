@@ -197,6 +197,6 @@ private:
 } // END_NS_DECIMATER
 } // END_NS_OPENMESH
 //=============================================================================
-#endif // OPENACG_MODNORMALFLIPPING_HH defined
+#endif // OPENMESH_DECIMATER_MODNORMALFLIPPING_HH defined
 //=============================================================================
 
