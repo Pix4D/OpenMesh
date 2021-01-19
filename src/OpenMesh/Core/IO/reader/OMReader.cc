@@ -662,24 +662,24 @@ bool _OMReader_::read_binary_halfedge_chunk(std::istream &_is, BaseImporter &_bi
     }
 
     //----------------------------------------------------------------------------------------
-  case Chunk::Type_Texcoord:
-  {
-    assert( OMFormat::dimensions(chunk_header_) == size_t(OpenMesh::Vec2f::dim()));
-
-    //fileOptions_ += OpenMesh::IO::Options::FaceTexCoord;
-
-    if (_opt.face_has_texcoord())
+    case Chunk::Type_Texcoord:
     {
-      _bi.request_face_texcoords2D();
-    }
-    OpenMesh::Vec2f v2f;
-    for (size_t e_idx = 0; e_idx < header_.n_edges_*2; ++e_idx)
-    {
-      bytes_ += vector_restore(_is, v2f, _swap);
+      assert( OMFormat::dimensions(chunk_header_) == size_t(OpenMesh::Vec2f::dim()));
+
+      //fileOptions_ += OpenMesh::IO::Options::FaceTexCoord;
+
       if (_opt.face_has_texcoord())
-        _bi.set_texcoord(HalfedgeHandle(int(e_idx)), v2f);
-    }
-    break;
+      {
+        _bi.request_face_texcoords2D();
+      }
+      OpenMesh::Vec2f v2f;
+      for (size_t e_idx = 0; e_idx < header_.n_edges_*2; ++e_idx)
+      {
+        bytes_ += vector_restore(_is, v2f, _swap);
+        if (_opt.face_has_texcoord())
+          _bi.set_texcoord(HalfedgeHandle(int(e_idx)), v2f);
+      }
+      break;
     }
     //----------------------------------------------------------------------------------------
     case Chunk::Type_Topology:

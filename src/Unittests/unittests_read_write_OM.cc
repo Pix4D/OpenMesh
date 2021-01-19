@@ -1810,6 +1810,61 @@ TEST_F(OpenMeshReadWriteOM, PropertyFromString)
   }
 }
 
+
+/*
+ * Try to write and load bool property
+ */
+TEST_F(OpenMeshReadWriteOM, WriteAndLoadBoolCheckSpaces) {
+
+  typedef OpenMesh::PolyMesh_ArrayKernelT<OpenMesh::DefaultTraitsDouble> DoublePolyMesh;
+
+  DoublePolyMesh mesh;
+
+  OpenMesh::VPropHandleT<bool> prop;
+  mesh.add_property(prop,"VBProp");
+  mesh.property(prop).set_persistent(true);
+
+
+  // Generate a bool property which will be packed into a space character
+
+  std::vector<OpenMesh::VertexHandle> vertices;
+  for (unsigned int i = 0; i < 8; ++i)
+  {
+    vertices.push_back(mesh.add_vertex(DoublePolyMesh::Point(0.0, 0.0, 0.0)));
+
+    if ( i == 5)
+        mesh.property(prop,vertices[i]) = true;
+    else
+        mesh.property(prop,vertices[i]) = false;
+  }
+
+  std::string file_name = "bool-space-test.om";
+
+  OpenMesh::IO::Options opt = OpenMesh::IO::Options::Default;
+  ASSERT_TRUE(OpenMesh::IO::write_mesh(mesh, file_name, opt)) << "Could not write file " << file_name;
+
+
+  // ====================================================
+  // Now read it back
+  // ====================================================
+
+  DoublePolyMesh mesh2;
+  OpenMesh::VPropHandleT<bool> prop2;
+  mesh2.add_property(prop2,"VBProp");
+  mesh2.property(prop2).set_persistent(true);
+
+  ASSERT_TRUE(OpenMesh::IO::read_mesh(mesh2, file_name, opt)) << "Could not read file " << file_name;
+
+  // Check if the property is still ok
+  for (unsigned int i = 0; i < 8; ++i)
+  {
+      if ( i == 5)
+          EXPECT_TRUE( mesh.property(prop,mesh2.vertex_handle((i)) ) );
+      else
+          EXPECT_FALSE(mesh.property(prop,mesh2.vertex_handle((i))));
+  }
+}
+
 }
 
 OM_REGISTER_PROPERTY_TYPE(std::vector<float>)

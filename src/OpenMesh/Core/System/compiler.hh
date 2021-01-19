@@ -47,12 +47,6 @@
 
 //=============================================================================
 
-#if defined(ACGMAKE_STATIC_BUILD)
-#  define OM_STATIC_BUILD 1
-#endif
-
-//=============================================================================
-
 #if defined(_DEBUG) || defined(DEBUG)
 #  define OM_DEBUG
 #endif

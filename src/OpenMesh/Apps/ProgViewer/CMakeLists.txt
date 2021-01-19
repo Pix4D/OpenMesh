@@ -1,4 +1,4 @@
-include (ACGCommon)
+include (VCICommon)
 
 include_directories (
   ../../..
@@ -20,9 +20,9 @@ set( sources
 )
 
 if (WIN32)
-  acg_add_executable( ProgViewer WIN32 ${sources} ${headers})
+  vci_add_executable( ProgViewer WIN32 ${sources} ${headers})
 else ()
-  acg_add_executable( ProgViewer ${sources} ${headers})
+  vci_add_executable( ProgViewer ${sources} ${headers})
 endif ()
 
 target_link_libraries ( ProgViewer
