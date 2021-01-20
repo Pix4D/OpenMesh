@@ -7,10 +7,8 @@ set( CMAKE_CXX_STANDARD 11 )
 
 enable_testing()
 
-# Only set project name if OpenMesh is built as stand-alone library
-if("${PROJECT_NAME}" STREQUAL "")
-    project (OpenMesh)
-endif()
+
+project (OpenMesh VERSION 9.0.0) 
 
 # Set AUTO UIC/MOC Policy to new for CMAKE 3.17 or higher
 if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.17")
@@ -43,11 +41,8 @@ set (CMAKE_DEBUG_POSTFIX "d")
 # include our cmake files
 include (VCICommon)
 
-vci_get_version ()
-
-
 # Disable package building when built as an external library
-if(${PROJECT_NAME} MATCHES "OpenMesh")
+if(${CMAKE_PROJECT_NAME} MATCHES "OpenMesh")
     include(OpenMeshPackage)
 endif()
 
@@ -88,7 +83,7 @@ if ( NOT DEFINED BUILD_APPS )
 endif()
 
 # Only call fixbundle, when we are building OpenMesh standalone
-if( (${PROJECT_NAME} MATCHES "OpenMesh") AND BUILD_APPS )
+if( (${CMAKE_PROJECT_NAME} MATCHES "OpenMesh") AND BUILD_APPS )
 
   if (WIN32)
     if ( NOT "${CMAKE_GENERATOR}" MATCHES "MinGW Makefiles" AND BUILD_APPS )
@@ -120,7 +115,7 @@ if (OPENMESH_BENCHMARK_DIR)
 endif()
 
 # Do not build unit tests when build as external library
-if(${PROJECT_NAME} MATCHES "OpenMesh")
+if(${CMAKE_PROJECT_NAME} MATCHES "OpenMesh")
     add_subdirectory (src/Unittests)
 else()
 	# If built as a dependent project simulate effects of
@@ -152,7 +147,7 @@ endif()
 # ========================================================================
 
 # Only call fixbundle, when we are building OpenMesh standalone
-if(${PROJECT_NAME} MATCHES "OpenMesh")
+if(${CMAKE_PROJECT_NAME} MATCHES "OpenMesh")
 
   if (WIN32 AND  BUILD_APPS)
     # prepare bundle generation cmake file and add a build target for it
