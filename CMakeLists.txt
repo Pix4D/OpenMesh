@@ -42,7 +42,7 @@ set (CMAKE_DEBUG_POSTFIX "d")
 include (VCICommon)
 
 # Disable package building when built as an external library
-if(${PROJECT_NAME} MATCHES "OpenMesh")
+if(${CMAKE_PROJECT_NAME} MATCHES "OpenMesh")
     include(OpenMeshPackage)
 endif()
 
@@ -83,7 +83,7 @@ if ( NOT DEFINED BUILD_APPS )
 endif()
 
 # Only call fixbundle, when we are building OpenMesh standalone
-if( (${PROJECT_NAME} MATCHES "OpenMesh") AND BUILD_APPS )
+if( (${CMAKE_PROJECT_NAME} MATCHES "OpenMesh") AND BUILD_APPS )
 
   if (WIN32)
     if ( NOT "${CMAKE_GENERATOR}" MATCHES "MinGW Makefiles" AND BUILD_APPS )
@@ -115,7 +115,7 @@ if (OPENMESH_BENCHMARK_DIR)
 endif()
 
 # Do not build unit tests when build as external library
-if(${PROJECT_NAME} MATCHES "OpenMesh")
+if(${CMAKE_PROJECT_NAME} MATCHES "OpenMesh")
     add_subdirectory (src/Unittests)
 else()
 	# If built as a dependent project simulate effects of
@@ -147,7 +147,7 @@ endif()
 # ========================================================================
 
 # Only call fixbundle, when we are building OpenMesh standalone
-if(${PROJECT_NAME} MATCHES "OpenMesh")
+if(${CMAKE_PROJECT_NAME} MATCHES "OpenMesh")
 
   if (WIN32 AND  BUILD_APPS)
     # prepare bundle generation cmake file and add a build target for it
