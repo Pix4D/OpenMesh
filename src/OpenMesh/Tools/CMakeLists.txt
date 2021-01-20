@@ -27,7 +27,7 @@ IF(WIN32 AND NOT MINGW)
 ENDIF(WIN32 AND NOT MINGW)
 
 # Disable Library installation when not building OpenMesh on its own but as part of another project!
-if ( NOT ${PROJECT_NAME} MATCHES "OpenMesh")
+if ( NOT ${CMAKE_PROJECT_NAME} MATCHES "OpenMesh")
   set(VCI_NO_LIBRARY_INSTALL true)
 endif()
 
@@ -54,7 +54,7 @@ IF( NOT WIN32 )
   target_link_libraries (OpenMeshToolsStatic OpenMeshCoreStatic)
 ENDIF(NOT WIN32)
 
-if ( (${PROJECT_NAME} MATCHES "OpenMesh") AND BUILD_APPS )
+if ( (${CMAKE_PROJECT_NAME} MATCHES "OpenMesh") AND BUILD_APPS )
 
   if ( WIN32 )
     if ( NOT "${CMAKE_GENERATOR}" MATCHES "MinGW Makefiles" )
@@ -97,7 +97,7 @@ endif()
 
 
 # Only install if the project name matches OpenMesh.
-if (NOT APPLE AND ${PROJECT_NAME} MATCHES "OpenMesh")
+if (NOT APPLE AND ${CMAKE_PROJECT_NAME} MATCHES "OpenMesh")
 
 # Install Header Files
 install(DIRECTORY .

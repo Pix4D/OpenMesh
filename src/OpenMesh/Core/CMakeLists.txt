@@ -25,7 +25,7 @@ vci_append_files (headers "*.hh" ${directories})
 vci_append_files (sources "*.cc" ${directories})
 
 # Disable Library installation when not building OpenMesh on its own but as part of another project!
-if ( NOT ${PROJECT_NAME} MATCHES "OpenMesh")
+if ( NOT ${CMAKE_PROJECT_NAME} MATCHES "OpenMesh")
   set(VCI_NO_LIBRARY_INSTALL true)
 endif()
 
@@ -48,7 +48,7 @@ else ()
 endif ()
 
 # Add core as dependency before fixbundle 
-if ( (${PROJECT_NAME} MATCHES "OpenMesh") AND BUILD_APPS )
+if ( (${CMAKE_PROJECT_NAME} MATCHES "OpenMesh") AND BUILD_APPS )
 
   if ( WIN32 )
     if ( NOT "${CMAKE_GENERATOR}" MATCHES "MinGW Makefiles" )
@@ -65,7 +65,7 @@ if ( (${PROJECT_NAME} MATCHES "OpenMesh") AND BUILD_APPS )
 endif()
 
 # if we build debug and release in the same dir, we want to install both!
-if ( ${PROJECT_NAME} MATCHES "OpenMesh")
+if ( ${CMAKE_PROJECT_NAME} MATCHES "OpenMesh")
   if ( WIN32 )
     FILE(GLOB files_install_libs "${CMAKE_BINARY_DIR}/Build/lib/*.lib" )
     FILE(GLOB files_install_dlls "${CMAKE_BINARY_DIR}/Build/*.dll" )
@@ -101,7 +101,7 @@ endif()
 
 
 # Only install if the project name matches OpenMesh.
-if (NOT APPLE AND ${PROJECT_NAME} MATCHES "OpenMesh")
+if (NOT APPLE AND ${CMAKE_PROJECT_NAME} MATCHES "OpenMesh")
 
 # Install Header Files)
 install(DIRECTORY . 
