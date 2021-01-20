@@ -30,6 +30,8 @@ if ( OPENMESH_BUILD_UNIT_TESTS )
     if (TARGET Eigen3::Eigen)
       add_definitions( -DENABLE_EIGEN3_TEST ) 
       link_libraries(Eigen3::Eigen)
+    else()
+      message(WARNING "Eigen3 not found! This will skip the Eigen3 Unittests. You can point cmake to Eigen3 by setting Eigen3_DIR to the cmake files of Eigen3")
     endif()
 
     if ( CMAKE_GENERATOR MATCHES "^Visual Studio 11.*" ) 
