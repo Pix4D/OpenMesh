@@ -42,8 +42,8 @@ if (WIN32)
 
 else ()
   vci_add_library (OpenMeshCore SHAREDANDSTATIC ${sources} ${headers})
-  set_target_properties (OpenMeshCore PROPERTIES VERSION ${OPENMESH_VERSION_MAJOR}.${OPENMESH_VERSION_MINOR}
-                                               SOVERSION ${OPENMESH_VERSION_MAJOR}.${OPENMESH_VERSION_MINOR} )
+  set_target_properties (OpenMeshCore PROPERTIES VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+                                               SOVERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR} )
 
 endif ()
 

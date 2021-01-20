@@ -7,10 +7,8 @@ set( CMAKE_CXX_STANDARD 11 )
 
 enable_testing()
 
-# Only set project name if OpenMesh is built as stand-alone library
-if("${PROJECT_NAME}" STREQUAL "")
-    project (OpenMesh)
-endif()
+
+project (OpenMesh VERSION 9.0.0) 
 
 # Set AUTO UIC/MOC Policy to new for CMAKE 3.17 or higher
 if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.17")
@@ -42,9 +40,6 @@ set (CMAKE_DEBUG_POSTFIX "d")
 
 # include our cmake files
 include (VCICommon)
-
-vci_get_version ()
-
 
 # Disable package building when built as an external library
 if(${PROJECT_NAME} MATCHES "OpenMesh")
