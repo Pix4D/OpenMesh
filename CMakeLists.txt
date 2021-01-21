@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.3.0 FATAL_ERROR)
 
 
 # Set and enforce C++-11 flags
@@ -10,7 +10,7 @@ enable_testing()
 
 project (OpenMesh 
          VERSION 9.0.0
-         LANGUAGES CXX ) 
+         LANGUAGES C CXX ) 
 
 # Set AUTO UIC/MOC Policy to new for CMAKE 3.17 or higher
 if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.17")
