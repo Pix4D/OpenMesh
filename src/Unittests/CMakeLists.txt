@@ -34,10 +34,6 @@ if ( OPENMESH_BUILD_UNIT_TESTS )
       message(WARNING "Eigen3 not found! This will skip the Eigen3 Unittests. You can point cmake to Eigen3 by setting Eigen3_DIR to the cmake files of Eigen3")
     endif()
 
-    if ( CMAKE_GENERATOR MATCHES "^Visual Studio 11.*" ) 
-      add_definitions( /D _VARIADIC_MAX=10 )
-    endif()
-
     # Create new target named unittests_hexmeshing
     FILE(GLOB UNITTEST_SRC *.cc)
     # Create unittest executable
