@@ -47,7 +47,7 @@ else ()
 endif ()
 
 if (MSVC)
-  target_compile_options(OpenMeshCore PRIVATE /bigobj)
+  target_compile_options(OpenMeshCore PUBLIC /bigobj)
 endif ()
 
 # Add core as dependency before fixbundle 
