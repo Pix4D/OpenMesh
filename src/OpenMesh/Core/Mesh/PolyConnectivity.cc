@@ -304,6 +304,14 @@ PolyConnectivity::add_face(const VertexHandle* _vertex_handles, size_t _vhs_size
 
 SmartFaceHandle PolyConnectivity::add_face(VertexHandle _vh0, VertexHandle _vh1, VertexHandle _vh2, VertexHandle _vh3)
 {
+  // Check if we have been given a degenerate configuration (2 vertices are identical)
+  assert(_vh0!=_vh1);
+  assert(_vh0!=_vh2);
+  assert(_vh1!=_vh2); 
+  assert(_vh0!=_vh3);
+  assert(_vh1!=_vh3);
+  assert(_vh2!=_vh3); 
+  
   VertexHandle vhs[4] = { _vh0, _vh1, _vh2, _vh3 };
   return add_face(vhs, 4);
 }
@@ -312,6 +320,11 @@ SmartFaceHandle PolyConnectivity::add_face(VertexHandle _vh0, VertexHandle _vh1,
 
 SmartFaceHandle PolyConnectivity::add_face(VertexHandle _vh0, VertexHandle _vh1, VertexHandle _vh2)
 {
+  // Check if we have been given a degenerate configuration (2 vertices are identical)
+  assert(_vh0!=_vh1);
+  assert(_vh0!=_vh2);
+  assert(_vh1!=_vh2);
+
   VertexHandle vhs[3] = { _vh0, _vh1, _vh2 };
   return add_face(vhs, 3);
 }
