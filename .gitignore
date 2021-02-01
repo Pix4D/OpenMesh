@@ -6,3 +6,5 @@ build*
 .settings
 # ignore mac temporal files
 .DS_Store 
+.idea
+cmake-build*/

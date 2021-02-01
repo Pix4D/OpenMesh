@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+set -o pipefail
 source CI/ci-linux-prepare.sh
 
 echo -e "${OUTPUT}"
@@ -31,7 +33,25 @@ cd build-$BUILDPATH-Vector-Checks
 
 cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DOPENMESH_BUILD_UNIT_TESTS=TRUE -DSTL_VECTOR_CHECKS=ON $OPTIONS ../
 
-#build it
-make $MAKE_OPTIONS
+if [ "$IWYU" == "IWYU" ]; then
+  # do iwyu check
+  if echo $(iwyu --version) | grep -q "0.11"
+  then
+    # support older tool version
+    iwyu_tool -j 4 -p . -- \
+    --mapping_file=/usr/share/include-what-you-use/gcc.libc.imp \
+    --mapping_file=/usr/share/include-what-you-use/clang-6.intrinsics.imp \
+    | tee iwyu.dump
+  else
+    # current tool version
+    iwyu_tool -j 4 -p . -- \
+    -Xiwyu --mapping_file=/usr/share/include-what-you-use/gcc.libc.imp \
+    -Xiwyu --mapping_file=/usr/share/include-what-you-use/clang-6.intrinsics.imp \
+    | tee iwyu.dump
+  fi
+else
+  # build it
+  make $MAKE_OPTIONS
+fi
 
 cd ..

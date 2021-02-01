@@ -321,6 +321,22 @@ test-release-clang-cpp14:
 
 
 
+#-----------  Job Informations:
+# Type:       Build: release
+# OS:         Linux
+# Compiler:   clang
+# Language:   cpp14
+
+iwyu-release-clang-cpp14:
+  stage: build
+  script: "CI/ci-linux-build.sh clang cpp14 release IWYU"
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags: [Docker]
+  artifacts:
+    paths:
+    - build-clang-cpp14-release-iwyu-Vector-Checks/compile_commands.json
+    - build-clang-cpp14-release-iwyu-Vector-Checks/iwyu.dump
+
 # -----------------
 # MAC tasks
 # -----------------
