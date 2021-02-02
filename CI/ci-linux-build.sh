@@ -62,8 +62,8 @@ else
     mkdir systemlib
   fi
 
-  echo "Copying all required libraries of OpenFlipper to the systemlib directory"
-  ldd Build/bin/OpenFlipper | grep "=> /" | awk '{print $3}' | xargs -I '{}' cp -v '{}' systemlib
+  echo "Copying all required libraries of OpenMesh to the systemlib directory"
+  ldd Build/lib/libOpenMeshToolsd.so.9.0 | grep "=> /" | awk '{print $3}' | xargs -I '{}' cp -v '{}' systemlib
 fi
 
 cd ..
