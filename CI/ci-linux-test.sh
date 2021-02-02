@@ -23,11 +23,11 @@ echo "Building $BUILD_TYPE version unittests"
 echo "======================================================================"
 echo -e "${NC}"
 
-if [ ! -d build-$BUILDPATH-Vector-Checks ]; then
-  mkdir build-$BUILDPATH-Vector-Checks
+if [ ! -d build-$BUILDPATH ]; then
+  mkdir build-$BUILDPATH
 fi
 
-cd build-$BUILDPATH-Vector-Checks
+cd build-$BUILDPATH
 
 #build the unit tests
 make  $MAKE_OPTIONS unittests

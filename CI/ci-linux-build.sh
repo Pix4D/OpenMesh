@@ -25,11 +25,11 @@ echo "Building $BUILD_TYPE version with vectorchecks enabled"
 echo "======================================================================"
 echo -e "${NC}"
 
-if [ ! -d build-$BUILDPATH-Vector-Checks ]; then
-  mkdir build-$BUILDPATH-Vector-Checks
+if [ ! -d build-$BUILDPATH ]; then
+  mkdir build-$BUILDPATH
 fi
 
-cd build-$BUILDPATH-Vector-Checks
+cd build-$BUILDPATH
 
 cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DOPENMESH_BUILD_UNIT_TESTS=TRUE -DSTL_VECTOR_CHECKS=ON $OPTIONS ../
 

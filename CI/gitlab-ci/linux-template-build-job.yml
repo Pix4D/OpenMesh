@@ -14,4 +14,4 @@ build-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}:
     - stretch
   artifacts:
     paths:
-    - build-{{COMPILER}}-{{LANGUAGE}}-{{BUILDTYPE}}-{{QT_VERSION}}-Vector-Checks/
+    - build-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}-{{BUILDTYPE}}/
