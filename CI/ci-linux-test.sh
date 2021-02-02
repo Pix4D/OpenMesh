@@ -47,9 +47,6 @@ fi
 # Run cmake to make sure the tests are configured correctly for this system
 cmake -DOPENFLIPPER_BUILD_UNIT_TESTS=TRUE -DSTL_VECTOR_CHECKS=ON $OPTIONS ../
 
-#build the unit tests
-make  $MAKE_OPTIONS unittests
-
 echo -e "${OUTPUT}"
 echo ""
 echo "======================================================================"

@@ -52,6 +52,9 @@ if [ "$IWYU" == "IWYU" ]; then
 else
   # build it
   make $MAKE_OPTIONS
+
+  # build unittests
+  make  $MAKE_OPTIONS unittests
 fi
 
 cd ..
