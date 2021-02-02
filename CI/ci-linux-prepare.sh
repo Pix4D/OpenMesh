@@ -3,7 +3,8 @@
 COMPILER=$1
 LANGUAGE=$2
 BUILD_TYPE=$3
-IWYU=$4
+QTVERSION=$4
+IWYU=$5
 
 # Exit script on any error
 set -e 
@@ -90,3 +91,5 @@ if [ "$IWYU" == "IWYU" ]; then
   BUILDPATH="$BUILDPATH-iwyu"
   OPTIONS="$OPTIONS -DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
 fi
+
+echo "Building to directory $BUILDPATH"

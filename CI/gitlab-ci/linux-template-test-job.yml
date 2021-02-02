@@ -6,18 +6,12 @@
 
 test-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}:
   stage: test
-  script: "CI/ci-linux-test.sh {{COMPILER}} {{LANGUAGE}} {{BUILDTYPE}}"
+  script: "CI/ci-linux-test.sh {{COMPILER}} {{LANGUAGE}} {{BUILDTYPE}} {{QT_VERSION}}"
   #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags:
     - Linux
     - stretch
     - MultiThreads
-  variables:
-    COMPILER: "{{COMPILER}}"
-    LANGUAGE: "{{LANGUAGE}}"
-    QTVERSION: "{{QT_VERSION}}"
-    BUILDTYPE: "{{BUILDTYPE}}"
-    GIT_SUBMODULE_STRATEGY: recursive
   dependencies: [build-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}]
   needs: [build-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}]
   artifacts:

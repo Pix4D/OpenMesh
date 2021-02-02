@@ -41,14 +41,8 @@ cppcheck:
 
 build-debug-gcc-cpp11-qt5.15.1:
   stage: build
-  script: "CI/ci-linux-build.sh gcc cpp11 debug"
+  script: "CI/ci-linux-build.sh gcc cpp11 debug qt5.15.1"
   #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
-  variables:
-    COMPILER: "gcc"
-    LANGUAGE: "cpp11"
-    QTVERSION: "qt5.15.1"
-    BUILDTYPE: "debug"
-    GIT_SUBMODULE_STRATEGY: recursive
   tags:
     - Linux
     - stretch
@@ -64,18 +58,12 @@ build-debug-gcc-cpp11-qt5.15.1:
 
 test-debug-gcc-cpp11-qt5.15.1:
   stage: test
-  script: "CI/ci-linux-test.sh gcc cpp11 debug"
+  script: "CI/ci-linux-test.sh gcc cpp11 debug qt5.15.1"
   #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags:
     - Linux
     - stretch
     - MultiThreads
-  variables:
-    COMPILER: "gcc"
-    LANGUAGE: "cpp11"
-    QTVERSION: "qt5.15.1"
-    BUILDTYPE: "debug"
-    GIT_SUBMODULE_STRATEGY: recursive
   dependencies: [build-debug-gcc-cpp11-qt5.15.1]
   needs: [build-debug-gcc-cpp11-qt5.15.1]
   artifacts:
@@ -95,14 +83,8 @@ test-debug-gcc-cpp11-qt5.15.1:
 
 build-release-gcc-cpp11-qt5.15.1:
   stage: build
-  script: "CI/ci-linux-build.sh gcc cpp11 release"
+  script: "CI/ci-linux-build.sh gcc cpp11 release qt5.15.1"
   #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
-  variables:
-    COMPILER: "gcc"
-    LANGUAGE: "cpp11"
-    QTVERSION: "qt5.15.1"
-    BUILDTYPE: "release"
-    GIT_SUBMODULE_STRATEGY: recursive
   tags:
     - Linux
     - stretch
@@ -118,18 +100,12 @@ build-release-gcc-cpp11-qt5.15.1:
 
 test-release-gcc-cpp11-qt5.15.1:
   stage: test
-  script: "CI/ci-linux-test.sh gcc cpp11 release"
+  script: "CI/ci-linux-test.sh gcc cpp11 release qt5.15.1"
   #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags:
     - Linux
     - stretch
     - MultiThreads
-  variables:
-    COMPILER: "gcc"
-    LANGUAGE: "cpp11"
-    QTVERSION: "qt5.15.1"
-    BUILDTYPE: "release"
-    GIT_SUBMODULE_STRATEGY: recursive
   dependencies: [build-release-gcc-cpp11-qt5.15.1]
   needs: [build-release-gcc-cpp11-qt5.15.1]
   artifacts:
@@ -149,14 +125,8 @@ test-release-gcc-cpp11-qt5.15.1:
 
 build-debug-clang-cpp11-qt5.15.1:
   stage: build
-  script: "CI/ci-linux-build.sh clang cpp11 debug"
+  script: "CI/ci-linux-build.sh clang cpp11 debug qt5.15.1"
   #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
-  variables:
-    COMPILER: "clang"
-    LANGUAGE: "cpp11"
-    QTVERSION: "qt5.15.1"
-    BUILDTYPE: "debug"
-    GIT_SUBMODULE_STRATEGY: recursive
   tags:
     - Linux
     - stretch
@@ -172,18 +142,12 @@ build-debug-clang-cpp11-qt5.15.1:
 
 test-debug-clang-cpp11-qt5.15.1:
   stage: test
-  script: "CI/ci-linux-test.sh clang cpp11 debug"
+  script: "CI/ci-linux-test.sh clang cpp11 debug qt5.15.1"
   #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags:
     - Linux
     - stretch
     - MultiThreads
-  variables:
-    COMPILER: "clang"
-    LANGUAGE: "cpp11"
-    QTVERSION: "qt5.15.1"
-    BUILDTYPE: "debug"
-    GIT_SUBMODULE_STRATEGY: recursive
   dependencies: [build-debug-clang-cpp11-qt5.15.1]
   needs: [build-debug-clang-cpp11-qt5.15.1]
   artifacts:
@@ -203,14 +167,8 @@ test-debug-clang-cpp11-qt5.15.1:
 
 build-release-clang-cpp11-qt5.15.1:
   stage: build
-  script: "CI/ci-linux-build.sh clang cpp11 release"
+  script: "CI/ci-linux-build.sh clang cpp11 release qt5.15.1"
   #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
-  variables:
-    COMPILER: "clang"
-    LANGUAGE: "cpp11"
-    QTVERSION: "qt5.15.1"
-    BUILDTYPE: "release"
-    GIT_SUBMODULE_STRATEGY: recursive
   tags:
     - Linux
     - stretch
@@ -226,18 +184,12 @@ build-release-clang-cpp11-qt5.15.1:
 
 test-release-clang-cpp11-qt5.15.1:
   stage: test
-  script: "CI/ci-linux-test.sh clang cpp11 release"
+  script: "CI/ci-linux-test.sh clang cpp11 release qt5.15.1"
   #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags:
     - Linux
     - stretch
     - MultiThreads
-  variables:
-    COMPILER: "clang"
-    LANGUAGE: "cpp11"
-    QTVERSION: "qt5.15.1"
-    BUILDTYPE: "release"
-    GIT_SUBMODULE_STRATEGY: recursive
   dependencies: [build-release-clang-cpp11-qt5.15.1]
   needs: [build-release-clang-cpp11-qt5.15.1]
   artifacts:
@@ -257,14 +209,8 @@ test-release-clang-cpp11-qt5.15.1:
 
 build-debug-gcc-cpp14-qt5.15.1:
   stage: build
-  script: "CI/ci-linux-build.sh gcc cpp14 debug"
+  script: "CI/ci-linux-build.sh gcc cpp14 debug qt5.15.1"
   #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
-  variables:
-    COMPILER: "gcc"
-    LANGUAGE: "cpp14"
-    QTVERSION: "qt5.15.1"
-    BUILDTYPE: "debug"
-    GIT_SUBMODULE_STRATEGY: recursive
   tags:
     - Linux
     - stretch
@@ -280,18 +226,12 @@ build-debug-gcc-cpp14-qt5.15.1:
 
 test-debug-gcc-cpp14-qt5.15.1:
   stage: test
-  script: "CI/ci-linux-test.sh gcc cpp14 debug"
+  script: "CI/ci-linux-test.sh gcc cpp14 debug qt5.15.1"
   #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags:
     - Linux
     - stretch
     - MultiThreads
-  variables:
-    COMPILER: "gcc"
-    LANGUAGE: "cpp14"
-    QTVERSION: "qt5.15.1"
-    BUILDTYPE: "debug"
-    GIT_SUBMODULE_STRATEGY: recursive
   dependencies: [build-debug-gcc-cpp14-qt5.15.1]
   needs: [build-debug-gcc-cpp14-qt5.15.1]
   artifacts:
@@ -311,14 +251,8 @@ test-debug-gcc-cpp14-qt5.15.1:
 
 build-release-gcc-cpp14-qt5.15.1:
   stage: build
-  script: "CI/ci-linux-build.sh gcc cpp14 release"
+  script: "CI/ci-linux-build.sh gcc cpp14 release qt5.15.1"
   #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
-  variables:
-    COMPILER: "gcc"
-    LANGUAGE: "cpp14"
-    QTVERSION: "qt5.15.1"
-    BUILDTYPE: "release"
-    GIT_SUBMODULE_STRATEGY: recursive
   tags:
     - Linux
     - stretch
@@ -334,18 +268,12 @@ build-release-gcc-cpp14-qt5.15.1:
 
 test-release-gcc-cpp14-qt5.15.1:
   stage: test
-  script: "CI/ci-linux-test.sh gcc cpp14 release"
+  script: "CI/ci-linux-test.sh gcc cpp14 release qt5.15.1"
   #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags:
     - Linux
     - stretch
     - MultiThreads
-  variables:
-    COMPILER: "gcc"
-    LANGUAGE: "cpp14"
-    QTVERSION: "qt5.15.1"
-    BUILDTYPE: "release"
-    GIT_SUBMODULE_STRATEGY: recursive
   dependencies: [build-release-gcc-cpp14-qt5.15.1]
   needs: [build-release-gcc-cpp14-qt5.15.1]
   artifacts:
@@ -365,14 +293,8 @@ test-release-gcc-cpp14-qt5.15.1:
 
 build-debug-clang-cpp14-qt5.15.1:
   stage: build
-  script: "CI/ci-linux-build.sh clang cpp14 debug"
+  script: "CI/ci-linux-build.sh clang cpp14 debug qt5.15.1"
   #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
-  variables:
-    COMPILER: "clang"
-    LANGUAGE: "cpp14"
-    QTVERSION: "qt5.15.1"
-    BUILDTYPE: "debug"
-    GIT_SUBMODULE_STRATEGY: recursive
   tags:
     - Linux
     - stretch
@@ -388,18 +310,12 @@ build-debug-clang-cpp14-qt5.15.1:
 
 test-debug-clang-cpp14-qt5.15.1:
   stage: test
-  script: "CI/ci-linux-test.sh clang cpp14 debug"
+  script: "CI/ci-linux-test.sh clang cpp14 debug qt5.15.1"
   #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags:
     - Linux
     - stretch
     - MultiThreads
-  variables:
-    COMPILER: "clang"
-    LANGUAGE: "cpp14"
-    QTVERSION: "qt5.15.1"
-    BUILDTYPE: "debug"
-    GIT_SUBMODULE_STRATEGY: recursive
   dependencies: [build-debug-clang-cpp14-qt5.15.1]
   needs: [build-debug-clang-cpp14-qt5.15.1]
   artifacts:
@@ -419,14 +335,8 @@ test-debug-clang-cpp14-qt5.15.1:
 
 build-release-clang-cpp14-qt5.15.1:
   stage: build
-  script: "CI/ci-linux-build.sh clang cpp14 release"
+  script: "CI/ci-linux-build.sh clang cpp14 release qt5.15.1"
   #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
-  variables:
-    COMPILER: "clang"
-    LANGUAGE: "cpp14"
-    QTVERSION: "qt5.15.1"
-    BUILDTYPE: "release"
-    GIT_SUBMODULE_STRATEGY: recursive
   tags:
     - Linux
     - stretch
@@ -442,18 +352,12 @@ build-release-clang-cpp14-qt5.15.1:
 
 test-release-clang-cpp14-qt5.15.1:
   stage: test
-  script: "CI/ci-linux-test.sh clang cpp14 release"
+  script: "CI/ci-linux-test.sh clang cpp14 release qt5.15.1"
   #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags:
     - Linux
     - stretch
     - MultiThreads
-  variables:
-    COMPILER: "clang"
-    LANGUAGE: "cpp14"
-    QTVERSION: "qt5.15.1"
-    BUILDTYPE: "release"
-    GIT_SUBMODULE_STRATEGY: recursive
   dependencies: [build-release-clang-cpp14-qt5.15.1]
   needs: [build-release-clang-cpp14-qt5.15.1]
   artifacts:
@@ -471,15 +375,17 @@ test-release-clang-cpp14-qt5.15.1:
 # Compiler:   clang
 # Language:   cpp14
 
-iwyu-release-clang-cpp14:
+iwyu-release-clang-cpp14-qt5.15.1:
   stage: build
-  script: "CI/ci-linux-build.sh clang cpp14 release IWYU"
+  script: "CI/ci-linux-build.sh clang cpp14 release qt5.15.1 IWYU"
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
-  tags: [Docker]
+  tags:
+    - Linux
+    - stretch
   artifacts:
     paths:
-    - build-clang-cpp14-release-iwyu-Vector-Checks/compile_commands.json
-    - build-clang-cpp14-release-iwyu-Vector-Checks/iwyu.dump
+    - build-clang-cpp14-release-qt5.15.1-iwyu-Vector-Checks/compile_commands.json
+    - build-clang-cpp14-release-qt5.15.1-iwyu-Vector-Checks/iwyu.dump
 
 # -----------------
 # MAC tasks
