@@ -63,7 +63,7 @@ else
   fi
 
   echo "Copying all required libraries of OpenFlipper to the systemlib directory"
-  ldd bin/OpenFlipper | grep "=> /" | awk '{print $3}' | xargs -I '{}' cp -v '{}' systemlib
+  ldd Build/bin/OpenFlipper | grep "=> /" | awk '{print $3}' | xargs -I '{}' cp -v '{}' systemlib
 fi
 
 cd ..
