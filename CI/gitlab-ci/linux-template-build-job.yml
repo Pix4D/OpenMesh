@@ -3,12 +3,21 @@
 # OS:         Linux
 # Compiler:   {{COMPILER}}
 # Language:   {{LANGUAGE}}
+# QT Version: {{QT_VERSION}}
 
-build-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}:
+build-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}:
   stage: build
   script: "CI/ci-linux-build.sh {{COMPILER}} {{LANGUAGE}} {{BUILDTYPE}}"
-  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
-  tags: [Docker]
+  #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  variables:
+    COMPILER: "{{COMPILER}}"
+    LANGUAGE: "{{LANGUAGE}}"
+    QTVERSION: "{{QT_VERSION}}"
+    BUILDTYPE: "{{BUILDTYPE}}"
+    GIT_SUBMODULE_STRATEGY: recursive
+  tags:
+    - Linux
+    - stretch
   artifacts:
     paths:
-    - build-{{COMPILER}}-{{LANGUAGE}}-{{BUILDTYPE}}-Vector-Checks/
+    - build-{{COMPILER}}-{{LANGUAGE}}-{{BUILDTYPE}}-{{QT_VERSION}}-Vector-Checks/

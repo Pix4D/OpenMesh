@@ -37,15 +37,24 @@ cppcheck:
 # OS:         Linux
 # Compiler:   gcc
 # Language:   cpp11
+# QT Version: qt5.15.1
 
-build-debug-gcc-cpp11:
+build-debug-gcc-cpp11-qt5.15.1:
   stage: build
   script: "CI/ci-linux-build.sh gcc cpp11 debug"
-  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
-  tags: [Docker]
+  #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  variables:
+    COMPILER: "gcc"
+    LANGUAGE: "cpp11"
+    QTVERSION: "qt5.15.1"
+    BUILDTYPE: "debug"
+    GIT_SUBMODULE_STRATEGY: recursive
+  tags:
+    - Linux
+    - stretch
   artifacts:
     paths:
-    - build-gcc-cpp11-debug-Vector-Checks/
+    - build-gcc-cpp11-debug-qt5.15.1-Vector-Checks/
 
 #-----------  Job Informations:
 # Type:       Test: debug
@@ -53,19 +62,28 @@ build-debug-gcc-cpp11:
 # Compiler:   gcc
 # Language:   cpp11
 
-test-debug-gcc-cpp11:
+test-debug-gcc-cpp11-qt5.15.1:
   stage: test
   script: "CI/ci-linux-test.sh gcc cpp11 debug"
-  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
-  tags: [Docker]
-  dependencies: [build-debug-gcc-cpp11]
-  needs: [build-debug-gcc-cpp11]
+  #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags:
+    - Linux
+    - stretch
+    - MultiThreads
+  variables:
+    COMPILER: "gcc"
+    LANGUAGE: "cpp11"
+    QTVERSION: "qt5.15.1"
+    BUILDTYPE: "debug"
+    GIT_SUBMODULE_STRATEGY: recursive
+  dependencies: [build-debug-gcc-cpp11-qt5.15.1]
+  needs: [build-debug-gcc-cpp11-qt5.15.1]
   artifacts:
     reports:
       junit:
-        - build-gcc-cpp11-debug-Vector-Checks/Unittests/report.xml
-        - build-gcc-cpp11-debug-Vector-Checks/Unittests/report-customvec.xml
-        - build-gcc-cpp11-debug-Vector-Checks/Unittests/report-doublevec.xml
+        - build-gcc-cpp11-debug-qt5.15.1-Vector-Checks/Unittests/report.xml
+        - build-gcc-cpp11-debug-qt5.15.1-Vector-Checks/Unittests/report-customvec.xml
+        - build-gcc-cpp11-debug-qt5.15.1-Vector-Checks/Unittests/report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -73,15 +91,24 @@ test-debug-gcc-cpp11:
 # OS:         Linux
 # Compiler:   gcc
 # Language:   cpp11
+# QT Version: qt5.15.1
 
-build-release-gcc-cpp11:
+build-release-gcc-cpp11-qt5.15.1:
   stage: build
   script: "CI/ci-linux-build.sh gcc cpp11 release"
-  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
-  tags: [Docker]
+  #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  variables:
+    COMPILER: "gcc"
+    LANGUAGE: "cpp11"
+    QTVERSION: "qt5.15.1"
+    BUILDTYPE: "release"
+    GIT_SUBMODULE_STRATEGY: recursive
+  tags:
+    - Linux
+    - stretch
   artifacts:
     paths:
-    - build-gcc-cpp11-release-Vector-Checks/
+    - build-gcc-cpp11-release-qt5.15.1-Vector-Checks/
 
 #-----------  Job Informations:
 # Type:       Test: release
@@ -89,19 +116,28 @@ build-release-gcc-cpp11:
 # Compiler:   gcc
 # Language:   cpp11
 
-test-release-gcc-cpp11:
+test-release-gcc-cpp11-qt5.15.1:
   stage: test
   script: "CI/ci-linux-test.sh gcc cpp11 release"
-  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
-  tags: [Docker]
-  dependencies: [build-release-gcc-cpp11]
-  needs: [build-release-gcc-cpp11]
+  #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags:
+    - Linux
+    - stretch
+    - MultiThreads
+  variables:
+    COMPILER: "gcc"
+    LANGUAGE: "cpp11"
+    QTVERSION: "qt5.15.1"
+    BUILDTYPE: "release"
+    GIT_SUBMODULE_STRATEGY: recursive
+  dependencies: [build-release-gcc-cpp11-qt5.15.1]
+  needs: [build-release-gcc-cpp11-qt5.15.1]
   artifacts:
     reports:
       junit:
-        - build-gcc-cpp11-release-Vector-Checks/Unittests/report.xml
-        - build-gcc-cpp11-release-Vector-Checks/Unittests/report-customvec.xml
-        - build-gcc-cpp11-release-Vector-Checks/Unittests/report-doublevec.xml
+        - build-gcc-cpp11-release-qt5.15.1-Vector-Checks/Unittests/report.xml
+        - build-gcc-cpp11-release-qt5.15.1-Vector-Checks/Unittests/report-customvec.xml
+        - build-gcc-cpp11-release-qt5.15.1-Vector-Checks/Unittests/report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -109,15 +145,24 @@ test-release-gcc-cpp11:
 # OS:         Linux
 # Compiler:   clang
 # Language:   cpp11
+# QT Version: qt5.15.1
 
-build-debug-clang-cpp11:
+build-debug-clang-cpp11-qt5.15.1:
   stage: build
   script: "CI/ci-linux-build.sh clang cpp11 debug"
-  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
-  tags: [Docker]
+  #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  variables:
+    COMPILER: "clang"
+    LANGUAGE: "cpp11"
+    QTVERSION: "qt5.15.1"
+    BUILDTYPE: "debug"
+    GIT_SUBMODULE_STRATEGY: recursive
+  tags:
+    - Linux
+    - stretch
   artifacts:
     paths:
-    - build-clang-cpp11-debug-Vector-Checks/
+    - build-clang-cpp11-debug-qt5.15.1-Vector-Checks/
 
 #-----------  Job Informations:
 # Type:       Test: debug
@@ -125,19 +170,28 @@ build-debug-clang-cpp11:
 # Compiler:   clang
 # Language:   cpp11
 
-test-debug-clang-cpp11:
+test-debug-clang-cpp11-qt5.15.1:
   stage: test
   script: "CI/ci-linux-test.sh clang cpp11 debug"
-  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
-  tags: [Docker]
-  dependencies: [build-debug-clang-cpp11]
-  needs: [build-debug-clang-cpp11]
+  #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags:
+    - Linux
+    - stretch
+    - MultiThreads
+  variables:
+    COMPILER: "clang"
+    LANGUAGE: "cpp11"
+    QTVERSION: "qt5.15.1"
+    BUILDTYPE: "debug"
+    GIT_SUBMODULE_STRATEGY: recursive
+  dependencies: [build-debug-clang-cpp11-qt5.15.1]
+  needs: [build-debug-clang-cpp11-qt5.15.1]
   artifacts:
     reports:
       junit:
-        - build-clang-cpp11-debug-Vector-Checks/Unittests/report.xml
-        - build-clang-cpp11-debug-Vector-Checks/Unittests/report-customvec.xml
-        - build-clang-cpp11-debug-Vector-Checks/Unittests/report-doublevec.xml
+        - build-clang-cpp11-debug-qt5.15.1-Vector-Checks/Unittests/report.xml
+        - build-clang-cpp11-debug-qt5.15.1-Vector-Checks/Unittests/report-customvec.xml
+        - build-clang-cpp11-debug-qt5.15.1-Vector-Checks/Unittests/report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -145,15 +199,24 @@ test-debug-clang-cpp11:
 # OS:         Linux
 # Compiler:   clang
 # Language:   cpp11
+# QT Version: qt5.15.1
 
-build-release-clang-cpp11:
+build-release-clang-cpp11-qt5.15.1:
   stage: build
   script: "CI/ci-linux-build.sh clang cpp11 release"
-  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
-  tags: [Docker]
+  #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  variables:
+    COMPILER: "clang"
+    LANGUAGE: "cpp11"
+    QTVERSION: "qt5.15.1"
+    BUILDTYPE: "release"
+    GIT_SUBMODULE_STRATEGY: recursive
+  tags:
+    - Linux
+    - stretch
   artifacts:
     paths:
-    - build-clang-cpp11-release-Vector-Checks/
+    - build-clang-cpp11-release-qt5.15.1-Vector-Checks/
 
 #-----------  Job Informations:
 # Type:       Test: release
@@ -161,19 +224,28 @@ build-release-clang-cpp11:
 # Compiler:   clang
 # Language:   cpp11
 
-test-release-clang-cpp11:
+test-release-clang-cpp11-qt5.15.1:
   stage: test
   script: "CI/ci-linux-test.sh clang cpp11 release"
-  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
-  tags: [Docker]
-  dependencies: [build-release-clang-cpp11]
-  needs: [build-release-clang-cpp11]
+  #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags:
+    - Linux
+    - stretch
+    - MultiThreads
+  variables:
+    COMPILER: "clang"
+    LANGUAGE: "cpp11"
+    QTVERSION: "qt5.15.1"
+    BUILDTYPE: "release"
+    GIT_SUBMODULE_STRATEGY: recursive
+  dependencies: [build-release-clang-cpp11-qt5.15.1]
+  needs: [build-release-clang-cpp11-qt5.15.1]
   artifacts:
     reports:
       junit:
-        - build-clang-cpp11-release-Vector-Checks/Unittests/report.xml
-        - build-clang-cpp11-release-Vector-Checks/Unittests/report-customvec.xml
-        - build-clang-cpp11-release-Vector-Checks/Unittests/report-doublevec.xml
+        - build-clang-cpp11-release-qt5.15.1-Vector-Checks/Unittests/report.xml
+        - build-clang-cpp11-release-qt5.15.1-Vector-Checks/Unittests/report-customvec.xml
+        - build-clang-cpp11-release-qt5.15.1-Vector-Checks/Unittests/report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -181,15 +253,24 @@ test-release-clang-cpp11:
 # OS:         Linux
 # Compiler:   gcc
 # Language:   cpp14
+# QT Version: qt5.15.1
 
-build-debug-gcc-cpp14:
+build-debug-gcc-cpp14-qt5.15.1:
   stage: build
   script: "CI/ci-linux-build.sh gcc cpp14 debug"
-  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
-  tags: [Docker]
+  #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  variables:
+    COMPILER: "gcc"
+    LANGUAGE: "cpp14"
+    QTVERSION: "qt5.15.1"
+    BUILDTYPE: "debug"
+    GIT_SUBMODULE_STRATEGY: recursive
+  tags:
+    - Linux
+    - stretch
   artifacts:
     paths:
-    - build-gcc-cpp14-debug-Vector-Checks/
+    - build-gcc-cpp14-debug-qt5.15.1-Vector-Checks/
 
 #-----------  Job Informations:
 # Type:       Test: debug
@@ -197,19 +278,28 @@ build-debug-gcc-cpp14:
 # Compiler:   gcc
 # Language:   cpp14
 
-test-debug-gcc-cpp14:
+test-debug-gcc-cpp14-qt5.15.1:
   stage: test
   script: "CI/ci-linux-test.sh gcc cpp14 debug"
-  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
-  tags: [Docker]
-  dependencies: [build-debug-gcc-cpp14]
-  needs: [build-debug-gcc-cpp14]
+  #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags:
+    - Linux
+    - stretch
+    - MultiThreads
+  variables:
+    COMPILER: "gcc"
+    LANGUAGE: "cpp14"
+    QTVERSION: "qt5.15.1"
+    BUILDTYPE: "debug"
+    GIT_SUBMODULE_STRATEGY: recursive
+  dependencies: [build-debug-gcc-cpp14-qt5.15.1]
+  needs: [build-debug-gcc-cpp14-qt5.15.1]
   artifacts:
     reports:
       junit:
-        - build-gcc-cpp14-debug-Vector-Checks/Unittests/report.xml
-        - build-gcc-cpp14-debug-Vector-Checks/Unittests/report-customvec.xml
-        - build-gcc-cpp14-debug-Vector-Checks/Unittests/report-doublevec.xml
+        - build-gcc-cpp14-debug-qt5.15.1-Vector-Checks/Unittests/report.xml
+        - build-gcc-cpp14-debug-qt5.15.1-Vector-Checks/Unittests/report-customvec.xml
+        - build-gcc-cpp14-debug-qt5.15.1-Vector-Checks/Unittests/report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -217,15 +307,24 @@ test-debug-gcc-cpp14:
 # OS:         Linux
 # Compiler:   gcc
 # Language:   cpp14
+# QT Version: qt5.15.1
 
-build-release-gcc-cpp14:
+build-release-gcc-cpp14-qt5.15.1:
   stage: build
   script: "CI/ci-linux-build.sh gcc cpp14 release"
-  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
-  tags: [Docker]
+  #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  variables:
+    COMPILER: "gcc"
+    LANGUAGE: "cpp14"
+    QTVERSION: "qt5.15.1"
+    BUILDTYPE: "release"
+    GIT_SUBMODULE_STRATEGY: recursive
+  tags:
+    - Linux
+    - stretch
   artifacts:
     paths:
-    - build-gcc-cpp14-release-Vector-Checks/
+    - build-gcc-cpp14-release-qt5.15.1-Vector-Checks/
 
 #-----------  Job Informations:
 # Type:       Test: release
@@ -233,19 +332,28 @@ build-release-gcc-cpp14:
 # Compiler:   gcc
 # Language:   cpp14
 
-test-release-gcc-cpp14:
+test-release-gcc-cpp14-qt5.15.1:
   stage: test
   script: "CI/ci-linux-test.sh gcc cpp14 release"
-  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
-  tags: [Docker]
-  dependencies: [build-release-gcc-cpp14]
-  needs: [build-release-gcc-cpp14]
+  #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags:
+    - Linux
+    - stretch
+    - MultiThreads
+  variables:
+    COMPILER: "gcc"
+    LANGUAGE: "cpp14"
+    QTVERSION: "qt5.15.1"
+    BUILDTYPE: "release"
+    GIT_SUBMODULE_STRATEGY: recursive
+  dependencies: [build-release-gcc-cpp14-qt5.15.1]
+  needs: [build-release-gcc-cpp14-qt5.15.1]
   artifacts:
     reports:
       junit:
-        - build-gcc-cpp14-release-Vector-Checks/Unittests/report.xml
-        - build-gcc-cpp14-release-Vector-Checks/Unittests/report-customvec.xml
-        - build-gcc-cpp14-release-Vector-Checks/Unittests/report-doublevec.xml
+        - build-gcc-cpp14-release-qt5.15.1-Vector-Checks/Unittests/report.xml
+        - build-gcc-cpp14-release-qt5.15.1-Vector-Checks/Unittests/report-customvec.xml
+        - build-gcc-cpp14-release-qt5.15.1-Vector-Checks/Unittests/report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -253,15 +361,24 @@ test-release-gcc-cpp14:
 # OS:         Linux
 # Compiler:   clang
 # Language:   cpp14
+# QT Version: qt5.15.1
 
-build-debug-clang-cpp14:
+build-debug-clang-cpp14-qt5.15.1:
   stage: build
   script: "CI/ci-linux-build.sh clang cpp14 debug"
-  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
-  tags: [Docker]
+  #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  variables:
+    COMPILER: "clang"
+    LANGUAGE: "cpp14"
+    QTVERSION: "qt5.15.1"
+    BUILDTYPE: "debug"
+    GIT_SUBMODULE_STRATEGY: recursive
+  tags:
+    - Linux
+    - stretch
   artifacts:
     paths:
-    - build-clang-cpp14-debug-Vector-Checks/
+    - build-clang-cpp14-debug-qt5.15.1-Vector-Checks/
 
 #-----------  Job Informations:
 # Type:       Test: debug
@@ -269,19 +386,28 @@ build-debug-clang-cpp14:
 # Compiler:   clang
 # Language:   cpp14
 
-test-debug-clang-cpp14:
+test-debug-clang-cpp14-qt5.15.1:
   stage: test
   script: "CI/ci-linux-test.sh clang cpp14 debug"
-  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
-  tags: [Docker]
-  dependencies: [build-debug-clang-cpp14]
-  needs: [build-debug-clang-cpp14]
+  #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags:
+    - Linux
+    - stretch
+    - MultiThreads
+  variables:
+    COMPILER: "clang"
+    LANGUAGE: "cpp14"
+    QTVERSION: "qt5.15.1"
+    BUILDTYPE: "debug"
+    GIT_SUBMODULE_STRATEGY: recursive
+  dependencies: [build-debug-clang-cpp14-qt5.15.1]
+  needs: [build-debug-clang-cpp14-qt5.15.1]
   artifacts:
     reports:
       junit:
-        - build-clang-cpp14-debug-Vector-Checks/Unittests/report.xml
-        - build-clang-cpp14-debug-Vector-Checks/Unittests/report-customvec.xml
-        - build-clang-cpp14-debug-Vector-Checks/Unittests/report-doublevec.xml
+        - build-clang-cpp14-debug-qt5.15.1-Vector-Checks/Unittests/report.xml
+        - build-clang-cpp14-debug-qt5.15.1-Vector-Checks/Unittests/report-customvec.xml
+        - build-clang-cpp14-debug-qt5.15.1-Vector-Checks/Unittests/report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -289,15 +415,24 @@ test-debug-clang-cpp14:
 # OS:         Linux
 # Compiler:   clang
 # Language:   cpp14
+# QT Version: qt5.15.1
 
-build-release-clang-cpp14:
+build-release-clang-cpp14-qt5.15.1:
   stage: build
   script: "CI/ci-linux-build.sh clang cpp14 release"
-  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
-  tags: [Docker]
+  #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  variables:
+    COMPILER: "clang"
+    LANGUAGE: "cpp14"
+    QTVERSION: "qt5.15.1"
+    BUILDTYPE: "release"
+    GIT_SUBMODULE_STRATEGY: recursive
+  tags:
+    - Linux
+    - stretch
   artifacts:
     paths:
-    - build-clang-cpp14-release-Vector-Checks/
+    - build-clang-cpp14-release-qt5.15.1-Vector-Checks/
 
 #-----------  Job Informations:
 # Type:       Test: release
@@ -305,19 +440,28 @@ build-release-clang-cpp14:
 # Compiler:   clang
 # Language:   cpp14
 
-test-release-clang-cpp14:
+test-release-clang-cpp14-qt5.15.1:
   stage: test
   script: "CI/ci-linux-test.sh clang cpp14 release"
-  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
-  tags: [Docker]
-  dependencies: [build-release-clang-cpp14]
-  needs: [build-release-clang-cpp14]
+  #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags:
+    - Linux
+    - stretch
+    - MultiThreads
+  variables:
+    COMPILER: "clang"
+    LANGUAGE: "cpp14"
+    QTVERSION: "qt5.15.1"
+    BUILDTYPE: "release"
+    GIT_SUBMODULE_STRATEGY: recursive
+  dependencies: [build-release-clang-cpp14-qt5.15.1]
+  needs: [build-release-clang-cpp14-qt5.15.1]
   artifacts:
     reports:
       junit:
-        - build-clang-cpp14-release-Vector-Checks/Unittests/report.xml
-        - build-clang-cpp14-release-Vector-Checks/Unittests/report-customvec.xml
-        - build-clang-cpp14-release-Vector-Checks/Unittests/report-doublevec.xml
+        - build-clang-cpp14-release-qt5.15.1-Vector-Checks/Unittests/report.xml
+        - build-clang-cpp14-release-qt5.15.1-Vector-Checks/Unittests/report-customvec.xml
+        - build-clang-cpp14-release-qt5.15.1-Vector-Checks/Unittests/report-doublevec.xml
 
 
 
