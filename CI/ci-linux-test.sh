@@ -29,6 +29,21 @@ fi
 
 cd build-$BUILDPATH
 
+#clean old cmake cache as the path might have changed
+find . -name "CMakeCache.txt" -type f -delete
+
+#just to be safe clean the test file definitions too
+if [ -f CTestTestfile.cmake ]
+then
+	echo "Removing old CTestTestfile.cmake"
+	rm CTestTestfile.cmake
+fi
+#just to be safe clean the test file definitions too
+if [ -f DartConfiguration.tcl ]
+then
+	echo "Removing old DartConfiguration.tcl"
+	rm DartConfiguration.tcl
+fi
 # Run cmake to make sure the tests are configured correctly for this system
 cmake -DOPENFLIPPER_BUILD_UNIT_TESTS=TRUE -DSTL_VECTOR_CHECKS=ON $OPTIONS ../
 
