@@ -63,6 +63,7 @@ else
   fi
 
   echo "Copying all required libraries of OpenMesh to the systemlib directory"
+  ls -la
   ldd Build/lib/libOpenMeshCored.so.9.0 | grep "=> /" | awk '{print $3}' | xargs -I '{}' cp -v '{}' systemlib
 fi
 
