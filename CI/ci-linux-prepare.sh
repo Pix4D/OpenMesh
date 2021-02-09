@@ -1,11 +1,5 @@
 #!/bin/bash
 
-COMPILER=$1
-LANGUAGE=$2
-BUILD_TYPE=$3
-QTVERSION=$4
-IWYU=$5
-
 # Exit script on any error
 set -e 
 
@@ -86,7 +80,7 @@ else
     BUILDPATH="$BUILDPATH-debug"  
 fi
 
-if [ "$IWYU" == "IWYU" ]; then
+if [ "$IWYU" == "yes" ]; then
   echo "Include what you use enabled.";
   BUILDPATH="$BUILDPATH-iwyu"
   OPTIONS="$OPTIONS -DCMAKE_EXPORT_COMPILE_COMMANDS=ON"

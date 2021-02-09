@@ -6,11 +6,17 @@
 
 iwyu-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}:
   stage: build
-  script: "CI/ci-linux-build.sh {{COMPILER}} {{LANGUAGE}} {{BUILDTYPE}} {{QT_VERSION}} IWYU"
+  script: "CI/ci-linux-build.sh"
   image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags:
     - Linux
     - stretch
+  variables:
+    COMPILER: "{{COMPILER}}"
+    LANGUAGE: "{{LANGUAGE}}"
+    BUILD_TYPE: "{{BUILDTYPE}}"
+    QTVERSION: "{{QT_VERSION}}"
+    IWYU: "yes"
   artifacts:
     paths:
     - build-{{COMPILER}}-{{LANGUAGE}}-{{BUILDTYPE}}-{{QT_VERSION}}-iwyu-Vector-Checks/compile_commands.json
