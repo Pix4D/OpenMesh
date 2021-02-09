@@ -63,7 +63,7 @@ else
   fi
 
   echo "Copying all required libraries of OpenMesh to the systemlib directory"
-  if [ "$BUILD_TYPE" == "Release" ]; then
+  if [ "$BUILD_TYPE" == "release" ]; then
     ldd Build/lib/libOpenMeshCore.so.9.0 | grep "=> /" | awk '{print $3}' | xargs -I '{}' cp -v '{}' systemlib
   else
     ldd Build/lib/libOpenMeshCored.so.9.0 | grep "=> /" | awk '{print $3}' | xargs -I '{}' cp -v '{}' systemlib
