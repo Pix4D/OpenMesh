@@ -503,8 +503,8 @@ iwyu-release-clang-cpp14-qt5.15.1:
     VECTORCHECKS: "yes"
   artifacts:
     paths:
-    - build-clang-cpp14-release-qt5.15.1-iwyu-vectorchecks/compile_commands.json
-    - build-clang-cpp14-release-qt5.15.1-iwyu-vectorchecks/iwyu.dump
+    - build-clang-cpp14-qt5.15.1-release-iwyu-vectorchecks/compile_commands.json
+    - build-clang-cpp14-qt5.15.1-release-iwyu-vectorchecks/iwyu.dump
 #-----------  Job Informations:
 # Type:       Build: release
 # OS:         Linux
@@ -527,8 +527,7 @@ nvc-release-clang-cpp14-qt5.15.1:
     VECTORCHECKS: "no"
   artifacts:
     paths:
-    - build-clang-cpp14-release-qt5.15.1/compile_commands.json
-    - build-clang-cpp14-release-qt5.15.1/iwyu.dump
+      - build-clang-cpp14-qt5.15.1-release/
 
 # -----------------
 # MAC tasks
