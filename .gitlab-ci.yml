@@ -52,9 +52,10 @@ build-debug-gcc-cpp11-qt5.15.1:
     BUILD_TYPE: "debug"
     QTVERSION: "qt5.15.1"
     IWYU: "no"
+    VECTORCHECKS: "yes"
   artifacts:
     paths:
-    - build-gcc-cpp11-qt5.15.1-debug/
+    - build-gcc-cpp11-qt5.15.1-debug-vectorchecks/
 
 #-----------  Job Informations:
 # Type:       Test: debug
@@ -76,14 +77,15 @@ test-debug-gcc-cpp11-qt5.15.1:
     BUILD_TYPE: "debug"
     QTVERSION: "qt5.15.1"
     IWYU: "no"
+    VECTORCHECKS: "yes"
   dependencies: [build-debug-gcc-cpp11-qt5.15.1]
   needs: [build-debug-gcc-cpp11-qt5.15.1]
   artifacts:
     reports:
       junit:
-        - build-gcc-cpp11-qt5.15.1-debug/Unittests/report.xml
-        - build-gcc-cpp11-qt5.15.1-debug/Unittests/report-customvec.xml
-        - build-gcc-cpp11-qt5.15.1-debug/Unittests/report-doublevec.xml
+        - build-gcc-cpp11-qt5.15.1-debug-vectorchecks/Unittests/report.xml
+        - build-gcc-cpp11-qt5.15.1-debug-vectorchecks/Unittests/report-customvec.xml
+        - build-gcc-cpp11-qt5.15.1-debug-vectorchecks/Unittests/report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -106,9 +108,10 @@ build-release-gcc-cpp11-qt5.15.1:
     BUILD_TYPE: "release"
     QTVERSION: "qt5.15.1"
     IWYU: "no"
+    VECTORCHECKS: "yes"
   artifacts:
     paths:
-    - build-gcc-cpp11-qt5.15.1-release/
+    - build-gcc-cpp11-qt5.15.1-release-vectorchecks/
 
 #-----------  Job Informations:
 # Type:       Test: release
@@ -130,14 +133,15 @@ test-release-gcc-cpp11-qt5.15.1:
     BUILD_TYPE: "release"
     QTVERSION: "qt5.15.1"
     IWYU: "no"
+    VECTORCHECKS: "yes"
   dependencies: [build-release-gcc-cpp11-qt5.15.1]
   needs: [build-release-gcc-cpp11-qt5.15.1]
   artifacts:
     reports:
       junit:
-        - build-gcc-cpp11-qt5.15.1-release/Unittests/report.xml
-        - build-gcc-cpp11-qt5.15.1-release/Unittests/report-customvec.xml
-        - build-gcc-cpp11-qt5.15.1-release/Unittests/report-doublevec.xml
+        - build-gcc-cpp11-qt5.15.1-release-vectorchecks/Unittests/report.xml
+        - build-gcc-cpp11-qt5.15.1-release-vectorchecks/Unittests/report-customvec.xml
+        - build-gcc-cpp11-qt5.15.1-release-vectorchecks/Unittests/report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -160,9 +164,10 @@ build-debug-clang-cpp11-qt5.15.1:
     BUILD_TYPE: "debug"
     QTVERSION: "qt5.15.1"
     IWYU: "no"
+    VECTORCHECKS: "yes"
   artifacts:
     paths:
-    - build-clang-cpp11-qt5.15.1-debug/
+    - build-clang-cpp11-qt5.15.1-debug-vectorchecks/
 
 #-----------  Job Informations:
 # Type:       Test: debug
@@ -184,14 +189,15 @@ test-debug-clang-cpp11-qt5.15.1:
     BUILD_TYPE: "debug"
     QTVERSION: "qt5.15.1"
     IWYU: "no"
+    VECTORCHECKS: "yes"
   dependencies: [build-debug-clang-cpp11-qt5.15.1]
   needs: [build-debug-clang-cpp11-qt5.15.1]
   artifacts:
     reports:
       junit:
-        - build-clang-cpp11-qt5.15.1-debug/Unittests/report.xml
-        - build-clang-cpp11-qt5.15.1-debug/Unittests/report-customvec.xml
-        - build-clang-cpp11-qt5.15.1-debug/Unittests/report-doublevec.xml
+        - build-clang-cpp11-qt5.15.1-debug-vectorchecks/Unittests/report.xml
+        - build-clang-cpp11-qt5.15.1-debug-vectorchecks/Unittests/report-customvec.xml
+        - build-clang-cpp11-qt5.15.1-debug-vectorchecks/Unittests/report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -214,9 +220,10 @@ build-release-clang-cpp11-qt5.15.1:
     BUILD_TYPE: "release"
     QTVERSION: "qt5.15.1"
     IWYU: "no"
+    VECTORCHECKS: "yes"
   artifacts:
     paths:
-    - build-clang-cpp11-qt5.15.1-release/
+    - build-clang-cpp11-qt5.15.1-release-vectorchecks/
 
 #-----------  Job Informations:
 # Type:       Test: release
@@ -238,14 +245,15 @@ test-release-clang-cpp11-qt5.15.1:
     BUILD_TYPE: "release"
     QTVERSION: "qt5.15.1"
     IWYU: "no"
+    VECTORCHECKS: "yes"
   dependencies: [build-release-clang-cpp11-qt5.15.1]
   needs: [build-release-clang-cpp11-qt5.15.1]
   artifacts:
     reports:
       junit:
-        - build-clang-cpp11-qt5.15.1-release/Unittests/report.xml
-        - build-clang-cpp11-qt5.15.1-release/Unittests/report-customvec.xml
-        - build-clang-cpp11-qt5.15.1-release/Unittests/report-doublevec.xml
+        - build-clang-cpp11-qt5.15.1-release-vectorchecks/Unittests/report.xml
+        - build-clang-cpp11-qt5.15.1-release-vectorchecks/Unittests/report-customvec.xml
+        - build-clang-cpp11-qt5.15.1-release-vectorchecks/Unittests/report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -268,9 +276,10 @@ build-debug-gcc-cpp14-qt5.15.1:
     BUILD_TYPE: "debug"
     QTVERSION: "qt5.15.1"
     IWYU: "no"
+    VECTORCHECKS: "yes"
   artifacts:
     paths:
-    - build-gcc-cpp14-qt5.15.1-debug/
+    - build-gcc-cpp14-qt5.15.1-debug-vectorchecks/
 
 #-----------  Job Informations:
 # Type:       Test: debug
@@ -292,14 +301,15 @@ test-debug-gcc-cpp14-qt5.15.1:
     BUILD_TYPE: "debug"
     QTVERSION: "qt5.15.1"
     IWYU: "no"
+    VECTORCHECKS: "yes"
   dependencies: [build-debug-gcc-cpp14-qt5.15.1]
   needs: [build-debug-gcc-cpp14-qt5.15.1]
   artifacts:
     reports:
       junit:
-        - build-gcc-cpp14-qt5.15.1-debug/Unittests/report.xml
-        - build-gcc-cpp14-qt5.15.1-debug/Unittests/report-customvec.xml
-        - build-gcc-cpp14-qt5.15.1-debug/Unittests/report-doublevec.xml
+        - build-gcc-cpp14-qt5.15.1-debug-vectorchecks/Unittests/report.xml
+        - build-gcc-cpp14-qt5.15.1-debug-vectorchecks/Unittests/report-customvec.xml
+        - build-gcc-cpp14-qt5.15.1-debug-vectorchecks/Unittests/report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -322,9 +332,10 @@ build-release-gcc-cpp14-qt5.15.1:
     BUILD_TYPE: "release"
     QTVERSION: "qt5.15.1"
     IWYU: "no"
+    VECTORCHECKS: "yes"
   artifacts:
     paths:
-    - build-gcc-cpp14-qt5.15.1-release/
+    - build-gcc-cpp14-qt5.15.1-release-vectorchecks/
 
 #-----------  Job Informations:
 # Type:       Test: release
@@ -346,14 +357,15 @@ test-release-gcc-cpp14-qt5.15.1:
     BUILD_TYPE: "release"
     QTVERSION: "qt5.15.1"
     IWYU: "no"
+    VECTORCHECKS: "yes"
   dependencies: [build-release-gcc-cpp14-qt5.15.1]
   needs: [build-release-gcc-cpp14-qt5.15.1]
   artifacts:
     reports:
       junit:
-        - build-gcc-cpp14-qt5.15.1-release/Unittests/report.xml
-        - build-gcc-cpp14-qt5.15.1-release/Unittests/report-customvec.xml
-        - build-gcc-cpp14-qt5.15.1-release/Unittests/report-doublevec.xml
+        - build-gcc-cpp14-qt5.15.1-release-vectorchecks/Unittests/report.xml
+        - build-gcc-cpp14-qt5.15.1-release-vectorchecks/Unittests/report-customvec.xml
+        - build-gcc-cpp14-qt5.15.1-release-vectorchecks/Unittests/report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -376,9 +388,10 @@ build-debug-clang-cpp14-qt5.15.1:
     BUILD_TYPE: "debug"
     QTVERSION: "qt5.15.1"
     IWYU: "no"
+    VECTORCHECKS: "yes"
   artifacts:
     paths:
-    - build-clang-cpp14-qt5.15.1-debug/
+    - build-clang-cpp14-qt5.15.1-debug-vectorchecks/
 
 #-----------  Job Informations:
 # Type:       Test: debug
@@ -400,14 +413,15 @@ test-debug-clang-cpp14-qt5.15.1:
     BUILD_TYPE: "debug"
     QTVERSION: "qt5.15.1"
     IWYU: "no"
+    VECTORCHECKS: "yes"
   dependencies: [build-debug-clang-cpp14-qt5.15.1]
   needs: [build-debug-clang-cpp14-qt5.15.1]
   artifacts:
     reports:
       junit:
-        - build-clang-cpp14-qt5.15.1-debug/Unittests/report.xml
-        - build-clang-cpp14-qt5.15.1-debug/Unittests/report-customvec.xml
-        - build-clang-cpp14-qt5.15.1-debug/Unittests/report-doublevec.xml
+        - build-clang-cpp14-qt5.15.1-debug-vectorchecks/Unittests/report.xml
+        - build-clang-cpp14-qt5.15.1-debug-vectorchecks/Unittests/report-customvec.xml
+        - build-clang-cpp14-qt5.15.1-debug-vectorchecks/Unittests/report-doublevec.xml
 
 
 #-----------  Job Informations:
@@ -430,9 +444,10 @@ build-release-clang-cpp14-qt5.15.1:
     BUILD_TYPE: "release"
     QTVERSION: "qt5.15.1"
     IWYU: "no"
+    VECTORCHECKS: "yes"
   artifacts:
     paths:
-    - build-clang-cpp14-qt5.15.1-release/
+    - build-clang-cpp14-qt5.15.1-release-vectorchecks/
 
 #-----------  Job Informations:
 # Type:       Test: release
@@ -454,14 +469,15 @@ test-release-clang-cpp14-qt5.15.1:
     BUILD_TYPE: "release"
     QTVERSION: "qt5.15.1"
     IWYU: "no"
+    VECTORCHECKS: "yes"
   dependencies: [build-release-clang-cpp14-qt5.15.1]
   needs: [build-release-clang-cpp14-qt5.15.1]
   artifacts:
     reports:
       junit:
-        - build-clang-cpp14-qt5.15.1-release/Unittests/report.xml
-        - build-clang-cpp14-qt5.15.1-release/Unittests/report-customvec.xml
-        - build-clang-cpp14-qt5.15.1-release/Unittests/report-doublevec.xml
+        - build-clang-cpp14-qt5.15.1-release-vectorchecks/Unittests/report.xml
+        - build-clang-cpp14-qt5.15.1-release-vectorchecks/Unittests/report-customvec.xml
+        - build-clang-cpp14-qt5.15.1-release-vectorchecks/Unittests/report-doublevec.xml
 
 
 
@@ -484,10 +500,35 @@ iwyu-release-clang-cpp14-qt5.15.1:
     BUILD_TYPE: "release"
     QTVERSION: "qt5.15.1"
     IWYU: "yes"
+    VECTORCHECKS: "yes"
   artifacts:
     paths:
-    - build-clang-cpp14-release-qt5.15.1-iwyu-Vector-Checks/compile_commands.json
-    - build-clang-cpp14-release-qt5.15.1-iwyu-Vector-Checks/iwyu.dump
+    - build-clang-cpp14-release-qt5.15.1-iwyu-vectorchecks/compile_commands.json
+    - build-clang-cpp14-release-qt5.15.1-iwyu-vectorchecks/iwyu.dump
+#-----------  Job Informations:
+# Type:       Build: release
+# OS:         Linux
+# Compiler:   clang
+# Language:   cpp14
+
+nvc-release-clang-cpp14-qt5.15.1:
+  stage: build
+  script: "CI/ci-linux-build.sh"
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags:
+    - Linux
+    - stretch
+  variables:
+    COMPILER: "clang"
+    LANGUAGE: "cpp14"
+    BUILD_TYPE: "release"
+    QTVERSION: "qt5.15.1"
+    IWYU: "no"
+    VECTORCHECKS: "no"
+  artifacts:
+    paths:
+    - build-clang-cpp14-release-qt5.15.1/compile_commands.json
+    - build-clang-cpp14-release-qt5.15.1/iwyu.dump
 
 # -----------------
 # MAC tasks

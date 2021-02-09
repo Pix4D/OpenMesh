@@ -17,7 +17,8 @@ iwyu-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}:
     BUILD_TYPE: "{{BUILDTYPE}}"
     QTVERSION: "{{QT_VERSION}}"
     IWYU: "yes"
+    VECTORCHECKS: "yes"
   artifacts:
     paths:
-    - build-{{COMPILER}}-{{LANGUAGE}}-{{BUILDTYPE}}-{{QT_VERSION}}-iwyu-Vector-Checks/compile_commands.json
-    - build-{{COMPILER}}-{{LANGUAGE}}-{{BUILDTYPE}}-{{QT_VERSION}}-iwyu-Vector-Checks/iwyu.dump
+    - build-{{COMPILER}}-{{LANGUAGE}}-{{BUILDTYPE}}-{{QT_VERSION}}-iwyu-vectorchecks/compile_commands.json
+    - build-{{COMPILER}}-{{LANGUAGE}}-{{BUILDTYPE}}-{{QT_VERSION}}-iwyu-vectorchecks/iwyu.dump

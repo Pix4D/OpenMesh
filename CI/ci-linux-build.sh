@@ -18,12 +18,14 @@ echo "BuildPath:    $BUILDPATH"
 echo "Path:         $PATH"
 echo "Language:     $LANGUAGE"
 
-echo -e "${OUTPUT}"
-echo ""
-echo "======================================================================"
-echo "Building $BUILD_TYPE version with vectorchecks enabled"
-echo "======================================================================"
-echo -e "${NC}"
+if [ "$VECTORCHECKS" == "yes" ]; then
+  echo -e "${OUTPUT}"
+  echo ""
+  echo "======================================================================"
+  echo "Building $BUILD_TYPE version with vectorchecks enabled"
+  echo "======================================================================"
+  echo -e "${NC}"
+fi
 
 if [ ! -d build-$BUILDPATH ]; then
   mkdir build-$BUILDPATH
@@ -31,9 +33,9 @@ fi
 
 cd build-$BUILDPATH
 
-cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DOPENMESH_BUILD_UNIT_TESTS=TRUE -DSTL_VECTOR_CHECKS=ON $OPTIONS ../
+cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DOPENMESH_BUILD_UNIT_TESTS=TRUE $OPTIONS ../
 
-if [ "$IWYU" == "IWYU" ]; then
+if [ "$IWYU" == "yes" ]; then
   # do iwyu check
   if echo $(iwyu --version) | grep -q "0.11"
   then

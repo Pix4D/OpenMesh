@@ -18,12 +18,13 @@ test-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}:
     BUILD_TYPE: "{{BUILDTYPE}}"
     QTVERSION: "{{QT_VERSION}}"
     IWYU: "no"
+    VECTORCHECKS: "yes"
   dependencies: [build-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}]
   needs: [build-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}]
   artifacts:
     reports:
       junit:
-        - build-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}-{{BUILDTYPE}}/Unittests/report.xml
-        - build-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}-{{BUILDTYPE}}/Unittests/report-customvec.xml
-        - build-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}-{{BUILDTYPE}}/Unittests/report-doublevec.xml
+        - build-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}-{{BUILDTYPE}}-vectorchecks/Unittests/report.xml
+        - build-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}-{{BUILDTYPE}}-vectorchecks/Unittests/report-customvec.xml
+        - build-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}-{{BUILDTYPE}}-vectorchecks/Unittests/report-doublevec.xml
 

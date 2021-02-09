@@ -86,4 +86,10 @@ if [ "$IWYU" == "yes" ]; then
   OPTIONS="$OPTIONS -DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
 fi
 
+if [ "$VECTORCHECKS" == "yes" ]; then
+  echo "Vectorchecks enabled.";
+  BUILDPATH="$BUILDPATH-vectorchecks"
+  OPTIONS="$OPTIONS -DSTL_VECTOR_CHECKS=ON"
+fi
+
 echo "Building to directory $BUILDPATH"
