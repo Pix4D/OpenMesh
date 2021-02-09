@@ -20,5 +20,4 @@ nvc-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}:
     VECTORCHECKS: "no"
   artifacts:
     paths:
-    - build-{{COMPILER}}-{{LANGUAGE}}-{{BUILDTYPE}}-{{QT_VERSION}}/compile_commands.json
-    - build-{{COMPILER}}-{{LANGUAGE}}-{{BUILDTYPE}}-{{QT_VERSION}}/iwyu.dump
+      - build-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}-{{BUILDTYPE}}/

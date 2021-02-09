@@ -38,6 +38,8 @@ cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DOPENMESH_BUILD_UNIT_TESTS=TRUE $OPTIONS .
 if [ "$IWYU" == "yes" ]; then
   # do iwyu check
   if echo $(iwyu --version) | grep -q "0.11"
+  echo $(pwd)
+  ls -la
   then
     # support older tool version
     iwyu_tool -j 4 -p . -- \
