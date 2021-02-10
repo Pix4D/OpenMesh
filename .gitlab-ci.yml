@@ -628,16 +628,17 @@ macos-cpp14-release:
 # VS Version:   VS2019
 # Apps:         {{APPS}}
 
-build-VS2019-x64-shared-TRUE-no-apps:
+build-VS2019-x64-shared-TRUE-apps:
   stage: build
   variables:
     BUILD_PLATFORM: "VS2019"
     ARCHITECTURE:   "x64"
     SHARED:         "TRUE"
-    APPS:           "OFF"
+    APPS:           "ON"
   script: "CI\\Windows.bat"
   tags:
     - VS2019
+    - Qt5150
   artifacts:
     paths:
       - build-release/*.exe
@@ -655,16 +656,17 @@ build-VS2019-x64-shared-TRUE-no-apps:
 # VS Version:   VS2019
 # Apps:         {{APPS}}
 
-build-VS2019-x64-shared-FALSE-no-apps:
+build-VS2019-x64-shared-FALSE-apps:
   stage: build
   variables:
     BUILD_PLATFORM: "VS2019"
     ARCHITECTURE:   "x64"
     SHARED:         "FALSE"
-    APPS:           "OFF"
+    APPS:           "ON"
   script: "CI\\Windows.bat"
   tags:
     - VS2019
+    - Qt5150
   artifacts:
     paths:
       - build-release/*.exe
@@ -683,16 +685,17 @@ build-VS2019-x64-shared-FALSE-no-apps:
 # VS Version:   VS2017
 # Apps:         {{APPS}}
 
-build-VS2017-x64-shared-TRUE-no-apps:
+build-VS2017-x64-shared-TRUE-apps:
   stage: build
   variables:
     BUILD_PLATFORM: "VS2017"
     ARCHITECTURE:   "x64"
     SHARED:         "TRUE"
-    APPS:           "OFF"
+    APPS:           "ON"
   script: "CI\\Windows.bat"
   tags:
     - VS2017
+    - Qt5101
   artifacts:
     paths:
       - build-release/*.exe
@@ -710,16 +713,17 @@ build-VS2017-x64-shared-TRUE-no-apps:
 # VS Version:   VS2017
 # Apps:         {{APPS}}
 
-build-VS2017-x64-shared-FALSE-no-apps:
+build-VS2017-x64-shared-FALSE-apps:
   stage: build
   variables:
     BUILD_PLATFORM: "VS2017"
     ARCHITECTURE:   "x64"
     SHARED:         "FALSE"
-    APPS:           "OFF"
+    APPS:           "ON"
   script: "CI\\Windows.bat"
   tags:
     - VS2017
+    - Qt5101
   artifacts:
     paths:
       - build-release/*.exe
