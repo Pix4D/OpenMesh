@@ -17,7 +17,7 @@ if [ "$COMPILER" == "gcc" ]; then
   # without icecc: no options required
   OPTIONS="$OPTIONS -DCMAKE_CXX_COMPILER=/usr/lib/icecc/bin/g++ -DCMAKE_C_COMPILER=/usr/lib/icecc/bin/gcc"
   MAKE_OPTIONS="-j16"
-  export ICECC_CXX=/usr/lib/icecc/bin/g++  ; export ICECC_CC=/usr/lib/icecc/bin/gcc
+  export ICECC_CXX=/usr/bin/g++  ; export ICECC_CC=/usr/bin/gcc
 
 elif [ "$COMPILER" == "clang" ]; then
 
