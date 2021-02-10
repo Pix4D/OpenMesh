@@ -1,10 +1,5 @@
 #!/bin/bash
 
-COMPILER=$1
-LANGUAGE=$2
-BUILD_TYPE=$3
-IWYU=$4
-
 # Exit script on any error
 set -e 
 
@@ -20,9 +15,9 @@ if [ "$COMPILER" == "gcc" ]; then
   BUILDPATH="gcc"
 
   # without icecc: no options required
-  OPTIONS="$OPTIONS -DCMAKE_CXX_COMPILER=/usr/bin/g++ -DCMAKE_C_COMPILER=/usr/bin/gcc"
+  OPTIONS="$OPTIONS -DCMAKE_CXX_COMPILER=/usr/lib/icecc/bin/g++ -DCMAKE_C_COMPILER=/usr/lib/icecc/bin/gcc"
   MAKE_OPTIONS="-j16"
-  export ICECC_CXX=/usr/bin/g++ ; export ICECC_CC=/usr/bin/gcc
+  export ICECC_CXX=/usr/bin/g++  ; export ICECC_CC=/usr/bin/gcc
 
 elif [ "$COMPILER" == "clang" ]; then
 
@@ -44,6 +39,32 @@ elif [ "$LANGUAGE" == "cpp14" ]; then
   BUILDPATH="$BUILDPATH-cpp14"  
 fi  
 
+if [ "$QTVERSION" == "qt5.13.0" ]; then
+  echo "Using QT5.13.0";
+  BUILDPATH="$BUILDPATH-qt5.13.0"
+  OPTIONS="$OPTIONS -DQT5_INSTALL_PATH=~/sw/Qt/5.13.0/gcc_64"
+elif [ "$QTVERSION" == "qt5.12.2" ]; then
+  echo "Using QT5.12.2";
+  BUILDPATH="$BUILDPATH-qt5.12.2"
+  OPTIONS="$OPTIONS -DQT5_INSTALL_PATH=~/sw/Qt/5.12.2/gcc_64"
+elif [ "$QTVERSION" == "qt5.11.2" ]; then
+  echo "Using QT5.11.2";
+  BUILDPATH="$BUILDPATH-qt5.11.2"
+  OPTIONS="$OPTIONS -DQT5_INSTALL_PATH=~/sw/Qt/5.11.2/gcc_64"
+elif [ "$QTVERSION" == "qt5.9.0" ]; then
+  echo "Using QT5.9.0";
+  BUILDPATH="$BUILDPATH-qt5.9.0"
+  OPTIONS="$OPTIONS -DQT5_INSTALL_PATH=~/sw/Qt/5.9/gcc_64"
+elif [ "$QTVERSION" == "qt5.13.2" ]; then
+  echo "Using QT5.13.2";
+  BUILDPATH="$BUILDPATH-qt5.13.2"
+  OPTIONS="$OPTIONS -DQT5_INSTALL_PATH=~/sw/Qt/5.13.2/gcc_64"
+elif [ "$QTVERSION" == "qt5.15.1" ]; then
+  echo "Using QT5.15.1";
+  BUILDPATH="$BUILDPATH-qt5.15.1"
+  OPTIONS="$OPTIONS -DQT5_INSTALL_PATH=~/sw/Qt/5.15.1/gcc_64"
+fi
+
 #=====================================
 # Color Settings:
 #=====================================
@@ -59,8 +80,16 @@ else
     BUILDPATH="$BUILDPATH-debug"  
 fi
 
-if [ "$IWYU" == "IWYU" ]; then
+if [ "$IWYU" == "yes" ]; then
   echo "Include what you use enabled.";
   BUILDPATH="$BUILDPATH-iwyu"
   OPTIONS="$OPTIONS -DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
 fi
+
+if [ "$VECTORCHECKS" == "yes" ]; then
+  echo "Vectorchecks enabled.";
+  BUILDPATH="$BUILDPATH-vectorchecks"
+  OPTIONS="$OPTIONS -DSTL_VECTOR_CHECKS=ON"
+fi
+
+echo "Building to directory $BUILDPATH"

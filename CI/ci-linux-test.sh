@@ -23,14 +23,33 @@ echo "Building $BUILD_TYPE version unittests"
 echo "======================================================================"
 echo -e "${NC}"
 
-if [ ! -d build-$BUILDPATH-Vector-Checks ]; then
-  mkdir build-$BUILDPATH-Vector-Checks
+if [ ! -d build-$BUILDPATH ]; then
+  mkdir build-$BUILDPATH
 fi
 
-cd build-$BUILDPATH-Vector-Checks
+cd build-$BUILDPATH
 
-#build the unit tests
-make  $MAKE_OPTIONS unittests
+#clean old cmake cache as the path might have changed
+find . -name "CMakeCache.txt" -type f -delete
+
+#just to be safe clean the test file definitions too
+if [ -f CTestTestfile.cmake ]
+then
+	echo "Removing old CTestTestfile.cmake"
+	rm CTestTestfile.cmake
+fi
+#just to be safe clean the test file definitions too
+if [ -f DartConfiguration.tcl ]
+then
+	echo "Removing old DartConfiguration.tcl"
+	rm DartConfiguration.tcl
+fi
+# Run cmake to make sure the tests are configured correctly for this system
+cmake -DOPENFLIPPER_BUILD_UNIT_TESTS=TRUE -DSTL_VECTOR_CHECKS=ON $OPTIONS ../
+
+#tell the location to the libs from build jobs
+export LD_LIBRARY_PATH=$(pwd)/Build/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$(pwd)/Build/systemlib:$LD_LIBRARY_PATH
 
 echo -e "${OUTPUT}"
 echo ""

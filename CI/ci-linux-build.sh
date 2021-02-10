@@ -18,22 +18,24 @@ echo "BuildPath:    $BUILDPATH"
 echo "Path:         $PATH"
 echo "Language:     $LANGUAGE"
 
-echo -e "${OUTPUT}"
-echo ""
-echo "======================================================================"
-echo "Building $BUILD_TYPE version with vectorchecks enabled"
-echo "======================================================================"
-echo -e "${NC}"
-
-if [ ! -d build-$BUILDPATH-Vector-Checks ]; then
-  mkdir build-$BUILDPATH-Vector-Checks
+if [ "$VECTORCHECKS" == "yes" ]; then
+  echo -e "${OUTPUT}"
+  echo ""
+  echo "======================================================================"
+  echo "Building $BUILD_TYPE version with vectorchecks enabled"
+  echo "======================================================================"
+  echo -e "${NC}"
 fi
 
-cd build-$BUILDPATH-Vector-Checks
+if [ ! -d build-$BUILDPATH ]; then
+  mkdir build-$BUILDPATH
+fi
 
-cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DOPENMESH_BUILD_UNIT_TESTS=TRUE -DSTL_VECTOR_CHECKS=ON $OPTIONS ../
+cd build-$BUILDPATH
 
-if [ "$IWYU" == "IWYU" ]; then
+cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DOPENMESH_BUILD_UNIT_TESTS=TRUE $OPTIONS ../
+
+if [ "$IWYU" == "yes" ]; then
   # do iwyu check
   if echo $(iwyu --version) | grep -q "0.11"
   then
@@ -52,6 +54,22 @@ if [ "$IWYU" == "IWYU" ]; then
 else
   # build it
   make $MAKE_OPTIONS
+
+  # build unittests
+  make  $MAKE_OPTIONS unittests
+
+  # Creating System Library folder to contain all dependend libraries to run OpenFlipper
+  if [ ! -d systemlib ]; then
+    echo "Creating systemlib folder"
+    mkdir systemlib
+  fi
+
+  echo "Copying all required libraries of OpenMesh to the systemlib directory"
+  if [ "$BUILD_TYPE" == "release" ]; then
+    ldd Build/lib/libOpenMeshCore.so.9.0 | grep "=> /" | awk '{print $3}' | xargs -I '{}' cp -v '{}' systemlib
+  else
+    ldd Build/lib/libOpenMeshCored.so.9.0 | grep "=> /" | awk '{print $3}' | xargs -I '{}' cp -v '{}' systemlib
+  fi
 fi
 
 cd ..
