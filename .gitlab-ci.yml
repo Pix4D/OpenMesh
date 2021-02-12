@@ -852,4 +852,9 @@ Sources:
       - OpenMesh*.tar.bz2
       - OpenMesh*.tar.gz
 
+trigger_openmesh-python-rebuild:
+  stage: deploy
+  script:
+    - "curl -X POST -F token=b63ed804ada51d7d1ffe5d6ea0dfa2 -F ref=track-OM-master https://www.graphics.rwth-aachen.de:9000/api/v4/projects/1024/trigger/pipeline"
+
 
