@@ -205,6 +205,10 @@ public:
    * \brief Adds a new vertex initialized to a custom position.
    *
    * \sa new_vertex(), new_vertex_dirty()
+   *
+   * \attention Be careful to not use a reference to a point in the mesh itself here.
+   *            as a resize of the underlying vector might invalidate this reference
+   *            and cause a segfault.  
    */
   inline SmartVertexHandle new_vertex(const Point& _p)
   {
@@ -231,7 +235,13 @@ public:
     return make_smart(vh, this);
   }
 
-  /// Alias for new_vertex(const Point&).
+  /** Alias for new_vertex(const Point&).
+  *
+  *    \attention Be careful to not use a reference to a point in the mesh itself here.
+  *               as a resize of the underlying vector might invalidate this reference
+  *               and cause a segfault.           
+  *
+  */
   inline SmartVertexHandle add_vertex(const Point& _p)
   { return new_vertex(_p); }
 
