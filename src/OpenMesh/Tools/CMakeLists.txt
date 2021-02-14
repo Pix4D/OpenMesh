@@ -97,7 +97,13 @@ endif()
 
 
 # Only install if the project name matches OpenMesh.
-if (NOT APPLE AND ${CMAKE_PROJECT_NAME} MATCHES "OpenMesh")
+if (${CMAKE_PROJECT_NAME} MATCHES "OpenMesh")
+  set (OPENMESH_NO_INSTALL_HEADERS FALSE CACHE BOOL "Should OpenMesh skip installing headers?")
+else()
+  set (OPENMESH_NO_INSTALL_HEADERS TRUE CACHE BOOL "Should OpenMesh skip installing headers?")
+endif()
+
+if (NOT APPLE AND NOT ${OPENMESH_NO_INSTALL_HEADERS})
 
 # Install Header Files
 install(DIRECTORY .
