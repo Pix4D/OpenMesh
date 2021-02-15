@@ -56,7 +56,6 @@ TEST_F(OpenMeshDirectSettingProperties, SetVertexPositionsDirectly) {
   }
 
   EXPECT_EQ(4u, mesh_.n_vertices() ) << "Wrong number of vertices";
-  EXPECT_EQ(2u, mesh_.n_faces() )    << "Wrong number of faces";
 
   EXPECT_EQ(4, vertex_count) << "Wrong number of vertices when counting direct point property vector";
 
