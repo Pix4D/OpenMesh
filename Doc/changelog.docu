@@ -29,8 +29,14 @@
 <li>OM Writer: Removed debug output</li>
 </ul>
 
+<b>Tools</b>
+<ul>
+<li>Subdivider: Fixed crash in ModifiedButterfly subdivider (When vertex with valence > 30 was present)</li>
+</ul>
+
 <b>Build System</b>
 <ul>
+<li>Set cmake project info correctly</li>
 <li>Dropped 32-bit Windows continuous integration and artifact builds.</li>
 <li>Removed the VERSION file and do it via cmakes project call)
 <li>Switched to external cmake-library used by all of our projects now</li>
