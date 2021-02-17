@@ -1,8 +1,10 @@
 .project
 .cproject
-CMakeLists.txt.user
+CMakeLists.txt.user*
 build*
 *.swp
 .settings
 # ignore mac temporal files
 .DS_Store 
+.idea
+cmake-build*/

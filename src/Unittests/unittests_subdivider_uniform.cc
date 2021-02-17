@@ -1027,6 +1027,28 @@ TEST_F(OpenMeshSubdividerUniform_Triangle, Modified_Butterfly) {
 
 
 
+TEST_F(OpenMeshSubdividerUniform_Triangle, Modified_Butterfly_cylinder) {
+    mesh_.clear();
+
+    OpenMesh::IO::read_mesh(mesh_, "cylinder.om");
+
+    // Initialize subdivider
+    OpenMesh::Subdivider::Uniform::ModifiedButterflyT<Mesh> butter;
+
+    // Check setup
+    EXPECT_EQ(66u, mesh_.n_vertices() ) << "Wrong number of vertices";
+    EXPECT_EQ(128u, mesh_.n_faces() )    << "Wrong number of faces";
+
+    // Execute 3 subdivision steps
+    butter( mesh_,3,true );
+
+    // Check setup
+    EXPECT_EQ(4098u, mesh_.n_vertices() ) << "Wrong number of vertices after subdivision with loop";
+    EXPECT_EQ(8192u, mesh_.n_faces() )    << "Wrong number of faces after subdivision with loop";
+}
+
+
+
 TEST_F(OpenMeshSubdividerUniform_Triangle, Modified_Butterfly_delete_vertex) {
 
   for (bool collect_garbage : { false, true })

@@ -201,8 +201,12 @@ TEST_F(OpenMeshConvertPolyMeshToTriangle, VertexFaceCheck) {
   EXPECT_EQ(4u, p.n_vertices() ) << "Wrong number of vertices in TriMesh";
 
   Mesh::VertexIter it = mesh_.vertices_begin();
+
+
   //add face to original mesh
-  mesh_.add_face(vhand,(*it),(*++it));
+  Mesh::VertexHandle vhand1 = *it;
+  Mesh::VertexHandle vhand2 = (*++it);
+  mesh_.add_face(vhand,vhand1,vhand2);
 
   EXPECT_EQ(2u, mesh_.n_faces() ) << "Wrong number of faces in PolyMesh";
   EXPECT_EQ(2u, p.n_faces() ) << "Wrong number of faces in TriMesh";

@@ -4,17 +4,27 @@
 # Compiler:   {{COMPILER}}
 # Language:   {{LANGUAGE}}
 
-test-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}:
+test-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}:
   stage: test
-  script: "CI/ci-linux-test.sh {{COMPILER}} {{LANGUAGE}} {{BUILDTYPE}}"
-  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
-  tags: [Docker]
-  dependencies: [build-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}]
-  needs: [build-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}]
+  script: "CI/ci-linux-test.sh"
+  #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  tags:
+    - Linux
+    - stretch
+    - MultiThreads
+  variables:
+    COMPILER: "{{COMPILER}}"
+    LANGUAGE: "{{LANGUAGE}}"
+    BUILD_TYPE: "{{BUILDTYPE}}"
+    QTVERSION: "{{QT_VERSION}}"
+    IWYU: "no"
+    VECTORCHECKS: "yes"
+  dependencies: [build-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}]
+  needs: [build-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}]
   artifacts:
     reports:
       junit:
-        - build-{{COMPILER}}-{{LANGUAGE}}-{{BUILDTYPE}}-Vector-Checks/Unittests/report.xml
-        - build-{{COMPILER}}-{{LANGUAGE}}-{{BUILDTYPE}}-Vector-Checks/Unittests/report-customvec.xml
-        - build-{{COMPILER}}-{{LANGUAGE}}-{{BUILDTYPE}}-Vector-Checks/Unittests/report-doublevec.xml
+        - build-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}-{{BUILDTYPE}}-vectorchecks/Unittests/report.xml
+        - build-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}-{{BUILDTYPE}}-vectorchecks/Unittests/report-customvec.xml
+        - build-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}-{{BUILDTYPE}}-vectorchecks/Unittests/report-doublevec.xml
 
