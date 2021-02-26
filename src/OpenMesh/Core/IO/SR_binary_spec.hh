@@ -75,6 +75,8 @@
 
 #include <OpenMesh/Core/Utils/typename.hh>
 
+#include <iostream>
+
 //== NAMESPACES ===============================================================
 
 namespace OpenMesh {
@@ -321,7 +323,84 @@ struct FunctorRestore {
   bool          swap_;
 };
 
-#include <OpenMesh/Core/IO/SR_binary_vector_of_fundamentals.inl>
+template <typename T>
+struct binary< std::vector< T > > {
+  typedef std::vector< T >       value_type;
+  typedef typename value_type::value_type elem_type;
+
+  static const bool is_streamable = binary<T>::is_streamable;
+  static size_t size_of(bool _store_size = true)
+  { return IO::UnknownSize; }
+
+  static size_t size_of(const value_type& _v, bool _store_size = true)
+  {
+    if(binary<T>::size_of() != IO::UnknownSize)
+    {
+      unsigned int   N     = _v.size();
+      auto res = sizeof(elem_type)*_v.size() + (_store_size? sizeof(decltype(N)) : 0);
+      return res;
+    }
+    else
+    {
+      size_t size = 0;
+      for(auto v : _v)
+      {
+        size += binary<T>::size_of(v);
+        if(_store_size)
+        {
+          unsigned int   N     = _v.size();
+          size += binary<unsigned int>::size_of();
+        }
+      }
+
+      return size;
+    }
+  }
+
+  static std::string string_for_value_type(void) { return get_string_for_type(value_type()); }
+  static
+  size_t store(std::ostream& _os, const value_type& _v, bool _swap=false, bool _store_size = true) {
+    size_t bytes=0;
+    if(_store_size)
+    {
+      unsigned int N = _v.size();
+      bytes += binary<unsigned int>::store( _os, N, _swap );
+    }
+    if (_swap)
+        bytes += std::accumulate( _v.begin(), _v.end(), static_cast<size_t>(0),
+        FunctorStore<elem_type>(_os,_swap) );
+    else {
+       auto bytes_of_vec = size_of(_v, false);
+       bytes += bytes_of_vec;
+      _os.write( reinterpret_cast<const char*>(&_v[0]), bytes_of_vec);
+    }
+    return _os.good() ? bytes : 0;
+  }
+
+  static size_t restore(std::istream& _is, value_type& _v, bool _swap=false, bool _restore_size = true) {
+
+    size_t bytes=0;
+
+    if(_restore_size)
+    {
+      unsigned int size_of_vec;
+      bytes += binary<unsigned int>::restore(_is, size_of_vec, _swap);
+      _v.resize(size_of_vec);
+    }
+
+    if ( _swap)
+      bytes += std::accumulate( _v.begin(), _v.end(), size_t(0),
+             FunctorRestore<elem_type>(_is, _swap) );
+    else
+    {
+      auto bytes_of_vec = size_of(_v, false);
+      bytes += bytes_of_vec;
+      _is.read( reinterpret_cast<char*>(&_v[0]), bytes_of_vec );
+    }
+    return _is.good() ? bytes : 0;
+  }
+};
+
 #include <OpenMesh/Core/IO/SR_binary_vector_of_string.inl>
 #include <OpenMesh/Core/IO/SR_binary_vector_of_bool.inl>
 

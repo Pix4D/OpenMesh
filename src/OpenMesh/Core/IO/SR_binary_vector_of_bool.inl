@@ -7,14 +7,14 @@ template <> struct binary< std::vector<bool> >
 
   static const bool is_streamable = true;
 
-  static size_t size_of(void) { return UnknownSize; }
-  static size_t size_of(const value_type& _v)
+  static size_t size_of(bool _store_size = true) { return UnknownSize; }
+  static size_t size_of(const value_type& _v, bool _store_size = true)
   {
     return _v.size() / 8 + ((_v.size() % 8)!=0); 
   }
   static std::string string_for_value_type(void) { return get_string_for_type(value_type()); }
   static
-  size_t store( std::ostream& _ostr, const value_type& _v, bool ) 
+  size_t store( std::ostream& _ostr, const value_type& _v, bool, bool _store_size = true )
   {
     size_t bytes = 0;
     
@@ -61,7 +61,7 @@ template <> struct binary< std::vector<bool> >
   }
 
   static
-  size_t restore( std::istream& _istr, value_type& _v, bool )
+  size_t restore( std::istream& _istr, value_type& _v, bool, bool _restore_size = true )
   {
     size_t bytes = 0;
     
