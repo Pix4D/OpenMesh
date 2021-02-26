@@ -3,12 +3,11 @@
 # OS:         Linux
 # Compiler:   {{COMPILER}}
 # Language:   {{LANGUAGE}}
-# QT Version: {{QT_VERSION}}
 
-build-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}:
+iwyu-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}:
   stage: build
   script: "CI/ci-linux-build.sh"
-  #image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
+  image: graphics.rwth-aachen.de:4567/docker/docker/docker-openmesh-container
   tags:
     - Linux
     - stretch
@@ -17,8 +16,9 @@ build-{{BUILDTYPE}}-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}:
     LANGUAGE: "{{LANGUAGE}}"
     BUILD_TYPE: "{{BUILDTYPE}}"
     QTVERSION: "{{QT_VERSION}}"
-    IWYU: "no"
+    IWYU: "yes"
     VECTORCHECKS: "yes"
   artifacts:
     paths:
-    - build-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}-{{BUILDTYPE}}-vectorchecks/
+    - build-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}-{{BUILDTYPE}}-iwyu-vectorchecks/compile_commands.json
+    - build-{{COMPILER}}-{{LANGUAGE}}-{{QT_VERSION}}-{{BUILDTYPE}}-iwyu-vectorchecks/iwyu.dump

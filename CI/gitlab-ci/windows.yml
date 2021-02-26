@@ -2,8 +2,11 @@
 # Windows tasks
 # -----------------
 
-{windows-template-job.yml, ARCHITECTURE=x64, SHARED=TRUE, VSVERSION=VS2017, QTTAG=Qt5101}
-{windows-template-job.yml, ARCHITECTURE=x64, SHARED=FALSE, VSVERSION=VS2017, QTTAG=Qt5101}
+{windows-template-job-apps.yml, ARCHITECTURE=x64, SHARED=TRUE, VSVERSION=VS2019, QTTAG=Qt5150}
+{windows-template-job-apps.yml, ARCHITECTURE=x64, SHARED=FALSE, VSVERSION=VS2019, QTTAG=Qt5150}
+
+{windows-template-job-apps.yml, ARCHITECTURE=x64, SHARED=TRUE, VSVERSION=VS2017, QTTAG=Qt5101}
+{windows-template-job-apps.yml, ARCHITECTURE=x64, SHARED=FALSE, VSVERSION=VS2017, QTTAG=Qt5101}
 
 {windows-template-job.yml, ARCHITECTURE=x64, SHARED=TRUE, VSVERSION=VS2015, QTTAG=Qt5101}
 {windows-template-job.yml, ARCHITECTURE=x64, SHARED=FALSE, VSVERSION=VS2015, QTTAG=Qt5101}

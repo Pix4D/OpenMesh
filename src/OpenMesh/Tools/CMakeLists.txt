@@ -27,7 +27,7 @@ IF(WIN32 AND NOT MINGW)
 ENDIF(WIN32 AND NOT MINGW)
 
 # Disable Library installation when not building OpenMesh on its own but as part of another project!
-if ( NOT ${PROJECT_NAME} MATCHES "OpenMesh")
+if ( NOT ${CMAKE_PROJECT_NAME} MATCHES "OpenMesh")
   set(VCI_NO_LIBRARY_INSTALL true)
 endif()
 
@@ -44,8 +44,8 @@ if (WIN32)
 
 else ()
   vci_add_library (OpenMeshTools SHAREDANDSTATIC ${sources} ${headers})
-  set_target_properties (OpenMeshTools PROPERTIES VERSION ${OPENMESH_VERSION_MAJOR}.${OPENMESH_VERSION_MINOR}
-                                                SOVERSION ${OPENMESH_VERSION_MAJOR}.${OPENMESH_VERSION_MINOR} )
+  set_target_properties (OpenMeshTools PROPERTIES VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+                                                SOVERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR} )
 endif ()
 
 target_link_libraries (OpenMeshTools OpenMeshCore)
@@ -54,7 +54,7 @@ IF( NOT WIN32 )
   target_link_libraries (OpenMeshToolsStatic OpenMeshCoreStatic)
 ENDIF(NOT WIN32)
 
-if ( (${PROJECT_NAME} MATCHES "OpenMesh") AND BUILD_APPS )
+if ( (${CMAKE_PROJECT_NAME} MATCHES "OpenMesh") AND BUILD_APPS )
 
   if ( WIN32 )
     if ( NOT "${CMAKE_GENERATOR}" MATCHES "MinGW Makefiles" )
@@ -97,7 +97,13 @@ endif()
 
 
 # Only install if the project name matches OpenMesh.
-if (NOT APPLE AND ${PROJECT_NAME} MATCHES "OpenMesh")
+if (${CMAKE_PROJECT_NAME} MATCHES "OpenMesh")
+  set (OPENMESH_NO_INSTALL_HEADERS FALSE CACHE BOOL "Should OpenMesh skip installing headers?")
+else()
+  set (OPENMESH_NO_INSTALL_HEADERS TRUE CACHE BOOL "Should OpenMesh skip installing headers?")
+endif()
+
+if (NOT APPLE AND NOT ${OPENMESH_NO_INSTALL_HEADERS})
 
 # Install Header Files
 install(DIRECTORY .

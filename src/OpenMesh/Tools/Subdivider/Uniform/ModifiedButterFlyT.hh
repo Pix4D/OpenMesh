@@ -179,6 +179,17 @@ protected:
 
     ///TODO:Implement fixed positions
 
+    // Compute the maximal vertex valence in the mesh
+    unsigned int maxValence = 0;
+    for ( auto vertex : _m.vertices() ) {
+        maxValence = std::max(maxValence,_m.valence(vertex));
+    }
+
+    // We pre initialized with 30. If it's larger, we update the weights
+    if (maxValence >= 30) {
+        init_weights( maxValence + 1 );
+    }
+
     // Do _n subdivisions
     for (size_t i=0; i < _n; ++i)
     {

@@ -49,6 +49,19 @@ IF "%BUILD_PLATFORM%" == "VS2017" (
 ) 
 
 
+IF "%BUILD_PLATFORM%" == "VS2019" (
+    set LIBPATH=E:\libs\VS2019
+    set GTESTVERSION=gtest-1.10.0
+    set GENERATOR=Visual Studio 16 2019
+    set VS_PATH="C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\devenv.com"
+
+    IF "%ARCHITECTURE%" == "x64" (
+      set QT_INSTALL_PATH=E:\Qt\5.15.2\msvc2019_64
+      set QT_BASE_CONFIG=-DQT5_INSTALL_PATH=E:\Qt\5.15.2\msvc2019_64
+    )
+
+)
+
 IF "%APPS%" == "ON" (
   set STRING_APPS=
 
@@ -107,7 +120,7 @@ IF EXIST %QT_INSTALL_PATH%\ (
 )
 
 
-"C:\Program Files\CMake\bin\cmake.exe" -DGTEST_ROOT="%LIBPATH%\%ARCHITECTURE%\%GTESTVERSION%" -G "%GENERATOR%"  -DCMAKE_BUILD_TYPE=Release -DBUILD_APPS=%APPS% -DOPENMESH_BUILD_UNIT_TESTS=TRUE -DCMAKE_WINDOWS_LIBS_DIR="e:\libs" -DEigen3_DIR="e:\libs\general\Eigen3.3.9\share\eigen3\cmake"  -DOPENMESH_BUILD_SHARED=%SHARED% %CMAKE_CONFIGURATION% ..
+"C:\Program Files\CMake\bin\cmake.exe" -DGTEST_ROOT="%LIBPATH%\%ARCHITECTURE%\%GTESTVERSION%" -G "%GENERATOR%"  -DCMAKE_BUILD_TYPE=Release -DBUILD_APPS=%APPS% -DOPENMESH_BUILD_UNIT_TESTS=TRUE -DCMAKE_WINDOWS_LIBS_DIR="e:\libs" -DOPENMESH_BUILD_SHARED=%SHARED% %CMAKE_CONFIGURATION% ..
 
 %VS_PATH% /Build "Release" OpenMesh.sln /Project "ALL_BUILD"
 
@@ -129,7 +142,7 @@ mkdir build-debug
 
 cd build-debug
 
-"C:\Program Files\CMake\bin\cmake.exe" -DGTEST_ROOT="%LIBPATH%\%ARCHITECTURE%\%GTESTVERSION%" -G "%GENERATOR%" -DOPENMESH_BUILD_UNIT_TESTS=TRUE -DEigen3_DIR="e:\libs\general\Eigen3.3.9\share\eigen3\cmake" -DCMAKE_BUILD_TYPE=Debug -DOPENMESH_BUILD_SHARED=%SHARED% -DBUILD_APPS=%APPS% %CMAKE_CONFIGURATION% ..
+"C:\Program Files\CMake\bin\cmake.exe" -DGTEST_ROOT="%LIBPATH%\%ARCHITECTURE%\%GTESTVERSION%" -G "%GENERATOR%" -DOPENMESH_BUILD_UNIT_TESTS=TRUE -DCMAKE_BUILD_TYPE=Debug -DOPENMESH_BUILD_SHARED=%SHARED% -DBUILD_APPS=%APPS% %CMAKE_CONFIGURATION% ..
 
 %VS_PATH% /Build "Debug" OpenMesh.sln /Project "ALL_BUILD"
 
