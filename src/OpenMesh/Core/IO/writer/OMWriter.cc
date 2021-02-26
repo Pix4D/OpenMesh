@@ -652,14 +652,13 @@ size_t _OMWriter_::store_binary_custom_chunk(std::ostream& _os,
 
   // 4. block size
   bytes += store( _os, _bp.size_of(), OMFormat::Chunk::Integer_32, _swap );
-  //omlog() << "  n_bytes = " << _bp.size_of() << std::endl;
+  //omlog() << "  block size = " << _bp.size_of() << std::endl;
 
   // 5. data
   {
     size_t b;
     bytes += ( b=_bp.store( _os, _swap ) );
-    //omlog() << "  b       = " << b << std::endl;
-    assert( b == _bp.size_of() );
+    assert(b == _bp.size_of());
   }
   return bytes;
 }
