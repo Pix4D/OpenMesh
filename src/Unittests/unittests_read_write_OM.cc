@@ -1638,45 +1638,51 @@ void do_all_property_types_vec_all_dim(MeshT& _mesh, PropertyAction action)
 }
 
 template <typename MeshT, typename HandleT>
-void do_all_property_types(MeshT& _mesh, PropertyAction action)
+void do_all_property_types(MeshT& _mesh, PropertyAction action, int version)
 {
   // TODO: add support for commented out types
-  do_property<MeshT, HandleT, int>                 (_mesh, action);
-  do_property<MeshT, HandleT, double>              (_mesh, action);
-  do_property<MeshT, HandleT, float>               (_mesh, action);
-  do_property<MeshT, HandleT, char>                (_mesh, action);
-  do_property<MeshT, HandleT, bool>                (_mesh, action);
-//  do_property<MeshT, HandleT, std::vector<int>>    (_mesh, action);
-//  do_property<MeshT, HandleT, std::vector<double>> (_mesh, action);
-//  do_property<MeshT, HandleT, std::vector<float>>  (_mesh, action);
-//  do_property<MeshT, HandleT, std::vector<char>>   (_mesh, action);
-//  do_property<MeshT, HandleT, std::vector<bool>>   (_mesh, action);
-  do_all_property_types_vec_all_dim<MeshT, HandleT>(_mesh, action);
+    do_property<MeshT, HandleT, int>                 (_mesh, action);
+    do_property<MeshT, HandleT, double>              (_mesh, action);
+    do_property<MeshT, HandleT, float>               (_mesh, action);
+    do_property<MeshT, HandleT, char>                (_mesh, action);
+    do_property<MeshT, HandleT, bool>                (_mesh, action);
+
+    if(version >= 22)
+    {
+       do_property<MeshT, HandleT, std::vector<int>>    (_mesh, action);
+       do_property<MeshT, HandleT, std::vector<double>> (_mesh, action);
+       do_property<MeshT, HandleT, std::vector<float>>  (_mesh, action);
+       do_property<MeshT, HandleT, std::vector<char>>   (_mesh, action);
+       //do_property<MeshT, HandleT, std::vector<bool>>   (_mesh, action);
+    }
+
+    do_all_property_types_vec_all_dim<MeshT, HandleT>(_mesh, action);
 }
 
 template <typename MeshT>
-void do_all_properties(MeshT& _mesh, PropertyAction action)
+void do_all_properties(MeshT& _mesh, PropertyAction action, int version)
 {
-  do_all_property_types<MeshT,OpenMesh::FaceHandle>    (_mesh, action);
-  do_all_property_types<MeshT,OpenMesh::EdgeHandle>    (_mesh, action);
-  do_all_property_types<MeshT,OpenMesh::HalfedgeHandle>(_mesh, action);
-  do_all_property_types<MeshT,OpenMesh::VertexHandle>  (_mesh, action);
+  do_all_property_types<MeshT,OpenMesh::FaceHandle>    (_mesh, action, version);
+  do_all_property_types<MeshT,OpenMesh::EdgeHandle>    (_mesh, action, version);
+  do_all_property_types<MeshT,OpenMesh::HalfedgeHandle>(_mesh, action, version);
+  do_all_property_types<MeshT,OpenMesh::VertexHandle>  (_mesh, action, version);
 }
 
-template <typename MeshT> void add_all_properties(MeshT& _mesh)     { do_all_properties(_mesh, PropertyAction::Add    ); }
-template <typename MeshT> void check_all_properties(MeshT& _mesh)   { do_all_properties(_mesh, PropertyAction::Check  ); }
-template <typename MeshT> void request_all_properties(MeshT& _mesh) { do_all_properties(_mesh, PropertyAction::Request); }
+template <typename MeshT> void add_all_properties(MeshT& _mesh, int version)     { do_all_properties(_mesh, PropertyAction::Add    , version); }
+template <typename MeshT> void check_all_properties(MeshT& _mesh, int version)   { do_all_properties(_mesh, PropertyAction::Check  , version); }
+template <typename MeshT> void request_all_properties(MeshT& _mesh, int version) { do_all_properties(_mesh, PropertyAction::Request, version); }
 
 /*
  * Load a triangle mesh from an om file of version 2.1 with properties
  */
 TEST_F(OpenMeshReadWriteOM, LoadTriangleMeshWithPropertiesVersion_2_1) {
 
+  int version = 21;
   mesh_.clear();
 
   std::string file_name = "cube_tri_with_properties_2_1.om";
 
-  request_all_properties(mesh_);
+  request_all_properties(mesh_, version);
   bool ok = OpenMesh::IO::read_mesh(mesh_, file_name);
 
   ASSERT_TRUE(ok) << file_name;
@@ -1686,7 +1692,7 @@ TEST_F(OpenMeshReadWriteOM, LoadTriangleMeshWithPropertiesVersion_2_1) {
   ASSERT_EQ(12u , mesh_.n_faces())     << "The number of loaded faces is not correct!";
   ASSERT_EQ(36u , mesh_.n_halfedges()) << "The number of loaded halfedges is not correct!";
 
-  check_all_properties(mesh_);
+  check_all_properties(mesh_, version);
 }
 
 /*
@@ -1697,6 +1703,7 @@ TEST_F(OpenMeshReadWriteOM, LoadTriangleMeshWithPropertiesCurrentVersion) {
   // TODO: create a LoadTriangleMeshWithPropertiesVersion_2_2 unittest from the file resulting from this test
   // so we will keep testing version 2.2 in the future.
 
+  int version = 22;
   mesh_.clear();
 
   std::string file_name = "cube_tri_version_2_0.om";
@@ -1709,7 +1716,7 @@ TEST_F(OpenMeshReadWriteOM, LoadTriangleMeshWithPropertiesCurrentVersion) {
   ASSERT_EQ(12u , mesh_.n_faces())     << "The number of loaded faces is not correct!";
   ASSERT_EQ(36u , mesh_.n_halfedges()) << "The number of loaded halfedges is not correct!";
 
-  add_all_properties(mesh_);
+  add_all_properties(mesh_, version);
   mesh_.request_halfedge_texcoords2D();
 
   std::string file_name_2_2 = "cube_tri_with_properties_2_2.om";
@@ -1721,7 +1728,7 @@ TEST_F(OpenMeshReadWriteOM, LoadTriangleMeshWithPropertiesCurrentVersion) {
   Mesh new_mesh;
   OpenMesh::IO::read_mesh(new_mesh, file_name_2_2, ops);
 
-  check_all_properties(new_mesh);
+  check_all_properties(new_mesh, version);
   EXPECT_TRUE(new_mesh.has_halfedge_texcoords2D());
 }
 
