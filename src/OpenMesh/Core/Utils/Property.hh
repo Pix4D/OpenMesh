@@ -56,6 +56,7 @@
 #include <algorithm>
 
 #include <OpenMesh/Core/IO/SR_store.hh>
+#include <iostream>
 
 
 //== NAMESPACES ===============================================================
@@ -149,21 +150,23 @@ public:
 
   virtual size_t store( std::ostream& _ostr, bool _swap ) const override
   {
-    if ( IO::is_streamable<vector_type>() )
-      return IO::store(_ostr, data_, _swap );
+    if (IO::is_streamable<vector_type>() && element_size() != IO::UnknownSize)
+      return IO::store(_ostr, data_, _swap, false);   //does not need to store its length
+
     size_t bytes = 0;
     for (size_t i=0; i<n_elements(); ++i)
-      bytes += IO::store( _ostr, data_[i], _swap );
+      bytes += IO::store( _ostr, data_[i], _swap);
     return bytes;
   }
 
   virtual size_t restore( std::istream& _istr, bool _swap ) override
   {
-    if ( IO::is_streamable<vector_type>() )
-      return IO::restore(_istr, data_, _swap );
+    if ( IO::is_streamable<vector_type>() && element_size() != IO::UnknownSize )
+    return IO::restore(_istr, data_, _swap, false);  //does not need to restore its length
+
     size_t bytes = 0;
     for (size_t i=0; i<n_elements(); ++i)
-      bytes += IO::restore( _istr, data_[i], _swap );
+      bytes += IO::restore( _istr, data_[i], _swap);
     return bytes;
   }
 
