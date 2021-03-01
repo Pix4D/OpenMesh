@@ -188,11 +188,12 @@ SIMPLE_BINARY(unsigned long);
     static size_t size_of(const value_type&) { return size_of(); } \
     static std::string string_for_value_type(void) { return get_string_for_type(value_type()); } \
     static size_t store( std::ostream& _os, const value_type& _val, \
-		         bool _swap=false) {                    \
+		         bool _swap=false) {                                \
       value_type tmp = _val;                                    \
       size_t i, b = size_of(_val), N = value_type::size_;       \
-      if (_swap) for (i=0; i<N; ++i)                            \
-	reverse_byte_order( tmp[i] );                           \
+      if (_swap)                                                \
+        for (i=0; i<N; ++i)                                     \
+          reverse_byte_order( tmp[i] );                         \
       _os.write( (const char*)&tmp[0], b );                     \
       return _os.good() ? b : 0;                                \
     }                                                           \
@@ -367,12 +368,13 @@ struct binary< std::vector< T > > {
       bytes += binary<unsigned int>::store( _os, N, _swap );
     }
     if (_swap)
-        bytes += std::accumulate( _v.begin(), _v.end(), static_cast<size_t>(0),
-        FunctorStore<elem_type>(_os,_swap) );
+      bytes += std::accumulate( _v.begin(), _v.end(), static_cast<size_t>(0),
+      FunctorStore<elem_type>(_os,_swap) );
     else {
-       auto bytes_of_vec = size_of(_v, false);
-       bytes += bytes_of_vec;
-      _os.write( reinterpret_cast<const char*>(&_v[0]), bytes_of_vec);
+      auto bytes_of_vec = size_of(_v, false);
+      bytes += bytes_of_vec;
+      if (_v.size() > 0)
+        _os.write( reinterpret_cast<const char*>(&_v[0]), bytes_of_vec);
     }
     return _os.good() ? bytes : 0;
   }
@@ -395,7 +397,8 @@ struct binary< std::vector< T > > {
     {
       auto bytes_of_vec = size_of(_v, false);
       bytes += bytes_of_vec;
-      _is.read( reinterpret_cast<char*>(&_v[0]), bytes_of_vec );
+      if (_v.size() > 0)
+        _is.read( reinterpret_cast<char*>(&_v[0]), bytes_of_vec );
     }
     return _is.good() ? bytes : 0;
   }
