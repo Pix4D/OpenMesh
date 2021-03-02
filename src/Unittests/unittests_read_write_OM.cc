@@ -1541,12 +1541,12 @@ T get_value(int seed, T, int seed2 = 0)
 }
 
 template <typename T>
-std::vector<T> get_value(int seed, const std::vector<T>&)
+std::vector<T> get_value(int seed, const std::vector<T>&, int _offset = 0)
 {
   int size = get_value(seed, 3);
   std::vector<T> res(size);
   for (int i = 0; i < size; ++i)
-    res[i] = get_value(seed, T(), i);
+    res[i] = get_value(seed, T(), i + _offset);
   return res;
 }
 
@@ -1653,6 +1653,8 @@ void do_all_property_types(MeshT& _mesh, PropertyAction action, int version)
        do_property<MeshT, HandleT, std::vector<double>> (_mesh, action);
        do_property<MeshT, HandleT, std::vector<float>>  (_mesh, action);
        do_property<MeshT, HandleT, std::vector<char>>   (_mesh, action);
+
+       do_property<MeshT, HandleT, std::vector<std::vector<int>>>    (_mesh, action);
        //do_property<MeshT, HandleT, std::vector<bool>>   (_mesh, action);
     }
 
@@ -1875,4 +1877,5 @@ TEST_F(OpenMeshReadWriteOM, WriteAndLoadBoolCheckSpaces) {
 }
 
 OM_REGISTER_PROPERTY_TYPE(std::vector<float>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<int>>)
 OM_REGISTER_PROPERTY_TYPE(RegisteredDataType)
