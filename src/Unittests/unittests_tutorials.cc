@@ -789,7 +789,7 @@ TEST_F(OpenMeshTutorials, storing_custom_properties) {
 
   //Read back mesh
   ok = OpenMesh::IO::read_mesh( mesh, "persistence-check.om" );
-  EXPECT_TRUE(ok) << "Cannot read mesh from file 'persistent-check.om'";
+  EXPECT_TRUE(ok) << "Cannot read mesh from file 'persistence-check.om'";
 
   // check props
   EXPECT_TRUE(fill_props(mesh, vprop_float, true)) << "property not filled correctly";
