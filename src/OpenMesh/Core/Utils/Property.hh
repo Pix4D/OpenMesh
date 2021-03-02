@@ -161,8 +161,8 @@ public:
 
   virtual size_t restore( std::istream& _istr, bool _swap ) override
   {
-    if ( IO::is_streamable<vector_type>() && element_size() != IO::UnknownSize )
-    return IO::restore(_istr, data_, _swap, false);  //does not need to restore its length
+    if ( IO::is_streamable<vector_type>() && element_size() != IO::UnknownSize)
+      return IO::restore(_istr, data_, _swap, false);  //does not need to restore its length
 
     size_t bytes = 0;
     for (size_t i=0; i<n_elements(); ++i)

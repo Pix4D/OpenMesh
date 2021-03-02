@@ -347,11 +347,11 @@ struct binary< std::vector< T > > {
       for(auto v : _v)
       {
         size += binary<T>::size_of(v);
-        if(_store_size)
-        {
-          unsigned int   N     = _v.size();
-          size += binary<unsigned int>::size_of();
-        }
+      }
+      if(_store_size)
+      {
+        unsigned int   N     = _v.size();
+        size += binary<unsigned int>::size_of();
       }
 
       return size;
@@ -370,11 +370,24 @@ struct binary< std::vector< T > > {
     if (_swap)
       bytes += std::accumulate( _v.begin(), _v.end(), static_cast<size_t>(0),
       FunctorStore<elem_type>(_os,_swap) );
-    else {
-      auto bytes_of_vec = size_of(_v, false);
-      bytes += bytes_of_vec;
-      if (_v.size() > 0)
-        _os.write( reinterpret_cast<const char*>(&_v[0]), bytes_of_vec);
+    else
+    {
+      auto elem_size = binary<elem_type>::size_of();
+      if (elem_size != IO::UnknownSize && elem_size == sizeof(elem_type))
+      {
+        // size of all elements is known, equal, and densely packed in vector.
+        // Just store vector data
+        auto bytes_of_vec = size_of(_v, false);
+        bytes += bytes_of_vec;
+        if (_v.size() > 0)
+          _os.write( reinterpret_cast<const char*>(&_v[0]), bytes_of_vec);
+      }
+      else
+      {
+        // store individual elements
+        for (const auto& v : _v)
+          bytes += binary<elem_type>::store(_os, v, _swap);
+      }
     }
     return _os.good() ? bytes : 0;
   }
@@ -395,10 +408,22 @@ struct binary< std::vector< T > > {
              FunctorRestore<elem_type>(_is, _swap) );
     else
     {
-      auto bytes_of_vec = size_of(_v, false);
-      bytes += bytes_of_vec;
-      if (_v.size() > 0)
-        _is.read( reinterpret_cast<char*>(&_v[0]), bytes_of_vec );
+      auto elem_size = binary<elem_type>::size_of();
+      if (elem_size != IO::UnknownSize && elem_size == sizeof(elem_type))
+      {
+        // size of all elements is known, equal, and densely packed in vector.
+        // Just restore vector data
+        auto bytes_of_vec = size_of(_v, false);
+        bytes += bytes_of_vec;
+        if (_v.size() > 0)
+          _is.read( reinterpret_cast<char*>(&_v[0]), bytes_of_vec );
+      }
+      else
+      {
+        // restore individual elements
+        for (auto& v : _v)
+          bytes += binary<elem_type>::restore(_is, v, _swap);
+      }
     }
     return _is.good() ? bytes : 0;
   }
