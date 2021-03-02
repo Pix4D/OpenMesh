@@ -91,29 +91,36 @@ namespace IO {
 /// It's used by the OM reader/writer modules.
 ///
 /// The following specialization are provided:
-/// - Fundamental types except \c long \c double
+/// - Fundamental types except \c long
 /// - %OpenMesh vector types
 /// - %OpenMesh::StatusInfo
 /// - std::string (max. length 65535)
+/// - std::vector<T> (requires a specialization for T)
 ///
 /// \todo Complete documentation of members
 template < typename T > struct binary
 {
   typedef T     value_type;
 
+  /// Can we store T? Set this to true in your specialization.
   static const bool is_streamable = false;
 
+  /// What's the size of T? If it depends on the actual value (e.g. for vectors) return UnknownSize
   static size_t size_of(void) { return UnknownSize; }
+  /// What't the size of a specific value of type T.
   static size_t size_of(const value_type&) { return UnknownSize; }
 
+  /// A string that identifies the type of T.
   static std::string string_for_value_type (void) { return "UnknownType"; }
 
+  /// Store a value of T and return the number of bytes written
   static 
   size_t store( std::ostream& /* _os */,
 		const value_type& /* _v */,
 		bool /* _swap=false */)
   { X; return 0; }
 
+  /// Restore a value of T and return the number of bytes read
   static 
   size_t restore( std::istream& /* _is */,
 		  value_type& /* _v */,
