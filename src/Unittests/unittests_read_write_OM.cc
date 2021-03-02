@@ -1640,25 +1640,24 @@ void do_all_property_types_vec_all_dim(MeshT& _mesh, PropertyAction action)
 template <typename MeshT, typename HandleT>
 void do_all_property_types(MeshT& _mesh, PropertyAction action, int version)
 {
-  // TODO: add support for commented out types
-    do_property<MeshT, HandleT, int>                 (_mesh, action);
-    do_property<MeshT, HandleT, double>              (_mesh, action);
-    do_property<MeshT, HandleT, float>               (_mesh, action);
-    do_property<MeshT, HandleT, char>                (_mesh, action);
-    do_property<MeshT, HandleT, bool>                (_mesh, action);
+  do_property<MeshT, HandleT, int>                 (_mesh, action);
+  do_property<MeshT, HandleT, double>              (_mesh, action);
+  do_property<MeshT, HandleT, float>               (_mesh, action);
+  do_property<MeshT, HandleT, char>                (_mesh, action);
+  do_property<MeshT, HandleT, bool>                (_mesh, action);
 
-    if(version >= 22)
-    {
-       do_property<MeshT, HandleT, std::vector<int>>    (_mesh, action);
-       do_property<MeshT, HandleT, std::vector<double>> (_mesh, action);
-       do_property<MeshT, HandleT, std::vector<float>>  (_mesh, action);
-       do_property<MeshT, HandleT, std::vector<char>>   (_mesh, action);
+  if(version >= 22)
+  {
+    do_property<MeshT, HandleT, std::vector<int>>    (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<double>> (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<float>>  (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<char>>   (_mesh, action);
 
-       do_property<MeshT, HandleT, std::vector<std::vector<int>>>    (_mesh, action);
-       //do_property<MeshT, HandleT, std::vector<bool>>   (_mesh, action);
-    }
+    do_property<MeshT, HandleT, std::vector<std::vector<int>>>    (_mesh, action);
+    //do_property<MeshT, HandleT, std::vector<bool>>   (_mesh, action);
+  }
 
-    do_all_property_types_vec_all_dim<MeshT, HandleT>(_mesh, action);
+  do_all_property_types_vec_all_dim<MeshT, HandleT>(_mesh, action);
 }
 
 template <typename MeshT>
@@ -1867,10 +1866,10 @@ TEST_F(OpenMeshReadWriteOM, WriteAndLoadBoolCheckSpaces) {
   // Check if the property is still ok
   for (unsigned int i = 0; i < 8; ++i)
   {
-      if ( i == 5)
-          EXPECT_TRUE( mesh.property(prop,mesh2.vertex_handle((i)) ) );
-      else
-          EXPECT_FALSE(mesh.property(prop,mesh2.vertex_handle((i))));
+    if ( i == 5)
+      EXPECT_TRUE( mesh.property(prop,mesh2.vertex_handle((i)) ) );
+    else
+      EXPECT_FALSE(mesh.property(prop,mesh2.vertex_handle((i))));
   }
 }
 
