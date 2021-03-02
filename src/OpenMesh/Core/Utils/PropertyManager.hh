@@ -207,7 +207,7 @@ class PropertyManager {
          *
          * @param mesh The mesh on which to create the property.
          */
-        PropertyManager(const PolyConnectivity& mesh) : mesh_(mesh), retain_(false), name_("") {
+        explicit PropertyManager(const PolyConnectivity& mesh) : mesh_(mesh), retain_(false), name_("") {
             PropertyManager::mesh().add_property(prop_, name_);
         }
 
