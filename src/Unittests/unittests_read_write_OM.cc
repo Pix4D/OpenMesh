@@ -1597,7 +1597,7 @@ enum class PropertyAction
   Add, Check, Request
 };
 
-
+// For a given Handle and Type add, check or request a property
 template <typename MeshT, typename HandleT,  typename T>
 void do_property(MeshT& _mesh, PropertyAction action)
 {
@@ -1615,6 +1615,7 @@ void do_property(MeshT& _mesh, PropertyAction action)
   }
 }
 
+// for a given handle do action for OpenMesh Vector of dimension Dim with many differnt types
 template <typename MeshT, typename HandleT, int Dim>
 void do_all_property_types_vec(MeshT& _mesh, PropertyAction action)
 {
@@ -1628,6 +1629,7 @@ void do_all_property_types_vec(MeshT& _mesh, PropertyAction action)
   do_property<MeshT, HandleT, OpenMesh::VectorT<unsigned short, Dim>>(_mesh, action);
 }
 
+// for a given handle do action for OpenMesh Vectors of dimensions 1 to 4
 template <typename MeshT, typename HandleT>
 void do_all_property_types_vec_all_dim(MeshT& _mesh, PropertyAction action)
 {
@@ -1637,6 +1639,7 @@ void do_all_property_types_vec_all_dim(MeshT& _mesh, PropertyAction action)
   do_all_property_types_vec<MeshT, HandleT, 4>(_mesh, action);
 }
 
+// for a given handle type do action for many different types
 template <typename MeshT, typename HandleT>
 void do_all_property_types(MeshT& _mesh, PropertyAction action, int version)
 {
@@ -1652,14 +1655,25 @@ void do_all_property_types(MeshT& _mesh, PropertyAction action, int version)
     do_property<MeshT, HandleT, std::vector<double>> (_mesh, action);
     do_property<MeshT, HandleT, std::vector<float>>  (_mesh, action);
     do_property<MeshT, HandleT, std::vector<char>>   (_mesh, action);
+//    do_property<MeshT, HandleT, std::vector<bool>>   (_mesh, action);
 
-    do_property<MeshT, HandleT, std::vector<std::vector<int>>>    (_mesh, action);
-    //do_property<MeshT, HandleT, std::vector<bool>>   (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<int>>>   (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<double>>>(_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<float>>> (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<char>>>  (_mesh, action);
+//    do_property<MeshT, HandleT, std::vector<std::vector<bool>>>  (_mesh, action);
+
+    do_property<MeshT, HandleT, std::vector<std::vector<std::vector<int>>>>   (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<std::vector<double>>>>(_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<std::vector<float>>>> (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<std::vector<char>>>>  (_mesh, action);
+//    do_property<MeshT, HandleT, std::vector<std::vector<std::vector<bool>>>>  (_mesh, action);
   }
 
   do_all_property_types_vec_all_dim<MeshT, HandleT>(_mesh, action);
 }
 
+// Do action for all property types for faces, edges, halfedges and vertices
 template <typename MeshT>
 void do_all_properties(MeshT& _mesh, PropertyAction action, int version)
 {
@@ -1877,4 +1891,13 @@ TEST_F(OpenMeshReadWriteOM, WriteAndLoadBoolCheckSpaces) {
 
 OM_REGISTER_PROPERTY_TYPE(std::vector<float>)
 OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<int>>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<double>>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<float>>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<char>>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<bool>>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<std::vector<int>>>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<std::vector<double>>>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<std::vector<float>>>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<std::vector<char>>>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<std::vector<bool>>>)
 OM_REGISTER_PROPERTY_TYPE(RegisteredDataType)
