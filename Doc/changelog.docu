@@ -27,6 +27,8 @@
 <ul>
 <li>STL Reader: Change stl reader behaviour on extension .stl , Don't check for the solid keyword explicitly</li>
 <li>OM Writer: Removed debug output</li>
+<li>OM Writer/Reader: Added support for (re)storing properties of type vector<T></li>
+<li>OM Reader: Properties can now be restored from files without the need to create the properties beforehand. Custom types need to be registered for this to work using the OM_REGISTER_PROPERTY_TYPE macro.</li>
 </ul>
 
 <b>Tools</b>
