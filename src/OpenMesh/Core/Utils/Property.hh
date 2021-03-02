@@ -597,6 +597,12 @@ struct PropHandle<FaceHandle> {
   using type = FPropHandleT<T>;
 };
 
+template <>
+struct PropHandle<MeshHandle> {
+  template <typename T>
+  using type = MPropHandleT<T>;
+};
+
 } // namespace OpenMesh
 //=============================================================================
 //#endif // OPENMESH_PROPERTY_HH defined
