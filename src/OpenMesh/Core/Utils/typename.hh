@@ -47,6 +47,8 @@ inline std::string  get_string_for_type(unsigned int){ return "uint";}
 inline std::string  get_string_for_type(unsigned short){ return "ushort";}
 inline std::string  get_string_for_type(unsigned long){ return "ulong";}
 
+inline std::string  get_string_for_type(std::string){ return "std::string";}
+
 template <typename T> std::string  get_string_for_type(T){return "unknown";}
 template <typename T> std::string  get_string_for_type(std::vector<T>){ return "std::vector<" + get_string_for_type(T()) + ">";}
 
