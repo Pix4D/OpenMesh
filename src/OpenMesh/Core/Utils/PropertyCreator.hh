@@ -116,16 +116,21 @@ class PropertyCreatorImpl : public PropertyCreator
 {
 public:
   std::string type_id_string() override { return get_type_name<typename PropertyCreatorT::type>(); }
-  void create_vertex_property  (BaseKernel& _mesh, const std::string& _property_name) override {  VPropHandleT<typename PropertyCreatorT::type> prop;
-                                                                                                  _mesh.add_property(prop, _property_name); }
-  void create_halfedge_property(BaseKernel& _mesh, const std::string& _property_name) override {  HPropHandleT<typename PropertyCreatorT::type> prop;
-                                                                                                  _mesh.add_property(prop, _property_name);  }
-  void create_edge_property    (BaseKernel& _mesh, const std::string& _property_name) override {  EPropHandleT<typename PropertyCreatorT::type> prop;
-                                                                                                  _mesh.add_property(prop, _property_name);  }
-  void create_face_property    (BaseKernel& _mesh, const std::string& _property_name) override {  FPropHandleT<typename PropertyCreatorT::type> prop;
-                                                                                                  _mesh.add_property(prop, _property_name); }
-  void create_mesh_property    (BaseKernel& _mesh, const std::string& _property_name) override {  MPropHandleT<typename PropertyCreatorT::type> prop;
-                                                                                                  _mesh.add_property(prop, _property_name); }
+
+  template <typename HandleT, typename PropT>
+  void create_prop(BaseKernel& _mesh, const std::string& _property_name)
+  {
+    using PHandle = typename PropHandle<HandleT>::template type<PropT>;
+    PHandle prop;
+    if (!_mesh.get_property_handle(prop, _property_name))
+      _mesh.add_property(prop, _property_name);
+  }
+
+  void create_vertex_property  (BaseKernel& _mesh, const std::string& _property_name) override {  create_prop<VertexHandle  , typename PropertyCreatorT::type>(_mesh, _property_name); }
+  void create_halfedge_property(BaseKernel& _mesh, const std::string& _property_name) override {  create_prop<HalfedgeHandle, typename PropertyCreatorT::type>(_mesh, _property_name);}
+  void create_edge_property    (BaseKernel& _mesh, const std::string& _property_name) override {  create_prop<EdgeHandle    , typename PropertyCreatorT::type>(_mesh, _property_name);}
+  void create_face_property    (BaseKernel& _mesh, const std::string& _property_name) override {  create_prop<FaceHandle    , typename PropertyCreatorT::type>(_mesh, _property_name);}
+  void create_mesh_property    (BaseKernel& _mesh, const std::string& _property_name) override {  create_prop<MeshHandle    , typename PropertyCreatorT::type>(_mesh, _property_name);}
 
   ~PropertyCreatorImpl() override {}
 protected:

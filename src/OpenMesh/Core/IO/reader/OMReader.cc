@@ -829,32 +829,45 @@ size_t _OMReader_::restore_binary_custom_data(std::istream& _is, BaseProperty* _
 //--------------------------------helper
 void _OMReader_:: add_generic_property(OMFormat::Chunk::PropertyName& _property_type, BaseImporter& _bi) const
 {
+  // We want to support the old way of restoring properties, ie.
+  // the user has manually created the corresponding property.
+  // In that case the property does not need be registered.
+  // However, the _bi.kerne()->_get_prop(property_name_) checks below
+  // May return a property with the correct name but the wrong type.
+  // For now we will have to live with that.
+
+
   PropertyCreationManager& manager = PropertyCreationManager::instance();
   switch (chunk_header_.entity_)
   {
   case OMFormat::Chunk::Entity_Vertex:
   {
-    manager.create_property<OpenMesh::VertexHandle>(*_bi.kernel(), _property_type, property_name_);
+    if (_bi.kernel()->_get_vprop(property_name_) == nullptr)
+      manager.create_property<OpenMesh::VertexHandle>(*_bi.kernel(), _property_type, property_name_);
     break;
   }
   case OMFormat::Chunk::Entity_Face:
   {
-    manager.create_property<OpenMesh::FaceHandle>(*_bi.kernel(), _property_type, property_name_);
+    if (_bi.kernel()->_get_fprop(property_name_) == nullptr)
+      manager.create_property<OpenMesh::FaceHandle>(*_bi.kernel(), _property_type, property_name_);
     break;
   }
   case OMFormat::Chunk::Entity_Edge:
   {
-    manager.create_property<OpenMesh::EdgeHandle>(*_bi.kernel(), _property_type, property_name_);
+    if (_bi.kernel()->_get_eprop(property_name_) == nullptr)
+      manager.create_property<OpenMesh::EdgeHandle>(*_bi.kernel(), _property_type, property_name_);
     break;
   }
   case OMFormat::Chunk::Entity_Halfedge:
   {
-    manager.create_property<OpenMesh::HalfedgeHandle>(*_bi.kernel(), _property_type, property_name_);
+    if (_bi.kernel()->_get_hprop(property_name_) == nullptr)
+      manager.create_property<OpenMesh::HalfedgeHandle>(*_bi.kernel(), _property_type, property_name_);
     break;
   }
   case OMFormat::Chunk::Entity_Mesh:
   {
-    manager.create_property<OpenMesh::MeshHandle>(*_bi.kernel(), _property_type, property_name_);
+    if (_bi.kernel()->_get_mprop(property_name_) == nullptr)
+      manager.create_property<OpenMesh::MeshHandle>(*_bi.kernel(), _property_type, property_name_);
     break;
   }
   case OMFormat::Chunk::Entity_Sentinel:
