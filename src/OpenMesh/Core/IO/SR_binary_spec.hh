@@ -345,14 +345,9 @@ struct binary< std::vector< T > > {
     {
       size_t size = 0;
       for(auto v : _v)
-      {
         size += binary<T>::size_of(v);
-      }
       if(_store_size)
-      {
-        unsigned int   N     = _v.size();
         size += binary<unsigned int>::size_of();
-      }
 
       return size;
     }
