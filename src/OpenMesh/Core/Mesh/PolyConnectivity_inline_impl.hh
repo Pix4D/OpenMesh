@@ -43,6 +43,7 @@
 #error Do not include this directly, include instead PolyConnectivity.hh
 #endif // OPENMESH_POLYCONNECTIVITY_INTERFACE_INCLUDE
 
+#include <OpenMesh/Core/Mesh/PolyConnectivity.hh> // To help some IDEs
 #include <OpenMesh/Core/Mesh/IteratorsT.hh>
 #include <OpenMesh/Core/Mesh/CirculatorsT.hh>
 
@@ -99,13 +100,23 @@ class CirculatorRange : public SmartRangeT<CirculatorRange<CirculatorRangeTraitT
         CirculatorRange(
                 const CONTAINER_TYPE &container,
                 CENTER_ENTITY_TYPE center) :
-            container_(container), center_(center) {}
-        ITER_TYPE begin() const { return CirculatorRangeTraitT::begin(container_, center_); }
-        ITER_TYPE end() const { return CirculatorRangeTraitT::end(container_, center_); }
+            container_(container), heh_()
+        {
+          auto it = CirculatorRangeTraitT::begin(container_, center);
+          heh_ = it.heh_;
+        }
+
+        CirculatorRange(
+                const CONTAINER_TYPE &container,
+                HalfedgeHandle heh, int) :
+            container_(container), heh_(heh) {}
+
+        ITER_TYPE begin() const { return CirculatorRangeTraitT::begin(container_, heh_, 1); }
+        ITER_TYPE end()   const { return CirculatorRangeTraitT::end(container_, heh_, 1); }
 
     private:
         const CONTAINER_TYPE &container_;
-        CENTER_ENTITY_TYPE center_;
+        HalfedgeHandle heh_;
 };
 
 
@@ -136,8 +147,16 @@ inline PolyConnectivity::ConstVertexIHalfedgeRange PolyConnectivity::vih_range(V
     return ConstVertexIHalfedgeRange(*this, _vh);
 }
 
+inline PolyConnectivity::ConstVertexIHalfedgeRange PolyConnectivity::vih_range(HalfedgeHandle _heh) const {
+    return ConstVertexIHalfedgeRange(*this, opposite_halfedge_handle(_heh), 1);
+}
+
 inline PolyConnectivity::ConstVertexOHalfedgeRange PolyConnectivity::voh_range(VertexHandle _vh) const {
     return ConstVertexOHalfedgeRange(*this, _vh);
+}
+
+inline PolyConnectivity::ConstVertexOHalfedgeRange PolyConnectivity::voh_range(HalfedgeHandle _heh) const {
+    return ConstVertexOHalfedgeRange(*this, _heh, 1);
 }
 
 inline PolyConnectivity::ConstVertexEdgeRange PolyConnectivity::ve_range(VertexHandle _vh) const {

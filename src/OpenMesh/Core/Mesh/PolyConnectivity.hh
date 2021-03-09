@@ -98,8 +98,10 @@ struct CirculatorRangeTraitT
   using ITER_TYPE = ITER_T;
   using CENTER_ENTITY_TYPE = CENTER_ENTITY_T;
   using TO_ENTITYE_TYPE = TO_ENTITY_T;
-  static ITER_TYPE begin(const CONTAINER_TYPE& _container, CENTER_ENTITY_TYPE _ce) { return (_container.*begin_fn)(_ce); }
-  static ITER_TYPE end(const CONTAINER_TYPE& _container, CENTER_ENTITY_TYPE _ce)   { return (_container.*end_fn)(_ce); }
+  static ITER_TYPE begin(const CONTAINER_TYPE& _container, CENTER_ENTITY_TYPE _ce)   { return (_container.*begin_fn)(_ce); }
+  static ITER_TYPE begin(const CONTAINER_TYPE& _container, HalfedgeHandle _heh, int) { return ITER_TYPE(_container, _heh); }
+  static ITER_TYPE end(const CONTAINER_TYPE& _container, CENTER_ENTITY_TYPE _ce)     { return (_container.*end_fn)(_ce); }
+  static ITER_TYPE end(const CONTAINER_TYPE& _container, HalfedgeHandle _heh, int)   { return ITER_TYPE(_container, _heh, true); }
 };
 
 struct SmartVertexHandle;
@@ -1251,10 +1253,24 @@ public:
   ConstVertexIHalfedgeRange vih_range(VertexHandle _vh) const;
 
   /**
+   * @return The incoming halfedges incident to the specified vertex
+   * as a range object suitable for C++11 range based for loops.
+   * Like vih_range(VertexHandle _heh.to()) but starts iteration at _heh
+   */
+  ConstVertexIHalfedgeRange vih_range(HalfedgeHandle _heh) const;
+
+  /**
    * @return The outgoing halfedges incident to the specified vertex
    * as a range object suitable for C++11 range based for loops.
    */
   ConstVertexOHalfedgeRange voh_range(VertexHandle _vh) const;
+
+  /**
+   * @return The outgoing halfedges incident to the specified vertex
+   * as a range object suitable for C++11 range based for loops.
+   * Like voh_range(VertexHandle _heh.from()) but starts iteration at _heh
+   */
+  ConstVertexOHalfedgeRange voh_range(HalfedgeHandle _heh) const;
 
   /**
    * @return The edges incident to the specified vertex

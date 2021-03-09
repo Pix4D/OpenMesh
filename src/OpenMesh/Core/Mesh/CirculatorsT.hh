@@ -60,6 +60,9 @@
 //== NAMESPACES ===============================================================
 
 namespace OpenMesh {
+
+template <typename> class CirculatorRange;
+
 namespace Iterators {
 
 template<class Mesh, class CenterEntityHandle, bool CW>
@@ -192,6 +195,8 @@ class GenericCirculatorBaseT {
         typedef const Mesh* mesh_ptr;
         typedef const Mesh& mesh_ref;
 
+    template <typename> friend class OpenMesh::CirculatorRange;
+
     public:
         GenericCirculatorBaseT() : mesh_(0), lap_counter_(0) {}
 
@@ -267,16 +272,18 @@ class GenericCirculatorT : protected GenericCirculatorBaseT<typename GenericCirc
         typedef typename GenericCirculatorBaseT<Mesh>::mesh_ref mesh_ref;
         typedef GenericCirculator_ValueHandleFnsT<Mesh, CenterEntityHandle, value_type, CW> GenericCirculator_ValueHandleFns;
 
+        template <typename> friend class OpenMesh::CirculatorRange;
+
     public:
         GenericCirculatorT() {}
         GenericCirculatorT(mesh_ref mesh, CenterEntityHandle start, bool end = false) :
-            GenericCirculatorBaseT<Mesh>(mesh, mesh.halfedge_handle(start), end) {
-
+            GenericCirculatorBaseT<Mesh>(mesh, mesh.halfedge_handle(start), end)
+        {
             GenericCirculator_ValueHandleFns::init(this->mesh_, this->heh_, this->start_, this->lap_counter_);
         }
         GenericCirculatorT(mesh_ref mesh, typename Mesh::HalfedgeHandle heh, bool end = false) :
-            GenericCirculatorBaseT<Mesh>(mesh, heh, end) {
-
+            GenericCirculatorBaseT<Mesh>(mesh, heh, end)
+        {
             GenericCirculator_ValueHandleFns::init(this->mesh_, this->heh_, this->start_, this->lap_counter_);
         }
         GenericCirculatorT(const GenericCirculatorT &rhs) : GenericCirculatorBaseT<Mesh>(rhs) {}
@@ -439,6 +446,8 @@ class GenericCirculatorT_DEPRECATED : protected GenericCirculatorBaseT<typename 
         typedef typename GenericCirculatorBaseT<Mesh>::mesh_ptr mesh_ptr;
         typedef typename GenericCirculatorBaseT<Mesh>::mesh_ref mesh_ref;
         typedef GenericCirculator_ValueHandleFnsT_DEPRECATED<Mesh, CenterEntityHandle, value_type> GenericCirculator_ValueHandleFns;
+
+        template <typename> friend class OpenMesh::CirculatorRange;
 
     public:
         GenericCirculatorT_DEPRECATED() {}
