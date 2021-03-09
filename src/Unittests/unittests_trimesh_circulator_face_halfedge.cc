@@ -189,9 +189,9 @@ TEST_F(OpenMeshTrimeshCirculatorFaceHalfEdge, CWAndCCWTest) {
    */
 
 
-  int indices[4] = {8, 3, 6, 8};
-  int rev_indices[4];
-  std::reverse_copy(indices,indices+4,rev_indices);
+  int indices[3] = {8, 3, 6};
+  int rev_indices[3];
+  std::reverse_copy(indices,indices+3,rev_indices);
 
   //CCW
   Mesh::FaceHalfedgeCCWIter fh_ccwit  = mesh_.fh_ccwbegin(mesh_.face_handle(1));
@@ -248,22 +248,21 @@ TEST_F(OpenMeshTrimeshCirculatorFaceHalfEdge, CWAndCCWTest) {
    */
   Mesh::FaceHalfedgeCWIter fh_cwIter = mesh_.fh_cwbegin(mesh_.face_handle(1));
   // a)
-  EXPECT_TRUE( fh_cwIter == Mesh::FaceHalfedgeCWIter(mesh_.fh_ccwbegin(mesh_.face_handle(1))) ) << "ccw to cw conversion failed";
-  EXPECT_TRUE( Mesh::FaceHalfedgeCCWIter(fh_cwIter) == mesh_.fh_ccwbegin(mesh_.face_handle(1)) ) << "cw to ccw conversion failed";
+  EXPECT_TRUE( *fh_cwIter == *++Mesh::FaceHalfedgeCWIter(mesh_.fh_ccwend(mesh_.face_handle(1)))) << "ccw to cw conversion failed";
+  EXPECT_TRUE( *++Mesh::FaceHalfedgeCCWIter(fh_cwIter) == *mesh_.fh_ccwend(mesh_.face_handle(1)) ) << "cw to ccw conversion failed";
   // b)
   EXPECT_EQ( fh_cwIter->idx(), Mesh::FaceHalfedgeCCWIter(fh_cwIter)->idx()) << "iterators doesnt point on the same element";
   // c)
+  auto fh_ccwIter = Mesh::FaceHalfedgeCCWIter(fh_cwIter);
+  EXPECT_EQ(fh_cwIter->idx(),fh_ccwIter->idx())<< "iterators dont point on the same element";
   ++fh_cwIter;
-  fh_ccwend = mesh_.fh_ccwend(mesh_.face_handle(1));
-  --fh_ccwend;
-  EXPECT_EQ(fh_cwIter->idx(),fh_ccwend->idx()) << "iteratoes are not equal after inc/dec";
-  // additional conversion check
-  fh_ccwend = Mesh::FaceHalfedgeCCWIter(fh_cwIter);
-  EXPECT_EQ(fh_cwIter->idx(),fh_ccwend->idx())<< "iterators doesnt point on the same element";
+  --fh_ccwIter;
+  EXPECT_EQ(fh_cwIter->idx(),fh_ccwIter->idx()) << "iteratoes are not equal after inc/dec";
   // d)
-  fh_cwIter = Mesh::FaceHalfedgeCWIter(mesh_.fh_ccwend(mesh_.face_handle(1)));
+  auto fh_cwEnd = mesh_.fh_ccwend(mesh_.face_handle(1));
+  fh_cwIter = Mesh::FaceHalfedgeCWIter(fh_cwEnd);
   EXPECT_FALSE(fh_cwIter.is_valid()) << "end iterator is not invalid";
-  EXPECT_TRUE(Mesh::FaceHalfedgeCCWIter(mesh_.fh_cwend(mesh_.face_handle(1))) ==  mesh_.fh_ccwend(mesh_.face_handle(1))) << "end iterators are not equal";
+  EXPECT_TRUE(*mesh_.fh_cwbegin(mesh_.face_handle(1)) ==  *++fh_cwIter) << "end iterators are not equal";
 
 
 }

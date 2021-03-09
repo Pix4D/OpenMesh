@@ -106,7 +106,7 @@ void compare_ranges(RangeT1&& range1, RangeT2&& range2, int offset, bool reverse
   for (size_t i = 0; i < n; ++i)
   {
     size_t id1 = (i+offset)%n;
-    size_t id2 = reverse ? (n-i)%n : i;
+    size_t id2 = reverse ? (n-i-1)%n : i;
     EXPECT_EQ(vec1[id1].idx(), vec2[id2].idx()) << "Elements are not the same with offset = " << offset << " and reverse = " << std::to_string(reverse);
   }
 }
@@ -222,9 +222,8 @@ TEST_F(OpenMeshTrimeshRange, VertexIncomingHalfedgesRangeBoundaryConsistency)
     EXPECT_TRUE(mesh_.vih_cwbegin(vh)->opp().is_boundary());
     EXPECT_TRUE(mesh_.vih_cw_range(vh).begin()->opp().is_boundary());
 
-    // TODO: this should  be false, instead opp should be boundary
-    EXPECT_TRUE(mesh_.vih_ccwbegin(vh)->opp().is_boundary());
-    EXPECT_TRUE(mesh_.vih_ccw_range(vh).begin()->opp().is_boundary());
+    EXPECT_TRUE(mesh_.vih_ccwbegin(vh)->is_boundary());
+    EXPECT_TRUE(mesh_.vih_ccw_range(vh).begin()->is_boundary());
   }
 }
 
@@ -290,9 +289,8 @@ TEST_F(OpenMeshTrimeshRange, VertexOutgoingHalfedgesRangeBoundaryConsistency)
     EXPECT_TRUE(mesh_.voh_cwbegin(vh)->is_boundary());
     EXPECT_TRUE(mesh_.voh_cw_range(vh).begin()->is_boundary());
 
-    // TODO: this should  be false, instead opp should be boundary
-    EXPECT_TRUE(mesh_.voh_ccwbegin(vh)->is_boundary());
-    EXPECT_TRUE(mesh_.voh_ccw_range(vh).begin()->is_boundary());
+    EXPECT_TRUE(mesh_.voh_ccwbegin(vh)->opp().is_boundary());
+    EXPECT_TRUE(mesh_.voh_ccw_range(vh).begin()->opp().is_boundary());
   }
 }
 
@@ -309,8 +307,12 @@ TEST_F(OpenMeshTrimeshRange, HalfedgeLoopRangeMeshVsSmartHandle)
 
 TEST_F(OpenMeshTrimeshRange, HalfedgeLoopRangeCWVsCCW)
 {
+  // Halfedge Loops are initialized from a halfedge and always start on that halfedge
+  // Thus, cw and ccw ranges start on the same element. We account for that by
+  // setting the offset to 1 for the comparison check.
+  // TODO: do we want to change that behavior?
   for (auto heh : mesh_.halfedges())
-    compare_ranges(heh.loop_cw(), heh.loop_ccw(), 0, true);
+    compare_ranges(heh.loop_cw(), heh.loop_ccw(), 1, true);
 }
 
 

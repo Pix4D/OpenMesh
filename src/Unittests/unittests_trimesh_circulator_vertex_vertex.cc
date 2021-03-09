@@ -339,9 +339,9 @@ TEST_F(OpenMeshTrimeshCirculatorVertexVertex, CWAndCCWCheck) {
       3 ==== 4 */
 
 
-  int indices[5] = {4, 2, 0, 3, 4};
-  int rev_indices[5];
-  std::reverse_copy(indices,indices+5,rev_indices);
+  int cw_indices[4] = {4, 3, 0, 2};
+  int ccw_indices[4];
+  std::reverse_copy(cw_indices,cw_indices+4,ccw_indices);
 
   Mesh::VertexHandle vh = vhandle[1];
 
@@ -351,7 +351,7 @@ TEST_F(OpenMeshTrimeshCirculatorVertexVertex, CWAndCCWCheck) {
   size_t i = 0;
   for (;vv_ccwit != vv_ccwend; ++vv_ccwit, ++i)
   {
-    EXPECT_EQ(indices[i], vv_ccwit->idx()) << "Index wrong in VertexVertexCCWIter";
+    EXPECT_EQ(ccw_indices[i], vv_ccwit->idx()) << "Index wrong in VertexVertexCCWIter";
   }
 
   EXPECT_FALSE(vv_ccwit.is_valid()) << "Iterator invalid in VertexVertexCCWIter at end";
@@ -363,7 +363,7 @@ TEST_F(OpenMeshTrimeshCirculatorVertexVertex, CWAndCCWCheck) {
   i = 0;
   for (;cvv_ccwit != cvv_ccwend; ++cvv_ccwit, ++i)
   {
-    EXPECT_EQ(indices[i], cvv_ccwit->idx()) << "Index wrong in ConstVertexVertexCCWIter";
+    EXPECT_EQ(ccw_indices[i], cvv_ccwit->idx()) << "Index wrong in ConstVertexVertexCCWIter";
   }
 
   EXPECT_FALSE(cvv_ccwit.is_valid()) << "Iterator invalid in ConstVertexVertexCCWIter at end";
@@ -375,7 +375,7 @@ TEST_F(OpenMeshTrimeshCirculatorVertexVertex, CWAndCCWCheck) {
   i = 0;
   for (;vv_cwit != vv_cwend; ++vv_cwit, ++i)
   {
-    EXPECT_EQ(rev_indices[i], vv_cwit->idx()) << "Index wrong in VertexVertexCWIter";
+    EXPECT_EQ(cw_indices[i], vv_cwit->idx()) << "Index wrong in VertexVertexCWIter";
   }
   EXPECT_FALSE(vv_cwit.is_valid()) << "Iterator invalid in VertexVertexCWIter at end";
   EXPECT_TRUE( vv_cwit == vv_cwend )  << "End iterator for VertexVertexCWIter not matching";
@@ -386,7 +386,7 @@ TEST_F(OpenMeshTrimeshCirculatorVertexVertex, CWAndCCWCheck) {
   i = 0;
   for (;cvv_cwit != cvv_cwend; ++cvv_cwit, ++i)
   {
-    EXPECT_EQ(rev_indices[i], cvv_cwit->idx()) << "Index wrong in ConstVertexVertexCWIter";
+    EXPECT_EQ(cw_indices[i], cvv_cwit->idx()) << "Index wrong in ConstVertexVertexCWIter";
   }
   EXPECT_FALSE(cvv_cwit.is_valid()) << "Iterator invalid in ConstVertexVertexCWIter at end";
   EXPECT_TRUE( cvv_cwit == cvv_cwend )  << "End iterator for ConstVertexVertexCWIter not matching";
@@ -400,22 +400,21 @@ TEST_F(OpenMeshTrimeshCirculatorVertexVertex, CWAndCCWCheck) {
    */
   Mesh::VertexVertexCWIter vv_cwIter = mesh_.vv_cwbegin(vh);
   // a)
-  EXPECT_TRUE( vv_cwIter == Mesh::VertexVertexCWIter(mesh_.vv_ccwbegin(vh)) ) << "ccw to cw convvrsion failed";
-  EXPECT_TRUE( Mesh::VertexVertexCCWIter(vv_cwIter) == mesh_.vv_ccwbegin(vh) ) << "cw to ccw convvrsion failed";
+  EXPECT_TRUE( *vv_cwIter == *++Mesh::VertexVertexCWIter(mesh_.vv_ccwend(vh))) << "ccw to cw conversion failed";
+  EXPECT_TRUE( *++Mesh::VertexVertexCCWIter(vv_cwIter) == *mesh_.vv_ccwend(vh) ) << "cw to ccw conversion failed";
   // b)
   EXPECT_EQ( vv_cwIter->idx(), Mesh::VertexVertexCCWIter(vv_cwIter)->idx()) << "iterators doesnt point on the same element";
   // c)
+  auto vv_ccwIter = Mesh::VertexVertexCCWIter(vv_cwIter);
+  EXPECT_EQ(vv_cwIter->idx(),vv_ccwIter->idx())<< "iterators dont point on the same element";
   ++vv_cwIter;
-  vv_ccwend = mesh_.vv_ccwend(vh);
-  --vv_ccwend;
-  EXPECT_EQ(vv_cwIter->idx(),vv_ccwend->idx()) << "iteratoes are not equal after inc/dec";
-  // additional conversion check
-  vv_ccwend = Mesh::VertexVertexCCWIter(vv_cwIter);
-  EXPECT_EQ(vv_cwIter->idx(),vv_ccwend->idx())<< "iterators doesnt point on the same element";
+  --vv_ccwIter;
+  EXPECT_EQ(vv_cwIter->idx(),vv_ccwIter->idx()) << "iteratoes are not equal after inc/dec";
   // d)
-  vv_cwIter = Mesh::VertexVertexCWIter(mesh_.vv_ccwend(vh));
+  auto vv_cwEnd = mesh_.vv_ccwend(vh);
+  vv_cwIter = Mesh::VertexVertexCWIter(vv_cwEnd);
   EXPECT_FALSE(vv_cwIter.is_valid()) << "end iterator is not invalid";
-  EXPECT_TRUE(Mesh::VertexVertexCCWIter(mesh_.vv_cwend(vh)) ==  mesh_.vv_ccwend(vh)) << "end iterators are not equal";
+  EXPECT_TRUE(*mesh_.vv_cwbegin(vh) ==  *++vv_cwIter) << "end iterators are not equal";
 
 
 }

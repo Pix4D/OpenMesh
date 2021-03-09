@@ -261,9 +261,9 @@ TEST_F(OpenMeshTrimeshCirculatorFaceVertex, CWAndCCWCheck) {
       3 ==== 4 */
 
 
-  int indices[4] = {0, 1, 2, 0};
-  int rev_indices[4];
-  std::reverse_copy(indices,indices+4,rev_indices);
+  int indices[3] = {0, 1, 2};
+  int rev_indices[3];
+  std::reverse_copy(indices,indices+3,rev_indices);
 
   //CCW
   Mesh::FaceVertexCCWIter fv_ccwit  = mesh_.fv_ccwbegin(fh0);
@@ -320,22 +320,21 @@ TEST_F(OpenMeshTrimeshCirculatorFaceVertex, CWAndCCWCheck) {
    */
   Mesh::FaceVertexCWIter fv_cwIter = mesh_.fv_cwbegin(mesh_.face_handle(1));
   // a)
-  EXPECT_TRUE( fv_cwIter == Mesh::FaceVertexCWIter(mesh_.fv_ccwbegin(mesh_.face_handle(1))) ) << "ccw to cw conversion failed";
-  EXPECT_TRUE( Mesh::FaceVertexCCWIter(fv_cwIter) == mesh_.fv_ccwbegin(mesh_.face_handle(1)) ) << "cw to ccw conversion failed";
+  EXPECT_TRUE( *fv_cwIter == *++Mesh::FaceVertexCWIter(mesh_.fv_ccwend(mesh_.face_handle(1)))) << "ccw to cw conversion failed";
+  EXPECT_TRUE( *++Mesh::FaceVertexCCWIter(fv_cwIter) == *mesh_.fv_ccwend(mesh_.face_handle(1)) ) << "cw to ccw conversion failed";
   // b)
   EXPECT_EQ( fv_cwIter->idx(), Mesh::FaceVertexCCWIter(fv_cwIter)->idx()) << "iterators doesnt point on the same element";
   // c)
+  auto fv_ccwIter = Mesh::FaceVertexCCWIter(fv_cwIter);
+  EXPECT_EQ(fv_cwIter->idx(),fv_ccwIter->idx())<< "iterators dont point on the same element";
   ++fv_cwIter;
-  fv_ccwend = mesh_.fv_ccwend(mesh_.face_handle(1));
-  --fv_ccwend;
-  EXPECT_EQ(fv_cwIter->idx(),fv_ccwend->idx()) << "iteratoes are not equal after inc/dec";
-  // additional conversion check
-  fv_ccwend = Mesh::FaceVertexCCWIter(fv_cwIter);
-  EXPECT_EQ(fv_cwIter->idx(),fv_ccwend->idx())<< "iterators doesnt point on the same element";
+  --fv_ccwIter;
+  EXPECT_EQ(fv_cwIter->idx(),fv_ccwIter->idx()) << "iteratoes are not equal after inc/dec";
   // d)
-  fv_cwIter = Mesh::FaceVertexCWIter(mesh_.fv_ccwend(mesh_.face_handle(1)));
+  auto fv_cwEnd = mesh_.fv_ccwend(mesh_.face_handle(1));
+  fv_cwIter = Mesh::FaceVertexCWIter(fv_cwEnd);
   EXPECT_FALSE(fv_cwIter.is_valid()) << "end iterator is not invalid";
-  EXPECT_TRUE(Mesh::FaceVertexCCWIter(mesh_.fv_cwend(mesh_.face_handle(1))) ==  mesh_.fv_ccwend(mesh_.face_handle(1))) << "end iterators are not equal";
+  EXPECT_TRUE(*mesh_.fv_cwbegin(mesh_.face_handle(1)) ==  *++fv_cwIter) << "end iterators are not equal";
 
 
 }

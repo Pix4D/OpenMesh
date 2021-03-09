@@ -450,9 +450,9 @@ TEST_F(OpenMeshTrimeshCirculatorVertexIHalfEdge, CWAndCCWCheck) {
       3 ==== 4 */
 
 
-  int indices[4] = {14, 5, 2, 14};
-  int rev_indices[4];
-  std::reverse_copy(indices,indices+4,rev_indices);
+  int cw_indices[3] = {14, 2, 5};
+  int ccw_indices[3];
+  std::reverse_copy(cw_indices,cw_indices+3,ccw_indices);
 
   Mesh::VertexHandle vh = vhandle[2];
 
@@ -462,7 +462,7 @@ TEST_F(OpenMeshTrimeshCirculatorVertexIHalfEdge, CWAndCCWCheck) {
   size_t i = 0;
   for (;vih_ccwit != vih_ccwend; ++vih_ccwit, ++i)
   {
-    EXPECT_EQ(indices[i], vih_ccwit->idx()) << "Index wrong in VertexIHalfedgeCCWIter";
+    EXPECT_EQ(ccw_indices[i], vih_ccwit->idx()) << "Index wrong in VertexIHalfedgeCCWIter";
   }
 
   EXPECT_FALSE(vih_ccwit.is_valid()) << "Iterator invalid in VertexIHalfedgeCCWIter at end";
@@ -474,7 +474,7 @@ TEST_F(OpenMeshTrimeshCirculatorVertexIHalfEdge, CWAndCCWCheck) {
   i = 0;
   for (;cvih_ccwit != cvih_ccwend; ++cvih_ccwit, ++i)
   {
-    EXPECT_EQ(indices[i], cvih_ccwit->idx()) << "Index wrong in ConstVertexIHalfedgeCCWIter";
+    EXPECT_EQ(ccw_indices[i], cvih_ccwit->idx()) << "Index wrong in ConstVertexIHalfedgeCCWIter";
   }
 
   EXPECT_FALSE(cvih_ccwit.is_valid()) << "Iterator invalid in ConstVertexIHalfedgeCCWIter at end";
@@ -486,7 +486,7 @@ TEST_F(OpenMeshTrimeshCirculatorVertexIHalfEdge, CWAndCCWCheck) {
   i = 0;
   for (;vih_cwit != vih_cwend; ++vih_cwit, ++i)
   {
-    EXPECT_EQ(rev_indices[i], vih_cwit->idx()) << "Index wrong in VertexIHalfedgeCWIter";
+    EXPECT_EQ(cw_indices[i], vih_cwit->idx()) << "Index wrong in VertexIHalfedgeCWIter";
   }
   EXPECT_FALSE(vih_cwit.is_valid()) << "Iterator invalid in VertexIHalfedgeCWIter at end";
   EXPECT_TRUE( vih_cwit == vih_cwend )  << "End iterator for VertexIHalfedgeCWIter not matching";
@@ -497,7 +497,7 @@ TEST_F(OpenMeshTrimeshCirculatorVertexIHalfEdge, CWAndCCWCheck) {
   i = 0;
   for (;cvih_cwit != cvih_cwend; ++cvih_cwit, ++i)
   {
-    EXPECT_EQ(rev_indices[i], cvih_cwit->idx()) << "Index wrong in ConstVertexIHalfedgeCWIter";
+    EXPECT_EQ(cw_indices[i], cvih_cwit->idx()) << "Index wrong in ConstVertexIHalfedgeCWIter";
   }
   EXPECT_FALSE(cvih_cwit.is_valid()) << "Iterator invalid in ConstVertexIHalfedgeCWIter at end";
   EXPECT_TRUE( cvih_cwit == cvih_cwend )  << "End iterator for ConstVertexIHalfedgeCWIter not matching";
@@ -511,22 +511,21 @@ TEST_F(OpenMeshTrimeshCirculatorVertexIHalfEdge, CWAndCCWCheck) {
    */
   Mesh::VertexIHalfedgeCWIter vih_cwIter = mesh_.vih_cwbegin(vh);
   // a)
-  EXPECT_TRUE( vih_cwIter == Mesh::VertexIHalfedgeCWIter(mesh_.vih_ccwbegin(vh)) ) << "ccw to cw conversion failed";
-  EXPECT_TRUE( Mesh::VertexIHalfedgeCCWIter(vih_cwIter) == mesh_.vih_ccwbegin(vh) ) << "cw to ccw conversion failed";
+  EXPECT_TRUE( *vih_cwIter == *++Mesh::VertexIHalfedgeCWIter(mesh_.vih_ccwend(vh))) << "ccw to cw conversion failed";
+  EXPECT_TRUE( *++Mesh::VertexIHalfedgeCCWIter(vih_cwIter) == *mesh_.vih_ccwend(vh) ) << "cw to ccw conversion failed";
   // b)
   EXPECT_EQ( vih_cwIter->idx(), Mesh::VertexIHalfedgeCCWIter(vih_cwIter)->idx()) << "iterators doesnt point on the same element";
   // c)
+  auto vih_ccwIter = Mesh::VertexIHalfedgeCCWIter(vih_cwIter);
+  EXPECT_EQ(vih_cwIter->idx(),vih_ccwIter->idx())<< "iterators dont point on the same element";
   ++vih_cwIter;
-  vih_ccwend = mesh_.vih_ccwend(vh);
-  --vih_ccwend;
-  EXPECT_EQ(vih_cwIter->idx(),vih_ccwend->idx()) << "iteratoes are not equal after inc/dec";
-  // additional conversion check
-  vih_ccwend = Mesh::VertexIHalfedgeCCWIter(vih_cwIter);
-  EXPECT_EQ(vih_cwIter->idx(),vih_ccwend->idx())<< "iterators doesnt point on the same element";
+  --vih_ccwIter;
+  EXPECT_EQ(vih_cwIter->idx(),vih_ccwIter->idx()) << "iteratoes are not equal after inc/dec";
   // d)
-  vih_cwIter = Mesh::VertexIHalfedgeCWIter(mesh_.vih_ccwend(vh));
+  auto vih_cwEnd = mesh_.vih_ccwend(vh);
+  vih_cwIter = Mesh::VertexIHalfedgeCWIter(vih_cwEnd);
   EXPECT_FALSE(vih_cwIter.is_valid()) << "end iterator is not invalid";
-  EXPECT_TRUE(Mesh::VertexIHalfedgeCCWIter(mesh_.vih_cwend(vh)) ==  mesh_.vih_ccwend(vh)) << "end iterators are not equal";
+  EXPECT_TRUE(*mesh_.vih_cwbegin(vh) ==  *++vih_cwIter) << "end iterators are not equal";
 
 
 }

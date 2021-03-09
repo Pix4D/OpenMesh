@@ -191,9 +191,9 @@ TEST_F(OpenMeshTrimeshCirculatorFaceEdge, CWAndCCWTest) {
    */
 
 
-  int indices[4] = {4, 1, 3, 4};
-  int rev_indices[4];
-  std::reverse_copy(indices,indices+4,rev_indices);
+  int indices[3] = {4, 1, 3};
+  int rev_indices[3];
+  std::reverse_copy(indices,indices+3,rev_indices);
 
   //CCW
   Mesh::FaceEdgeCCWIter fe_ccwit  = mesh_.fe_ccwbegin(mesh_.face_handle(1));
@@ -243,29 +243,28 @@ TEST_F(OpenMeshTrimeshCirculatorFaceEdge, CWAndCCWTest) {
 
   /*
    * conversion properties:
-   * a) cw_begin == CWIter(ccw_begin())
+   * a) *cw_begin == *++CWIter(ccw_end())
    * b) cw_iter->idx() == CCWIter(cw_iter)->idx() for valid iterators
    * c) --cw_iter == CWIter(++ccwIter) for valid iterators
-   * d) cw_end == CWIter(ccw_end()) => --cw_end != CWIter(++ccw_end())   *
+   * d) *cw_begin == *++CWIter(ccw_end())
    */
   Mesh::FaceEdgeCWIter fe_cwIter = mesh_.fe_cwbegin(mesh_.face_handle(1));
   // a)
-  EXPECT_TRUE( fe_cwIter == Mesh::FaceEdgeCWIter(mesh_.fe_ccwbegin(mesh_.face_handle(1))) ) << "ccw to cw conversion failed";
-  EXPECT_TRUE( Mesh::FaceEdgeCCWIter(fe_cwIter) == mesh_.fe_ccwbegin(mesh_.face_handle(1)) ) << "cw to ccw conversion failed";
+  EXPECT_TRUE( *fe_cwIter == *++Mesh::FaceEdgeCWIter(mesh_.fe_ccwend(mesh_.face_handle(1)))) << "ccw to cw conversion failed";
+  EXPECT_TRUE( *++Mesh::FaceEdgeCCWIter(fe_cwIter) == *mesh_.fe_ccwend(mesh_.face_handle(1)) ) << "cw to ccw conversion failed";
   // b)
   EXPECT_EQ( fe_cwIter->idx(), Mesh::FaceEdgeCCWIter(fe_cwIter)->idx()) << "iterators doesnt point on the same element";
   // c)
+  auto fe_ccwIter = Mesh::FaceEdgeCCWIter(fe_cwIter);
+  EXPECT_EQ(fe_cwIter->idx(),fe_ccwIter->idx())<< "iterators dont point on the same element";
   ++fe_cwIter;
-  fe_ccwend = mesh_.fe_ccwend(mesh_.face_handle(1));
-  --fe_ccwend;
-  EXPECT_EQ(fe_cwIter->idx(),fe_ccwend->idx()) << "iteratoes are not equal after inc/dec";
-  // additional conversion check
-  fe_ccwend = Mesh::FaceEdgeCCWIter(fe_cwIter);
-  EXPECT_EQ(fe_cwIter->idx(),fe_ccwend->idx())<< "iterators doesnt point on the same element";
+  --fe_ccwIter;
+  EXPECT_EQ(fe_cwIter->idx(),fe_ccwIter->idx()) << "iteratoes are not equal after inc/dec";
   // d)
-  fe_cwIter = Mesh::FaceEdgeCWIter(mesh_.fe_ccwend(mesh_.face_handle(1)));
+  auto fe_cwEnd = mesh_.fe_ccwend(mesh_.face_handle(1));
+  fe_cwIter = Mesh::FaceEdgeCWIter(fe_cwEnd);
   EXPECT_FALSE(fe_cwIter.is_valid()) << "end iterator is not invalid";
-  EXPECT_TRUE(Mesh::FaceEdgeCCWIter(mesh_.fe_cwend(mesh_.face_handle(1))) ==  mesh_.fe_ccwend(mesh_.face_handle(1))) << "end iterators are not equal";
+  EXPECT_TRUE(*mesh_.fe_cwbegin(mesh_.face_handle(1)) ==  *++fe_cwIter) << "end iterators are not equal";
 
 }
 
