@@ -188,6 +188,104 @@ inline PolyConnectivity::ConstHalfedgeLoopRange PolyConnectivity::hl_range(Halfe
 }
 
 
+inline PolyConnectivity::ConstVertexVertexCWRange PolyConnectivity::vv_cw_range(VertexHandle _vh) const {
+    return ConstVertexVertexCWRange(*this, _vh);
+}
+
+inline PolyConnectivity::ConstVertexIHalfedgeCWRange PolyConnectivity::vih_cw_range(VertexHandle _vh) const {
+    return ConstVertexIHalfedgeCWRange(*this, _vh);
+}
+
+inline PolyConnectivity::ConstVertexIHalfedgeCWRange PolyConnectivity::vih_cw_range(HalfedgeHandle _heh) const {
+    return ConstVertexIHalfedgeCWRange(*this, opposite_halfedge_handle(_heh), 1);
+}
+
+inline PolyConnectivity::ConstVertexOHalfedgeCWRange PolyConnectivity::voh_cw_range(VertexHandle _vh) const {
+    return ConstVertexOHalfedgeCWRange(*this, _vh);
+}
+
+inline PolyConnectivity::ConstVertexOHalfedgeCWRange PolyConnectivity::voh_cw_range(HalfedgeHandle _heh) const {
+    return ConstVertexOHalfedgeCWRange(*this, _heh, 1);
+}
+
+inline PolyConnectivity::ConstVertexEdgeCWRange PolyConnectivity::ve_cw_range(VertexHandle _vh) const {
+    return ConstVertexEdgeCWRange(*this, _vh);
+}
+
+inline PolyConnectivity::ConstVertexFaceCWRange PolyConnectivity::vf_cw_range(VertexHandle _vh) const {
+    return ConstVertexFaceCWRange(*this, _vh);
+}
+
+inline PolyConnectivity::ConstFaceVertexCWRange PolyConnectivity::fv_cw_range(FaceHandle _fh) const {
+    return ConstFaceVertexCWRange(*this, _fh);
+}
+
+inline PolyConnectivity::ConstFaceHalfedgeCWRange PolyConnectivity::fh_cw_range(FaceHandle _fh) const {
+    return ConstFaceHalfedgeCWRange(*this, _fh);
+}
+
+inline PolyConnectivity::ConstFaceEdgeCWRange PolyConnectivity::fe_cw_range(FaceHandle _fh) const {
+    return ConstFaceEdgeCWRange(*this, _fh);
+}
+
+inline PolyConnectivity::ConstFaceFaceCWRange PolyConnectivity::ff_cw_range(FaceHandle _fh) const {
+    return ConstFaceFaceCWRange(*this, _fh);
+}
+
+inline PolyConnectivity::ConstHalfedgeLoopCWRange PolyConnectivity::hl_cw_range(HalfedgeHandle _heh) const {
+    return ConstHalfedgeLoopCWRange(*this, _heh);
+}
+
+
+
+inline PolyConnectivity::ConstVertexVertexCCWRange PolyConnectivity::vv_ccw_range(VertexHandle _vh) const {
+    return ConstVertexVertexCCWRange(*this, _vh);
+}
+
+inline PolyConnectivity::ConstVertexIHalfedgeCCWRange PolyConnectivity::vih_ccw_range(VertexHandle _vh) const {
+    return ConstVertexIHalfedgeCCWRange(*this, _vh);
+}
+
+inline PolyConnectivity::ConstVertexIHalfedgeCCWRange PolyConnectivity::vih_ccw_range(HalfedgeHandle _heh) const {
+    return ConstVertexIHalfedgeCCWRange(*this, opposite_halfedge_handle(_heh), 1);
+}
+
+inline PolyConnectivity::ConstVertexOHalfedgeCCWRange PolyConnectivity::voh_ccw_range(VertexHandle _vh) const {
+    return ConstVertexOHalfedgeCCWRange(*this, _vh);
+}
+
+inline PolyConnectivity::ConstVertexOHalfedgeCCWRange PolyConnectivity::voh_ccw_range(HalfedgeHandle _heh) const {
+    return ConstVertexOHalfedgeCCWRange(*this, _heh, 1);
+}
+
+inline PolyConnectivity::ConstVertexEdgeCCWRange PolyConnectivity::ve_ccw_range(VertexHandle _vh) const {
+    return ConstVertexEdgeCCWRange(*this, _vh);
+}
+
+inline PolyConnectivity::ConstVertexFaceCCWRange PolyConnectivity::vf_ccw_range(VertexHandle _vh) const {
+    return ConstVertexFaceCCWRange(*this, _vh);
+}
+
+inline PolyConnectivity::ConstFaceVertexCCWRange PolyConnectivity::fv_ccw_range(FaceHandle _fh) const {
+    return ConstFaceVertexCCWRange(*this, _fh);
+}
+
+inline PolyConnectivity::ConstFaceHalfedgeCCWRange PolyConnectivity::fh_ccw_range(FaceHandle _fh) const {
+    return ConstFaceHalfedgeCCWRange(*this, _fh);
+}
+
+inline PolyConnectivity::ConstFaceEdgeCCWRange PolyConnectivity::fe_ccw_range(FaceHandle _fh) const {
+    return ConstFaceEdgeCCWRange(*this, _fh);
+}
+
+inline PolyConnectivity::ConstFaceFaceCCWRange PolyConnectivity::ff_ccw_range(FaceHandle _fh) const {
+    return ConstFaceFaceCCWRange(*this, _fh);
+}
+
+inline PolyConnectivity::ConstHalfedgeLoopCCWRange PolyConnectivity::hl_ccw_range(HalfedgeHandle _heh) const {
+    return ConstHalfedgeLoopCCWRange(*this, _heh);
+}
+
 
 
 inline PolyConnectivity::VertexIter PolyConnectivity::vertices_begin()

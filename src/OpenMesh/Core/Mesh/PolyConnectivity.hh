@@ -1169,76 +1169,38 @@ public:
   typename ElementRange<HandleType>::Range all_elements() const;
 
 
-  typedef CirculatorRange<CirculatorRangeTraitT<
-          PolyConnectivity,
-          ConstVertexVertexCWIter,
-          VertexHandle,
-          VertexHandle,
-          &PolyConnectivity::cvv_cwbegin,
-          &PolyConnectivity::cvv_cwend>> ConstVertexVertexRange;
-  typedef CirculatorRange<CirculatorRangeTraitT<
-          PolyConnectivity,
-          ConstVertexIHalfedgeIter,
-          VertexHandle,
-          HalfedgeHandle,
-          &PolyConnectivity::cvih_begin,
-          &PolyConnectivity::cvih_end>> ConstVertexIHalfedgeRange;
-  typedef CirculatorRange<CirculatorRangeTraitT<
-          PolyConnectivity,
-          ConstVertexOHalfedgeIter,
-          VertexHandle,
-          HalfedgeHandle,
-          &PolyConnectivity::cvoh_begin,
-          &PolyConnectivity::cvoh_end>> ConstVertexOHalfedgeRange;
-  typedef CirculatorRange<CirculatorRangeTraitT<
-          PolyConnectivity,
-          ConstVertexEdgeIter,
-          VertexHandle,
-          EdgeHandle,
-          &PolyConnectivity::cve_begin,
-          &PolyConnectivity::cve_end>> ConstVertexEdgeRange;
-  typedef CirculatorRange<CirculatorRangeTraitT<
-          PolyConnectivity,
-          ConstVertexFaceIter,
-          VertexHandle,
-          FaceHandle,
-          &PolyConnectivity::cvf_begin,
-          &PolyConnectivity::cvf_end>> ConstVertexFaceRange;
-  typedef CirculatorRange<CirculatorRangeTraitT<
-          PolyConnectivity,
-          ConstFaceVertexIter,
-          FaceHandle,
-          VertexHandle,
-          &PolyConnectivity::cfv_begin,
-          &PolyConnectivity::cfv_end>> ConstFaceVertexRange;
-  typedef CirculatorRange<CirculatorRangeTraitT<
-          PolyConnectivity,
-          ConstFaceHalfedgeIter,
-          FaceHandle,
-          HalfedgeHandle,
-          &PolyConnectivity::cfh_begin,
-          &PolyConnectivity::cfh_end>> ConstFaceHalfedgeRange;
-  typedef CirculatorRange<CirculatorRangeTraitT<
-          PolyConnectivity,
-          ConstFaceEdgeIter,
-          FaceHandle,
-          EdgeHandle,
-          &PolyConnectivity::cfe_begin,
-          &PolyConnectivity::cfe_end>> ConstFaceEdgeRange;
-  typedef CirculatorRange<CirculatorRangeTraitT<
-          PolyConnectivity,
-          ConstFaceFaceIter,
-          FaceHandle,
-          FaceHandle,
-          &PolyConnectivity::cff_begin,
-          &PolyConnectivity::cff_end>> ConstFaceFaceRange;
-  typedef CirculatorRange<CirculatorRangeTraitT<
-          PolyConnectivity,
-          ConstHalfedgeLoopIter,
-          HalfedgeHandle,
-          HalfedgeHandle,
-          &PolyConnectivity::chl_begin,
-          &PolyConnectivity::chl_end>> ConstHalfedgeLoopRange;
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstVertexVertexIter      , VertexHandle  , VertexHandle  , &PolyConnectivity::cvv_begin     , &PolyConnectivity::cvv_end     >> ConstVertexVertexRange;
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstVertexIHalfedgeIter   , VertexHandle  , HalfedgeHandle, &PolyConnectivity::cvih_begin    , &PolyConnectivity::cvih_end    >> ConstVertexIHalfedgeRange;
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstVertexOHalfedgeIter   , VertexHandle  , HalfedgeHandle, &PolyConnectivity::cvoh_begin    , &PolyConnectivity::cvoh_end    >> ConstVertexOHalfedgeRange;
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstVertexEdgeIter        , VertexHandle  , EdgeHandle    , &PolyConnectivity::cve_begin     , &PolyConnectivity::cve_end     >> ConstVertexEdgeRange;
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstVertexFaceIter        , VertexHandle  , FaceHandle    , &PolyConnectivity::cvf_begin     , &PolyConnectivity::cvf_end     >> ConstVertexFaceRange;
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstFaceVertexIter        , FaceHandle    , VertexHandle  , &PolyConnectivity::cfv_begin     , &PolyConnectivity::cfv_end     >> ConstFaceVertexRange;
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstFaceHalfedgeIter      , FaceHandle    , HalfedgeHandle, &PolyConnectivity::cfh_begin     , &PolyConnectivity::cfh_end     >> ConstFaceHalfedgeRange;
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstFaceEdgeIter          , FaceHandle    , EdgeHandle    , &PolyConnectivity::cfe_begin     , &PolyConnectivity::cfe_end     >> ConstFaceEdgeRange;
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstFaceFaceIter          , FaceHandle    , FaceHandle    , &PolyConnectivity::cff_begin     , &PolyConnectivity::cff_end     >> ConstFaceFaceRange;
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstHalfedgeLoopIter      , HalfedgeHandle, HalfedgeHandle, &PolyConnectivity::chl_begin     , &PolyConnectivity::chl_end     >> ConstHalfedgeLoopRange;
+
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstVertexVertexCWIter    , VertexHandle  , VertexHandle  , &PolyConnectivity::cvv_cwbegin   , &PolyConnectivity::cvv_cwend   >> ConstVertexVertexCWRange;
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstVertexIHalfedgeCWIter , VertexHandle  , HalfedgeHandle, &PolyConnectivity::cvih_cwbegin  , &PolyConnectivity::cvih_cwend  >> ConstVertexIHalfedgeCWRange;
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstVertexOHalfedgeCWIter , VertexHandle  , HalfedgeHandle, &PolyConnectivity::cvoh_cwbegin  , &PolyConnectivity::cvoh_cwend  >> ConstVertexOHalfedgeCWRange;
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstVertexEdgeCWIter      , VertexHandle  , EdgeHandle    , &PolyConnectivity::cve_cwbegin   , &PolyConnectivity::cve_cwend   >> ConstVertexEdgeCWRange;
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstVertexFaceCWIter      , VertexHandle  , FaceHandle    , &PolyConnectivity::cvf_cwbegin   , &PolyConnectivity::cvf_cwend   >> ConstVertexFaceCWRange;
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstFaceVertexCWIter      , FaceHandle    , VertexHandle  , &PolyConnectivity::cfv_cwbegin   , &PolyConnectivity::cfv_cwend   >> ConstFaceVertexCWRange;
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstFaceHalfedgeCWIter    , FaceHandle    , HalfedgeHandle, &PolyConnectivity::cfh_cwbegin   , &PolyConnectivity::cfh_cwend   >> ConstFaceHalfedgeCWRange;
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstFaceEdgeCWIter        , FaceHandle    , EdgeHandle    , &PolyConnectivity::cfe_cwbegin   , &PolyConnectivity::cfe_cwend   >> ConstFaceEdgeCWRange;
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstFaceFaceCWIter        , FaceHandle    , FaceHandle    , &PolyConnectivity::cff_cwbegin   , &PolyConnectivity::cff_cwend   >> ConstFaceFaceCWRange;
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstHalfedgeLoopCWIter    , HalfedgeHandle, HalfedgeHandle, &PolyConnectivity::chl_cwbegin   , &PolyConnectivity::chl_cwend   >> ConstHalfedgeLoopCWRange;
+
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstVertexVertexCCWIter   , VertexHandle  , VertexHandle  , &PolyConnectivity::cvv_ccwbegin  , &PolyConnectivity::cvv_ccwend  >> ConstVertexVertexCCWRange;
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstVertexIHalfedgeCCWIter, VertexHandle  , HalfedgeHandle, &PolyConnectivity::cvih_ccwbegin , &PolyConnectivity::cvih_ccwend >> ConstVertexIHalfedgeCCWRange;
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstVertexOHalfedgeCCWIter, VertexHandle  , HalfedgeHandle, &PolyConnectivity::cvoh_ccwbegin , &PolyConnectivity::cvoh_ccwend >> ConstVertexOHalfedgeCCWRange;
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstVertexEdgeCCWIter     , VertexHandle  , EdgeHandle    , &PolyConnectivity::cve_ccwbegin  , &PolyConnectivity::cve_ccwend  >> ConstVertexEdgeCCWRange;
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstVertexFaceCCWIter     , VertexHandle  , FaceHandle    , &PolyConnectivity::cvf_ccwbegin  , &PolyConnectivity::cvf_ccwend  >> ConstVertexFaceCCWRange;
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstFaceVertexCCWIter     , FaceHandle    , VertexHandle  , &PolyConnectivity::cfv_ccwbegin  , &PolyConnectivity::cfv_ccwend  >> ConstFaceVertexCCWRange;
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstFaceHalfedgeCCWIter   , FaceHandle    , HalfedgeHandle, &PolyConnectivity::cfh_ccwbegin  , &PolyConnectivity::cfh_ccwend  >> ConstFaceHalfedgeCCWRange;
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstFaceEdgeCCWIter       , FaceHandle    , EdgeHandle    , &PolyConnectivity::cfe_ccwbegin  , &PolyConnectivity::cfe_ccwend  >> ConstFaceEdgeCCWRange;
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstFaceFaceCCWIter       , FaceHandle    , FaceHandle    , &PolyConnectivity::cff_ccwbegin  , &PolyConnectivity::cff_ccwend  >> ConstFaceFaceCCWRange;
+  typedef CirculatorRange<CirculatorRangeTraitT<PolyConnectivity, ConstHalfedgeLoopCCWIter   , HalfedgeHandle, HalfedgeHandle, &PolyConnectivity::chl_ccwbegin  , &PolyConnectivity::chl_ccwend  >> ConstHalfedgeLoopCCWRange;
 
   /**
    * @return The vertices adjacent to the specified vertex
@@ -1313,6 +1275,156 @@ public:
    * as a range object suitable for C++11 range based for loops.
    */
   ConstHalfedgeLoopRange hl_range(HalfedgeHandle _heh) const;
+
+
+  /**
+   * @return The vertices adjacent to the specified vertex
+   * as a range object suitable for C++11 range based for loops.
+   */
+  ConstVertexVertexCWRange vv_cw_range(VertexHandle _vh) const;
+
+  /**
+   * @return The incoming halfedges incident to the specified vertex
+   * as a range object suitable for C++11 range based for loops.
+   */
+  ConstVertexIHalfedgeCWRange vih_cw_range(VertexHandle _vh) const;
+
+  /**
+   * @return The incoming halfedges incident to the specified vertex
+   * as a range object suitable for C++11 range based for loops.
+   * Like vih_cw_range(VertexHandle _heh.to()) but starts iteration at _heh
+   */
+  ConstVertexIHalfedgeCWRange vih_cw_range(HalfedgeHandle _heh) const;
+
+  /**
+   * @return The outgoing halfedges incident to the specified vertex
+   * as a range object suitable for C++11 range based for loops.
+   */
+  ConstVertexOHalfedgeCWRange voh_cw_range(VertexHandle _vh) const;
+
+  /**
+   * @return The outgoing halfedges incident to the specified vertex
+   * as a range object suitable for C++11 range based for loops.
+   * Like voh_cw_range(VertexHandle _heh.from()) but starts iteration at _heh
+   */
+  ConstVertexOHalfedgeCWRange voh_cw_range(HalfedgeHandle _heh) const;
+
+  /**
+   * @return The edges incident to the specified vertex
+   * as a range object suitable for C++11 range based for loops.
+   */
+  ConstVertexEdgeCWRange ve_cw_range(VertexHandle _vh) const ;
+
+  /**
+   * @return The faces incident to the specified vertex
+   * as a range object suitable for C++11 range based for loops.
+   */
+  ConstVertexFaceCWRange vf_cw_range(VertexHandle _vh) const;
+
+  /**
+   * @return The vertices incident to the specified face
+   * as a range object suitable for C++11 range based for loops.
+   */
+  ConstFaceVertexCWRange fv_cw_range(FaceHandle _fh) const;
+
+  /**
+   * @return The halfedges incident to the specified face
+   * as a range object suitable for C++11 range based for loops.
+   */
+  ConstFaceHalfedgeCWRange fh_cw_range(FaceHandle _fh) const;
+
+  /**
+   * @return The edges incident to the specified face
+   * as a range object suitable for C++11 range based for loops.
+   */
+  ConstFaceEdgeCWRange fe_cw_range(FaceHandle _fh) const;
+
+  /**
+   * @return The faces adjacent to the specified face
+   * as a range object suitable for C++11 range based for loops.
+   */
+  ConstFaceFaceCWRange ff_cw_range(FaceHandle _fh) const;
+
+  /**
+   * @return The halfedges in the face
+   * as a range object suitable for C++11 range based for loops.
+   */
+  ConstHalfedgeLoopCWRange hl_cw_range(HalfedgeHandle _heh) const;
+
+
+  /**
+   * @return The vertices adjacent to the specified vertex
+   * as a range object suitable for C++11 range based for loops.
+   */
+  ConstVertexVertexCCWRange vv_ccw_range(VertexHandle _vh) const;
+
+  /**
+   * @return The incoming halfedges incident to the specified vertex
+   * as a range object suitable for C++11 range based for loops.
+   */
+  ConstVertexIHalfedgeCCWRange vih_ccw_range(VertexHandle _vh) const;
+
+  /**
+   * @return The incoming halfedges incident to the specified vertex
+   * as a range object suitable for C++11 range based for loops.
+   * Like vih_ccw_range(VertexHandle _heh.to()) but starts iteration at _heh
+   */
+  ConstVertexIHalfedgeCCWRange vih_ccw_range(HalfedgeHandle _heh) const;
+
+  /**
+   * @return The outgoing halfedges incident to the specified vertex
+   * as a range object suitable for C++11 range based for loops.
+   */
+  ConstVertexOHalfedgeCCWRange voh_ccw_range(VertexHandle _vh) const;
+
+  /**
+   * @return The outgoing halfedges incident to the specified vertex
+   * as a range object suitable for C++11 range based for loops.
+   * Like voh_ccw_range(VertexHandle _heh.from()) but starts iteration at _heh
+   */
+  ConstVertexOHalfedgeCCWRange voh_ccw_range(HalfedgeHandle _heh) const;
+
+  /**
+   * @return The edges incident to the specified vertex
+   * as a range object suitable for C++11 range based for loops.
+   */
+  ConstVertexEdgeCCWRange ve_ccw_range(VertexHandle _vh) const ;
+
+  /**
+   * @return The faces incident to the specified vertex
+   * as a range object suitable for C++11 range based for loops.
+   */
+  ConstVertexFaceCCWRange vf_ccw_range(VertexHandle _vh) const;
+
+  /**
+   * @return The vertices incident to the specified face
+   * as a range object suitable for C++11 range based for loops.
+   */
+  ConstFaceVertexCCWRange fv_ccw_range(FaceHandle _fh) const;
+
+  /**
+   * @return The halfedges incident to the specified face
+   * as a range object suitable for C++11 range based for loops.
+   */
+  ConstFaceHalfedgeCCWRange fh_ccw_range(FaceHandle _fh) const;
+
+  /**
+   * @return The edges incident to the specified face
+   * as a range object suitable for C++11 range based for loops.
+   */
+  ConstFaceEdgeCCWRange fe_ccw_range(FaceHandle _fh) const;
+
+  /**
+   * @return The faces adjacent to the specified face
+   * as a range object suitable for C++11 range based for loops.
+   */
+  ConstFaceFaceCCWRange ff_ccw_range(FaceHandle _fh) const;
+
+  /**
+   * @return The halfedges in the face
+   * as a range object suitable for C++11 range based for loops.
+   */
+  ConstHalfedgeLoopCCWRange hl_ccw_range(HalfedgeHandle _heh) const;
 
   //@}
 
