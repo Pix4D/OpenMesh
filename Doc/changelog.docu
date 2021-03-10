@@ -12,6 +12,7 @@
 <b>Breaking Changes</b>
 <ul>
 <li>Dropped 32-bit Windows continuous integration and artifact builds (This does not mean that OpenMesh will not build and work on 32-bit, but we don't explicitly test and guarantee it anymore).</li>
+<li>Changed CCW begin/end/range to start on last element of CW counterpart. May break your code if you depend on CCW begin to start at a specific element.</li>
 </ul>
 
 <b>Core</b>
@@ -21,6 +22,8 @@
 <li>Smart handles now give read access to status fields (feature(), selected(), deleted(), tagged(), tagged2(), hidden(), locked()</li>
 <li>Add predicates that can be used as smart range filters. There are default predicates to test the status fields and whether an elements is boundary. Predicates can be composed via operators ||, && and !</li>
 <li>Add make_predicate to create a predicate from anything containing a bool operator(T), e.g. a PropertyManager, a lambda, or a function pointer.</li>
+<li>Added CW and CCW ranges.</li>
+<li>Vertex incoming/outgoing halfedge circulators can be started for a given halfedge.</li>
 </ul>
 
 <b>IO</b>

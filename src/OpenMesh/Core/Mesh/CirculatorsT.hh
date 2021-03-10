@@ -60,6 +60,9 @@
 //== NAMESPACES ===============================================================
 
 namespace OpenMesh {
+
+template <typename> class CirculatorRange;
+
 namespace Iterators {
 
 template<class Mesh, class CenterEntityHandle, bool CW>
@@ -153,7 +156,21 @@ class GenericCirculator_ValueHandleFnsT {
         inline static bool is_valid(const typename Mesh::HalfedgeHandle &heh, const int lap_counter) {
             return ( heh.is_valid() && (lap_counter == 0 ) );
         }
-        inline static void init(const Mesh*, typename Mesh::HalfedgeHandle&, typename Mesh::HalfedgeHandle&, int&) {};
+        inline static void init(const Mesh* mesh, typename Mesh::HalfedgeHandle& heh, typename Mesh::HalfedgeHandle& start, int& lap_counter, bool adjust_for_ccw)
+        {
+            if (!CW) // TODO: constexpr if
+            {
+                if (adjust_for_ccw)
+                {
+                  // increment current heh and start so that cw and ccw version dont start with the same element but ranges are actually reversed
+                  int lc = lap_counter;
+                  increment(mesh, heh, start, lap_counter);
+                  start = heh;
+                  lap_counter = lc;
+                }
+            }
+        }
+
         inline static void increment(const Mesh *mesh, typename Mesh::HalfedgeHandle &heh, typename Mesh::HalfedgeHandle &start, int &lap_counter) {
             GenericCirculator_CenterEntityFnsT<Mesh, CenterEntityHandle, CW>::increment(mesh, heh, start, lap_counter);
         }
@@ -170,7 +187,19 @@ class GenericCirculator_ValueHandleFnsT<Mesh, CenterEntityHandle, typename Mesh:
         inline static bool is_valid(const typename Mesh::HalfedgeHandle &heh, const int lap_counter) {
             return ( heh.is_valid() &&  (lap_counter == 0));
         }
-        inline static void init(const Mesh *mesh, typename Mesh::HalfedgeHandle &heh, typename Mesh::HalfedgeHandle &start, int &lap_counter) {
+        inline static void init(const Mesh *mesh, typename Mesh::HalfedgeHandle &heh, typename Mesh::HalfedgeHandle &start, int &lap_counter, bool adjust_for_ccw)
+        {
+            if (!CW) // TODO: constexpr if
+            {
+                if (adjust_for_ccw)
+                {
+                  // increment current heh and start so that cw and ccw version dont start with the same element but ranges are actually reversed
+                    int lc = lap_counter;
+                    increment(mesh, heh, start, lap_counter);
+                    start = heh;
+                    lap_counter = lc;
+                }
+            }
             if (heh.is_valid() && !GenericCirculator_DereferenciabilityCheck::isDereferenciable(mesh, heh) && lap_counter == 0 )
                 increment(mesh, heh, start, lap_counter);
         };
@@ -191,6 +220,8 @@ class GenericCirculatorBaseT {
     public:
         typedef const Mesh* mesh_ptr;
         typedef const Mesh& mesh_ref;
+
+    template <typename> friend class OpenMesh::CirculatorRange;
 
     public:
         GenericCirculatorBaseT() : mesh_(0), lap_counter_(0) {}
@@ -267,17 +298,21 @@ class GenericCirculatorT : protected GenericCirculatorBaseT<typename GenericCirc
         typedef typename GenericCirculatorBaseT<Mesh>::mesh_ref mesh_ref;
         typedef GenericCirculator_ValueHandleFnsT<Mesh, CenterEntityHandle, value_type, CW> GenericCirculator_ValueHandleFns;
 
+        template <typename> friend class OpenMesh::CirculatorRange;
+
     public:
         GenericCirculatorT() {}
         GenericCirculatorT(mesh_ref mesh, CenterEntityHandle start, bool end = false) :
-            GenericCirculatorBaseT<Mesh>(mesh, mesh.halfedge_handle(start), end) {
-
-            GenericCirculator_ValueHandleFns::init(this->mesh_, this->heh_, this->start_, this->lap_counter_);
+            GenericCirculatorBaseT<Mesh>(mesh, mesh.halfedge_handle(start), end)
+        {
+            bool adjust_for_ccw = true;
+            GenericCirculator_ValueHandleFns::init(this->mesh_, this->heh_, this->start_, this->lap_counter_, adjust_for_ccw);
         }
         GenericCirculatorT(mesh_ref mesh, typename Mesh::HalfedgeHandle heh, bool end = false) :
-            GenericCirculatorBaseT<Mesh>(mesh, heh, end) {
-
-            GenericCirculator_ValueHandleFns::init(this->mesh_, this->heh_, this->start_, this->lap_counter_);
+            GenericCirculatorBaseT<Mesh>(mesh, heh, end)
+        {
+            bool adjust_for_ccw = false; // if iterator is initialized with specific heh, we want to start there
+            GenericCirculator_ValueHandleFns::init(this->mesh_, this->heh_, this->start_, this->lap_counter_, adjust_for_ccw);
         }
         GenericCirculatorT(const GenericCirculatorT &rhs) : GenericCirculatorBaseT<Mesh>(rhs) {}
 
@@ -439,6 +474,8 @@ class GenericCirculatorT_DEPRECATED : protected GenericCirculatorBaseT<typename 
         typedef typename GenericCirculatorBaseT<Mesh>::mesh_ptr mesh_ptr;
         typedef typename GenericCirculatorBaseT<Mesh>::mesh_ref mesh_ref;
         typedef GenericCirculator_ValueHandleFnsT_DEPRECATED<Mesh, CenterEntityHandle, value_type> GenericCirculator_ValueHandleFns;
+
+        template <typename> friend class OpenMesh::CirculatorRange;
 
     public:
         GenericCirculatorT_DEPRECATED() {}
