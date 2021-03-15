@@ -38,7 +38,7 @@ namespace IO
   {
     return size_of();
   }
-  static std::string string_for_value_type(void)
+  static std::string type_identifier(void)
   {
     return "RegisteredDataType";
   }

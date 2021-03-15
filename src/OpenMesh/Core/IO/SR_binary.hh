@@ -111,7 +111,7 @@ template < typename T > struct binary
   static size_t size_of(const value_type&) { return UnknownSize; }
 
   /// A string that identifies the type of T.
-  static std::string string_for_value_type (void) { return "UnknownType"; }
+  static std::string type_identifier (void) { return "UnknownType"; }
 
   /// Store a value of T and return the number of bytes written
   static 

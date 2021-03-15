@@ -155,7 +155,7 @@ class PropertyCreatorT<ClassName> : public PropertyCreatorImpl<PropertyCreatorT<
 {                                                                                              \
 public:                                                                                        \
   using type = ClassName;                                                                      \
-  std::string type_string() override { return OpenMesh::IO::binary<type>::string_for_value_type(); }             \
+  std::string type_string() override { return OpenMesh::IO::binary<type>::type_identifier(); } \
                                                                                                \
   PropertyCreatorT()                                                                           \
   {                                                                                            \

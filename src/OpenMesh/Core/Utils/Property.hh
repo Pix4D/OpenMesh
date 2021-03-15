@@ -214,7 +214,7 @@ public: // data access interface
 
   std::string get_storage_name() const override
   {
-    return OpenMesh::IO::binary<T>::string_for_value_type();
+    return OpenMesh::IO::binary<T>::type_identifier();
   }
 
 private:
@@ -382,7 +382,7 @@ public:
 
     std::string get_storage_name() const override
     {
-      return OpenMesh::IO::binary<bool>::string_for_value_type();
+      return OpenMesh::IO::binary<bool>::type_identifier();
     }
 
 
