@@ -1551,6 +1551,11 @@ T get_value(int seed, T, int seed2 = 0)
   return (seed * 3 + seed2) % 20;
 }
 
+std::string get_value(int seed, std::string, int seed2 = 0)
+{
+  return std::to_string((seed * 3 + seed2) % 20);
+}
+
 template <typename T>
 std::vector<T> get_value(int seed, const std::vector<T>&, int _offset = 0)
 {
@@ -1659,6 +1664,7 @@ void do_all_property_types(MeshT& _mesh, PropertyAction action, int version)
   do_property<MeshT, HandleT, float>               (_mesh, action);
   do_property<MeshT, HandleT, char>                (_mesh, action);
   do_property<MeshT, HandleT, bool>                (_mesh, action);
+  do_property<MeshT, HandleT, std::string>         (_mesh, action);
 
   if(version >= 22)
   {
@@ -1669,6 +1675,7 @@ void do_all_property_types(MeshT& _mesh, PropertyAction action, int version)
     do_property<MeshT, HandleT, std::vector<float>>                (_mesh, action);
     do_property<MeshT, HandleT, std::vector<char>>                 (_mesh, action);
     do_property<MeshT, HandleT, std::vector<bool>>                 (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::string>>          (_mesh, action);
     do_property<MeshT, HandleT, std::vector<RegisteredDataType>>   (_mesh, action);
 
     do_property<MeshT, HandleT, std::vector<std::vector<int>>>                 (_mesh, action);
@@ -1676,6 +1683,7 @@ void do_all_property_types(MeshT& _mesh, PropertyAction action, int version)
     do_property<MeshT, HandleT, std::vector<std::vector<float>>>               (_mesh, action);
     do_property<MeshT, HandleT, std::vector<std::vector<char>>>                (_mesh, action);
     do_property<MeshT, HandleT, std::vector<std::vector<bool>>>                (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<std::string>>>         (_mesh, action);
     do_property<MeshT, HandleT, std::vector<std::vector<RegisteredDataType>>>  (_mesh, action);
 
     do_property<MeshT, HandleT, std::vector<std::vector<std::vector<int>>>>                 (_mesh, action);
@@ -1683,6 +1691,7 @@ void do_all_property_types(MeshT& _mesh, PropertyAction action, int version)
     do_property<MeshT, HandleT, std::vector<std::vector<std::vector<float>>>>               (_mesh, action);
     do_property<MeshT, HandleT, std::vector<std::vector<std::vector<char>>>>                (_mesh, action);
     do_property<MeshT, HandleT, std::vector<std::vector<std::vector<bool>>>>                (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<std::vector<std::string>>>>         (_mesh, action);
     do_property<MeshT, HandleT, std::vector<std::vector<std::vector<RegisteredDataType>>>>  (_mesh, action);
   }
 
@@ -1906,6 +1915,7 @@ TEST_F(OpenMeshReadWriteOM, WriteAndLoadBoolCheckSpaces) {
 }
 
 OM_REGISTER_PROPERTY_TYPE(RegisteredDataType)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::string>)
 OM_REGISTER_PROPERTY_TYPE(std::vector<float>)
 OM_REGISTER_PROPERTY_TYPE(std::vector<RegisteredDataType>)
 OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<int>>)
@@ -1913,10 +1923,12 @@ OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<double>>)
 OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<float>>)
 OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<char>>)
 OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<bool>>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<std::string>>)
 OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<RegisteredDataType>>)
 OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<std::vector<int>>>)
 OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<std::vector<double>>>)
 OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<std::vector<float>>>)
 OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<std::vector<char>>>)
 OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<std::vector<bool>>>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<std::vector<std::string>>>)
 OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<std::vector<RegisteredDataType>>>)
