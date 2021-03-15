@@ -1655,19 +1655,19 @@ void do_all_property_types(MeshT& _mesh, PropertyAction action, int version)
     do_property<MeshT, HandleT, std::vector<double>> (_mesh, action);
     do_property<MeshT, HandleT, std::vector<float>>  (_mesh, action);
     do_property<MeshT, HandleT, std::vector<char>>   (_mesh, action);
-//    do_property<MeshT, HandleT, std::vector<bool>>   (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<bool>>   (_mesh, action);
 
     do_property<MeshT, HandleT, std::vector<std::vector<int>>>   (_mesh, action);
     do_property<MeshT, HandleT, std::vector<std::vector<double>>>(_mesh, action);
     do_property<MeshT, HandleT, std::vector<std::vector<float>>> (_mesh, action);
     do_property<MeshT, HandleT, std::vector<std::vector<char>>>  (_mesh, action);
-//    do_property<MeshT, HandleT, std::vector<std::vector<bool>>>  (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<bool>>>  (_mesh, action);
 
     do_property<MeshT, HandleT, std::vector<std::vector<std::vector<int>>>>   (_mesh, action);
     do_property<MeshT, HandleT, std::vector<std::vector<std::vector<double>>>>(_mesh, action);
     do_property<MeshT, HandleT, std::vector<std::vector<std::vector<float>>>> (_mesh, action);
     do_property<MeshT, HandleT, std::vector<std::vector<std::vector<char>>>>  (_mesh, action);
-//    do_property<MeshT, HandleT, std::vector<std::vector<std::vector<bool>>>>  (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<std::vector<bool>>>>  (_mesh, action);
   }
 
   do_all_property_types_vec_all_dim<MeshT, HandleT>(_mesh, action);
