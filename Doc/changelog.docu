@@ -13,6 +13,7 @@
 <ul>
 <li>Dropped 32-bit Windows continuous integration and artifact builds (This does not mean that OpenMesh will not build and work on 32-bit, but we don't explicitly test and guarantee it anymore).</li>
 <li>Changed CCW begin/end/range to start on last element of CW counterpart. May break your code if you depend on CCW begin to start at a specific element.</li>
+<li>The binary struct that needs to be implemented in order to store properties of user defined types now requires a method type_identifier() which returns an std::string that uniquely identifies the type.
 </ul>
 
 <b>Core</b>
