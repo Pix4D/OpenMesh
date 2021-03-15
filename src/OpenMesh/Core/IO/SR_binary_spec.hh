@@ -424,7 +424,6 @@ struct binary< std::vector< T > > {
   }
 };
 
-#include <OpenMesh/Core/IO/SR_binary_vector_of_string.inl>
 #include <OpenMesh/Core/IO/SR_binary_vector_of_bool.inl>
 
 // ----------------------------------------------------------------------------
