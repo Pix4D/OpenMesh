@@ -1665,11 +1665,10 @@ void do_all_property_types(MeshT& _mesh, PropertyAction action, int version)
   do_property<MeshT, HandleT, char>                (_mesh, action);
   do_property<MeshT, HandleT, bool>                (_mesh, action);
   do_property<MeshT, HandleT, std::string>         (_mesh, action);
+  do_property<MeshT, HandleT, RegisteredDataType>  (_mesh, action);
 
   if(version >= 22)
   {
-    do_property<MeshT, HandleT, RegisteredDataType>  (_mesh, action);
-
     do_property<MeshT, HandleT, std::vector<int>>                  (_mesh, action);
     do_property<MeshT, HandleT, std::vector<double>>               (_mesh, action);
     do_property<MeshT, HandleT, std::vector<float>>                (_mesh, action);
