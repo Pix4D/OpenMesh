@@ -96,7 +96,7 @@ namespace IO {
     static const bool is_streamable = true;                  \
     static size_t size_of(const value_type&) { return sizeof(value_type); }   \
     static size_t size_of(void) { return sizeof(value_type); }   \
-    static std::string string_for_value_type(void) { return get_string_for_type(value_type()); } \
+    static std::string string_for_value_type(void) { return #T; } \
     static size_t store( std::ostream& _os, const value_type& _val, \
 		         bool _swap=false) {                 \
       value_type tmp = _val;                                 \
@@ -133,11 +133,11 @@ SIMPLE_BINARY(uint32_t);
 SIMPLE_BINARY(uint64_t);
 
 //handles
-SIMPLE_BINARY(OpenMesh::FaceHandle);
-SIMPLE_BINARY(OpenMesh::EdgeHandle);
-SIMPLE_BINARY(OpenMesh::HalfedgeHandle);
-SIMPLE_BINARY(OpenMesh::VertexHandle);
-SIMPLE_BINARY(OpenMesh::MeshHandle);
+SIMPLE_BINARY(FaceHandle);
+SIMPLE_BINARY(EdgeHandle);
+SIMPLE_BINARY(HalfedgeHandle);
+SIMPLE_BINARY(VertexHandle);
+SIMPLE_BINARY(MeshHandle);
 
 #undef SIMPLE_BINARY
 
@@ -155,7 +155,7 @@ SIMPLE_BINARY(OpenMesh::MeshHandle);
     static const bool is_streamable = true;                  \
     static size_t size_of(const value_type&) { return sizeof(value_type); }   \
     static size_t size_of(void) { return sizeof(value_type); }   \
-    static std::string string_for_value_type(void) { return get_string_for_type(value_type()); } \
+    static std::string string_for_value_type(void) { return #T; } \
     static size_t store( std::ostream& _os, const value_type& _val, \
 		         bool _swap=false) {                 \
       value_type tmp = _val;                                 \
@@ -186,7 +186,7 @@ SIMPLE_BINARY(unsigned long);
     static const bool is_streamable = true;                     \
     static size_t size_of(void) { return sizeof(value_type); }  \
     static size_t size_of(const value_type&) { return size_of(); } \
-    static std::string string_for_value_type(void) { return get_string_for_type(value_type()); } \
+    static std::string string_for_value_type(void) { return #T; } \
     static size_t store( std::ostream& _os, const value_type& _val, \
 		         bool _swap=false) {                                \
       value_type tmp = _val;                                    \
@@ -238,7 +238,7 @@ template <> struct binary< std::string > {
   static size_t size_of() { return UnknownSize; }
   static size_t size_of(const value_type &_v)
   { return sizeof(length_t) + _v.size(); }
-  static std::string string_for_value_type(void) { return get_string_for_type(value_type()); }
+  static std::string string_for_value_type(void) { return "std::string"; }
   static
   size_t store(std::ostream& _os, const value_type& _v, bool _swap=false)
   {
@@ -353,7 +353,7 @@ struct binary< std::vector< T > > {
     }
   }
 
-  static std::string string_for_value_type(void) { return get_string_for_type(value_type()); }
+  static std::string string_for_value_type(void) { return "std::vector<" + binary<T>::string_for_value_type() + ">"; }
   static
   size_t store(std::ostream& _os, const value_type& _v, bool _swap=false, bool _store_size = true) {
     size_t bytes=0;

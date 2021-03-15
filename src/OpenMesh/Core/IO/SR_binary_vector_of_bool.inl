@@ -14,7 +14,7 @@ template <> struct binary< std::vector<bool> >
       size += binary<unsigned int>::size_of();
     return size;
   }
-  static std::string string_for_value_type(void) { return get_string_for_type(value_type()); }
+  static std::string string_for_value_type(void) { return "std::vector<bool>"; }
   static
   size_t store( std::ostream& _ostr, const value_type& _v, bool _swap, bool _store_size = true)
   {
