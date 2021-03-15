@@ -43,6 +43,7 @@
 #error Do not include this directly, include instead PolyConnectivity.hh
 #endif // OPENMESH_POLYCONNECTIVITY_INTERFACE_INCLUDE
 
+#include <OpenMesh/Core/Mesh/PolyConnectivity.hh> // To help some IDEs
 #include <OpenMesh/Core/Mesh/IteratorsT.hh>
 #include <OpenMesh/Core/Mesh/CirculatorsT.hh>
 
@@ -99,13 +100,23 @@ class CirculatorRange : public SmartRangeT<CirculatorRange<CirculatorRangeTraitT
         CirculatorRange(
                 const CONTAINER_TYPE &container,
                 CENTER_ENTITY_TYPE center) :
-            container_(container), center_(center) {}
-        ITER_TYPE begin() const { return CirculatorRangeTraitT::begin(container_, center_); }
-        ITER_TYPE end() const { return CirculatorRangeTraitT::end(container_, center_); }
+            container_(container), heh_()
+        {
+          auto it = CirculatorRangeTraitT::begin(container_, center);
+          heh_ = it.heh_;
+        }
+
+        CirculatorRange(
+                const CONTAINER_TYPE &container,
+                HalfedgeHandle heh, int) :
+            container_(container), heh_(heh) {}
+
+        ITER_TYPE begin() const { return CirculatorRangeTraitT::begin(container_, heh_, 1); }
+        ITER_TYPE end()   const { return CirculatorRangeTraitT::end(container_, heh_, 1); }
 
     private:
         const CONTAINER_TYPE &container_;
-        CENTER_ENTITY_TYPE center_;
+        HalfedgeHandle heh_;
 };
 
 
@@ -136,8 +147,16 @@ inline PolyConnectivity::ConstVertexIHalfedgeRange PolyConnectivity::vih_range(V
     return ConstVertexIHalfedgeRange(*this, _vh);
 }
 
+inline PolyConnectivity::ConstVertexIHalfedgeRange PolyConnectivity::vih_range(HalfedgeHandle _heh) const {
+    return ConstVertexIHalfedgeRange(*this, opposite_halfedge_handle(_heh), 1);
+}
+
 inline PolyConnectivity::ConstVertexOHalfedgeRange PolyConnectivity::voh_range(VertexHandle _vh) const {
     return ConstVertexOHalfedgeRange(*this, _vh);
+}
+
+inline PolyConnectivity::ConstVertexOHalfedgeRange PolyConnectivity::voh_range(HalfedgeHandle _heh) const {
+    return ConstVertexOHalfedgeRange(*this, _heh, 1);
 }
 
 inline PolyConnectivity::ConstVertexEdgeRange PolyConnectivity::ve_range(VertexHandle _vh) const {
@@ -168,6 +187,104 @@ inline PolyConnectivity::ConstHalfedgeLoopRange PolyConnectivity::hl_range(Halfe
     return ConstHalfedgeLoopRange(*this, _heh);
 }
 
+
+inline PolyConnectivity::ConstVertexVertexCWRange PolyConnectivity::vv_cw_range(VertexHandle _vh) const {
+    return ConstVertexVertexCWRange(*this, _vh);
+}
+
+inline PolyConnectivity::ConstVertexIHalfedgeCWRange PolyConnectivity::vih_cw_range(VertexHandle _vh) const {
+    return ConstVertexIHalfedgeCWRange(*this, _vh);
+}
+
+inline PolyConnectivity::ConstVertexIHalfedgeCWRange PolyConnectivity::vih_cw_range(HalfedgeHandle _heh) const {
+    return ConstVertexIHalfedgeCWRange(*this, opposite_halfedge_handle(_heh), 1);
+}
+
+inline PolyConnectivity::ConstVertexOHalfedgeCWRange PolyConnectivity::voh_cw_range(VertexHandle _vh) const {
+    return ConstVertexOHalfedgeCWRange(*this, _vh);
+}
+
+inline PolyConnectivity::ConstVertexOHalfedgeCWRange PolyConnectivity::voh_cw_range(HalfedgeHandle _heh) const {
+    return ConstVertexOHalfedgeCWRange(*this, _heh, 1);
+}
+
+inline PolyConnectivity::ConstVertexEdgeCWRange PolyConnectivity::ve_cw_range(VertexHandle _vh) const {
+    return ConstVertexEdgeCWRange(*this, _vh);
+}
+
+inline PolyConnectivity::ConstVertexFaceCWRange PolyConnectivity::vf_cw_range(VertexHandle _vh) const {
+    return ConstVertexFaceCWRange(*this, _vh);
+}
+
+inline PolyConnectivity::ConstFaceVertexCWRange PolyConnectivity::fv_cw_range(FaceHandle _fh) const {
+    return ConstFaceVertexCWRange(*this, _fh);
+}
+
+inline PolyConnectivity::ConstFaceHalfedgeCWRange PolyConnectivity::fh_cw_range(FaceHandle _fh) const {
+    return ConstFaceHalfedgeCWRange(*this, _fh);
+}
+
+inline PolyConnectivity::ConstFaceEdgeCWRange PolyConnectivity::fe_cw_range(FaceHandle _fh) const {
+    return ConstFaceEdgeCWRange(*this, _fh);
+}
+
+inline PolyConnectivity::ConstFaceFaceCWRange PolyConnectivity::ff_cw_range(FaceHandle _fh) const {
+    return ConstFaceFaceCWRange(*this, _fh);
+}
+
+inline PolyConnectivity::ConstHalfedgeLoopCWRange PolyConnectivity::hl_cw_range(HalfedgeHandle _heh) const {
+    return ConstHalfedgeLoopCWRange(*this, _heh);
+}
+
+
+
+inline PolyConnectivity::ConstVertexVertexCCWRange PolyConnectivity::vv_ccw_range(VertexHandle _vh) const {
+    return ConstVertexVertexCCWRange(*this, _vh);
+}
+
+inline PolyConnectivity::ConstVertexIHalfedgeCCWRange PolyConnectivity::vih_ccw_range(VertexHandle _vh) const {
+    return ConstVertexIHalfedgeCCWRange(*this, _vh);
+}
+
+inline PolyConnectivity::ConstVertexIHalfedgeCCWRange PolyConnectivity::vih_ccw_range(HalfedgeHandle _heh) const {
+    return ConstVertexIHalfedgeCCWRange(*this, opposite_halfedge_handle(_heh), 1);
+}
+
+inline PolyConnectivity::ConstVertexOHalfedgeCCWRange PolyConnectivity::voh_ccw_range(VertexHandle _vh) const {
+    return ConstVertexOHalfedgeCCWRange(*this, _vh);
+}
+
+inline PolyConnectivity::ConstVertexOHalfedgeCCWRange PolyConnectivity::voh_ccw_range(HalfedgeHandle _heh) const {
+    return ConstVertexOHalfedgeCCWRange(*this, _heh, 1);
+}
+
+inline PolyConnectivity::ConstVertexEdgeCCWRange PolyConnectivity::ve_ccw_range(VertexHandle _vh) const {
+    return ConstVertexEdgeCCWRange(*this, _vh);
+}
+
+inline PolyConnectivity::ConstVertexFaceCCWRange PolyConnectivity::vf_ccw_range(VertexHandle _vh) const {
+    return ConstVertexFaceCCWRange(*this, _vh);
+}
+
+inline PolyConnectivity::ConstFaceVertexCCWRange PolyConnectivity::fv_ccw_range(FaceHandle _fh) const {
+    return ConstFaceVertexCCWRange(*this, _fh);
+}
+
+inline PolyConnectivity::ConstFaceHalfedgeCCWRange PolyConnectivity::fh_ccw_range(FaceHandle _fh) const {
+    return ConstFaceHalfedgeCCWRange(*this, _fh);
+}
+
+inline PolyConnectivity::ConstFaceEdgeCCWRange PolyConnectivity::fe_ccw_range(FaceHandle _fh) const {
+    return ConstFaceEdgeCCWRange(*this, _fh);
+}
+
+inline PolyConnectivity::ConstFaceFaceCCWRange PolyConnectivity::ff_ccw_range(FaceHandle _fh) const {
+    return ConstFaceFaceCCWRange(*this, _fh);
+}
+
+inline PolyConnectivity::ConstHalfedgeLoopCCWRange PolyConnectivity::hl_ccw_range(HalfedgeHandle _heh) const {
+    return ConstHalfedgeLoopCCWRange(*this, _heh);
+}
 
 
 
@@ -776,70 +893,54 @@ inline PolyConnectivity::ConstHalfedgeLoopCCWIter PolyConnectivity::chl_ccwend(H
 { return ConstHalfedgeLoopCCWIter(*this, _heh, true); }
 
 
-inline PolyConnectivity::ConstVertexFaceRange SmartVertexHandle::faces() const
-{
-  assert(mesh() != nullptr);
-  return mesh()->vf_range(*this);
-}
+inline PolyConnectivity::ConstVertexFaceRange         SmartVertexHandle::faces()                                     const { assert(mesh() != nullptr); return mesh()->vf_range    (*this); }
+inline PolyConnectivity::ConstVertexFaceCWRange       SmartVertexHandle::faces_cw()                                  const { assert(mesh() != nullptr); return mesh()->vf_cw_range (*this); }
+inline PolyConnectivity::ConstVertexFaceCCWRange      SmartVertexHandle::faces_ccw()                                 const { assert(mesh() != nullptr); return mesh()->vf_ccw_range(*this); }
 
-inline PolyConnectivity::ConstVertexEdgeRange SmartVertexHandle::edges() const
-{
-  assert(mesh() != nullptr);
-  return mesh()->ve_range(*this);
-}
+inline PolyConnectivity::ConstVertexEdgeRange         SmartVertexHandle::edges()                                     const { assert(mesh() != nullptr); return mesh()->ve_range    (*this); }
+inline PolyConnectivity::ConstVertexEdgeCWRange       SmartVertexHandle::edges_cw()                                  const { assert(mesh() != nullptr); return mesh()->ve_cw_range (*this); }
+inline PolyConnectivity::ConstVertexEdgeCCWRange      SmartVertexHandle::edges_ccw()                                 const { assert(mesh() != nullptr); return mesh()->ve_ccw_range(*this); }
 
-inline PolyConnectivity::ConstVertexVertexRange
-SmartVertexHandle::vertices() const
-{
-  assert(mesh() != nullptr);
-  return mesh()->vv_range(*this);
-}
+inline PolyConnectivity::ConstVertexVertexRange       SmartVertexHandle::vertices()                                  const { assert(mesh() != nullptr); return mesh()->vv_range     (*this); }
+inline PolyConnectivity::ConstVertexVertexCWRange     SmartVertexHandle::vertices_cw()                               const { assert(mesh() != nullptr); return mesh()->vv_cw_range  (*this); }
+inline PolyConnectivity::ConstVertexVertexCCWRange    SmartVertexHandle::vertices_ccw()                              const { assert(mesh() != nullptr); return mesh()->vv_ccw_range (*this); }
 
-inline PolyConnectivity::ConstVertexIHalfedgeRange
-SmartVertexHandle::incoming_halfedges() const
-{
-  assert(mesh() != nullptr);
-  return mesh()->vih_range(*this);
-}
+inline PolyConnectivity::ConstVertexIHalfedgeRange    SmartVertexHandle::incoming_halfedges()                        const { assert(mesh() != nullptr); return mesh()->vih_range    (*this); }
+inline PolyConnectivity::ConstVertexIHalfedgeCWRange  SmartVertexHandle::incoming_halfedges_cw()                     const { assert(mesh() != nullptr); return mesh()->vih_cw_range (*this); }
+inline PolyConnectivity::ConstVertexIHalfedgeCCWRange SmartVertexHandle::incoming_halfedges_ccw()                    const { assert(mesh() != nullptr); return mesh()->vih_ccw_range(*this); }
 
-inline PolyConnectivity::ConstVertexOHalfedgeRange
-SmartVertexHandle::outgoing_halfedges() const
-{
-  assert(mesh() != nullptr);
-  return mesh()->voh_range(*this);
-}
+inline PolyConnectivity::ConstVertexIHalfedgeRange    SmartVertexHandle::incoming_halfedges    (HalfedgeHandle _heh) const { assert(mesh() != nullptr); return mesh()->vih_range    (_heh);  }
+inline PolyConnectivity::ConstVertexIHalfedgeCWRange  SmartVertexHandle::incoming_halfedges_cw (HalfedgeHandle _heh) const { assert(mesh() != nullptr); return mesh()->vih_cw_range (_heh);  }
+inline PolyConnectivity::ConstVertexIHalfedgeCCWRange SmartVertexHandle::incoming_halfedges_ccw(HalfedgeHandle _heh) const { assert(mesh() != nullptr); return mesh()->vih_ccw_range(_heh);  }
 
-inline PolyConnectivity::ConstHalfedgeLoopRange
-SmartHalfedgeHandle::loop() const
-{
-  assert(mesh() != nullptr);
-  return mesh()->hl_range(*this);
-}
+inline PolyConnectivity::ConstVertexOHalfedgeRange    SmartVertexHandle::outgoing_halfedges()                        const { assert(mesh() != nullptr); return mesh()->voh_range    (*this); }
+inline PolyConnectivity::ConstVertexOHalfedgeCWRange  SmartVertexHandle::outgoing_halfedges_cw()                     const { assert(mesh() != nullptr); return mesh()->voh_cw_range (*this); }
+inline PolyConnectivity::ConstVertexOHalfedgeCCWRange SmartVertexHandle::outgoing_halfedges_ccw()                    const { assert(mesh() != nullptr); return mesh()->voh_ccw_range(*this); }
+
+inline PolyConnectivity::ConstVertexOHalfedgeRange    SmartVertexHandle::outgoing_halfedges    (HalfedgeHandle _heh) const { assert(mesh() != nullptr); return mesh()->voh_range    (_heh);  }
+inline PolyConnectivity::ConstVertexOHalfedgeCWRange  SmartVertexHandle::outgoing_halfedges_cw (HalfedgeHandle _heh) const { assert(mesh() != nullptr); return mesh()->voh_cw_range (_heh);  }
+inline PolyConnectivity::ConstVertexOHalfedgeCCWRange SmartVertexHandle::outgoing_halfedges_ccw(HalfedgeHandle _heh) const { assert(mesh() != nullptr); return mesh()->voh_ccw_range(_heh);  }
 
 
-inline PolyConnectivity::ConstFaceVertexRange SmartFaceHandle::vertices() const
-{
-  assert(mesh() != nullptr);
-  return mesh()->fv_range(*this);
-}
+inline PolyConnectivity::ConstHalfedgeLoopRange       SmartHalfedgeHandle::loop()                                    const { assert(mesh() != nullptr); return mesh()->hl_range     (*this); }
+inline PolyConnectivity::ConstHalfedgeLoopCWRange     SmartHalfedgeHandle::loop_cw()                                 const { assert(mesh() != nullptr); return mesh()->hl_cw_range  (*this); }
+inline PolyConnectivity::ConstHalfedgeLoopCCWRange    SmartHalfedgeHandle::loop_ccw()                                const { assert(mesh() != nullptr); return mesh()->hl_ccw_range (*this); }
 
-inline PolyConnectivity::ConstFaceHalfedgeRange
-SmartFaceHandle::halfedges() const
-{
-  assert(mesh() != nullptr);
-  return mesh()->fh_range(*this);
-}
 
-inline PolyConnectivity::ConstFaceEdgeRange SmartFaceHandle::edges() const
-{
-  assert(mesh() != nullptr);
-  return mesh()->fe_range(*this);
-}
+inline PolyConnectivity::ConstFaceVertexRange         SmartFaceHandle::vertices()                                    const { assert(mesh() != nullptr); return mesh()->fv_range    (*this); }
+inline PolyConnectivity::ConstFaceVertexCWRange       SmartFaceHandle::vertices_cw()                                 const { assert(mesh() != nullptr); return mesh()->fv_cw_range (*this); }
+inline PolyConnectivity::ConstFaceVertexCCWRange      SmartFaceHandle::vertices_ccw()                                const { assert(mesh() != nullptr); return mesh()->fv_ccw_range(*this); }
 
-inline PolyConnectivity::ConstFaceFaceRange SmartFaceHandle::faces() const
-{
-  assert(mesh() != nullptr);
-  return mesh()->ff_range(*this);
-}
+inline PolyConnectivity::ConstFaceHalfedgeRange       SmartFaceHandle::halfedges()                                   const { assert(mesh() != nullptr); return mesh()->fh_range    (*this); }
+inline PolyConnectivity::ConstFaceHalfedgeCWRange     SmartFaceHandle::halfedges_cw()                                const { assert(mesh() != nullptr); return mesh()->fh_cw_range (*this); }
+inline PolyConnectivity::ConstFaceHalfedgeCCWRange    SmartFaceHandle::halfedges_ccw()                               const { assert(mesh() != nullptr); return mesh()->fh_ccw_range(*this); }
+
+inline PolyConnectivity::ConstFaceEdgeRange           SmartFaceHandle::edges()                                       const { assert(mesh() != nullptr); return mesh()->fe_range    (*this); }
+inline PolyConnectivity::ConstFaceEdgeCWRange         SmartFaceHandle::edges_cw()                                    const { assert(mesh() != nullptr); return mesh()->fe_cw_range (*this); }
+inline PolyConnectivity::ConstFaceEdgeCCWRange        SmartFaceHandle::edges_ccw()                                   const { assert(mesh() != nullptr); return mesh()->fe_ccw_range(*this); }
+
+inline PolyConnectivity::ConstFaceFaceRange           SmartFaceHandle::faces()                                       const { assert(mesh() != nullptr); return mesh()->ff_range    (*this); }
+inline PolyConnectivity::ConstFaceFaceCWRange         SmartFaceHandle::faces_cw()                                    const { assert(mesh() != nullptr); return mesh()->ff_cw_range (*this); }
+inline PolyConnectivity::ConstFaceFaceCCWRange        SmartFaceHandle::faces_ccw()                                   const { assert(mesh() != nullptr); return mesh()->ff_ccw_range(*this); }
 
 }//namespace OpenMesh

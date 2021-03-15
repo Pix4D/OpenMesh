@@ -118,15 +118,47 @@ struct OPENMESHDLLEXPORT SmartVertexHandle : public SmartBaseHandle, VertexHandl
   SmartHalfedgeHandle in()       const;
 
   /// Returns a range of faces incident to the vertex (PolyConnectivity::vf_range())
-  PolyConnectivity::ConstVertexFaceRange      faces()              const;
+  PolyConnectivity::ConstVertexFaceRange         faces()              const;
+  /// Returns a range of faces incident to the vertex (PolyConnectivity::vf_cw_range())
+  PolyConnectivity::ConstVertexFaceCWRange       faces_cw()           const;
+  /// Returns a range of faces incident to the vertex (PolyConnectivity::vf_ccw_range())
+  PolyConnectivity::ConstVertexFaceCCWRange      faces_ccw()          const;
   /// Returns a range of edges incident to the vertex (PolyConnectivity::ve_range())
-  PolyConnectivity::ConstVertexEdgeRange      edges()              const;
+  PolyConnectivity::ConstVertexEdgeRange         edges()              const;
+  /// Returns a range of edges incident to the vertex (PolyConnectivity::ve_cw_range())
+  PolyConnectivity::ConstVertexEdgeCWRange       edges_cw()           const;
+  /// Returns a range of edges incident to the vertex (PolyConnectivity::ve_ccw_range())
+  PolyConnectivity::ConstVertexEdgeCCWRange      edges_ccw()          const;
   /// Returns a range of vertices adjacent to the vertex (PolyConnectivity::vv_range())
-  PolyConnectivity::ConstVertexVertexRange    vertices()           const;
+  PolyConnectivity::ConstVertexVertexRange       vertices()           const;
+  /// Returns a range of vertices adjacent to the vertex (PolyConnectivity::vv_cw_range())
+  PolyConnectivity::ConstVertexVertexCWRange     vertices_cw()           const;
+  /// Returns a range of vertices adjacent to the vertex (PolyConnectivity::vv_ccw_range())
+  PolyConnectivity::ConstVertexVertexCCWRange    vertices_ccw()           const;
   /// Returns a range of outgoing halfedges incident to the vertex (PolyConnectivity::voh_range())
-  PolyConnectivity::ConstVertexIHalfedgeRange incoming_halfedges() const;
-  /// Returns a range of incoming halfedges incident to the vertex (PolyConnectivity::vih_range())
-  PolyConnectivity::ConstVertexOHalfedgeRange outgoing_halfedges() const;
+  PolyConnectivity::ConstVertexIHalfedgeRange    incoming_halfedges() const;
+  /// Returns a range of outgoing halfedges incident to the vertex (PolyConnectivity::voh_cw_range())
+  PolyConnectivity::ConstVertexIHalfedgeCWRange  incoming_halfedges_cw() const;
+  /// Returns a range of outgoing halfedges incident to the vertex (PolyConnectivity::voh_ccw_range())
+  PolyConnectivity::ConstVertexIHalfedgeCCWRange incoming_halfedges_ccw() const;
+  /// Returns a range of outgoing halfedges incident to the vertex (PolyConnectivity::vih_range())
+  PolyConnectivity::ConstVertexIHalfedgeRange    incoming_halfedges(HalfedgeHandle _heh) const;
+  /// Returns a range of incoming halfedges incident to the vertex (PolyConnectivity::vih_cw_range())
+  PolyConnectivity::ConstVertexIHalfedgeCWRange  incoming_halfedges_cw(HalfedgeHandle _heh) const;
+  /// Returns a range of incoming halfedges incident to the vertex (PolyConnectivity::vih_ccw_range())
+  PolyConnectivity::ConstVertexIHalfedgeCCWRange incoming_halfedges_ccw(HalfedgeHandle _heh) const;
+  /// Returns a range of incoming halfedges incident to the vertex (PolyConnectivity::voh_range())
+  PolyConnectivity::ConstVertexOHalfedgeRange    outgoing_halfedges() const;
+  /// Returns a range of incoming halfedges incident to the vertex (PolyConnectivity::voh_cw_range())
+  PolyConnectivity::ConstVertexOHalfedgeCWRange  outgoing_halfedges_cw() const;
+  /// Returns a range of incoming halfedges incident to the vertex (PolyConnectivity::voh_ccw_range())
+  PolyConnectivity::ConstVertexOHalfedgeCCWRange outgoing_halfedges_ccw() const;
+  /// Returns a range of incoming halfedges incident to the vertex (PolyConnectivity::voh_range())
+  PolyConnectivity::ConstVertexOHalfedgeRange    outgoing_halfedges(HalfedgeHandle _heh) const;
+  /// Returns a range of incoming halfedges incident to the vertex (PolyConnectivity::voh_cw_range())
+  PolyConnectivity::ConstVertexOHalfedgeCWRange  outgoing_halfedges_cw(HalfedgeHandle _heh) const;
+  /// Returns a range of incoming halfedges incident to the vertex (PolyConnectivity::voh_ccw_range())
+  PolyConnectivity::ConstVertexOHalfedgeCCWRange outgoing_halfedges_ccw(HalfedgeHandle _heh) const;
 
   /// Returns valence of the vertex
   uint valence()     const;
@@ -154,7 +186,11 @@ struct OPENMESHDLLEXPORT SmartHalfedgeHandle : public SmartBaseHandle, HalfedgeH
   SmartFaceHandle     face() const;
 
   /// Returns a range of halfedges in the face of the halfedge (or along the boundary) (PolyConnectivity::hl_range())
-  PolyConnectivity::ConstHalfedgeLoopRange loop() const;
+  PolyConnectivity::ConstHalfedgeLoopRange    loop()     const;
+  /// Returns a range of halfedges in the face of the halfedge (or along the boundary) (PolyConnectivity::hl_cw_range())
+  PolyConnectivity::ConstHalfedgeLoopCWRange  loop_cw()  const;
+  /// Returns a range of halfedges in the face of the halfedge (or along the boundary) (PolyConnectivity::hl_ccw_range())
+  PolyConnectivity::ConstHalfedgeLoopCCWRange loop_ccw() const;
 };
 
 struct OPENMESHDLLEXPORT SmartEdgeHandle : public SmartBaseHandle, EdgeHandle, SmartHandleStatusPredicates<SmartEdgeHandle>, SmartHandleBoundaryPredicate<SmartEdgeHandle>
@@ -187,13 +223,29 @@ struct OPENMESHDLLEXPORT SmartFaceHandle : public SmartBaseHandle, FaceHandle, S
   SmartHalfedgeHandle halfedge() const;
 
   /// Returns a range of vertices incident to the face (PolyConnectivity::fv_range())
-  PolyConnectivity::ConstFaceVertexRange   vertices()  const;
+  PolyConnectivity::ConstFaceVertexRange      vertices()      const;
+  /// Returns a range of vertices incident to the face (PolyConnectivity::fv_cw_range())
+  PolyConnectivity::ConstFaceVertexCWRange    vertices_cw()   const;
+  /// Returns a range of vertices incident to the face (PolyConnectivity::fv_ccw_range())
+  PolyConnectivity::ConstFaceVertexCCWRange   vertices_ccw()  const;
   /// Returns a range of halfedges of the face (PolyConnectivity::fh_range())
-  PolyConnectivity::ConstFaceHalfedgeRange halfedges() const;
+  PolyConnectivity::ConstFaceHalfedgeRange    halfedges()     const;
+  /// Returns a range of halfedges of the face (PolyConnectivity::fh_cw_range())
+  PolyConnectivity::ConstFaceHalfedgeCWRange  halfedges_cw()  const;
+  /// Returns a range of halfedges of the face (PolyConnectivity::fh_ccw_range())
+  PolyConnectivity::ConstFaceHalfedgeCCWRange halfedges_ccw() const;
   /// Returns a range of edges of the face (PolyConnectivity::fv_range())
-  PolyConnectivity::ConstFaceEdgeRange     edges()     const;
+  PolyConnectivity::ConstFaceEdgeRange        edges()         const;
+  /// Returns a range of edges of the face (PolyConnectivity::fv_cw_range())
+  PolyConnectivity::ConstFaceEdgeCWRange      edges_cw()      const;
+  /// Returns a range of edges of the face (PolyConnectivity::fv_ccw_range())
+  PolyConnectivity::ConstFaceEdgeCCWRange     edges_ccw()     const;
   /// Returns a range adjacent faces of the face (PolyConnectivity::ff_range())
-  PolyConnectivity::ConstFaceFaceRange     faces()     const;
+  PolyConnectivity::ConstFaceFaceRange        faces()         const;
+  /// Returns a range adjacent faces of the face (PolyConnectivity::ff_cw_range())
+  PolyConnectivity::ConstFaceFaceCWRange      faces_cw()      const;
+  /// Returns a range adjacent faces of the face (PolyConnectivity::ff_ccw_range())
+  PolyConnectivity::ConstFaceFaceCCWRange     faces_ccw()     const;
 
   /// Returns the valence of the face
   uint valence()     const;
