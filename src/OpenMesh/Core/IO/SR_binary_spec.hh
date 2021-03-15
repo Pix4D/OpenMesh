@@ -338,7 +338,7 @@ struct binary< std::vector< T > > {
     if(binary<T>::size_of() != IO::UnknownSize)
     {
       unsigned int   N     = _v.size();
-      auto res = sizeof(elem_type)*_v.size() + (_store_size? sizeof(decltype(N)) : 0);
+      auto res = binary<T>::size_of()*_v.size() + (_store_size? sizeof(decltype(N)) : 0);
       return res;
     }
     else
