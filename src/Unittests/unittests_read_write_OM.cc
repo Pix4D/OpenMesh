@@ -9,7 +9,16 @@ struct RegisteredDataType{
   double            dval;
   bool              bval;
   OpenMesh::Vec4f   vec4fval;
+  RegisteredDataType()      : ival(0), dval(0.0)       , bval(false), vec4fval(OpenMesh::Vec4f(0,0,0,0)) {}
+  RegisteredDataType(int i) : ival(i), dval(i*1.234567), bval(i%2)  , vec4fval(OpenMesh::Vec4f(dval,2*dval,3*dval,4*dval)) {}
 
+  bool operator==(const RegisteredDataType& _other) const
+  {
+    return ival     == _other.ival &&
+           dval     == _other.dval &&
+           bval     == _other.bval &&
+           vec4fval == _other.vec4fval;
+  }
 };
 
 namespace OpenMesh
@@ -1517,16 +1526,18 @@ std::string get_type_string(OpenMesh::EdgeHandle)     { return "Edge";     }
 std::string get_type_string(OpenMesh::HalfedgeHandle) { return "Halfedge"; }
 std::string get_type_string(OpenMesh::VertexHandle)   { return "Vertex";   }
 
-std::string get_type_string(char)                     { return "char";            }
-std::string get_type_string(signed char)              { return "signed char";     }
-std::string get_type_string(double)                   { return "double";          }
-std::string get_type_string(float)                    { return "float";           }
-std::string get_type_string(int)                      { return "int";             }
-std::string get_type_string(short)                    { return "short";           }
-std::string get_type_string(unsigned char)            { return "unsigned char";   }
-std::string get_type_string(unsigned int)             { return "unsigned int";    }
-std::string get_type_string(unsigned short)           { return "unsigned short";  }
-std::string get_type_string(bool)                     { return "bool";            }
+std::string get_type_string(char)                     { return "char";               }
+std::string get_type_string(signed char)              { return "signed char";        }
+std::string get_type_string(double)                   { return "double";             }
+std::string get_type_string(float)                    { return "float";              }
+std::string get_type_string(int)                      { return "int";                }
+std::string get_type_string(short)                    { return "short";              }
+std::string get_type_string(unsigned char)            { return "unsigned char";      }
+std::string get_type_string(unsigned int)             { return "unsigned int";       }
+std::string get_type_string(unsigned short)           { return "unsigned short";     }
+std::string get_type_string(bool)                     { return "bool";               }
+std::string get_type_string(std::string)              { return "string";             }
+std::string get_type_string(RegisteredDataType)       { return "RegisteredDataType"; }
 
 template <typename T>
 std::string get_type_string(std::vector<T>)            { return "std::vector of " + get_type_string(T()); }
@@ -1651,23 +1662,28 @@ void do_all_property_types(MeshT& _mesh, PropertyAction action, int version)
 
   if(version >= 22)
   {
-    do_property<MeshT, HandleT, std::vector<int>>    (_mesh, action);
-    do_property<MeshT, HandleT, std::vector<double>> (_mesh, action);
-    do_property<MeshT, HandleT, std::vector<float>>  (_mesh, action);
-    do_property<MeshT, HandleT, std::vector<char>>   (_mesh, action);
-    do_property<MeshT, HandleT, std::vector<bool>>   (_mesh, action);
+    do_property<MeshT, HandleT, RegisteredDataType>  (_mesh, action);
 
-    do_property<MeshT, HandleT, std::vector<std::vector<int>>>   (_mesh, action);
-    do_property<MeshT, HandleT, std::vector<std::vector<double>>>(_mesh, action);
-    do_property<MeshT, HandleT, std::vector<std::vector<float>>> (_mesh, action);
-    do_property<MeshT, HandleT, std::vector<std::vector<char>>>  (_mesh, action);
-    do_property<MeshT, HandleT, std::vector<std::vector<bool>>>  (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<int>>                  (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<double>>               (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<float>>                (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<char>>                 (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<bool>>                 (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<RegisteredDataType>>   (_mesh, action);
 
-    do_property<MeshT, HandleT, std::vector<std::vector<std::vector<int>>>>   (_mesh, action);
-    do_property<MeshT, HandleT, std::vector<std::vector<std::vector<double>>>>(_mesh, action);
-    do_property<MeshT, HandleT, std::vector<std::vector<std::vector<float>>>> (_mesh, action);
-    do_property<MeshT, HandleT, std::vector<std::vector<std::vector<char>>>>  (_mesh, action);
-    do_property<MeshT, HandleT, std::vector<std::vector<std::vector<bool>>>>  (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<int>>>                 (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<double>>>              (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<float>>>               (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<char>>>                (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<bool>>>                (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<RegisteredDataType>>>  (_mesh, action);
+
+    do_property<MeshT, HandleT, std::vector<std::vector<std::vector<int>>>>                 (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<std::vector<double>>>>              (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<std::vector<float>>>>               (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<std::vector<char>>>>                (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<std::vector<bool>>>>                (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<std::vector<RegisteredDataType>>>>  (_mesh, action);
   }
 
   do_all_property_types_vec_all_dim<MeshT, HandleT>(_mesh, action);
@@ -1889,15 +1905,18 @@ TEST_F(OpenMeshReadWriteOM, WriteAndLoadBoolCheckSpaces) {
 
 }
 
+OM_REGISTER_PROPERTY_TYPE(RegisteredDataType)
 OM_REGISTER_PROPERTY_TYPE(std::vector<float>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<RegisteredDataType>)
 OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<int>>)
 OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<double>>)
 OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<float>>)
 OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<char>>)
 OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<bool>>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<RegisteredDataType>>)
 OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<std::vector<int>>>)
 OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<std::vector<double>>>)
 OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<std::vector<float>>>)
 OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<std::vector<char>>>)
 OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<std::vector<bool>>>)
-OM_REGISTER_PROPERTY_TYPE(RegisteredDataType)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<std::vector<RegisteredDataType>>>)
