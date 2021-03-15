@@ -102,7 +102,7 @@ size_t size_of(bool _store_size)
 { return binary< std::vector<T> >::size_of(_store_size); }
 
 template <typename T> inline
-size_t store( std::ostream& _os, const T& _v, bool _swap=false)
+size_t store( std::ostream& _os, const T& _v, bool _swap  =false)
 { return binary< T >::store( _os, _v, _swap ); }
 
 template <typename T> inline
@@ -110,7 +110,7 @@ size_t store( std::ostream& _os, const std::vector<T>& _v, bool _swap=false, boo
 { return binary< std::vector<T> >::store( _os, _v, _swap, _store_size); }
 
 template <typename T> inline
-size_t restore( std::istream& _is, T& _v, bool _swap=false)
+size_t restore( std::istream& _is, T& _v, bool _swap = false)
 { return binary< T >::restore( _is, _v, _swap ); }
 
 template <typename T> inline

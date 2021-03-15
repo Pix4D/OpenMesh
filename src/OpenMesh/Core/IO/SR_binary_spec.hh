@@ -325,7 +325,7 @@ struct FunctorRestore {
 };
 
 template <typename T>
-struct binary< std::vector< T > > {
+struct binary< std::vector< T >, typename std::enable_if<std::is_default_constructible<T>::value>::type > {
   typedef std::vector< T >       value_type;
   typedef typename value_type::value_type elem_type;
 

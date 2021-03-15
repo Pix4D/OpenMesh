@@ -98,7 +98,7 @@ namespace IO {
 /// - std::vector<T> (requires a specialization for T)
 ///
 /// \todo Complete documentation of members
-template < typename T > struct binary
+template < typename T, typename = void > struct binary
 {
   typedef T     value_type;
 
@@ -116,15 +116,17 @@ template < typename T > struct binary
   /// Store a value of T and return the number of bytes written
   static 
   size_t store( std::ostream& /* _os */,
-		const value_type& /* _v */,
-		bool /* _swap=false */)
+                const value_type& /* _v */,
+                bool /* _swap */ = false ,
+                bool /* store_size */ = true ) // for vectors
   { X; return 0; }
 
   /// Restore a value of T and return the number of bytes read
   static 
   size_t restore( std::istream& /* _is */,
-		  value_type& /* _v */,
-		  bool /* _swap=false */)
+                  value_type& /* _v */,
+                  bool /* _swap */ = false ,
+                  bool /* store_size */ = true ) // for vectors
   { X; return 0; }
 };
 
