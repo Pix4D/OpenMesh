@@ -878,4 +878,24 @@ TEST_F(OpenMeshPropertyManager, mesh_property_initialization) {
 
 
 
+
+TEST_F(OpenMeshPropertyManager, property_without_default_constructor ) {
+
+  // just check if this compiles
+
+  struct NoDefaultConstructor
+  {
+    int val;
+    NoDefaultConstructor() = delete;
+    NoDefaultConstructor(int i) : val(i) {}
+  };
+
+  OpenMesh::VProp<std::vector<NoDefaultConstructor>> vprop(mesh_);
+  OpenMesh::HProp<std::vector<NoDefaultConstructor>> hprop(mesh_);
+  OpenMesh::EProp<std::vector<NoDefaultConstructor>> eprop(mesh_);
+  OpenMesh::FProp<std::vector<NoDefaultConstructor>> fprop(mesh_);
+  OpenMesh::MProp<std::vector<NoDefaultConstructor>> mprop(mesh_);
+}
+
+
 }
