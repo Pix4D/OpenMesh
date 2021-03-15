@@ -211,7 +211,6 @@ public:
     for (auto pc : property_creators_)
       if (pc->type_string() == _property_creator->type_string())
       {
-        omlog() << "Property creator for type " << pc->type_string() << " already exists. Property creator will be ignored." << std::endl;
         if (pc->type_id_string() != _property_creator->type_id_string())
         {
           omerr() << "And it looks like you are trying to add a different type with an already existing string identification." << std::endl;
@@ -219,8 +218,6 @@ public:
         }
         return;
       }
-
-    omlog() << "Adding property creator for type " << _property_creator->type_string() << std::endl;
     property_creators_.push_back(_property_creator);
   }
 
