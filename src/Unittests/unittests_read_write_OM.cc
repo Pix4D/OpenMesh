@@ -1829,7 +1829,7 @@ TEST_F(OpenMeshReadWriteOM, PropertyFromString)
 {
   {
     std::string  int_prop_name = "my int prop";
-    OpenMesh::create_property_from_string<OpenMesh::VertexHandle>(mesh_, "int", int_prop_name);
+    OpenMesh::create_property_from_string<OpenMesh::VertexHandle>(mesh_, "int32_t", int_prop_name);
     bool has_int_prop = OpenMesh::hasProperty<OpenMesh::VertexHandle, int>(mesh_, int_prop_name.c_str());
     EXPECT_TRUE(has_int_prop);
   }
