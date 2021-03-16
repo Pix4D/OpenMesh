@@ -44,7 +44,8 @@
 #include <OpenMesh/Core/IO/importer/BaseImporter.hh>
 #include <OpenMesh/Core/Mesh/Handles.hh>
 #include <OpenMesh/Core/Geometry/VectorT.hh>
-//#include <OpenMesh/Core/Utils/typename.hh>
+#include <OpenMesh/Core/IO/SR_types.hh>
+
 
 namespace OpenMesh {
 
@@ -62,33 +63,40 @@ bool PropertyCreator::can_you_create(const std::string& _type_name)
 
 } /* namespace OpenMesh */
 
-OM_REGISTER_PROPERTY_TYPE(OpenMesh::FaceHandle)
-OM_REGISTER_PROPERTY_TYPE(OpenMesh::EdgeHandle)
-OM_REGISTER_PROPERTY_TYPE(OpenMesh::HalfedgeHandle)
-OM_REGISTER_PROPERTY_TYPE(OpenMesh::VertexHandle)
-OM_REGISTER_PROPERTY_TYPE(OpenMesh::MeshHandle)
+OM_REGISTER_PROPERTY_TYPE(FaceHandle)
+OM_REGISTER_PROPERTY_TYPE(EdgeHandle)
+OM_REGISTER_PROPERTY_TYPE(HalfedgeHandle)
+OM_REGISTER_PROPERTY_TYPE(VertexHandle)
+OM_REGISTER_PROPERTY_TYPE(MeshHandle)
 
 OM_REGISTER_PROPERTY_TYPE(bool)
-OM_REGISTER_PROPERTY_TYPE(char)
-OM_REGISTER_PROPERTY_TYPE(signed char)
-OM_REGISTER_PROPERTY_TYPE(double)
 OM_REGISTER_PROPERTY_TYPE(float)
-OM_REGISTER_PROPERTY_TYPE(int)
-
+OM_REGISTER_PROPERTY_TYPE(double)
+OM_REGISTER_PROPERTY_TYPE(long double)
+OM_REGISTER_PROPERTY_TYPE(char)
+OM_REGISTER_PROPERTY_TYPE(OpenMesh::IO::int8_t  )
+OM_REGISTER_PROPERTY_TYPE(OpenMesh::IO::int16_t )
+OM_REGISTER_PROPERTY_TYPE(OpenMesh::IO::int32_t )
+//OM_REGISTER_PROPERTY_TYPE(OpenMesh::IO::int64_t )
+OM_REGISTER_PROPERTY_TYPE(OpenMesh::IO::uint8_t )
+OM_REGISTER_PROPERTY_TYPE(OpenMesh::IO::uint16_t)
+OM_REGISTER_PROPERTY_TYPE(OpenMesh::IO::uint32_t)
+OM_REGISTER_PROPERTY_TYPE(OpenMesh::IO::uint64_t)
 OM_REGISTER_PROPERTY_TYPE(std::string)
 
-OM_REGISTER_PROPERTY_TYPE(std::vector<int>)
-OM_REGISTER_PROPERTY_TYPE(std::vector<double>)
-OM_REGISTER_PROPERTY_TYPE(std::vector<float>)
-OM_REGISTER_PROPERTY_TYPE(std::vector<char>)
 OM_REGISTER_PROPERTY_TYPE(std::vector<bool>)
-
-OM_REGISTER_PROPERTY_TYPE(short)
-
-OM_REGISTER_PROPERTY_TYPE(unsigned char);
-OM_REGISTER_PROPERTY_TYPE(unsigned int);
-OM_REGISTER_PROPERTY_TYPE(unsigned short);
-OM_REGISTER_PROPERTY_TYPE(unsigned long);
+OM_REGISTER_PROPERTY_TYPE(std::vector<float>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<double>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<long double>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<char>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<OpenMesh::IO::int8_t  >)
+OM_REGISTER_PROPERTY_TYPE(std::vector<OpenMesh::IO::int16_t >)
+OM_REGISTER_PROPERTY_TYPE(std::vector<OpenMesh::IO::int32_t >)
+OM_REGISTER_PROPERTY_TYPE(std::vector<OpenMesh::IO::uint8_t >)
+OM_REGISTER_PROPERTY_TYPE(std::vector<OpenMesh::IO::uint16_t>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<OpenMesh::IO::uint32_t>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<OpenMesh::IO::uint64_t>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::string>)
 
 OM_REGISTER_PROPERTY_TYPE(Vec1c);
 OM_REGISTER_PROPERTY_TYPE(Vec1uc);

@@ -126,7 +126,7 @@ SIMPLE_BINARY(char);
 SIMPLE_BINARY(int8_t);
 SIMPLE_BINARY(int16_t);
 SIMPLE_BINARY(int32_t);
-SIMPLE_BINARY(int64_t);
+//SIMPLE_BINARY(int64_t); // TODO: This does not work. Find out why.
 SIMPLE_BINARY(uint8_t);
 SIMPLE_BINARY(uint16_t);
 SIMPLE_BINARY(uint32_t);
