@@ -306,7 +306,7 @@ typename PolyMeshT<Kernel>::Point
 PolyMeshT<Kernel>::
 calc_centroid(MeshHandle /*_mh*/) const
 {
-  return this->vertices().avg(getPointsProperty(*this));
+  return this->vertices().avg([this](VertexHandle vh) { return this->point(vh); });
 }
 
 //-----------------------------------------------------------------------------
