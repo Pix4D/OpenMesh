@@ -57,7 +57,9 @@
 #include <OpenMesh/Core/IO/OMFormat.hh>
 #include <OpenMesh/Core/IO/reader/OMReader.hh>
 #include <OpenMesh/Core/IO/writer/OMWriter.hh>
+#include <OpenMesh/Core/Utils/typename.hh>
 
+#include <OpenMesh/Core/Utils/PropertyCreator.hh>
 
 //=== NAMESPACES ==============================================================
 
@@ -179,7 +181,6 @@ bool _OMReader_::read_binary(std::istream& _is, BaseImporter& _bi, Options& _opt
             << "Please update your OpenMesh." << std::endl;
     return false;
   }
-
 
   while (!_is.eof()) {
     bytes_ += restore(_is, chunk_header_, swap);
@@ -400,10 +401,17 @@ bool _OMReader_::read_binary_vertex_chunk(std::istream &_is, BaseImporter &_bi, 
     }
 
     case Chunk::Type_Custom:
+    {
+      if(header_.version_ > OMFormat::mk_version(2,1))
+      {
+        Chunk::PropertyName property_type;
+        bytes_ += restore(_is, property_type, _swap);
+        add_generic_property(property_type, _bi);
+      }
 
       bytes_ += restore_binary_custom_data(_is, _bi.kernel()->_get_vprop(property_name_), header_.n_vertices_, _swap);
-
       vidx = header_.n_vertices_;
+    }
 
       break;
 
@@ -550,12 +558,20 @@ bool _OMReader_::read_binary_face_chunk(std::istream &_is, BaseImporter &_bi, Op
     }
 
     case Chunk::Type_Custom:
+    {
+      if(header_.version_ > OMFormat::mk_version(2,1))
+      {
+        Chunk::PropertyName property_type;
+        bytes_ += restore(_is, property_type, _swap);
+        add_generic_property(property_type, _bi);
+      }
 
       bytes_ += restore_binary_custom_data(_is, _bi.kernel()->_get_fprop(property_name_), header_.n_faces_, _swap);
 
       fidx = header_.n_faces_;
 
       break;
+    }
 
     default: // skip unknown chunks
     {
@@ -583,11 +599,18 @@ bool _OMReader_::read_binary_edge_chunk(std::istream &_is, BaseImporter &_bi, Op
 
   switch (chunk_header_.type_) {
     case Chunk::Type_Custom:
+    {
+      if(header_.version_ > OMFormat::mk_version(2,1))
+      {
+        Chunk::PropertyName property_type;
+        bytes_ += restore(_is, property_type, _swap);
+        add_generic_property(property_type, _bi);
+      }
 
       bytes_ += restore_binary_custom_data(_is, _bi.kernel()->_get_eprop(property_name_), header_.n_edges_, _swap);
 
       break;
-
+    }
     case Chunk::Type_Status:
     {
       assert( OMFormat::dimensions(chunk_header_) == 1);
@@ -626,10 +649,39 @@ bool _OMReader_::read_binary_halfedge_chunk(std::istream &_is, BaseImporter &_bi
 
   switch (chunk_header_.type_) {
     case Chunk::Type_Custom:
+    {
+      if(header_.version_ > OMFormat::mk_version(2,1))
+      {
+        Chunk::PropertyName property_type;
+        bytes_ += restore(_is, property_type, _swap);
+        add_generic_property(property_type, _bi);
+      }
 
       bytes_ += restore_binary_custom_data(_is, _bi.kernel()->_get_hprop(property_name_), 2 * header_.n_edges_, _swap);
       break;
+    }
 
+    //----------------------------------------------------------------------------------------
+    case Chunk::Type_Texcoord:
+    {
+      assert( OMFormat::dimensions(chunk_header_) == size_t(OpenMesh::Vec2f::dim()));
+
+      //fileOptions_ += OpenMesh::IO::Options::FaceTexCoord;
+
+      if (_opt.face_has_texcoord())
+      {
+        _bi.request_face_texcoords2D();
+      }
+      OpenMesh::Vec2f v2f;
+      for (size_t e_idx = 0; e_idx < header_.n_edges_*2; ++e_idx)
+      {
+        bytes_ += vector_restore(_is, v2f, _swap);
+        if (_opt.face_has_texcoord())
+          _bi.set_texcoord(HalfedgeHandle(int(e_idx)), v2f);
+      }
+      break;
+    }
+    //----------------------------------------------------------------------------------------
     case Chunk::Type_Topology:
     {
       std::vector<HalfedgeHandle> next_halfedges;
@@ -703,11 +755,18 @@ bool _OMReader_::read_binary_mesh_chunk(std::istream &_is, BaseImporter &_bi, Op
 
   switch (chunk_header_.type_) {
     case Chunk::Type_Custom:
+    {
+      if(header_.version_ > OMFormat::mk_version(2,1))
+      {
+        Chunk::PropertyName property_type;
+        bytes_ += restore(_is, property_type, _swap);
+        add_generic_property(property_type, _bi);
+      }
 
       bytes_ += restore_binary_custom_data(_is, _bi.kernel()->_get_mprop(property_name_), 1, _swap);
 
       break;
-
+    }
     default:
       // skip unknown chunk
       size_t chunk_size = OMFormat::chunk_data_size(header_, chunk_header_);
@@ -747,14 +806,14 @@ size_t _OMReader_::restore_binary_custom_data(std::istream& _is, BaseProperty* _
 #endif
 
 #if defined(OM_DEBUG)
-      assert( block_size == b );
+      assert( block_size == b);
 #endif
 
       assert( block_size == _bp->size_of());
 
       block_size = 0;
     } else {
-      omerr() << "Warning! Property " << _bp->name() << " not loaded: " << "Mismatching data sizes!n";
+      omerr() << "Warning! Property " << _bp->name() << " not loaded: " << "Mismatching data sizes!" << std::endl;
     }
   }
 
@@ -767,6 +826,57 @@ size_t _OMReader_::restore_binary_custom_data(std::istream& _is, BaseProperty* _
 }
 
 
+//--------------------------------helper
+void _OMReader_:: add_generic_property(OMFormat::Chunk::PropertyName& _property_type, BaseImporter& _bi) const
+{
+  // We want to support the old way of restoring properties, ie.
+  // the user has manually created the corresponding property.
+  // In that case the property does not need be registered.
+  // However, the _bi.kerne()->_get_prop(property_name_) checks below
+  // May return a property with the correct name but the wrong type.
+  // For now we will have to live with that.
+
+
+  PropertyCreationManager& manager = PropertyCreationManager::instance();
+  switch (chunk_header_.entity_)
+  {
+  case OMFormat::Chunk::Entity_Vertex:
+  {
+    if (_bi.kernel()->_get_vprop(property_name_) == nullptr)
+      manager.create_property<OpenMesh::VertexHandle>(*_bi.kernel(), _property_type, property_name_);
+    break;
+  }
+  case OMFormat::Chunk::Entity_Face:
+  {
+    if (_bi.kernel()->_get_fprop(property_name_) == nullptr)
+      manager.create_property<OpenMesh::FaceHandle>(*_bi.kernel(), _property_type, property_name_);
+    break;
+  }
+  case OMFormat::Chunk::Entity_Edge:
+  {
+    if (_bi.kernel()->_get_eprop(property_name_) == nullptr)
+      manager.create_property<OpenMesh::EdgeHandle>(*_bi.kernel(), _property_type, property_name_);
+    break;
+  }
+  case OMFormat::Chunk::Entity_Halfedge:
+  {
+    if (_bi.kernel()->_get_hprop(property_name_) == nullptr)
+      manager.create_property<OpenMesh::HalfedgeHandle>(*_bi.kernel(), _property_type, property_name_);
+    break;
+  }
+  case OMFormat::Chunk::Entity_Mesh:
+  {
+    if (_bi.kernel()->_get_mprop(property_name_) == nullptr)
+      manager.create_property<OpenMesh::MeshHandle>(*_bi.kernel(), _property_type, property_name_);
+    break;
+  }
+  case OMFormat::Chunk::Entity_Sentinel:
+    ;
+  break;
+  default:
+    ;
+  }
+}
 //-----------------------------------------------------------------------------
 
 //=============================================================================

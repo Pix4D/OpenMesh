@@ -149,11 +149,14 @@ private:
 				   Options           &_opt,
 				   bool              _swap) const;
 
-  size_t restore_binary_custom_data( std::istream& _is,
-				     BaseProperty* _bp,
-				     size_t _n_elem,
-				     bool _swap) const;
+  size_t restore_binary_custom_data(std::istream& _is,
+             BaseProperty* _bp,
+             size_t _n_elem,
+             bool _swap) const;
 
+  //------------------helper
+private:
+  void add_generic_property(OMFormat::Chunk::PropertyName& _property_type, BaseImporter& _bi) const;
 };
 
 

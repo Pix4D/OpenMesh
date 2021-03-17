@@ -81,7 +81,7 @@ _OMWriter_& OMWriter() { return __OMWriterInstance; }
 
 
 const OMFormat::uchar _OMWriter_::magic_[3] = "OM";
-const OMFormat::uint8 _OMWriter_::version_  = OMFormat::mk_version(2,1);
+const OMFormat::uint8 _OMWriter_::version_  = OMFormat::mk_version(2,2);
 
 
 _OMWriter_::
@@ -303,7 +303,6 @@ bool _OMWriter_::write_binary(std::ostream& _os, BaseExporter& _be,
     chunk_header.dim_ = OMFormat::dim(t);
     chunk_header.bits_ = OMFormat::bits(t[0]);
 
-    // std::clog << chunk_header << std::endl;
     bytes += store(_os, chunk_header, swap);
 
     for (i = 0, nV = header.n_vertices_; i < nV; ++i)
@@ -336,6 +335,30 @@ bool _OMWriter_::write_binary(std::ostream& _os, BaseExporter& _be,
       bytes += store( _os, face_id,      OMFormat::Chunk::Integer_Size(chunk_header.bits_), swap );
     }
   }
+
+
+  // ---------- write face texture coords
+  if (_OMWriter_::version_ > OMFormat::mk_version(2,1) && _be.n_edges() && _opt.check(Options::FaceTexCoord))
+  {
+
+    t = _be.texcoord(HalfedgeHandle(0));
+
+    chunk_header.name_ = false;
+    chunk_header.entity_ = OMFormat::Chunk::Entity_Halfedge;
+    chunk_header.type_ = OMFormat::Chunk::Type_Texcoord;
+    chunk_header.signed_ = OMFormat::is_signed(t[0]);
+    chunk_header.float_ = OMFormat::is_float(t[0]);
+    chunk_header.dim_ = OMFormat::dim(t);
+    chunk_header.bits_ = OMFormat::bits(t[0]);
+
+    bytes += store(_os, chunk_header, swap);
+
+    unsigned int nHE;
+    for (i = 0, nHE = header.n_edges_*2; i < nHE; ++i)
+      bytes += vector_store(_os, _be.texcoord(HalfedgeHandle(i)), swap);
+
+  }
+  //---------------------------------------------------------------
 
   // ---------- write vertex topology (outgoing halfedge)
   if (_be.n_vertices())
@@ -573,7 +596,7 @@ bool _OMWriter_::write_binary(std::ostream& _os, BaseExporter& _be,
   chunk_header.entity_ = OMFormat::Chunk::Entity_Sentinel;
   bytes += store(_os, chunk_header, swap);
 
-//  std::clog << "#bytes written: " << bytes << std::endl;
+  omlog() << "#bytes written: " << bytes << std::endl;
 
   return true;
 }
@@ -581,7 +604,7 @@ bool _OMWriter_::write_binary(std::ostream& _os, BaseExporter& _be,
 // ----------------------------------------------------------------------------
 
 size_t _OMWriter_::store_binary_custom_chunk(std::ostream& _os,
-					     const BaseProperty& _bp,
+               BaseProperty& _bp,
 					     OMFormat::Chunk::Entity _entity,
 					     bool _swap) const
 {
@@ -620,16 +643,22 @@ size_t _OMWriter_::store_binary_custom_chunk(std::ostream& _os,
   // 2. property name
   bytes += store( _os, OMFormat::Chunk::PropertyName(_bp.name()), _swap );
 
-  // 3. block size
-  bytes += store( _os, _bp.size_of(), OMFormat::Chunk::Integer_32, _swap );
-  //omlog() << "  n_bytes = " << _bp.size_of() << std::endl;
+  // 3. data type needed to add property automatically, supported by version 2.1 or later
+  if(_OMWriter_::version_ > OMFormat::mk_version(2,1))
+  {
+    OMFormat::Chunk::PropertyName type = OMFormat::Chunk::PropertyName(_bp.get_storage_name());
+    bytes += store(_os, type, _swap);
+  }
 
-  // 4. data
+  // 4. block size
+  bytes += store( _os, _bp.size_of(), OMFormat::Chunk::Integer_32, _swap );
+  //omlog() << "  block size = " << _bp.size_of() << std::endl;
+
+  // 5. data
   {
     size_t b;
     bytes += ( b=_bp.store( _os, _swap ) );
-    //omlog() << "  b       = " << b << std::endl;
-    assert( b == _bp.size_of() );
+    assert(b == _bp.size_of());
   }
   return bytes;
 }

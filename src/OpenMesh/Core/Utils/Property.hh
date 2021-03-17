@@ -41,9 +41,9 @@
 
 
 
-#ifndef OPENMESH_PROPERTY_HH
-#define OPENMESH_PROPERTY_HH
-
+//#ifndef OPENMESH_PROPERTY_HH
+//#define OPENMESH_PROPERTY_HH
+#pragma once
 
 //== INCLUDES =================================================================
 
@@ -54,6 +54,9 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+
+#include <OpenMesh/Core/IO/SR_store.hh>
+#include <iostream>
 
 
 //== NAMESPACES ===============================================================
@@ -147,21 +150,23 @@ public:
 
   virtual size_t store( std::ostream& _ostr, bool _swap ) const override
   {
-    if ( IO::is_streamable<vector_type>() )
-      return IO::store(_ostr, data_, _swap );
+    if (IO::is_streamable<vector_type>() && element_size() != IO::UnknownSize)
+      return IO::store(_ostr, data_, _swap, false);   //does not need to store its length
+
     size_t bytes = 0;
     for (size_t i=0; i<n_elements(); ++i)
-      bytes += IO::store( _ostr, data_[i], _swap );
+      bytes += IO::store( _ostr, data_[i], _swap);
     return bytes;
   }
 
   virtual size_t restore( std::istream& _istr, bool _swap ) override
   {
-    if ( IO::is_streamable<vector_type>() )
-      return IO::restore(_istr, data_, _swap );
+    if ( IO::is_streamable<vector_type>() && element_size() != IO::UnknownSize)
+      return IO::restore(_istr, data_, _swap, false);  //does not need to restore its length
+
     size_t bytes = 0;
     for (size_t i=0; i<n_elements(); ++i)
-      bytes += IO::restore( _istr, data_[i], _swap );
+      bytes += IO::restore( _istr, data_[i], _swap);
     return bytes;
   }
 
@@ -207,6 +212,10 @@ public: // data access interface
     return p;
   }
 
+  std::string get_storage_name() const override
+  {
+    return OpenMesh::IO::binary<T>::type_identifier();
+  }
 
 private:
 
@@ -371,6 +380,11 @@ public:
     return p;
   }
 
+    std::string get_storage_name() const override
+    {
+      return OpenMesh::IO::binary<bool>::type_identifier();
+    }
+
 
 private:
 
@@ -380,88 +394,6 @@ private:
 
 //-----------------------------------------------------------------------------
 
-
-/** Property specialization for std::string type.
-*/
-template <>
-class PropertyT<std::string> : public BaseProperty
-{
-public:
-
-  typedef std::string                             Value;
-  typedef std::vector<std::string>                vector_type;
-  typedef std::string                             value_type;
-  typedef vector_type::reference                  reference;
-  typedef vector_type::const_reference            const_reference;
-
-public:
-
-  explicit PropertyT(const std::string& _name = "<unknown>", const std::string& _internal_type_name="" )
-    : BaseProperty(_name, _internal_type_name)
-  { }
-
-public: // inherited from BaseProperty
-
-  virtual void reserve(size_t _n) override { data_.reserve(_n);    }
-  virtual void resize(size_t _n) override  { data_.resize(_n);     }
-  virtual void clear() override  { data_.clear(); vector_type().swap(data_);    }
-  virtual void push_back() override        { data_.push_back(std::string()); }
-  virtual void swap(size_t _i0, size_t _i1) override {
-    std::swap(data_[_i0], data_[_i1]);
-  }
-  virtual void copy(size_t _i0, size_t _i1) override
-  { data_[_i1] = data_[_i0]; }
-
-public:
-
-  virtual void set_persistent( bool _yn ) override
-  { check_and_set_persistent<std::string>( _yn ); }
-
-  virtual size_t       n_elements()   const override { return data_.size();  }
-  virtual size_t       element_size() const override { return UnknownSize;    }
-  virtual size_t       size_of() const override
-  { return IO::size_of( data_ ); }
-
-  virtual size_t       size_of(size_t /* _n_elem */) const override
-  { return UnknownSize; }
-
-  /// Store self as one binary block. Max. length of a string is 65535 bytes.
-  size_t store( std::ostream& _ostr, bool _swap ) const override
-  { return IO::store( _ostr, data_, _swap ); }
-
-  size_t restore( std::istream& _istr, bool _swap ) override
-  { return IO::restore( _istr, data_, _swap ); }
-
-public:
-
-  const value_type* data() const {
-      if( data_.empty() )
-	  return nullptr;
-
-      return (value_type*) &data_[0];
-  }
-
-  /// Access the i'th element. No range check is performed!
-  reference operator[](int _idx) {
-    assert( size_t(_idx) < data_.size());
-    return ((value_type*) &data_[0])[_idx];
-  }
-
-  /// Const access the i'th element. No range check is performed!
-  const_reference operator[](int _idx) const {
-    assert( size_t(_idx) < data_.size());
-    return ((value_type*) &data_[0])[_idx];
-  }
-
-  PropertyT<value_type>* clone() const override {
-    PropertyT<value_type>* p = new PropertyT<value_type>( *this );
-    return p;
-  }
-private:
-
-  vector_type data_;
-
-};
 
 /// Base property handle.
 template <class T>
@@ -578,7 +510,13 @@ struct PropHandle<FaceHandle> {
   using type = FPropHandleT<T>;
 };
 
+template <>
+struct PropHandle<MeshHandle> {
+  template <typename T>
+  using type = MPropHandleT<T>;
+};
+
 } // namespace OpenMesh
 //=============================================================================
-#endif // OPENMESH_PROPERTY_HH defined
+//#endif // OPENMESH_PROPERTY_HH defined
 //=============================================================================

@@ -1,6 +1,68 @@
 #include <gtest/gtest.h>
 #include <Unittests/unittests_common.hh>
 
+#include <OpenMesh/Core/Utils/PropertyManager.hh>
+#include <OpenMesh/Core/Utils/PropertyCreator.hh>
+
+struct RegisteredDataType{
+  int               ival;
+  double            dval;
+  bool              bval;
+  OpenMesh::Vec4f   vec4fval;
+  RegisteredDataType()      : ival(0), dval(0.0)       , bval(false), vec4fval(OpenMesh::Vec4f(0,0,0,0)) {}
+  RegisteredDataType(int i) : ival(i), dval(i*1.234567), bval(i%2)  , vec4fval(OpenMesh::Vec4f(dval,2*dval,3*dval,4*dval)) {}
+
+  bool operator==(const RegisteredDataType& _other) const
+  {
+    return ival     == _other.ival &&
+           dval     == _other.dval &&
+           bval     == _other.bval &&
+           vec4fval == _other.vec4fval;
+  }
+};
+
+namespace OpenMesh
+{
+namespace IO
+{
+  template <> struct binary<RegisteredDataType>
+  {
+  typedef RegisteredDataType value_type;
+  static const bool is_streamable = true;
+  // return binary size of the value
+  static size_t size_of(void)
+  {
+    return sizeof(int)+sizeof(double)+sizeof(bool)+sizeof(OpenMesh::Vec4f);
+  }
+  static size_t size_of(const value_type&)
+  {
+    return size_of();
+  }
+  static std::string type_identifier(void)
+  {
+    return "RegisteredDataType";
+  }
+  static size_t store(std::ostream& _os, const value_type& _v, bool _swap=false)
+  {
+    size_t bytes;
+    bytes  = IO::store( _os, _v.ival, _swap );
+    bytes += IO::store( _os, _v.dval, _swap );
+    bytes += IO::store( _os, _v.bval, _swap );
+    bytes += IO::store( _os, _v.vec4fval, _swap );
+    return _os.good() ? bytes : 0;
+  }
+  static size_t restore( std::istream& _is, value_type& _v, bool _swap=false)
+  {
+    size_t bytes;
+    bytes  = IO::restore( _is, _v.ival, _swap );
+    bytes += IO::restore( _is, _v.dval, _swap );
+    bytes += IO::restore( _is, _v.bval, _swap );
+    bytes += IO::restore( _is, _v.vec4fval, _swap );
+    return _is.good() ? bytes : 0;
+  }
+  };
+}
+}
 
 namespace {
 
@@ -1458,6 +1520,257 @@ TEST_F(OpenMeshReadWriteOM, LoadPolyMeshVersion_2_0) {
 }
 
 
+
+std::string get_type_string(OpenMesh::FaceHandle)     { return "Face";     }
+std::string get_type_string(OpenMesh::EdgeHandle)     { return "Edge";     }
+std::string get_type_string(OpenMesh::HalfedgeHandle) { return "Halfedge"; }
+std::string get_type_string(OpenMesh::VertexHandle)   { return "Vertex";   }
+
+std::string get_type_string(char)                     { return "char";               }
+std::string get_type_string(signed char)              { return "signed char";        }
+std::string get_type_string(double)                   { return "double";             }
+std::string get_type_string(float)                    { return "float";              }
+std::string get_type_string(int)                      { return "int";                }
+std::string get_type_string(short)                    { return "short";              }
+std::string get_type_string(unsigned char)            { return "unsigned char";      }
+std::string get_type_string(unsigned int)             { return "unsigned int";       }
+std::string get_type_string(unsigned short)           { return "unsigned short";     }
+std::string get_type_string(bool)                     { return "bool";               }
+std::string get_type_string(std::string)              { return "string";             }
+std::string get_type_string(RegisteredDataType)       { return "RegisteredDataType"; }
+
+template <typename T>
+std::string get_type_string(std::vector<T>)            { return "std::vector of " + get_type_string(T()); }
+
+template <typename T, int Dim>
+std::string get_type_string(OpenMesh::VectorT<T, Dim>) { return "OM vector of dimension " + std::to_string(Dim) + " of type " + get_type_string(T()); }
+
+template <typename T>
+T get_value(int seed, T, int seed2 = 0)
+{
+  return (seed * 3 + seed2) % 20;
+}
+
+std::string get_value(int seed, std::string, int seed2 = 0)
+{
+  return std::to_string((seed * 3 + seed2) % 20);
+}
+
+template <typename T>
+std::vector<T> get_value(int seed, const std::vector<T>&, int _offset = 0)
+{
+  int size = get_value(seed, 3);
+  std::vector<T> res(size);
+  for (int i = 0; i < size; ++i)
+    res[i] = get_value(seed, T(), i + _offset);
+  return res;
+}
+
+template <typename T, int Dim>
+OpenMesh::VectorT<T, Dim> get_value(int seed, const OpenMesh::VectorT<T, Dim>&)
+{
+  OpenMesh::VectorT<T, Dim> res;
+  for (int i = 0; i < Dim; ++i)
+    res[i] = get_value(seed, T(), i);
+  return res;
+}
+
+template <typename MeshT, typename HandleT,  typename T>
+OpenMesh::Prop<HandleT, T> add_property(MeshT& _mesh)
+{
+  std::string name = get_type_string(HandleT()) + ": " + get_type_string(T());
+  OpenMesh::Prop<HandleT, T> prop(_mesh, name.c_str());
+  _mesh.property(prop.getRawProperty()).set_persistent(true);
+  for (auto e : _mesh.template elements<HandleT>())
+    prop[e] = get_value(e.idx(), T());
+
+  return prop;
+}
+
+template <typename MeshT, typename HandleT,  typename T>
+void check_property(MeshT& _mesh)
+{
+  std::string name = get_type_string(HandleT()) + ": " + get_type_string(T());
+  bool has_prop = OpenMesh::hasProperty<HandleT, T>(_mesh, name.c_str());
+  EXPECT_TRUE(has_prop) << "Property " << name << " is not available";
+  if (!has_prop)
+    return;
+  OpenMesh::Prop<HandleT, T> prop(_mesh, name.c_str());
+  for (auto e : _mesh.template elements<HandleT>())
+    EXPECT_EQ(prop[e], get_value(e.idx(), T())) << "For property " << name;
+}
+
+template <typename MeshT, typename HandleT,  typename T>
+void request_property(MeshT& _mesh)
+{
+  std::string name = get_type_string(HandleT()) + ": " + get_type_string(T());
+  OpenMesh::Prop<HandleT, T> prop(_mesh, name.c_str());
+}
+
+
+enum class PropertyAction
+{
+  Add, Check, Request
+};
+
+// For a given Handle and Type add, check or request a property
+template <typename MeshT, typename HandleT,  typename T>
+void do_property(MeshT& _mesh, PropertyAction action)
+{
+  switch (action)
+  {
+  case PropertyAction::Add:
+    add_property<MeshT, HandleT, T>(_mesh);
+    break;
+  case PropertyAction::Check:
+    check_property<MeshT, HandleT, T>(_mesh);
+    break;
+  case PropertyAction::Request:
+    request_property<MeshT, HandleT, T>(_mesh);
+    break;
+  }
+}
+
+// for a given handle do action for OpenMesh Vector of dimension Dim with many differnt types
+template <typename MeshT, typename HandleT, int Dim>
+void do_all_property_types_vec(MeshT& _mesh, PropertyAction action)
+{
+  do_property<MeshT, HandleT, OpenMesh::VectorT<signed char   , Dim>>(_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::VectorT<double        , Dim>>(_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::VectorT<float         , Dim>>(_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::VectorT<int           , Dim>>(_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::VectorT<short         , Dim>>(_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::VectorT<unsigned char , Dim>>(_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::VectorT<unsigned int  , Dim>>(_mesh, action);
+  do_property<MeshT, HandleT, OpenMesh::VectorT<unsigned short, Dim>>(_mesh, action);
+}
+
+// for a given handle do action for OpenMesh Vectors of dimensions 1 to 4
+template <typename MeshT, typename HandleT>
+void do_all_property_types_vec_all_dim(MeshT& _mesh, PropertyAction action)
+{
+  do_all_property_types_vec<MeshT, HandleT, 1>(_mesh, action);
+  do_all_property_types_vec<MeshT, HandleT, 2>(_mesh, action);
+  do_all_property_types_vec<MeshT, HandleT, 3>(_mesh, action);
+  do_all_property_types_vec<MeshT, HandleT, 4>(_mesh, action);
+}
+
+// for a given handle type do action for many different types
+template <typename MeshT, typename HandleT>
+void do_all_property_types(MeshT& _mesh, PropertyAction action, int version)
+{
+  do_property<MeshT, HandleT, int>                 (_mesh, action);
+  do_property<MeshT, HandleT, double>              (_mesh, action);
+  do_property<MeshT, HandleT, float>               (_mesh, action);
+  do_property<MeshT, HandleT, char>                (_mesh, action);
+  do_property<MeshT, HandleT, bool>                (_mesh, action);
+  do_property<MeshT, HandleT, std::string>         (_mesh, action);
+  do_property<MeshT, HandleT, RegisteredDataType>  (_mesh, action);
+
+  if(version >= 22)
+  {
+    do_property<MeshT, HandleT, std::vector<int>>                  (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<double>>               (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<float>>                (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<char>>                 (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<bool>>                 (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::string>>          (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<RegisteredDataType>>   (_mesh, action);
+
+    do_property<MeshT, HandleT, std::vector<std::vector<int>>>                 (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<double>>>              (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<float>>>               (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<char>>>                (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<bool>>>                (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<std::string>>>         (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<RegisteredDataType>>>  (_mesh, action);
+
+    do_property<MeshT, HandleT, std::vector<std::vector<std::vector<int>>>>                 (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<std::vector<double>>>>              (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<std::vector<float>>>>               (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<std::vector<char>>>>                (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<std::vector<bool>>>>                (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<std::vector<std::string>>>>         (_mesh, action);
+    do_property<MeshT, HandleT, std::vector<std::vector<std::vector<RegisteredDataType>>>>  (_mesh, action);
+  }
+
+  do_all_property_types_vec_all_dim<MeshT, HandleT>(_mesh, action);
+}
+
+// Do action for all property types for faces, edges, halfedges and vertices
+template <typename MeshT>
+void do_all_properties(MeshT& _mesh, PropertyAction action, int version)
+{
+  do_all_property_types<MeshT,OpenMesh::FaceHandle>    (_mesh, action, version);
+  do_all_property_types<MeshT,OpenMesh::EdgeHandle>    (_mesh, action, version);
+  do_all_property_types<MeshT,OpenMesh::HalfedgeHandle>(_mesh, action, version);
+  do_all_property_types<MeshT,OpenMesh::VertexHandle>  (_mesh, action, version);
+}
+
+template <typename MeshT> void add_all_properties(MeshT& _mesh, int version)     { do_all_properties(_mesh, PropertyAction::Add    , version); }
+template <typename MeshT> void check_all_properties(MeshT& _mesh, int version)   { do_all_properties(_mesh, PropertyAction::Check  , version); }
+template <typename MeshT> void request_all_properties(MeshT& _mesh, int version) { do_all_properties(_mesh, PropertyAction::Request, version); }
+
+/*
+ * Load a triangle mesh from an om file of version 2.1 with properties
+ */
+TEST_F(OpenMeshReadWriteOM, LoadTriangleMeshWithPropertiesVersion_2_1) {
+
+  int version = 21;
+  mesh_.clear();
+
+  std::string file_name = "cube_tri_with_properties_2_1.om";
+
+  request_all_properties(mesh_, version);
+  bool ok = OpenMesh::IO::read_mesh(mesh_, file_name);
+
+  ASSERT_TRUE(ok) << file_name;
+
+  ASSERT_EQ(8u  , mesh_.n_vertices())  << "The number of loaded vertices is not correct!";
+  ASSERT_EQ(18u , mesh_.n_edges())     << "The number of loaded edges is not correct!";
+  ASSERT_EQ(12u , mesh_.n_faces())     << "The number of loaded faces is not correct!";
+  ASSERT_EQ(36u , mesh_.n_halfedges()) << "The number of loaded halfedges is not correct!";
+
+  check_all_properties(mesh_, version);
+}
+
+/*
+ * store and load a triangle mesh from an om file of the current version with properties
+ */
+TEST_F(OpenMeshReadWriteOM, LoadTriangleMeshWithPropertiesCurrentVersion) {
+
+  // TODO: create a LoadTriangleMeshWithPropertiesVersion_2_2 unittest from the file resulting from this test
+  // so we will keep testing version 2.2 in the future.
+
+  int version = 22;
+  mesh_.clear();
+
+  std::string file_name = "cube_tri_version_2_0.om";
+
+  bool ok = OpenMesh::IO::read_mesh(mesh_, file_name);
+
+  ASSERT_TRUE(ok) << file_name;
+  ASSERT_EQ(8u  , mesh_.n_vertices())  << "The number of loaded vertices is not correct!";
+  ASSERT_EQ(18u , mesh_.n_edges())     << "The number of loaded edges is not correct!";
+  ASSERT_EQ(12u , mesh_.n_faces())     << "The number of loaded faces is not correct!";
+  ASSERT_EQ(36u , mesh_.n_halfedges()) << "The number of loaded halfedges is not correct!";
+
+  add_all_properties(mesh_, version);
+  mesh_.request_halfedge_texcoords2D();
+
+  std::string file_name_2_2 = "cube_tri_with_properties_2_2.om";
+  OpenMesh::IO::Options ops(OpenMesh::IO::Options::Custom);
+  ops += OpenMesh::IO::Options::FaceTexCoord;
+
+  OpenMesh::IO::write_mesh(mesh_, file_name_2_2, ops);
+
+  Mesh new_mesh;
+  OpenMesh::IO::read_mesh(new_mesh, file_name_2_2, ops);
+
+  check_all_properties(new_mesh, version);
+  EXPECT_TRUE(new_mesh.has_halfedge_texcoords2D());
+}
+
 /*
  * Try to load mesh from om file with a version that is not yet supported
  */
@@ -1509,6 +1822,39 @@ TEST_F(OpenMeshReadWriteOM, WriteAndLoadDoubles) {
   EXPECT_EQ(mesh.normal(OpenMesh::FaceHandle(0)), mesh2.normal(OpenMesh::FaceHandle(0)));
 }
 
+/*
+ * Create Property from String
+ */
+TEST_F(OpenMeshReadWriteOM, PropertyFromString)
+{
+  {
+    std::string  int_prop_name = "my int prop";
+    OpenMesh::create_property_from_string<OpenMesh::VertexHandle>(mesh_, "int32_t", int_prop_name);
+    bool has_int_prop = OpenMesh::hasProperty<OpenMesh::VertexHandle, int>(mesh_, int_prop_name.c_str());
+    EXPECT_TRUE(has_int_prop);
+  }
+
+  {
+    std::string  double_prop_name = "my double prop";
+    OpenMesh::create_property_from_string<OpenMesh::VertexHandle>(mesh_, "double", double_prop_name);
+    bool has_double_prop = OpenMesh::hasProperty<OpenMesh::VertexHandle, double>(mesh_, double_prop_name.c_str());
+    EXPECT_TRUE(has_double_prop);
+  }
+
+  {
+    std::string  vec_float_prop_name = "my vector of floats prop";
+    OpenMesh::create_property_from_string<OpenMesh::VertexHandle>(mesh_, "std::vector<float>", vec_float_prop_name);
+    bool has_vec_float_prop = OpenMesh::hasProperty<OpenMesh::VertexHandle, std::vector<float>>(mesh_, vec_float_prop_name.c_str());
+    EXPECT_TRUE(has_vec_float_prop);
+  }
+
+  {
+    std::string  MyData_prop_name = "my MyData prop";
+    OpenMesh::create_property_from_string<OpenMesh::VertexHandle>(mesh_, "RegisteredDataType", MyData_prop_name);
+    bool has_myData_prop = OpenMesh::hasProperty<OpenMesh::VertexHandle, RegisteredDataType>(mesh_, MyData_prop_name.c_str());
+    EXPECT_TRUE(has_myData_prop);
+  }
+}
 
 
 /*
@@ -1558,13 +1904,30 @@ TEST_F(OpenMeshReadWriteOM, WriteAndLoadBoolCheckSpaces) {
   // Check if the property is still ok
   for (unsigned int i = 0; i < 8; ++i)
   {
-      if ( i == 5)
-          EXPECT_TRUE( mesh.property(prop,mesh2.vertex_handle((i)) ) );
-      else
-          EXPECT_FALSE(mesh.property(prop,mesh2.vertex_handle((i))));
+    if ( i == 5)
+      EXPECT_TRUE( mesh.property(prop,mesh2.vertex_handle((i)) ) );
+    else
+      EXPECT_FALSE(mesh.property(prop,mesh2.vertex_handle((i))));
   }
 }
 
-
-
 }
+
+OM_REGISTER_PROPERTY_TYPE(RegisteredDataType)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::string>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<float>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<RegisteredDataType>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<int>>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<double>>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<float>>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<char>>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<bool>>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<std::string>>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<RegisteredDataType>>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<std::vector<int>>>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<std::vector<double>>>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<std::vector<float>>>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<std::vector<char>>>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<std::vector<bool>>>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<std::vector<std::string>>>)
+OM_REGISTER_PROPERTY_TYPE(std::vector<std::vector<std::vector<RegisteredDataType>>>)

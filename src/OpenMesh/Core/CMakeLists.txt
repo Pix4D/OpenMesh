@@ -44,7 +44,10 @@ else ()
   vci_add_library (OpenMeshCore SHAREDANDSTATIC ${sources} ${headers})
   set_target_properties (OpenMeshCore PROPERTIES VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
                                                SOVERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR} )
+endif ()
 
+if (MSVC)
+  target_compile_options(OpenMeshCore PUBLIC /bigobj)
 endif ()
 
 # Add core as dependency before fixbundle 

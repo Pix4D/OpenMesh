@@ -72,6 +72,11 @@
 #include <OpenMesh/Core/IO/SR_rbo.hh>
 #include <OpenMesh/Core/IO/SR_binary.hh>
 
+
+#include <OpenMesh/Core/Utils/typename.hh>
+
+#include <iostream>
+
 //== NAMESPACES ===============================================================
 
 namespace OpenMesh {
@@ -91,6 +96,7 @@ namespace IO {
     static const bool is_streamable = true;                  \
     static size_t size_of(const value_type&) { return sizeof(value_type); }   \
     static size_t size_of(void) { return sizeof(value_type); }   \
+    static std::string type_identifier(void) { return #T; } \
     static size_t store( std::ostream& _os, const value_type& _val, \
 		         bool _swap=false) {                 \
       value_type tmp = _val;                                 \
@@ -120,11 +126,18 @@ SIMPLE_BINARY(char);
 SIMPLE_BINARY(int8_t);
 SIMPLE_BINARY(int16_t);
 SIMPLE_BINARY(int32_t);
-SIMPLE_BINARY(int64_t);
+//SIMPLE_BINARY(int64_t); // TODO: This does not work. Find out why.
 SIMPLE_BINARY(uint8_t);
 SIMPLE_BINARY(uint16_t);
 SIMPLE_BINARY(uint32_t);
 SIMPLE_BINARY(uint64_t);
+
+//handles
+SIMPLE_BINARY(FaceHandle);
+SIMPLE_BINARY(EdgeHandle);
+SIMPLE_BINARY(HalfedgeHandle);
+SIMPLE_BINARY(VertexHandle);
+SIMPLE_BINARY(MeshHandle);
 
 #undef SIMPLE_BINARY
 
@@ -142,6 +155,7 @@ SIMPLE_BINARY(uint64_t);
     static const bool is_streamable = true;                  \
     static size_t size_of(const value_type&) { return sizeof(value_type); }   \
     static size_t size_of(void) { return sizeof(value_type); }   \
+    static std::string type_identifier(void) { return #T; } \
     static size_t store( std::ostream& _os, const value_type& _val, \
 		         bool _swap=false) {                 \
       value_type tmp = _val;                                 \
@@ -172,12 +186,14 @@ SIMPLE_BINARY(unsigned long);
     static const bool is_streamable = true;                     \
     static size_t size_of(void) { return sizeof(value_type); }  \
     static size_t size_of(const value_type&) { return size_of(); } \
+    static std::string type_identifier(void) { return #T; } \
     static size_t store( std::ostream& _os, const value_type& _val, \
-		         bool _swap=false) {                    \
+		         bool _swap=false) {                                \
       value_type tmp = _val;                                    \
       size_t i, b = size_of(_val), N = value_type::size_;       \
-      if (_swap) for (i=0; i<N; ++i)                            \
-	reverse_byte_order( tmp[i] );                           \
+      if (_swap)                                                \
+        for (i=0; i<N; ++i)                                     \
+          reverse_byte_order( tmp[i] );                         \
       _os.write( (const char*)&tmp[0], b );                     \
       return _os.good() ? b : 0;                                \
     }                                                           \
@@ -207,6 +223,7 @@ VECTORTS_BINARY( 1 )
 VECTORTS_BINARY( 2 )
 VECTORTS_BINARY( 3 )
 VECTORTS_BINARY( 4 )
+VECTORTS_BINARY( 5 )
 VECTORTS_BINARY( 6 )
 
 #undef VECTORTS_BINARY
@@ -221,7 +238,7 @@ template <> struct binary< std::string > {
   static size_t size_of() { return UnknownSize; }
   static size_t size_of(const value_type &_v)
   { return sizeof(length_t) + _v.size(); }
-
+  static std::string type_identifier(void) { return "std::string"; }
   static
   size_t store(std::ostream& _os, const value_type& _v, bool _swap=false)
   {
@@ -252,7 +269,6 @@ template <> struct binary< std::string > {
   }
 };
 
-
 template <> struct binary<OpenMesh::Attributes::StatusInfo>
 {
   typedef OpenMesh::Attributes::StatusInfo value_type;
@@ -263,6 +279,7 @@ template <> struct binary<OpenMesh::Attributes::StatusInfo>
   static size_t size_of() { return sizeof(status_t); }
   static size_t size_of(const value_type&) { return size_of(); }
 
+  static std::string type_identifier(void) { return "StatusInfo";}
   static size_t n_bytes(size_t _n_elem)
   { return _n_elem*sizeof(status_t); }
 
@@ -307,8 +324,106 @@ struct FunctorRestore {
   bool          swap_;
 };
 
-#include <OpenMesh/Core/IO/SR_binary_vector_of_fundamentals.inl>
-#include <OpenMesh/Core/IO/SR_binary_vector_of_string.inl>
+template <typename T>
+struct binary< std::vector< T >, typename std::enable_if<std::is_default_constructible<T>::value>::type > {
+  typedef std::vector< T >       value_type;
+  typedef typename value_type::value_type elem_type;
+
+  static const bool is_streamable = binary<T>::is_streamable;
+  static size_t size_of(bool _store_size = true)
+  { return IO::UnknownSize; }
+
+  static size_t size_of(const value_type& _v, bool _store_size = true)
+  {
+    if(binary<T>::size_of() != IO::UnknownSize)
+    {
+      unsigned int   N     = _v.size();
+      auto res = binary<T>::size_of()*_v.size() + (_store_size? sizeof(decltype(N)) : 0);
+      return res;
+    }
+    else
+    {
+      size_t size = 0;
+      for(auto v : _v)
+        size += binary<T>::size_of(v);
+      if(_store_size)
+        size += binary<unsigned int>::size_of();
+
+      return size;
+    }
+  }
+
+  static std::string type_identifier(void) { return "std::vector<" + binary<T>::type_identifier() + ">"; }
+  static
+  size_t store(std::ostream& _os, const value_type& _v, bool _swap=false, bool _store_size = true) {
+    size_t bytes=0;
+    if(_store_size)
+    {
+      unsigned int N = _v.size();
+      bytes += binary<unsigned int>::store( _os, N, _swap );
+    }
+    if (_swap)
+      bytes += std::accumulate( _v.begin(), _v.end(), static_cast<size_t>(0),
+      FunctorStore<elem_type>(_os,_swap) );
+    else
+    {
+      auto elem_size = binary<elem_type>::size_of();
+      if (elem_size != IO::UnknownSize && elem_size == sizeof(elem_type))
+      {
+        // size of all elements is known, equal, and densely packed in vector.
+        // Just store vector data
+        auto bytes_of_vec = size_of(_v, false);
+        bytes += bytes_of_vec;
+        if (_v.size() > 0)
+          _os.write( reinterpret_cast<const char*>(&_v[0]), bytes_of_vec);
+      }
+      else
+      {
+        // store individual elements
+        for (const auto& v : _v)
+          bytes += binary<elem_type>::store(_os, v, _swap);
+      }
+    }
+    return _os.good() ? bytes : 0;
+  }
+
+  static size_t restore(std::istream& _is, value_type& _v, bool _swap=false, bool _restore_size = true) {
+
+    size_t bytes=0;
+
+    if(_restore_size)
+    {
+      unsigned int size_of_vec;
+      bytes += binary<unsigned int>::restore(_is, size_of_vec, _swap);
+      _v.resize(size_of_vec);
+    }
+
+    if ( _swap)
+      bytes += std::accumulate( _v.begin(), _v.end(), size_t(0),
+             FunctorRestore<elem_type>(_is, _swap) );
+    else
+    {
+      auto elem_size = binary<elem_type>::size_of();
+      if (elem_size != IO::UnknownSize && elem_size == sizeof(elem_type))
+      {
+        // size of all elements is known, equal, and densely packed in vector.
+        // Just restore vector data
+        auto bytes_of_vec = size_of(_v, false);
+        bytes += bytes_of_vec;
+        if (_v.size() > 0)
+          _is.read( reinterpret_cast<char*>(&_v[0]), bytes_of_vec );
+      }
+      else
+      {
+        // restore individual elements
+        for (auto& v : _v)
+          bytes += binary<elem_type>::restore(_is, v, _swap);
+      }
+    }
+    return _is.good() ? bytes : 0;
+  }
+};
+
 #include <OpenMesh/Core/IO/SR_binary_vector_of_bool.inl>
 
 // ----------------------------------------------------------------------------

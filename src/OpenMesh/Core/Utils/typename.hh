@@ -7,6 +7,9 @@
 
 #include <string>
 #include <typeinfo>
+#include <vector>
+#include <OpenMesh/Core/Mesh/Handles.hh>
+#include <OpenMesh/Core/Geometry/VectorT.hh>
 
 namespace OpenMesh {
 
@@ -23,4 +26,4 @@ std::string get_type_name()
 #endif
 }
 
-}
+}//namespace OpenMesh

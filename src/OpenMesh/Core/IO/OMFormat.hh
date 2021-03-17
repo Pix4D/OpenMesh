@@ -278,7 +278,6 @@ namespace OMFormat {
   }; // Chunk
 
   // ------------------------------------------------------------ Helper
-
   // -------------------- get size information
 
   /// Return size of header in bytes.
